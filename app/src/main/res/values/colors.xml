@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="CDI_Blue">#0B4980</color>
+    <color name="CDI_Gray">#DBDCDE</color>
+    <color name="CDI_Light_Blue">#23ACE2</color>
+    <color name="CDI_Yellow">#F9C518</color>
+    <color name="CDI_Banner_Blue">#010891</color>
+</resources>
