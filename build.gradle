@@ -3,6 +3,7 @@ buildscript {
     ext {
         version_retrofit = "2.9.0"
         version_moshi = "1.9.3"
+        version_navigation = '2.3.0'
     }
 }
 
