@@ -13,7 +13,6 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
 import com.example.cdihandheldscannerviewactivity.network.Company
 import com.example.cdihandheldscannerviewactivity.network.ResponseWrapper
@@ -38,6 +37,8 @@ class loginActivity : AppCompatActivity() {
     private var isSpinnerArrowUp: Boolean = false
     private lateinit var binding: ActivityLoginBinding
 
+//TODO (4) Hacer que cuando se haga el llamado al API que tenga un tipo de loading mechanism por si la internet del usuario no es instantanea
+    // TODO (5) Se tiene que crear un tipo de mini bases de datos en la app (Con SQLITE o algo asi) para guardar el COMPANY y, possiblemente, el sign in info (esta temptativo porque no veo por que se tenga que tener el sign in info por ahora)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +101,7 @@ class loginActivity : AppCompatActivity() {
 
         val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
             // Reset background when spinner closes
-            companySpinner.setBackgroundResource(R.drawable.company_drop_down)
+            companySpinner.setBackgroundResource(R.drawable.drop_down_background)
             isSpinnerArrowUp = false
         }
 
@@ -108,7 +109,7 @@ class loginActivity : AppCompatActivity() {
         companySpinner.setOnTouchListener{view, event ->
             when(event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    companySpinner.setBackgroundResource(R.drawable.company_drop_down__arrow_up_)
+                    companySpinner.setBackgroundResource(R.drawable.drop_down_arrow_up)
                     companySpinner.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
                     isSpinnerArrowUp = true
                 }
@@ -130,7 +131,7 @@ class loginActivity : AppCompatActivity() {
         // Reset the background when the user touches outside of the Spinner
         rootView.setOnTouchListener { _, _ ->
             if (isSpinnerArrowUp) {
-                companySpinner.setBackgroundResource(R.drawable.company_drop_down)
+                companySpinner.setBackgroundResource(R.drawable.drop_down_background)
                 companySpinner.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
                 isSpinnerArrowUp = false
             }

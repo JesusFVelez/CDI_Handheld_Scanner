@@ -7,5 +7,7 @@
     <string name="products_in_bin">View Products In Bin</string>
     <string name="cdi_image_description">An Image of the CDI Logo</string>
     <string name="companyText">Company</string>
+    <string name="bin_number">Bin Number</string>
+    <string name="search_bin">Search Bin</string>
 
 </resources>

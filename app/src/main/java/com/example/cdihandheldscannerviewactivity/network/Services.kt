@@ -27,7 +27,6 @@ interface Services{
     fun getCompanies():
             Call<ResponseWrapper>
 
-    //TODO(1) Make another call here to the lOGIN end point so that I can actually be able to log in
     @POST("login")
     fun isLogedIn(@Body user: requestUser):
             Call<ResponseWrapperUser>

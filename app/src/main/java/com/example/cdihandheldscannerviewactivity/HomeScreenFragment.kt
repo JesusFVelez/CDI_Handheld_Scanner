@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.cdihandheldscannerviewactivity.databinding.HomeScreenFragmentBinding
 
 class HomeScreenFragment : Fragment() {
@@ -39,6 +40,10 @@ class HomeScreenFragment : Fragment() {
                 }
                 .setNegativeButton("No", null)
                 .show()
+        }
+
+        productToBinButton.setOnClickListener{
+            it.findNavController().navigate(R.id.action_homeScreenFragment_to_productToBinFragment)
         }
 
         return binding.root

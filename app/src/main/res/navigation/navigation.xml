@@ -7,6 +7,15 @@
     <fragment
         android:id="@+id/homeScreenFragment"
         android:name="com.example.cdihandheldscannerviewactivity.HomeScreenFragment"
-        android:label="home_screen_fragment"
-        tools:layout="@layout/home_screen_fragment" />
+        android:label="Home Screen"
+        tools:layout="@layout/home_screen_fragment" >
+        <action
+            android:id="@+id/action_homeScreenFragment_to_productToBinFragment"
+            app:destination="@id/productToBinFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/productToBinFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.ProductToBinFragment"
+        android:label="fragment_product_to_bin"
+        tools:layout="@layout/fragment_product_to_bin" />
 </navigation>

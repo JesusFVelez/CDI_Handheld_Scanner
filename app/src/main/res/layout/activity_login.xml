@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/company_drop_down"
+                android:background="@drawable/drop_down_background"
                 android:gravity="center"
                 android:minHeight="48dp"
                 android:paddingEnd="50dp"
