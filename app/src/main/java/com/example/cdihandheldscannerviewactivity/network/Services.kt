@@ -31,16 +31,20 @@ interface Services{
     fun isLogedIn(@Body user: requestUser):
             Call<ResponseWrapperUser>
 
+    @GET("getWarehouses")
+    fun getWarehousesAvailable():
+            Call<ResponseWrapperWarehouse>
+
 }
 
+
+data class requestUser(
+    val request: User
+)
 data class User(
     val userName: String,
     val password: String,
     val company: String
-)
-
-data class requestUser(
-    val request: User
 )
 
 

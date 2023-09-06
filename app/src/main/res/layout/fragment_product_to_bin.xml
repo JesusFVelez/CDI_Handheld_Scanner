@@ -20,10 +20,12 @@
                     android:background="@drawable/drop_down_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:paddingEnd="50dp"
+                    />
 
                 <EditText
-                    android:id="@+id/editText"
+                    android:id="@+id/binNumberEditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -38,6 +40,7 @@
                     />
 
                 <Button
+                    android:id="@+id/searchBinButton"
                     android:layout_width="200dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="30dp"
@@ -47,7 +50,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editText" />
+                    app:layout_constraintTop_toBottomOf="@+id/binNumberEditText" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

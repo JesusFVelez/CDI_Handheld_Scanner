@@ -57,7 +57,6 @@ class loginActivity : AppCompatActivity() {
 
         getCompaniesFromBackendForSpinner()
         initSpinner()
-
     }
 
 
@@ -90,6 +89,7 @@ class loginActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ResponseWrapper>, t: Throwable) {
                 println("Something failed: \n " + t.message)
+                Toast.makeText(this@loginActivity, "There has been an error with the connection", Toast.LENGTH_SHORT).show()
             }
         })
     }
