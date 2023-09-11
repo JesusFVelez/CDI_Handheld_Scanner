@@ -4,6 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" >
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,7 +38,7 @@
 
             <TextView
                 android:id="@+id/itemName"
-                android:layout_width="202dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
@@ -51,17 +55,18 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ScrollView
-            android:id="@+id/detailContentScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/upperDiv">
-            >
+<!--        <ScrollView-->
+<!--            android:id="@+id/detailContentScrollView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/upperDiv">-->
+<!--            >-->
 
             <LinearLayout
+                app:layout_constraintTop_toBottomOf="@id/upperDiv"
                 android:id="@+id/linearLayoutContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,9 +100,11 @@
                     android:id="@+id/qtyInUOM"
                     layout="@layout/product_in_bin_detail_view" />
             </LinearLayout>
-        </ScrollView>
+<!--        </ScrollView>-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </layout>

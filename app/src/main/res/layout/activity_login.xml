@@ -21,7 +21,8 @@
             <ImageView
                 android:id="@+id/CDILogoImage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="H,16:12"
                 android:src="@drawable/cdi_logo___without_technologies_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -34,13 +35,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/rectangle_text_box"
                 android:padding="5dp"
                 app:hintAnimationEnabled="false"
                 app:hintEnabled="true"
+                app:layout_constraintBottom_toTopOf="@+id/textInputLayoutPassword"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/CDILogoImage">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/usernameText"
@@ -58,16 +60,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="5dp"
                 android:layout_marginEnd="30dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/rectangle_text_box"
                 android:padding="5dp"
                 app:hintAnimationEnabled="false"
                 app:hintEnabled="true"
+                app:layout_constraintBottom_toTopOf="@+id/companySpinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUserName"
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -81,29 +83,26 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Poner un Drop Down con todos los companies (Como estaba en mis notas de GoodNotes)-->
-
 
             <!--         TODO make this work at some point -> android:entries="@{loginViewModel.listOfCompanies}"-->
             <Spinner
                 android:id="@+id/companySpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/drop_down_background"
                 android:gravity="center"
                 android:minHeight="48dp"
                 android:paddingEnd="50dp"
+                app:layout_constraintBottom_toTopOf="@+id/loginButton"
                 app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
                 app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/login_rectangle"
                 android:backgroundTint="@color/CDI_Blue"
@@ -114,8 +113,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/companySpinner" />
+                app:layout_constraintStart_toStartOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,7 @@
         android:id="@+id/productToBinFragment"
         android:name="com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductInBinFragment"
         android:label="fragment_product_to_bin"
-        tools:layout="@layout/fragment_product_to_bin" >
+        tools:layout="@layout/fragment_product_in_bin" >
         <action
             android:id="@+id/action_productToBinFragment_to_productDetailsFragment"
             app:destination="@id/productDetailsFragment"

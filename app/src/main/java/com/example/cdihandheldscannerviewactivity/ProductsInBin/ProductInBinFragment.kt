@@ -20,12 +20,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductToBinBinding
+import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductInBinBinding
 import com.example.cdihandheldscannerviewactivity.networkUtils.WarehouseInfo
 
 class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
-    private lateinit var binding: FragmentProductToBinBinding
+    private lateinit var binding: FragmentProductInBinBinding
     private lateinit var warehouseSpinner: Spinner
     private lateinit var binNumberEditText: EditText
     private lateinit var searchButton: Button
@@ -44,7 +44,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_to_bin, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_in_bin, container, false)
         warehouseSpinner = binding.warehouseSpinner
         binNumberEditText = binding.binNumberEditText
         searchButton = binding.searchBinButton
