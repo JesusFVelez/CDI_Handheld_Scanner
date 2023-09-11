@@ -9,5 +9,9 @@
     <string name="companyText">Company</string>
     <string name="bin_number">Bin Number</string>
     <string name="search_bin">Search Bin</string>
+    <string name="on_hand">On Hand:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loading">Loading...</string>
 
 </resources>

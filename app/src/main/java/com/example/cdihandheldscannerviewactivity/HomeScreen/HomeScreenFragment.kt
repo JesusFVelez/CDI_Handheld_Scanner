@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity
+package com.example.cdihandheldscannerviewactivity.HomeScreen
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
+import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.databinding.HomeScreenFragmentBinding
 
 class HomeScreenFragment : Fragment() {

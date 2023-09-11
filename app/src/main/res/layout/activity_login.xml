@@ -3,10 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.cdihandheldscannerviewactivity.loginFragment"  >
+    tools:context="com.example.cdihandheldscannerviewactivity.login.loginActivity"  >
 
+    <data>
+        <variable
+            name="loginViewModel"
+            type="com.example.cdihandheldscannerviewactivity.login.LoginViewModel" />
+
+    </data>
+    
         <androidx.constraintlayout.widget.ConstraintLayout
-
             android:id="@+id/login_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -78,6 +84,7 @@
             <!-- Poner un Drop Down con todos los companies (Como estaba en mis notas de GoodNotes)-->
 
 
+            <!--         TODO make this work at some point -> android:entries="@{loginViewModel.listOfCompanies}"-->
             <Spinner
                 android:id="@+id/companySpinner"
                 android:layout_width="wrap_content"
@@ -96,8 +103,6 @@
                 android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/login_rectangle"

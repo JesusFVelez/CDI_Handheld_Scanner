@@ -6,16 +6,28 @@
     app:startDestination="@id/homeScreenFragment">
     <fragment
         android:id="@+id/homeScreenFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.HomeScreenFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.HomeScreen.HomeScreenFragment"
         android:label="Home Screen"
         tools:layout="@layout/home_screen_fragment" >
         <action
             android:id="@+id/action_homeScreenFragment_to_productToBinFragment"
-            app:destination="@id/productToBinFragment" />
+            app:destination="@id/productToBinFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.ProductToBinFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductInBinFragment"
         android:label="fragment_product_to_bin"
-        tools:layout="@layout/fragment_product_to_bin" />
+        tools:layout="@layout/fragment_product_to_bin" >
+        <action
+            android:id="@+id/action_productToBinFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/productDetailsFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductDetails.ProductDetailsFragment"
+        android:label="ProductDetailsFragment" />
 </navigation>
