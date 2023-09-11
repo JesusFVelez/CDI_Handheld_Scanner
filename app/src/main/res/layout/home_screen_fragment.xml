@@ -3,20 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.cdihandheldscannerviewactivity.HomeScreenFragment">
+    tools:context="com.example.cdihandheldscannerviewactivity.HomeScreen.HomeScreenFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/line_gradient">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/CDILogoImage"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/cdi_logo___without_technologies_1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/productToBinButton"
@@ -36,16 +28,15 @@
                 android:id="@+id/logOutButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/logout_button"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="@string/log_out"
+                android:textAllCaps="false"
+                android:textColor="@color/CDI_Gray"
+                android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/log_out"
-                android:textColor="@color/CDI_Gray"
-                android:textAllCaps="false"
-                android:textSize="20dp"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/productToBinButton" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

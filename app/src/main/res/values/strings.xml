@@ -7,5 +7,11 @@
     <string name="products_in_bin">View Products In Bin</string>
     <string name="cdi_image_description">An Image of the CDI Logo</string>
     <string name="companyText">Company</string>
+    <string name="bin_number">Bin Number</string>
+    <string name="search_bin">Search Bin</string>
+    <string name="on_hand">On Hand:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loading">Loading...</string>
 
 </resources>

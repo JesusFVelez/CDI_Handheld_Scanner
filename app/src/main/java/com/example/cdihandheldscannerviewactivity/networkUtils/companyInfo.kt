@@ -1,11 +1,7 @@
-package com.example.cdihandheldscannerviewactivity.network
+package com.example.cdihandheldscannerviewactivity.networkUtils
 
-import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.squareup.moshi.ToJson
-import org.json.JSONArray
-
 
 
 @JsonClass(generateAdapter = true)
