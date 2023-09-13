@@ -65,7 +65,6 @@ class ProductsInBinViewModel: ViewModel() {
         _currentWarehouseNumber.value = 0
         _numberOfItemsInBin.value = 0
         _currentlyChosenAdapterPosition.value = 0
-        _wasLastAPICallSuccessful.value = false
     }
 
 
@@ -105,7 +104,7 @@ class ProductsInBinViewModel: ViewModel() {
                 Log.i("Products In Bin View Model Product Info API Call", "Response -> ${response.toString()}" )
             }
         }catch (e : Exception){
-
+            _wasLastAPICallSuccessful.value = false
             Log.i("Products In Bin View Model Product Info API Call" , "Error -> ${e.message}")
         }
     }
