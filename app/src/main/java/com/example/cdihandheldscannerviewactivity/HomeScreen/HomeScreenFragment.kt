@@ -1,5 +1,6 @@
 package com.example.cdihandheldscannerviewactivity.HomeScreen
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.databinding.HomeScreenFragmentBinding
+import com.example.cdihandheldscannerviewactivity.login.loginActivity
 
 class HomeScreenFragment : Fragment() {
 
@@ -36,6 +38,9 @@ class HomeScreenFragment : Fragment() {
                 .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes") { _, _ ->
+
+                    val intent = Intent(this.activity, loginActivity::class.java)
+                    startActivity(intent)
                     this.activity?.finish()
                 }
                 .setNegativeButton("No", null)

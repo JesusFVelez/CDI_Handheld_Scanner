@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.networkUtils
+package com.example.cdihandheldscannerviewactivity.Network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

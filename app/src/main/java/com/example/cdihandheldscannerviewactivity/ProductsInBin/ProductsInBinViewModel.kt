@@ -5,13 +5,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cdihandheldscannerviewactivity.networkUtils.ProductInBinInfo
-import com.example.cdihandheldscannerviewactivity.networkUtils.ScannerAPI
-import com.example.cdihandheldscannerviewactivity.networkUtils.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Network.ProductInBinInfo
+import com.example.cdihandheldscannerviewactivity.Network.ScannerAPI
+import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class ProductsInBinViewModel: ViewModel() {
+
+    private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
+    val wasLastAPICallSuccessful : LiveData<Boolean>
+        get() = _wasLastAPICallSuccessful
 
     private val _wasBinFound = MutableLiveData<Boolean>()
     val wasBinFound : LiveData<Boolean>
@@ -60,6 +65,7 @@ class ProductsInBinViewModel: ViewModel() {
         _currentWarehouseNumber.value = 0
         _numberOfItemsInBin.value = 0
         _currentlyChosenAdapterPosition.value = 0
+        _wasLastAPICallSuccessful.value = false
     }
 
 
@@ -82,24 +88,38 @@ class ProductsInBinViewModel: ViewModel() {
     // Note: I am currently hardcoding the companyCode due to time constraints but now I'm starting to see that it might be necessary to make a database
     fun getProductInfoFromBackend(warehouseName : String, binNumber : String ){
         setWarehouseNumber(warehouseName)
+
+
+        // This exceptionHandler variable handles the error that happens whenever the request fails
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Products In Bin View Model Product Info API Call" , "Error -> ${exception.message}")
+        }
         try{
-            viewModelScope.launch {
+            viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.retrofitService.getAllItemsInBin("F", _currentWarehouseNumber.value!!, binNumber )
                 _listOfProducts.value = response.response.itemsInBin.itemsInBin
                 _wasBinFound.value = response.response.wasBinFound
                 _numberOfItemsInBin.value = _listOfProducts.value!!.size
+                _wasLastAPICallSuccessful.value = true
                 Log.i("Products In Bin View Model Product Info API Call", "Response -> ${response.toString()}" )
             }
         }catch (e : Exception){
+
             Log.i("Products In Bin View Model Product Info API Call" , "Error -> ${e.message}")
         }
     }
 
     private fun getWarehousesFromBackendForSpinner(){
-        viewModelScope.launch {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("get Warehouses API Call" , "Error -> ${exception.message}")
+        }
+        viewModelScope.launch (exceptionHandler) {
             try{
                 val response = ScannerAPI.retrofitService.getWarehousesAvailable()
                 _listOfWarehouses.value = response.response.warehouses.warehouses
+                _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
                 Log.i("Products In Bin View Model WH API Call", "Error -> ${e.message}")
             }

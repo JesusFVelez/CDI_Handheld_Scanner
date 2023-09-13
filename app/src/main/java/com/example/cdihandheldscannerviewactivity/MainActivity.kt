@@ -1,4 +1,5 @@
 package com.example.cdihandheldscannerviewactivity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
@@ -10,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
+import com.example.cdihandheldscannerviewactivity.login.loginActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,6 +39,9 @@ private lateinit var binding: ActivityMainBinding
                         .setTitle("Log Out")
                         .setMessage("Are you sure you want to log out?")
                         .setPositiveButton("Yes") { _, _ ->
+
+                            val intent = Intent(this@MainActivity, loginActivity::class.java)
+                            startActivity(intent)
                             finish()
                         }
                         .setNegativeButton("No", null)

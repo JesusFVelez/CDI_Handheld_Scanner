@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.networkUtils
+package com.example.cdihandheldscannerviewactivity.Network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -33,6 +33,7 @@ data class ProductInBinInfo(
     @Json(name = "barCode") val barCode: String,
     @Json(name = "unitOfMeasurement") val unitOfMeasurement: String,
     @Json(name = "quantityInUOM") val quantityInUOM: Double,
-    @Json(name = "companyCode") val companyCode: String
+    @Json(name = "companyCode") val companyCode: String,
+    @Json(name = "itemDetails") val itemDetails: String
 
     )

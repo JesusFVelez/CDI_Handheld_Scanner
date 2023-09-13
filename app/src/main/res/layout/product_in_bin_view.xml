@@ -19,8 +19,9 @@
 
     <TextView
         android:id="@+id/productNameText"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_marginEnd="15dp"
         android:text="Habichuelas Goya"
         android:textSize="20sp"

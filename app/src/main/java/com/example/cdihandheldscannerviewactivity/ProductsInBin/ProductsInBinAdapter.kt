@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.networkUtils.ProductInBinInfo
+import com.example.cdihandheldscannerviewactivity.Network.ProductInBinInfo
 
 
 class ProductsInBinAdapter(private val listener: ProductsInBinItemOnClickListener): RecyclerView.Adapter<productInBinViewHolder>() {
@@ -29,7 +29,7 @@ class ProductsInBinAdapter(private val listener: ProductsInBinItemOnClickListene
     override fun onBindViewHolder(holder: productInBinViewHolder, position: Int) {
         val item = data[position]
         holder.productNumberTextView.text = item.itemNumber
-        holder.productNameTextView.text = item.itemName
+        holder.productNameTextView.text = "${item.itemName} - ${item.itemDetails}"
         holder.onHandQtyTextView.text = "x${item.quantityOnHand.toInt().toString()}"
     }
 

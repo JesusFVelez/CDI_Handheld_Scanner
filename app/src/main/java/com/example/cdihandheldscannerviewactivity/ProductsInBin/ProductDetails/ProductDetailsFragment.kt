@@ -18,11 +18,11 @@ class ProductDetailsFragment : Fragment() {
 
     private val viewModel: ProductsInBinViewModel by activityViewModels()
     private lateinit var binding: FragmentProductDetailsBinding
-    private lateinit var binLocationDetailBlock: View
+    private lateinit var binLocationTextView: TextView
     private lateinit var QtyonHandDetailBlock: View
     private lateinit var QtyInPickingDetailBlock: View
     private lateinit var ExpirationDateDetailBlock: View
-    private lateinit var BarCodeDetailBlock: View
+    private lateinit var BarCodeTextView: TextView
     private lateinit var UOMDetailBlock: View
     private lateinit var QtyUOMDetailBlock: View
     private lateinit var itemNametextView: TextView
@@ -53,38 +53,40 @@ class ProductDetailsFragment : Fragment() {
 
     private fun fillUpperDivInfo(){
         val currentItem = viewModel.listOfProducts.value?.get(viewModel.currentlyChosenAdapterPosition.value!!)
-        itemNametextView.text = currentItem?.itemName
+        itemNametextView.text = "${currentItem?.itemName} - ${currentItem?.itemDetails}"
         itemNumberTextView.text = currentItem?.itemNumber
     }
     private fun initUIElements(){
-        binLocationDetailBlock = binding.binLocation
+        binLocationTextView = binding.binLocation
         QtyonHandDetailBlock = binding.qtyOnHandTxt
         QtyInPickingDetailBlock = binding.qtyInPicking
         ExpirationDateDetailBlock = binding.expDate
-        BarCodeDetailBlock = binding.barCode
+        BarCodeTextView = binding.barCode
         UOMDetailBlock = binding.UOM
         QtyUOMDetailBlock = binding.qtyInUOM
         itemNumberTextView = binding.itemNumber
         itemNametextView = binding.itemName
     }
 
-    // TODO que borre el password y el user id despues de hacer log out
+
 
 
 
     private fun changeNamesOfDetailViews(){
-        binLocationDetailBlock.findViewById<TextView>(R.id.detailName).text = "Bin Location:"
         QtyonHandDetailBlock.findViewById<TextView>(R.id.detailName).text = "Quantity on Hand:"
         QtyInPickingDetailBlock.findViewById<TextView>(R.id.detailName).text = "Quantity in Picking:"
         ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailName).text = "Expiration Date:"
-        BarCodeDetailBlock.findViewById<TextView>(R.id.detailName).text = "Bar Code:"
         UOMDetailBlock.findViewById<TextView>(R.id.detailName).text = "Unit Of Measurement (UOM):"
         QtyUOMDetailBlock.findViewById<TextView>(R.id.detailName).text = "Quantity in UOM:"
     }
 
     private fun fillAllDetailsWithInfo(){
         val currentItem = viewModel.listOfProducts.value?.get(viewModel.currentlyChosenAdapterPosition.value!!)
-        binLocationDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.binLocation
+        val formattedString = currentItem?.binLocation?.replace(Regex("(\\d+)([a-z])(\\d+)"), "\$1-\$2-\$3")
+        binLocationTextView.text = formattedString
+        BarCodeTextView.text = currentItem?.barCode.toString()
+
+
         QtyonHandDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.quantityOnHand.toString()
         QtyInPickingDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.quantityInPicking.toString()
         // TODO move the logic of assigning the Expiration Date of a product to be Not Available if the exp date is null, to the ViewModel to comply with the separation of concerns principle
@@ -92,9 +94,7 @@ class ProductDetailsFragment : Fragment() {
             ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = "Not available"
         }
         else
-            ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.expirationDate.toString()
-
-        BarCodeDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.barCode.toString()
+            ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.expirationDate
         UOMDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.unitOfMeasurement.toString()
         QtyUOMDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.quantityInUOM.toString()
     }

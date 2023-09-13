@@ -10,11 +10,14 @@
 <!--                     type="com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel" />-->
 
 <!--             </data>-->
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/productToBinLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
 
                 <Spinner
@@ -71,7 +74,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/productsInBinList"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="50dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -83,5 +86,6 @@
                 </androidx.recyclerview.widget.RecyclerView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
 
 </layout>

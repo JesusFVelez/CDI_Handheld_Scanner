@@ -19,9 +19,10 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductInBinBinding
-import com.example.cdihandheldscannerviewactivity.networkUtils.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
 
 class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
@@ -64,6 +65,13 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
         initObservers()
 
+        binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
+
+
 
         // TODO add a database to store information like the company code and other things
         searchButton.setOnClickListener{
@@ -76,6 +84,14 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
 
     private fun initObservers(){
+
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
+            if(!wasAPICallSuccesfull){
+                progressDialog.dismiss()
+                Toast.makeText(requireContext(),"Something went wrong with the request!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         viewModel.numberOfItemsInBin.observe(viewLifecycleOwner){newNumberOfItems ->
             if (newNumberOfItems > 1 || newNumberOfItems == 0)
                 numberOfItemsTextView.text = "${newNumberOfItems.toString()} items in Bin"
