@@ -10,10 +10,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.navigateUp
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
 
@@ -25,9 +23,9 @@ class MainActivity : AppCompatActivity() {
     // TODO(2) falta anñadirle el Burger Menu al home screen for visual purposes (despues se le dara funcionalidad un poco mas pensada
 
 private lateinit var binding: ActivityMainBinding
-private lateinit var connectivityManager: ConnectivityManager
-private lateinit var networkCallback : ConnectivityManager.NetworkCallback
-private var hasAppBeenOpened: Boolean = false
+lateinit var connectivityManager: ConnectivityManager
+lateinit var networkCallback : ConnectivityManager.NetworkCallback
+private var hasPageJustStarted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,16 +62,16 @@ private var hasAppBeenOpened: Boolean = false
         networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 // Handle connection
-                if (hasAppBeenOpened)
-                    Toast.makeText(this@MainActivity, "Wifi connectivity restored", Toast.LENGTH_SHORT).show()
+                if (hasPageJustStarted)
+                    Toast.makeText(this@MainActivity, resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
                 else
-                    hasAppBeenOpened = false
+                    hasPageJustStarted = true
             }
 
             override fun onLost(network: Network) {
                 // Handle disconnection
-                hasAppBeenOpened = true
-                Toast.makeText(this@MainActivity, "Wifi connectivity lost", Toast.LENGTH_SHORT).show()
+                hasPageJustStarted = true
+                Toast.makeText(this@MainActivity, resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
             }
         }
 

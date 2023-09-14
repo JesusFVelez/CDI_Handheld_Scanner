@@ -109,7 +109,7 @@ class ProductsInBinViewModel: ViewModel() {
         }
     }
 
-    private fun getWarehousesFromBackendForSpinner(){
+    fun getWarehousesFromBackendForSpinner(){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             Log.i("get Warehouses API Call" , "Error -> ${exception.message}")
@@ -120,6 +120,7 @@ class ProductsInBinViewModel: ViewModel() {
                 _listOfWarehouses.value = response.response.warehouses.warehouses
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
+                _wasLastAPICallSuccessful.value = false
                 Log.i("Products In Bin View Model WH API Call", "Error -> ${e.message}")
             }
         }

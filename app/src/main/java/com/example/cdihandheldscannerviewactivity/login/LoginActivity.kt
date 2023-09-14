@@ -8,6 +8,7 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
@@ -70,9 +71,9 @@ class loginActivity : AppCompatActivity() {
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasAppBeenOpened)
-                    Toast.makeText(this@loginActivity, "Wifi connectivity restored", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@loginActivity, resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
                 else
-                    hasAppBeenOpened = false
+                    hasAppBeenOpened = true
 
                 if(companySpinner.selectedItem == null) {
                     runOnUiThread {
@@ -85,7 +86,7 @@ class loginActivity : AppCompatActivity() {
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasAppBeenOpened = true
-                Toast.makeText(this@loginActivity, "Wifi connectivity lost", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@loginActivity, resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -132,13 +133,13 @@ class loginActivity : AppCompatActivity() {
             if(!wasAPICallSuccessful){
                 progressDialog.dismiss()
                 Toast.makeText(this, resources.getString(R.string.network_request_error_message), Toast.LENGTH_SHORT).show()
+                Log.i("API Call", "API Call did not work")
             }
         }
 
     }
 
     private fun fillSpinnerWithCompanies(listOfCompanies: List<Company>) {
-        runOnUiThread {
             val companies = mutableListOf<String>()
             val adapter =
                 ArrayAdapter(this@loginActivity, android.R.layout.simple_spinner_item, companies)
@@ -148,7 +149,7 @@ class loginActivity : AppCompatActivity() {
                 companies.add(aCompany.companyName)
             }
             adapter.notifyDataSetChanged()
-        }
+
     }
 
 
