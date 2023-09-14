@@ -122,41 +122,45 @@
 <!--            app:layout_constraintTop_toBottomOf="@+id/upperDiv">-->
 <!--            >-->
 
-            <LinearLayout
-                app:layout_constraintTop_toBottomOf="@id/upperDiv"
-                android:id="@+id/linearLayoutContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/linearLayoutContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/upperDiv">
 
-<!--                <include-->
-<!--                    android:id="@+id/binLocation"-->
-<!--                    layout="@layout/product_in_bin_detail_view" />-->
+            <!--                <include-->
+            <!--                    android:id="@+id/binLocation"-->
+            <!--                    layout="@layout/product_in_bin_detail_view" />-->
 
-                <include
-                    android:id="@+id/qtyOnHandTxt"
-                    layout="@layout/product_in_bin_detail_view" />
 
-                <include
-                    android:id="@+id/qtyInPicking"
-                    layout="@layout/product_in_bin_detail_view" />
+            <include
+                android:id="@+id/qtyOnHandAndInPickingView"
+                layout="@layout/product_in_bin_detail_view_two_things" />
 
-                <include
-                    android:id="@+id/expDate"
-                    layout="@layout/product_in_bin_detail_view" />
+            <!--                <include-->
+            <!--                    android:id="@+id/qtyInPicking"-->
+            <!--                    layout="@layout/product_in_bin_detail_view" />-->
 
-<!--                <include-->
-<!--                    android:id="@+id/barCode"-->
-<!--                    layout="@layout/product_in_bin_detail_view" />-->
 
-                <include
-                    android:id="@+id/UOM"
-                    layout="@layout/product_in_bin_detail_view" />
+            <!--                <include-->
+            <!--                    android:id="@+id/barCode"-->
+            <!--                    layout="@layout/product_in_bin_detail_view" />-->
 
-                <include
-                    android:id="@+id/qtyInUOM"
-                    layout="@layout/product_in_bin_detail_view" />
-            </LinearLayout>
+            <include
+                android:id="@+id/UOMAndUOMQtyView"
+                layout="@layout/product_in_bin_detail_view_two_things" />
+
+            <include
+                android:id="@+id/expDateView"
+                layout="@layout/product_in_bin_detail_view" />
+
+            <!--                <include-->
+            <!--                    android:id="@+id/qtyInUOM"-->
+            <!--                    layout="@layout/product_in_bin_detail_view" />-->
+        </LinearLayout>
 <!--        </ScrollView>-->
 
 

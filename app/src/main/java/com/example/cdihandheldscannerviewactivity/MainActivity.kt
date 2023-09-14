@@ -1,7 +1,11 @@
 package com.example.cdihandheldscannerviewactivity
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -21,6 +25,10 @@ class MainActivity : AppCompatActivity() {
     // TODO(2) falta anñadirle el Burger Menu al home screen for visual purposes (despues se le dara funcionalidad un poco mas pensada
 
 private lateinit var binding: ActivityMainBinding
+private lateinit var connectivityManager: ConnectivityManager
+private lateinit var networkCallback : ConnectivityManager.NetworkCallback
+private var hasAppBeenOpened: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         @Suppress("UNUSED_VARIABLE")
@@ -49,6 +57,35 @@ private lateinit var binding: ActivityMainBinding
                 }
             }
         })
+
+
+        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkRequest = NetworkRequest.Builder().build()
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                // Handle connection
+                if (hasAppBeenOpened)
+                    Toast.makeText(this@MainActivity, "Wifi connectivity restored", Toast.LENGTH_SHORT).show()
+                else
+                    hasAppBeenOpened = false
+            }
+
+            override fun onLost(network: Network) {
+                // Handle disconnection
+                hasAppBeenOpened = true
+                Toast.makeText(this@MainActivity, "Wifi connectivity lost", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Register
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Unregister
+        connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
     override fun onSupportNavigateUp(): Boolean {

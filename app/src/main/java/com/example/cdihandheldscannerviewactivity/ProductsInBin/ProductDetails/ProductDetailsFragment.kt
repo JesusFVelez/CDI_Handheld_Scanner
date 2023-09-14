@@ -5,13 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextClock
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductDetailsBinding
-import org.w3c.dom.Text
 
 
 class ProductDetailsFragment : Fragment() {
@@ -19,12 +19,12 @@ class ProductDetailsFragment : Fragment() {
     private val viewModel: ProductsInBinViewModel by activityViewModels()
     private lateinit var binding: FragmentProductDetailsBinding
     private lateinit var binLocationTextView: TextView
-    private lateinit var QtyonHandDetailBlock: View
-    private lateinit var QtyInPickingDetailBlock: View
+    private lateinit var QtyonHandValueTextView: TextView
+    private lateinit var QtyInPickingValueTextView: TextView
     private lateinit var ExpirationDateDetailBlock: View
     private lateinit var BarCodeTextView: TextView
-    private lateinit var UOMDetailBlock: View
-    private lateinit var QtyUOMDetailBlock: View
+    private lateinit var UOMValueTextView: TextView
+    private lateinit var QtyUOMValueTextView: TextView
     private lateinit var itemNametextView: TextView
     private lateinit var itemNumberTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,12 +40,12 @@ class ProductDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
     binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_details, container, false)
-    binding.qtyOnHandTxt.findViewById<TextView>(R.id.detailName).text = "Quantity On Hand:"
-
     initUIElements()
     changeNamesOfDetailViews()
     fillAllDetailsWithInfo()
     fillUpperDivInfo()
+
+
 
     return binding.root
     }
@@ -58,12 +58,12 @@ class ProductDetailsFragment : Fragment() {
     }
     private fun initUIElements(){
         binLocationTextView = binding.binLocation
-        QtyonHandDetailBlock = binding.qtyOnHandTxt
-        QtyInPickingDetailBlock = binding.qtyInPicking
-        ExpirationDateDetailBlock = binding.expDate
+        QtyonHandValueTextView = binding.qtyOnHandAndInPickingView.findViewById(R.id.detailContent)
+        QtyInPickingValueTextView = binding.qtyOnHandAndInPickingView.findViewById(R.id.otherDetailContent)
+        ExpirationDateDetailBlock = binding.expDateView
         BarCodeTextView = binding.barCode
-        UOMDetailBlock = binding.UOM
-        QtyUOMDetailBlock = binding.qtyInUOM
+        UOMValueTextView = binding.UOMAndUOMQtyView.findViewById(R.id.detailContent)
+        QtyUOMValueTextView = binding.UOMAndUOMQtyView.findViewById(R.id.otherDetailContent)
         itemNumberTextView = binding.itemNumber
         itemNametextView = binding.itemName
     }
@@ -73,11 +73,11 @@ class ProductDetailsFragment : Fragment() {
 
 
     private fun changeNamesOfDetailViews(){
-        QtyonHandDetailBlock.findViewById<TextView>(R.id.detailName).text = "Quantity on Hand:"
-        QtyInPickingDetailBlock.findViewById<TextView>(R.id.detailName).text = "Quantity in Picking:"
+        binding.qtyOnHandAndInPickingView.findViewById<TextView>(R.id.detailName).text = "Quantity on Hand:"
+        binding.qtyOnHandAndInPickingView.findViewById<TextView>(R.id.otherDetailName).text = "Quantity in Picking:"
         ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailName).text = "Expiration Date:"
-        UOMDetailBlock.findViewById<TextView>(R.id.detailName).text = "Unit Of Measurement (UOM):"
-        QtyUOMDetailBlock.findViewById<TextView>(R.id.detailName).text = "Quantity in UOM:"
+        binding.UOMAndUOMQtyView.findViewById<TextView>(R.id.detailName).text = "Unit Of Measurement:"
+        binding.UOMAndUOMQtyView.findViewById<TextView>(R.id.otherDetailName).text = "Quantity in UOM:"
     }
 
     private fun fillAllDetailsWithInfo(){
@@ -85,18 +85,16 @@ class ProductDetailsFragment : Fragment() {
         val formattedString = currentItem?.binLocation?.replace(Regex("(\\d+)([a-z])(\\d+)"), "\$1-\$2-\$3")
         binLocationTextView.text = formattedString
         BarCodeTextView.text = currentItem?.barCode.toString()
-
-
-        QtyonHandDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.quantityOnHand.toString()
-        QtyInPickingDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.quantityInPicking.toString()
+        QtyonHandValueTextView.text = currentItem?.quantityOnHand.toString()
+        QtyInPickingValueTextView.text = currentItem?.quantityInPicking.toString()
         // TODO move the logic of assigning the Expiration Date of a product to be Not Available if the exp date is null, to the ViewModel to comply with the separation of concerns principle
         if (currentItem?.expirationDate == null){
             ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = "Not available"
         }
         else
             ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.expirationDate
-        UOMDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.unitOfMeasurement.toString()
-        QtyUOMDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.quantityInUOM.toString()
+        UOMValueTextView.text = currentItem?.unitOfMeasurement.toString()
+        QtyUOMValueTextView.text = currentItem?.quantityInUOM.toString()
     }
 
 

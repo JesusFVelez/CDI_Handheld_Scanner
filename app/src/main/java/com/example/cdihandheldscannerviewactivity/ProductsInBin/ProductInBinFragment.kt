@@ -41,19 +41,17 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
     //TODO place all variables that are binded to UI elements into an init UI elements function and call it in the onCreateView
     // TODO (3) Anñadir funcionalidad que haga que el formato del editText del Bin Number siempre tenga los guiones entremedio (ver commentarios en Figma)
+    // TODO Añadir la habilidad de manage network errors a esta parte del app
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_in_bin, container, false)
-        warehouseSpinner = binding.warehouseSpinner
-        binNumberEditText = binding.binNumberEditText
-        searchButton = binding.searchBinButton
-        numberOfItemsTextView = binding.totalProductsTextView
 //        viewModel = ViewModelProvider(this)[ProductsInBinViewModel::class.java]
         // Using the LiveData with the UI is not working so I commented it
 //        binding.productsInBinViewModel = viewModel
 //        binding.lifecycleOwner = this
+        initUIElements()
         initSpinner()
         adapter = ProductsInBinAdapter(this)
         binding.productsInBinList.adapter = adapter
@@ -62,16 +60,12 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             setCancelable(false)
             show()
         }
-
         initObservers()
-
         binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically(): Boolean {
                 return false
             }
         }
-
-
 
         // TODO add a database to store information like the company code and other things
         searchButton.setOnClickListener{
@@ -82,7 +76,12 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         return binding.root
     }
 
-
+    private fun initUIElements(){
+        warehouseSpinner = binding.warehouseSpinner
+        binNumberEditText = binding.binNumberEditText
+        searchButton = binding.searchBinButton
+        numberOfItemsTextView = binding.totalProductsTextView
+    }
     private fun initObservers(){
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
