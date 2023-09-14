@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.cdihandheldscannerviewactivity.R
+import com.example.cdihandheldscannerviewactivity.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.databinding.HomeScreenFragmentBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
 
@@ -48,7 +49,8 @@ class HomeScreenFragment : Fragment() {
         }
 
         productToBinButton.setOnClickListener{
-            it.findNavController().navigate(R.id.action_homeScreenFragment_to_productToBinFragment)
+            val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("HomeScreen")
+            it.findNavController().navigate(R.id.action_homeScreenFragment_to_productToBinFragment, bundle)
         }
 
         return binding.root

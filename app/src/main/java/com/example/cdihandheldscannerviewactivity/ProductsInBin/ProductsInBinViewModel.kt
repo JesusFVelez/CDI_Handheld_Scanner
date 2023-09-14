@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cdihandheldscannerviewactivity.Network.ProductInBinInfo
 import com.example.cdihandheldscannerviewactivity.Network.ScannerAPI
 import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Storage.SharedPreferencesUtils
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -52,6 +53,11 @@ class ProductsInBinViewModel: ViewModel() {
         get() = _currentlyChosenAdapterPosition
 
 
+    private val _companyIDOfUser = MutableLiveData<String>()
+    val companyIDOfUser : LiveData<String>
+        get() = _companyIDOfUser
+
+
     fun setChosenAdapterPosition(position : Int){
         if (position >= 0)
             _currentlyChosenAdapterPosition.value = position
@@ -72,6 +78,10 @@ class ProductsInBinViewModel: ViewModel() {
         super.onCleared()
     }
 
+    fun clearListOfProducts(){
+        _listOfProducts.value = listOf()
+        _numberOfItemsInBin.value = 0
+    }
     fun setIsSpinnerArrowUp(isSpinnerUp: Boolean){
         _isSpinnerArrowUp.value = isSpinnerUp
     }
@@ -82,6 +92,10 @@ class ProductsInBinViewModel: ViewModel() {
                 _currentWarehouseNumber.value = aWarehouse.warehouseNumber.toInt()
             }
         }
+    }
+
+    fun setCompanyIDFromSharedPref(companyID: String){
+        _companyIDOfUser.value = companyID
     }
 
     // Note: I am currently hardcoding the companyCode due to time constraints but now I'm starting to see that it might be necessary to make a database
@@ -96,7 +110,7 @@ class ProductsInBinViewModel: ViewModel() {
         }
         try{
             viewModelScope.launch(exceptionHandler) {
-                val response = ScannerAPI.retrofitService.getAllItemsInBin("F", _currentWarehouseNumber.value!!, binNumber )
+                val response = ScannerAPI.retrofitService.getAllItemsInBin(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, binNumber )
                 _listOfProducts.value = response.response.itemsInBin.itemsInBin
                 _wasBinFound.value = response.response.wasBinFound
                 _numberOfItemsInBin.value = _listOfProducts.value!!.size

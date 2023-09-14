@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -26,6 +27,8 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
 import com.example.cdihandheldscannerviewactivity.R
+import com.example.cdihandheldscannerviewactivity.Storage.BundleUtils
+import com.example.cdihandheldscannerviewactivity.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductInBinBinding
 
 class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
@@ -51,8 +54,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
     // TODO - place all variables that are binded to UI elements into an init UI elements function and call it in the onCreateView
     // TODO - Anñadir funcionalidad que haga que el formato del editText del Bin Number siempre tenga los guiones entremedio (ver commentarios en Figma)
-    // TODO (Ongoing) -  Añadir la habilidad de manage network errors a esta parte del app
-    // TODO - add a database to store information like the company code and other things
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,11 +68,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         adapter = ProductsInBinAdapter(this)
         binding.productsInBinList.adapter = adapter
         initObservers()
-        binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
-        }
         connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
         networkRequest = NetworkRequest.Builder().build()
         networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -97,6 +93,9 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             }
         }
 
+        val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        viewModel.setCompanyIDFromSharedPref(companyID)
+
         return binding.root
     }
 
@@ -115,10 +114,23 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             setCancelable(false)
             show()
         }
+        binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        val bundle = arguments
+        val lastFragmentName : String = BundleUtils.getPastFragmentNameFromBundle(bundle)
+        if(lastFragmentName == "HomeScreen"){
+            viewModel.clearListOfProducts()
+            bundle?.clear()
+        }
+
+
         hasPageJustStarted = false
         // Register the callback
         if (connectivityManager != null) {
@@ -158,7 +170,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         viewModel.wasBinFound.observe(viewLifecycleOwner) {hasBinBeenFound ->
             if (!hasBinBeenFound){
                 progressDialog.dismiss()
-                Toast.makeText(requireContext(), "Selected Bin Has not been found!", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.bin_not_found), Toast.LENGTH_LONG).show()
             }
         }
 

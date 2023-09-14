@@ -22,6 +22,12 @@ class ProductsInBinAdapter(private val listener: ProductsInBinItemOnClickListene
         return productInBinViewHolder(view, listener)
     }
 
+//    fun clear() {
+//        val size = data.size
+//        data = listOf()
+//        notifyItemRangeRemoved(0, size)
+//    }
+
     override fun getItemCount(): Int {
         return data.size
     }

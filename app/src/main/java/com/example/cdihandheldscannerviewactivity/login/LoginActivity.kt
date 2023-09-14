@@ -28,6 +28,7 @@ import com.example.cdihandheldscannerviewactivity.Network.ScannerAPI
 import com.example.cdihandheldscannerviewactivity.Network.User
 import com.example.cdihandheldscannerviewactivity.Network.requestUser
 import com.example.cdihandheldscannerviewactivity.R
+import com.example.cdihandheldscannerviewactivity.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
 import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
@@ -52,7 +53,6 @@ class loginActivity : AppCompatActivity() {
     private var hasAppBeenOpened: Boolean = false
 
     // TODO (5) Se tiene que crear un tipo de mini bases de datos en la app (Con SQLITE o algo asi) para guardar el COMPANY y, possiblemente, el sign in info (esta temptativo porque no veo por que se tenga que tener el sign in info por ahora)
-    // TODO - Despues, cojer un tiempo para manejar los errores de network
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView<ActivityLoginBinding>(this,
@@ -64,7 +64,6 @@ class loginActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         initSpinner()
         initObservers()
-
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkRequest = NetworkRequest.Builder().build()
         networkCallback = object : NetworkCallback() {
@@ -89,14 +88,8 @@ class loginActivity : AppCompatActivity() {
                 Toast.makeText(this@loginActivity, resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
             }
         }
-
         // Register
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
-
-
-
-
-
     }
 
     override fun onDestroy() {
@@ -236,12 +229,12 @@ class loginActivity : AppCompatActivity() {
                             if (response.body()?.response?.isSignedIn == true) {
                                 Toast.makeText(
                                     this@loginActivity,
-                                    "You have been logged in succesfully!",
+                                    getString(R.string.succesfull_login),
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                // This jumps from one Activity to another
                                 progressDialog.dismiss()
-
+                                SharedPreferencesUtils.storeLoginInfoInSharedPref(user.userName, selectedCompanyID, this@loginActivity)
+                                // This jumps from one Activity to another
                                 val intent = Intent(this@loginActivity, MainActivity::class.java)
                                 startActivity(intent)
                                 finish()
@@ -249,7 +242,7 @@ class loginActivity : AppCompatActivity() {
                                 progressDialog.dismiss()
                                 Toast.makeText(
                                     this@loginActivity,
-                                    "Your credentials are wrong, try again!",
+                                    getString(R.string.login_declined),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -269,7 +262,7 @@ class loginActivity : AppCompatActivity() {
                     })
             } else {
                 progressDialog.dismiss()
-                Toast.makeText(this, "Warehouse not chosen", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.company_not_chosen), Toast.LENGTH_SHORT).show()
             }
 
         }

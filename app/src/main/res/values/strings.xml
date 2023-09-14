@@ -16,5 +16,9 @@
     <string name="no_internet_connection">Your device is not connected to the internet</string>
     <string name="internet_restored">Internet Connectivity restored</string>
     <string name="internet_lost">Internet Connectivity lost</string>
+    <string name="succesfull_login">You have been logged in succesfully!</string>
+    <string name="login_declined">Your credentials are wrong, try again!</string>
+    <string name="company_not_chosen">Company not chosen</string>
+    <string name="bin_not_found">Selected Bin Has not been found!</string>
 
 </resources>
