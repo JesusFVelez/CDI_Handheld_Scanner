@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -33,6 +32,7 @@ import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductInB
 
 class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
+    // Declare UI elements and ViewModel
     private lateinit var binding: FragmentProductInBinBinding
     private lateinit var warehouseSpinner: Spinner
     private lateinit var binNumberEditText: EditText
@@ -42,6 +42,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     private lateinit var adapter : ProductsInBinAdapter
     private lateinit var progressDialog: Dialog
 
+    // Network-related variables
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var networkCallback : ConnectivityManager.NetworkCallback
     private lateinit var networkRequest: NetworkRequest
@@ -58,19 +59,27 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Initialize data binding and inflate the layout
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_in_bin, container, false)
 //        viewModel = ViewModelProvider(this)[ProductsInBinViewModel::class.java]
         // Using the LiveData with the UI is not working so I commented it
 //        binding.productsInBinViewModel = viewModel
 //        binding.lifecycleOwner = this
+
+        // Initialize UI elements, Spinner, and RecyclerView adapter
         initUIElements()
         initSpinner()
         adapter = ProductsInBinAdapter(this)
         binding.productsInBinList.adapter = adapter
+
+        // Initialize LiveData observers
         initObservers()
+
+        // Initialize network-related components
         connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
         networkRequest = NetworkRequest.Builder().build()
         networkCallback = object : ConnectivityManager.NetworkCallback() {
+            // Handle network availability
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasPageJustStarted)
@@ -85,7 +94,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
                     }
                 }
             }
-
+            // Handle network loss
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasPageJustStarted = true
@@ -93,12 +102,15 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             }
         }
 
+
+        // Retrieve company ID from shared preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
         viewModel.setCompanyIDFromSharedPref(companyID)
 
         return binding.root
     }
 
+    // Initialize UI elements
     private fun initUIElements(){
         warehouseSpinner = binding.warehouseSpinner
         binNumberEditText = binding.binNumberEditText
@@ -121,6 +133,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
     }
 
+
+    // Handle onResume lifecycle event
     override fun onResume() {
         super.onResume()
         val bundle = arguments
@@ -138,6 +152,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
     }
 
+
+    // Handle onPause lifecycle event
     override fun onPause() {
         super.onPause()
 
@@ -146,6 +162,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             connectivityManager.unregisterNetworkCallback(networkCallback)
         }
     }
+
+    // Initialize LiveData observers
     private fun initObservers(){
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
@@ -184,6 +202,9 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
 
     }
+
+
+    // Populate Spinner with warehouse data
     private fun fillSpinnerWithWarehouses( newWarehouseList : List<WarehouseInfo>){
         val warehouses = mutableListOf<String>()
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, warehouses)
@@ -194,6 +215,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
         adapter.notifyDataSetChanged()
     }
+
+    // Initialize Spinner behavior
     @SuppressLint("ClickableViewAccessibility")
     private fun initSpinner(){
 
@@ -237,6 +260,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
     }
 
+
+    // Handle item click events in the RecyclerView
     override fun onItemClickListener(view: View, position: Int) {
         viewModel.setChosenAdapterPosition(position)
         view.findNavController().navigate(R.id.action_productToBinFragment_to_productDetailsFragment)

@@ -8,13 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.cdihandheldscannerviewactivity.Network.ProductInBinInfo
 import com.example.cdihandheldscannerviewactivity.Network.ScannerAPI
 import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
-import com.example.cdihandheldscannerviewactivity.Storage.SharedPreferencesUtils
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception
-
+// ViewModel class for managing Products in a Bin
 class ProductsInBinViewModel: ViewModel() {
 
+    // LiveData and MutableLiveData for various UI states and data
     private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
@@ -23,26 +23,21 @@ class ProductsInBinViewModel: ViewModel() {
     val wasBinFound : LiveData<Boolean>
         get() = _wasBinFound
 
-
     private val _listOfProducts = MutableLiveData<List<ProductInBinInfo>>()
     val listOfProducts : LiveData<List<ProductInBinInfo>>
         get() = _listOfProducts
-
 
     private val _isSpinnerArrowUp =  MutableLiveData<Boolean>()
     val isSpinnerArrowUp : LiveData<Boolean>
         get() = _isSpinnerArrowUp
 
-
     private val _listOfWarehouses = MutableLiveData<List<WarehouseInfo>>()
     val listOfWarehouses : LiveData<List<WarehouseInfo>>
         get() = _listOfWarehouses
 
-
     private val _currentWarehouseNumber = MutableLiveData<Int>()
     val currentWarehouseNumber: LiveData<Int>
         get() = _currentWarehouseNumber
-
 
     private val _numberOfItemsInBin = MutableLiveData<Int>()
     val numberOfItemsInBin : LiveData<Int>
@@ -52,12 +47,11 @@ class ProductsInBinViewModel: ViewModel() {
     val currentlyChosenAdapterPosition: LiveData<Int>
         get() = _currentlyChosenAdapterPosition
 
-
     private val _companyIDOfUser = MutableLiveData<String>()
     val companyIDOfUser : LiveData<String>
         get() = _companyIDOfUser
 
-
+    // Function to set the currently chosen adapter position
     fun setChosenAdapterPosition(position : Int){
         if (position >= 0)
             _currentlyChosenAdapterPosition.value = position
@@ -65,6 +59,7 @@ class ProductsInBinViewModel: ViewModel() {
             _currentlyChosenAdapterPosition.value = 0
     }
 
+    // Initialization block
     init {
         getWarehousesFromBackendForSpinner()
         _isSpinnerArrowUp.value = false
@@ -73,19 +68,23 @@ class ProductsInBinViewModel: ViewModel() {
         _currentlyChosenAdapterPosition.value = 0
     }
 
-
+    // Function called when ViewModel is cleared
     override fun onCleared() {
         super.onCleared()
     }
 
+    // Function to clear the list of products
     fun clearListOfProducts(){
         _listOfProducts.value = listOf()
         _numberOfItemsInBin.value = 0
     }
+
+    // Function to set the state of the spinner arrow
     fun setIsSpinnerArrowUp(isSpinnerUp: Boolean){
         _isSpinnerArrowUp.value = isSpinnerUp
     }
 
+    // Function to set the current warehouse number based on the selected warehouse name
     private fun setWarehouseNumber(selectedWarehouseInSpinner : String){
         for(aWarehouse in listOfWarehouses.value!!){
             if (selectedWarehouseInSpinner == aWarehouse.warehouseName){
@@ -94,20 +93,22 @@ class ProductsInBinViewModel: ViewModel() {
         }
     }
 
+    // Function to set the company ID from shared preferences
     fun setCompanyIDFromSharedPref(companyID: String){
         _companyIDOfUser.value = companyID
     }
 
-    // Note: I am currently hardcoding the companyCode due to time constraints but now I'm starting to see that it might be necessary to make a database
+    // Function to fetch product information from the backend
     fun getProductInfoFromBackend(warehouseName : String, binNumber : String ){
         setWarehouseNumber(warehouseName)
 
-
-        // This exceptionHandler variable handles the error that happens whenever the request fails
+        // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             Log.i("Products In Bin View Model Product Info API Call" , "Error -> ${exception.message}")
         }
+
+        // API call to get product information
         try{
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.retrofitService.getAllItemsInBin(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, binNumber )
@@ -123,11 +124,14 @@ class ProductsInBinViewModel: ViewModel() {
         }
     }
 
+    // Function to fetch the list of warehouses from the backend for the spinner
     fun getWarehousesFromBackendForSpinner(){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             Log.i("get Warehouses API Call" , "Error -> ${exception.message}")
         }
+
+        // API call to get list of warehouses
         viewModelScope.launch (exceptionHandler) {
             try{
                 val response = ScannerAPI.retrofitService.getWarehousesAvailable()
@@ -139,6 +143,4 @@ class ProductsInBinViewModel: ViewModel() {
             }
         }
     }
-
-
 }

@@ -35,35 +35,66 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
+// This class represents the login activity for the application. It extends the AppCompatActivity class
 class loginActivity : AppCompatActivity() {
 
+    // Declare member variables.
+    // These will be initialized later in the code.
+    // ViewModel instance for the login activity
     private lateinit var viewModel: LoginViewModel
+    // Button for login
     private lateinit var loginButton: Button
+    // EditTexts for username and password inputs
     private lateinit var userNameEditTex: TextInputEditText
     private lateinit var passwordEditText: TextInputEditText
+    // Spinner for company selection
     private lateinit var companySpinner: Spinner
+    // Root view of the layout
     private lateinit var rootView: View
+    // Dialog for showing progress
     private lateinit var progressDialog: Dialog
+    // Binding object for the login activity
     private lateinit var binding: ActivityLoginBinding
 
+    // Object for managing network connectivity
     private lateinit var connectivityManager: ConnectivityManager
+    // Callback for network connectivity changes
     private lateinit var networkCallback : NetworkCallback
 
+    // Boolean to keep track of whether the app has been opened before
     private var hasAppBeenOpened: Boolean = false
 
-    // TODO (5) Se tiene que crear un tipo de mini bases de datos en la app (Con SQLITE o algo asi) para guardar el COMPANY y, possiblemente, el sign in info (esta temptativo porque no veo por que se tenga que tener el sign in info por ahora)
+    // This method is called when the activity is being created. It initializes the UI elements, ViewModel, Spinner, Observers, and Network Connection Handler.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView<ActivityLoginBinding>(this,
             R.layout.activity_login
         )
         initUIElements()
-        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-        binding.loginViewModel = viewModel
-        binding.lifecycleOwner = this
+        initViewModel()
         initSpinner()
         initObservers()
+        initNetworkConnectionHandler()
+    }
+
+    // This method is called when the activity is being destroyed. It unregisters the network callback.
+    override fun onDestroy() {
+        super.onDestroy()
+        // Unregister
+        connectivityManager.unregisterNetworkCallback(networkCallback);
+    }
+
+    // This method initializes the ViewModel and links it to the XML layout file.
+    private fun initViewModel(){
+        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
+        // This links the view model with the XML layout file
+        binding.loginViewModel = viewModel
+        binding.lifecycleOwner = this
+    }
+
+    // This method initializes the network connection handler. It sets up a network request and a callback for handling changes in network connectivity.
+    private fun initNetworkConnectionHandler(){
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkRequest = NetworkRequest.Builder().build()
         networkCallback = object : NetworkCallback() {
@@ -88,17 +119,11 @@ class loginActivity : AppCompatActivity() {
                 Toast.makeText(this@loginActivity, resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
             }
         }
-        // Register
+        // Register the Network Connection Handler
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // Unregister
-        connectivityManager.unregisterNetworkCallback(networkCallback);
-    }
-
-
+    // This method initializes the UI elements. It sets up the login button, EditText fields, Spinner, root view, and progress dialog.
     private fun initUIElements(){
         loginButton = binding.loginButton
         loginButton.setOnClickListener{
@@ -115,7 +140,7 @@ class loginActivity : AppCompatActivity() {
         }
     }
 
-
+    // This method initializes the observers for the ViewModel. It observes changes in the list of companies and the success status of the last API call.
     private fun initObservers(){
         viewModel.listOfCompanies.observe(this) { newCompaniesList ->
             progressDialog.dismiss()
@@ -129,33 +154,38 @@ class loginActivity : AppCompatActivity() {
                 Log.i("API Call", "API Call did not work")
             }
         }
-
     }
 
+    // This method populates the Spinner with a list of companies. It creates an ArrayAdapter with the company names and sets it as the adapter for the Spinner.
     private fun fillSpinnerWithCompanies(listOfCompanies: List<Company>) {
-            val companies = mutableListOf<String>()
-            val adapter =
-                ArrayAdapter(this@loginActivity, android.R.layout.simple_spinner_item, companies)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            companySpinner.adapter = adapter
-            for (aCompany in listOfCompanies) {
-                companies.add(aCompany.companyName)
-            }
-            adapter.notifyDataSetChanged()
-
+        // Create a mutable list of company names
+        val companies = mutableListOf<String>()
+        // Create an ArrayAdapter with the list of company names
+        val adapter =
+            ArrayAdapter(this@loginActivity, android.R.layout.simple_spinner_item, companies)
+        // Set the layout for displaying the list of choices in the Spinner
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Set the ArrayAdapter as the Spinner's adapter
+        companySpinner.adapter = adapter
+        // Add the company names to the list
+        for (aCompany in listOfCompanies) {
+            companies.add(aCompany.companyName)
+        }
+        // Notify the adapter that the data set has changed. This causes the Spinner to re-render its view.
+        adapter.notifyDataSetChanged()
     }
 
-
+    // This method initializes the Spinner. It sets up listeners for various events related to the Spinner.
     @SuppressLint("ClickableViewAccessibility")
     private fun initSpinner(){
-
+        // Create a global layout listener. This is used to reset the Spinner's background when it closes.
         val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
             // Reset background when spinner closes
             companySpinner.setBackgroundResource(R.drawable.drop_down_background)
             viewModel.isSpinnerArrowUp = false
         }
 
-        // set what happens whenever the Spinner is clicked
+        // Set a touch listener for the Spinner. This is used to change the Spinner's background when it is clicked.
         companySpinner.setOnTouchListener{view, event ->
             when(event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -167,7 +197,7 @@ class loginActivity : AppCompatActivity() {
             false
         }
 
-        // set what happens whenever an item is clicked in the spinner
+        // Set an item selected listener for the Spinner. This is used to reset the Spinner's background when an item is selected.
         companySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 companySpinner.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
@@ -178,7 +208,7 @@ class loginActivity : AppCompatActivity() {
             }
         }
 
-        // Reset the background when the user touches outside of the Spinner
+        // Set a touch listener for the root view. This is used to reset the Spinner's background when the user touches outside of the Spinner.
         rootView.setOnTouchListener { _, _ ->
             if (viewModel.isSpinnerArrowUp) {
                 companySpinner.setBackgroundResource(R.drawable.drop_down_background)
@@ -189,7 +219,7 @@ class loginActivity : AppCompatActivity() {
         }
     }
 
-
+    // This method is called when the login button is clicked. It checks the network connection and the selected company, and then attempts to log in.
     fun loginButtonClickEvent(view: View?) {
 
         println("Button Clicked")
@@ -247,8 +277,7 @@ class loginActivity : AppCompatActivity() {
                                 ).show()
                             }
                         }
-
-                        override fun onFailure(call: Call<ResponseWrapperUser>, t: Throwable) {
+                            override fun onFailure(call: Call<ResponseWrapperUser>, t: Throwable) {
                             progressDialog.dismiss()
                             Toast.makeText(
                                 this@loginActivity,

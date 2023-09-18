@@ -1,4 +1,5 @@
 package com.example.cdihandheldscannerviewactivity.Network
+
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
@@ -9,52 +10,44 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
+// Base URL for the API calls
 private const val BASE_URL = "http://76.72.245.174:8811/HandHeldScannerProject/rest/HandHeldScannerProjectService/"
 
-
+// Moshi instance for converting JSON to Kotlin objects
 private val moshi = Moshi.Builder()
-                         .add(KotlinJsonAdapterFactory())
-                         .build()
-
-private val retrofit = Retrofit.Builder()
-//    .addConverterFactory(ScalarsConverterFactory.create()) -> this allows for the response to be converted to a string
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .baseUrl(BASE_URL)
+    .add(KotlinJsonAdapterFactory())
     .build()
 
+// Retrofit instance for making API calls
+private val retrofit = Retrofit.Builder()
+    .addConverterFactory(MoshiConverterFactory.create(moshi)) // Use Moshi for JSON conversion
+    .baseUrl(BASE_URL) // Set the base URL for API calls
+    .build()
+
+// Interface defining the API endpoints
 interface Services{
+    // Endpoint for getting companies
     @GET("getCompanies")
-    suspend fun getCompanies():
-            ResponseWrapper
+    suspend fun getCompanies(): ResponseWrapper
 
+    // Endpoint for checking if a user is logged in
     @POST("login")
-    fun isLogedIn(@Body user: requestUser):
-            Call<ResponseWrapperUser>
+    fun isLogedIn(@Body user: requestUser): Call<ResponseWrapperUser>
 
+    // Endpoint for getting available warehouses
     @GET("getWarehouses")
-    suspend fun getWarehousesAvailable():
-            ResponseWrapperWarehouse
+    suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
 
-
-    // The @Query annotations here are to specifiy Query Parameters for the API Call
+    // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
     @GET("getItemsInBin")
-    suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String):
-            ResponseWrapperProductsInBin
-
+    suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
 }
 
+// Data class for the user request
+data class requestUser(val request: User)
+data class User(val userName: String, val password: String, val company: String)
 
-data class requestUser(
-    val request: User
-)
-data class User(
-    val userName: String,
-    val password: String,
-    val company: String
-)
-
-
-
+// Object for accessing the API services
 object ScannerAPI {
     val retrofitService : Services by lazy{
         retrofit.create(Services::class.java)

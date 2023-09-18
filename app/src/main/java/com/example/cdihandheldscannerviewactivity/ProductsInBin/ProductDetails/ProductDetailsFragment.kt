@@ -13,9 +13,10 @@ import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinVie
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductDetailsBinding
 
-
+// Define the ProductDetailsFragment class, which is a subclass of Fragment
 class ProductDetailsFragment : Fragment() {
 
+    // Declare ViewModel and UI elements
     private val viewModel: ProductsInBinViewModel by activityViewModels()
     private lateinit var binding: FragmentProductDetailsBinding
     private lateinit var binLocationTextView: TextView
@@ -27,36 +28,45 @@ class ProductDetailsFragment : Fragment() {
     private lateinit var QtyUOMValueTextView: TextView
     private lateinit var itemNametextView: TextView
     private lateinit var itemNumberTextView: TextView
+
+    // onCreate lifecycle method
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
-
-
+    // onCreateView lifecycle method
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-    binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_details, container, false)
-    initUIElements()
-    changeNamesOfDetailViews()
-    fillAllDetailsWithInfo()
-    fillUpperDivInfo()
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_details, container, false)
 
+        // Initialize UI elements
+        initUIElements()
 
+        // Change the names of detail views
+        changeNamesOfDetailViews()
 
-    return binding.root
+        // Fill all details with information
+        fillAllDetailsWithInfo()
+
+        // Fill the upper division with information
+        fillUpperDivInfo()
+
+        return binding.root
     }
 
-
+    // Function to fill the upper division with information
     private fun fillUpperDivInfo(){
         val currentItem = viewModel.listOfProducts.value?.get(viewModel.currentlyChosenAdapterPosition.value!!)
         itemNametextView.text = "${currentItem?.itemName} - ${currentItem?.itemDetails}"
         itemNumberTextView.text = currentItem?.itemNumber
     }
+
+    // Function to initialize UI elements
     private fun initUIElements(){
+        // Initialize TextViews and Views by binding them to the layout
         binLocationTextView = binding.binLocation
         QtyonHandValueTextView = binding.qtyOnHandAndInPickingView.findViewById(R.id.detailContent)
         QtyInPickingValueTextView = binding.qtyOnHandAndInPickingView.findViewById(R.id.otherDetailContent)
@@ -68,11 +78,9 @@ class ProductDetailsFragment : Fragment() {
         itemNametextView = binding.itemName
     }
 
-
-
-
-
+    // Function to change the names of detail views
     private fun changeNamesOfDetailViews(){
+        // Change the text of TextViews to display appropriate detail names
         binding.qtyOnHandAndInPickingView.findViewById<TextView>(R.id.detailName).text = "Quantity on Hand:"
         binding.qtyOnHandAndInPickingView.findViewById<TextView>(R.id.otherDetailName).text = "Quantity in Picking:"
         ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailName).text = "Expiration Date:"
@@ -80,22 +88,28 @@ class ProductDetailsFragment : Fragment() {
         binding.UOMAndUOMQtyView.findViewById<TextView>(R.id.otherDetailName).text = "Quantity in UOM:"
     }
 
+    // Function to fill all details with information
     private fun fillAllDetailsWithInfo(){
         val currentItem = viewModel.listOfProducts.value?.get(viewModel.currentlyChosenAdapterPosition.value!!)
+
+        // Format and set the bin location
         val formattedString = currentItem?.binLocation?.replace(Regex("(\\d+)([a-z])(\\d+)"), "\$1-\$2-\$3")
         binLocationTextView.text = formattedString
+
+        // Set other product details
         BarCodeTextView.text = currentItem?.barCode.toString()
         QtyonHandValueTextView.text = currentItem?.quantityOnHand.toString()
         QtyInPickingValueTextView.text = currentItem?.quantityInPicking.toString()
+
         // TODO move the logic of assigning the Expiration Date of a product to be Not Available if the exp date is null, to the ViewModel to comply with the separation of concerns principle
         if (currentItem?.expirationDate == null){
             ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = "Not available"
         }
         else
             ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.expirationDate
+
+        // Set Unit of Measurement and Quantity in UOM
         UOMValueTextView.text = currentItem?.unitOfMeasurement.toString()
         QtyUOMValueTextView.text = currentItem?.quantityInUOM.toString()
     }
-
-
 }

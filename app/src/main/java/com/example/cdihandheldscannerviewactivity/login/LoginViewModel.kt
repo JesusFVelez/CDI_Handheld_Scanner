@@ -13,6 +13,8 @@ import java.lang.Exception
 
 class LoginViewModel:ViewModel() {
 
+    // These are LiveData objects that hold the list of companies and the status of the last API call
+    // LiveData allows data to be observed for changes, which is useful for updating the UI in response to changes
     private val _listOfCompanies = MutableLiveData<List<Company>>()
     val listOfCompanies : LiveData<List<Company>>
         get() = _listOfCompanies
@@ -21,23 +23,27 @@ class LoginViewModel:ViewModel() {
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
 
+    // This variable indicates whether the arrow of the spinner is up or not
+    var isSpinnerArrowUp: Boolean = false //TODO consider making this variable a LiveData
 
-    // TODO Consider if maybe placing this value as LiveData
-    var isSpinnerArrowUp: Boolean = false
+    // This initializer block is executed when the ViewModel is created. It calls the method to fetch companies from the backend
     init {
         getCompaniesFromBackendForSpinner()
     }
 
+    // This method is called when the ViewModel is about to be destroyed. It's typically used to clean up any resources that the ViewModel is using
     override fun onCleared() {
         super.onCleared()
 
     }
+
+    // This method fetches the list of companies from the backend using a coroutine. If an error occurs during the API call, it logs the error and updates the LiveData object to indicate that the API call was unsuccessful
     fun getCompaniesFromBackendForSpinner() {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             Log.i("get Warehouses API Call" , "Error -> ${exception.message}")
         }
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             try{
                 var response = ScannerAPI.retrofitService.getCompanies()
                 _listOfCompanies.value = response.response.companies.companies
@@ -52,6 +58,7 @@ class LoginViewModel:ViewModel() {
     }
 
 }
+
 
 //              How to call an API without a ViewModel
 //        ScannerAPI.retrofitService.getCompanies().enqueue(object : Callback<ResponseWrapper> {

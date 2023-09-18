@@ -1,4 +1,5 @@
 package com.example.cdihandheldscannerviewactivity
+
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
@@ -15,29 +16,32 @@ import androidx.navigation.ui.NavigationUI
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
 
-
+// Main activity class
 class MainActivity : AppCompatActivity() {
 
-//TODO(1) falta añadirle animations a cuando se cambia de fragment
+    // Variables for binding, connectivity manager, network callback, and flag indicating if page has just started
+    private lateinit var binding: ActivityMainBinding
+    lateinit var connectivityManager: ConnectivityManager
+    lateinit var networkCallback : ConnectivityManager.NetworkCallback
+    private var hasPageJustStarted: Boolean = false
 
-    // TODO(2) falta anñadirle el Burger Menu al home screen for visual purposes (despues se le dara funcionalidad un poco mas pensada
-
-private lateinit var binding: ActivityMainBinding
-lateinit var connectivityManager: ConnectivityManager
-lateinit var networkCallback : ConnectivityManager.NetworkCallback
-private var hasPageJustStarted: Boolean = false
-
+    // Method called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Set the content view to the main activity layout
         @Suppress("UNUSED_VARIABLE")
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
+        // Set the toolbar
         val toolbar = findViewById<Toolbar>(R.id.custom_toolbar)
         setSupportActionBar(toolbar)
 
+        // Set up the navigation controller
         val navController = this.findNavController(R.id.my_nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
 
+        // Handle back press to show a logout confirmation dialog
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 if (this@MainActivity.findNavController(R.id.my_nav_host_fragment).currentDestination?.id == R.id.homeScreenFragment) {
@@ -56,9 +60,11 @@ private var hasPageJustStarted: Boolean = false
             }
         })
 
-
+        // Initialize the connectivity manager and network request
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkRequest = NetworkRequest.Builder().build()
+
+        // Initialize the network callback to handle connection and disconnection events
         networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 // Handle connection
@@ -75,17 +81,18 @@ private var hasPageJustStarted: Boolean = false
             }
         }
 
-        // Register
+        // Register the network callback
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
     }
 
-
+    // Method called when the activity is destroyed
     override fun onDestroy() {
         super.onDestroy()
-        // Unregister
+        // Unregister the network callback
         connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
+    // Method to handle navigation up action
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.my_nav_host_fragment)
         return navController.navigateUp()
