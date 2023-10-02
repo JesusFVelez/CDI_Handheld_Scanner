@@ -8,10 +8,15 @@
         android:id="@+id/homeScreenFragment"
         android:name="com.example.cdihandheldscannerviewactivity.HomeScreen.HomeScreenFragment"
         android:label="Home Screen"
-        tools:layout="@layout/home_screen_fragment" >
+        tools:layout="@layout/fragment_home_screen" >
         <action
             android:id="@+id/action_homeScreenFragment_to_productToBinFragment"
             app:destination="@id/productToBinFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeScreenFragment_to_searchBinsWithProductFragment"
+            app:destination="@id/searchBinsWithProductFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
@@ -30,4 +35,9 @@
         android:id="@+id/productDetailsFragment"
         android:name="com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductDetails.ProductDetailsFragment"
         android:label="ProductDetailsFragment" />
+    <fragment
+        android:id="@+id/searchBinsWithProductFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.BinsWIthProduct.SearchBinsWithProductFragment"
+        android:label="fragment_search_for_bins_with_product"
+        tools:layout="@layout/fragment_search_for_bins_with_product" />
 </navigation>

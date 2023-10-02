@@ -53,7 +53,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         super.onCreate(savedInstanceState)
     }
 
-    // TODO - place all variables that are binded to UI elements into an init UI elements function and call it in the onCreateView
     // TODO - Anñadir funcionalidad que haga que el formato del editText del Bin Number siempre tenga los guiones entremedio (ver commentarios en Figma)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,32 +74,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         // Initialize LiveData observers
         initObservers()
 
-        // Initialize network-related components
-        connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-        networkRequest = NetworkRequest.Builder().build()
-        networkCallback = object : ConnectivityManager.NetworkCallback() {
-            // Handle network availability
-            override fun onAvailable(network: Network) {
-                // Handle connection
-                if (hasPageJustStarted)
-                    Toast.makeText(requireContext(), resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
-                else
-                    hasPageJustStarted = true
-
-                if(warehouseSpinner.selectedItem == null) {
-                    activity?.runOnUiThread {
-                        progressDialog.show()
-                        viewModel.getWarehousesFromBackendForSpinner()
-                    }
-                }
-            }
-            // Handle network loss
-            override fun onLost(network: Network) {
-                // Handle disconnection
-                hasPageJustStarted = true
-                Toast.makeText(requireContext(), resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
-            }
-        }
+        initNetworkRelatedComponents()
 
 
         // Retrieve company ID from shared preferences
@@ -129,6 +103,35 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically(): Boolean {
                 return false
+            }
+        }
+    }
+
+    private fun initNetworkRelatedComponents(){
+        // Initialize network-related components
+        connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+        networkRequest = NetworkRequest.Builder().build()
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            // Handle network availability
+            override fun onAvailable(network: Network) {
+                // Handle connection
+                if (hasPageJustStarted)
+                    Toast.makeText(requireContext(), resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
+                else
+                    hasPageJustStarted = true
+
+                if(warehouseSpinner.selectedItem == null) {
+                    activity?.runOnUiThread {
+                        progressDialog.show()
+                        viewModel.getWarehousesFromBackendForSpinner()
+                    }
+                }
+            }
+            // Handle network loss
+            override fun onLost(network: Network) {
+                // Handle disconnection
+                hasPageJustStarted = true
+                Toast.makeText(requireContext(), resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
             }
         }
     }
