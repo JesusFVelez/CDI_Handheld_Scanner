@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Storage.BundleUtils
@@ -53,17 +55,15 @@ class SearchBinsWithProductFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_for_bins_with_product, container, false)
-        initUIElements()
-        initObservers()
-        initSpinner()
-        initNetworkRelatedComponents()
-
 
         // Gets the company id from the Shared Preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
         viewModel.setCompanyIDFromSharedPref(companyID)
 
-
+        initUIElements()
+        initObservers()
+        initSpinner()
+        initNetworkRelatedComponents()
 
         return binding.root
     }
@@ -100,8 +100,9 @@ class SearchBinsWithProductFragment : Fragment() {
         itemNumberEditText = binding.itemNumberEditText
         searcItemInBinButton = binding.searchBinButton
         searcItemInBinButton.setOnClickListener{
-            //TODO("Place Logic here for what happens when the user clicks on the Search Button")
-
+            viewModel.getItemDetailsForBinSearchFromBackend(warehouseSpinner.selectedItem.toString(), itemNumberEditText.text.toString())
+            viewModel.getBinsThatHaveProductFromBackend(warehouseSpinner.selectedItem.toString(), itemNumberEditText.text.toString())
+            progressDialog.show()
         }
         progressDialog = Dialog(requireContext()).apply{
             setContentView(R.layout.dialog_loading)
@@ -192,6 +193,24 @@ class SearchBinsWithProductFragment : Fragment() {
         viewModel.listOfWarehouses.observe(viewLifecycleOwner) {newWarehousesList ->
             progressDialog.dismiss()
             fillSpinnerWithWarehouses(newWarehousesList)
+        }
+
+
+        viewModel.haveBothAPIBeenCalled.observe(viewLifecycleOwner){haveBothAPIsBeenCalled ->
+            if(viewModel.haveBothAPIBeenCalled.value!!){
+                progressDialog.dismiss()
+                val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("SearchBinsWithProductFragment")
+                findNavController().navigate(R.id.action_searchBinsWithProductFragment_to_binsThatHaveProductFragment, bundle)
+            }
+
+        }
+        viewModel.listOfBinsThatHaveProduct.observe(viewLifecycleOwner){newListOfBins ->
+
+
+        }
+
+        viewModel.itemDetails.observe(viewLifecycleOwner){ newItemDetails ->
+
         }
 
 

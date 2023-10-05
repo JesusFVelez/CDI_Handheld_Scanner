@@ -39,5 +39,16 @@
         android:id="@+id/searchBinsWithProductFragment"
         android:name="com.example.cdihandheldscannerviewactivity.BinsWIthProduct.SearchBinsWithProductFragment"
         android:label="fragment_search_for_bins_with_product"
-        tools:layout="@layout/fragment_search_for_bins_with_product" />
+        tools:layout="@layout/fragment_search_for_bins_with_product" >
+        <action
+            android:id="@+id/action_searchBinsWithProductFragment_to_binsThatHaveProductFragment"
+            app:destination="@id/binsThatHaveProductFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/binsThatHaveProductFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"
+        android:label="fragment_bins_that_have_product"
+        tools:layout="@layout/fragment_bins_that_have_product" />
 </navigation>

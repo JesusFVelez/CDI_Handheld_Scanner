@@ -66,6 +66,7 @@ class ProductsInBinViewModel: ViewModel() {
         _currentWarehouseNumber.value = 0
         _numberOfItemsInBin.value = 0
         _currentlyChosenAdapterPosition.value = 0
+
     }
 
     // Function called when ViewModel is cleared
@@ -78,6 +79,8 @@ class ProductsInBinViewModel: ViewModel() {
         _listOfProducts.value = listOf()
         _numberOfItemsInBin.value = 0
     }
+
+
 
     // Function to set the state of the spinner arrow
     fun setIsSpinnerArrowUp(isSpinnerUp: Boolean){
