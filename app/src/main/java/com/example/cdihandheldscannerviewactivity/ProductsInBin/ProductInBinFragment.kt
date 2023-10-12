@@ -6,11 +6,13 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -53,7 +55,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         super.onCreate(savedInstanceState)
     }
 
-    // TODO - place all variables that are binded to UI elements into an init UI elements function and call it in the onCreateView
     // TODO - Anñadir funcionalidad que haga que el formato del editText del Bin Number siempre tenga los guiones entremedio (ver commentarios en Figma)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +76,50 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         // Initialize LiveData observers
         initObservers()
 
+        initNetworkRelatedComponents()
+
+
+        // Retrieve company ID from shared preferences
+        val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        viewModel.setCompanyIDFromSharedPref(companyID)
+
+        return binding.root
+    }
+
+    // Initialize UI elements
+    private fun initUIElements(){
+        warehouseSpinner = binding.warehouseSpinner
+        binNumberEditText = binding.binNumberEditText
+        binNumberEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Handle the Enter key press here
+                progressDialog.show()
+                viewModel.getProductInfoFromBackend(warehouseSpinner.selectedItem.toString(),binNumberEditText.text.toString())
+                true
+            } else {
+                false
+            }
+        }
+        searchButton = binding.searchBinButton
+        searchButton.setOnClickListener{
+            // here goes the API Call for the filling of the recycler view
+            progressDialog.show()
+            viewModel.getProductInfoFromBackend(warehouseSpinner.selectedItem.toString(),binNumberEditText.text.toString())
+        }
+        numberOfItemsTextView = binding.totalProductsTextView
+        progressDialog = Dialog(requireContext()).apply{
+            setContentView(R.layout.dialog_loading)
+            setCancelable(false)
+            show()
+        }
+        binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
+    }
+
+    private fun initNetworkRelatedComponents(){
         // Initialize network-related components
         connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
         networkRequest = NetworkRequest.Builder().build()
@@ -99,36 +144,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
                 // Handle disconnection
                 hasPageJustStarted = true
                 Toast.makeText(requireContext(), resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
-            }
-        }
-
-
-        // Retrieve company ID from shared preferences
-        val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-        viewModel.setCompanyIDFromSharedPref(companyID)
-
-        return binding.root
-    }
-
-    // Initialize UI elements
-    private fun initUIElements(){
-        warehouseSpinner = binding.warehouseSpinner
-        binNumberEditText = binding.binNumberEditText
-        searchButton = binding.searchBinButton
-        searchButton.setOnClickListener{
-            // here goes the API Call for the filling of the recycler view
-            progressDialog.show()
-            viewModel.getProductInfoFromBackend(warehouseSpinner.selectedItem.toString(),binNumberEditText.text.toString())
-        }
-        numberOfItemsTextView = binding.totalProductsTextView
-        progressDialog = Dialog(requireContext()).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-            show()
-        }
-        binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
-            override fun canScrollVertically(): Boolean {
-                return false
             }
         }
     }

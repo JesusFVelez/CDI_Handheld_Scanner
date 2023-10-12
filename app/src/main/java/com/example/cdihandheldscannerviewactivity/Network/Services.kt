@@ -11,7 +11,8 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 // Base URL for the API calls
-private const val BASE_URL = "http://76.72.245.174:8811/HandHeldScannerProject/rest/HandHeldScannerProjectService/"
+// 76.72.245.174 IP Publico de CDI
+private const val BASE_URL = "http://10.0.0.43:8811/HandHeldScannerProject/rest/HandHeldScannerProjectService/"
 
 // Moshi instance for converting JSON to Kotlin objects
 private val moshi = Moshi.Builder()
@@ -41,6 +42,15 @@ interface Services{
     // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
     @GET("getItemsInBin")
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
+
+    @GET("getBinsThatHaveItem")
+    suspend fun getAllBinsThatHaveProduct(@Query("companyID") companyID:String, @Query("warehouseNumber") warehouseNumber: Int, @Query("itemNumber") itemNumber:String): ResponseWrapperBinsWithProduct
+
+
+    @GET("getItemDetailsForBinSearch")
+    suspend fun getItemDetailsForBinSearch(@Query("companyID") companyID: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("scannedCode") scannedCode: String) : ResponseWrapperItemDetailsForBinSearch
+
+
 }
 
 // Data class for the user request
