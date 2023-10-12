@@ -18,6 +18,7 @@ import kotlin.Exception
 
 class BinsWithProductViewModel :ViewModel(){
 
+
     // LiveData for getItemDetailsForBinSearch API Call
     private val _itemDetails = MutableLiveData<List<ItemDetailsForBinSearch>>()
     val itemDetails: LiveData<List<ItemDetailsForBinSearch>>
@@ -32,16 +33,6 @@ class BinsWithProductViewModel :ViewModel(){
         get() = _barcodeErrorMessage
 
 
-    private val _hasItemDetailsAPIBeenCalled = MutableLiveData<Boolean>()
-    val hasItemDetailsAPIBeenCalled: LiveData<Boolean>
-        get() = _hasItemDetailsAPIBeenCalled
-
-    private val _hasBinsThatHaveItemAPIBeenCalled = MutableLiveData<Boolean>()
-    val hasBinsThatHaveItemAPIBeenCalled: LiveData<Boolean>
-        get() = _hasBinsThatHaveItemAPIBeenCalled
-
-
-
     // LiveData for getBinsThatHaveItem API Call
 
     private val _listOfBinsThatHaveProduct = MutableLiveData<List<BinInfo>>()
@@ -52,9 +43,6 @@ class BinsWithProductViewModel :ViewModel(){
     val hasBinBeenFoundWithItem: LiveData<Boolean>
         get() = _hasBinBeenFoundWithItem
 
-    private val _haveBothAPIBeenCalled = MutableLiveData<Boolean>()
-    val haveBothAPIBeenCalled: LiveData<Boolean>
-        get() = _haveBothAPIBeenCalled
 
 
 
@@ -84,8 +72,6 @@ class BinsWithProductViewModel :ViewModel(){
         getWarehousesFromBackendForSpinner()
         _isSpinnerArrowUp.value = false
         _currentWarehouseNumber.value = 0
-        _hasBinsThatHaveItemAPIBeenCalled.value = false
-        _hasItemDetailsAPIBeenCalled.value = false
     }
 
     // Function to set the state of the spinner arrow
@@ -119,31 +105,26 @@ class BinsWithProductViewModel :ViewModel(){
         }
     }
 
+
+
     fun setCompanyIDFromSharedPref(companyID: String){
         _companyIDOfUser.value = companyID
     }
-
-
-
 
     fun getItemDetailsForBinSearchFromBackend(warehouseName: String, scannedBarCode: String){
         setWarehouseNumber(warehouseName)
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
-            Log.i("get item details for Bin search API Call" , "Error -> ${exception.message}")
+            Log.i("~get item details for Bin search API Call" , "Error -> ${exception.message}")
         }
         viewModelScope.launch (exceptionHandler){
             try{
                 val response = ScannerAPI.retrofitService.getItemDetailsForBinSearch(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, scannedBarCode)
-                _itemDetails.value = response.response.itemDetailsForBinSearch.itemDetailsForBinSearch
-                _isBarCodeValid.value = response.response.isBarCodeValid
                 _barcodeErrorMessage.value = response.response.barcodeErrorMessage
+                _isBarCodeValid.value = response.response.isBarCodeValid
                 _wasLastAPICallSuccessful.value = true
-                Log.i("get Bins that have item API Call", "Item Details -> ${_itemDetails.value.toString()}")
-                _hasItemDetailsAPIBeenCalled.value = true
-                if(_hasBinsThatHaveItemAPIBeenCalled.value!!){
-                    _haveBothAPIBeenCalled.value = true
-                }
+                _itemDetails.value = response.response.itemDetailsForBinSearch.itemDetailsForBinSearch
+                Log.i("get item details for Bin search API Call", "Item Details -> ${_itemDetails.value.toString()}")
             }catch (e: Exception){
                 _wasLastAPICallSuccessful.value = false
                 Log.i("get item details for Bin search API Call", "Error -> ${e.message}")
@@ -158,18 +139,13 @@ class BinsWithProductViewModel :ViewModel(){
             _wasLastAPICallSuccessful.value = false
             Log.i("get Bins that have item API Call" , "Error -> ${exception.message}")
         }
-        viewModelScope.launch {
+        viewModelScope.launch (exceptionHandler) {
             try{
                 val response = ScannerAPI.retrofitService.getAllBinsThatHaveProduct(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, itemNumber)
                 _listOfBinsThatHaveProduct.value = response.response.binsThatHaveItem.binsThatHaveItem
                 _hasBinBeenFoundWithItem.value = response.response.hasBinBeenFoundWithItem
                 _wasLastAPICallSuccessful.value = true
-                Log.i("get Bins that have item API Call", "list of bins that have product -> ${_listOfBinsThatHaveProduct.value.toString()}")
-                _hasBinsThatHaveItemAPIBeenCalled.value = true
-                if(_hasItemDetailsAPIBeenCalled.value!!){
-                    _haveBothAPIBeenCalled.value = true
-                }
-
+                Log.i("get Bins that have item API Call" , "Bins that have item -> ${_listOfBinsThatHaveProduct.value.toString()}")
             }catch (e: Exception){
                 _wasLastAPICallSuccessful.value = false
                 Log.i("get Bins that have item API Call" , "Error -> ${e.message}")

@@ -6,11 +6,13 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -88,6 +90,16 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     private fun initUIElements(){
         warehouseSpinner = binding.warehouseSpinner
         binNumberEditText = binding.binNumberEditText
+        binNumberEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Handle the Enter key press here
+                progressDialog.show()
+                viewModel.getProductInfoFromBackend(warehouseSpinner.selectedItem.toString(),binNumberEditText.text.toString())
+                true
+            } else {
+                false
+            }
+        }
         searchButton = binding.searchBinButton
         searchButton.setOnClickListener{
             // here goes the API Call for the filling of the recycler view

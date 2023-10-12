@@ -71,6 +71,7 @@ data class ItemDetailsForBinSearch(
     @Json(name = "UnitOfMeasurement") val unitOfMeasurement: String,
     @Json(name = "quantityInUOM") val quantityInUOM: Double,
     @Json(name = "totalQuantityOnHand") val totalQuantityOnHand: Double,
-    @Json(name = "binForPicking") val binForPicking: String
+    @Json(name = "binForPicking") val binForPicking: String,
+    @Json(name = "itemDetails") val itemDetails: String
 )
 

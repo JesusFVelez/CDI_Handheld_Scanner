@@ -11,7 +11,8 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 // Base URL for the API calls
-private const val BASE_URL = "http://76.72.245.174:8811/HandHeldScannerProject/rest/HandHeldScannerProjectService/"
+// 76.72.245.174 IP Publico de CDI
+private const val BASE_URL = "http://10.0.0.43:8811/HandHeldScannerProject/rest/HandHeldScannerProjectService/"
 
 // Moshi instance for converting JSON to Kotlin objects
 private val moshi = Moshi.Builder()

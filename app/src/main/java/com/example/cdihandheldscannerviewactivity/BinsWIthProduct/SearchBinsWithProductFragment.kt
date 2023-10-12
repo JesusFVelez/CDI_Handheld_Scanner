@@ -6,11 +6,14 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -44,11 +47,14 @@ class SearchBinsWithProductFragment : Fragment() {
     private lateinit var networkCallback : ConnectivityManager.NetworkCallback
     private lateinit var networkRequest: NetworkRequest
     private var hasPageJustStarted: Boolean = false
+    private var wasSearchStarted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,14 +83,15 @@ class SearchBinsWithProductFragment : Fragment() {
         if(lastFragmentName == "HomeScreen"){
             bundle?.clear()
         }
-
-
         hasPageJustStarted = false
         // Register the callback
         if (connectivityManager != null) {
             connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
         }
+        itemNumberEditText.text.clear()
     }
+
+
 
     // Handle onPause lifecycle event
     override fun onPause() {
@@ -94,15 +101,32 @@ class SearchBinsWithProductFragment : Fragment() {
         if (connectivityManager != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback)
         }
+        wasSearchStarted = false
+    }
+
+    private fun searchForItem(){
+        if (warehouseSpinner.selectedItem != null) {
+            viewModel.getItemDetailsForBinSearchFromBackend(warehouseSpinner.selectedItem.toString(), itemNumberEditText.text.toString())
+            progressDialog.show()
+            wasSearchStarted = true
+        }else  // This assumes that the fact that there are no warehouse selected, implies that the internet is not connected because if there was internet, there would be at least a single warehouse chosen
+            Toast.makeText(requireContext(), getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
     }
     private fun initUIElements(){
         warehouseSpinner = binding.warehouseSpinner
         itemNumberEditText = binding.itemNumberEditText
+        itemNumberEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Handle the Enter key press here
+                searchForItem()
+                true
+            } else {
+                false
+            }
+        }
         searcItemInBinButton = binding.searchBinButton
         searcItemInBinButton.setOnClickListener{
-            viewModel.getItemDetailsForBinSearchFromBackend(warehouseSpinner.selectedItem.toString(), itemNumberEditText.text.toString())
-            viewModel.getBinsThatHaveProductFromBackend(warehouseSpinner.selectedItem.toString(), itemNumberEditText.text.toString())
-            progressDialog.show()
+           searchForItem()
         }
         progressDialog = Dialog(requireContext()).apply{
             setContentView(R.layout.dialog_loading)
@@ -195,26 +219,47 @@ class SearchBinsWithProductFragment : Fragment() {
             fillSpinnerWithWarehouses(newWarehousesList)
         }
 
+        viewModel.itemDetails.observe(viewLifecycleOwner){ newItemDetails ->
+            Log.i("itemDetails observer", "I have gotten new ItemDetails -> ${newItemDetails.toString()}")
+            var itemNumber: String? = null
+            if (newItemDetails.size != 0)
+                itemNumber = newItemDetails[0]?.itemNumber
+            val selectedWarehouse = warehouseSpinner.selectedItem
+            if (selectedWarehouse != null && itemNumber != null && viewModel.isBarCodeValid.value!! && wasSearchStarted) {
+                viewModel.getBinsThatHaveProductFromBackend(selectedWarehouse.toString(), itemNumber)
+            }
+        }
 
-        viewModel.haveBothAPIBeenCalled.observe(viewLifecycleOwner){haveBothAPIsBeenCalled ->
-            if(viewModel.haveBothAPIBeenCalled.value!!){
+
+
+        viewModel.isBarCodeValid.observe(viewLifecycleOwner) {isBarcodeValid ->
+            if (!isBarcodeValid && wasSearchStarted){
+                Log.i("isBarCodeValid.observe", "${viewModel.barcodeErrorMessage.value} - ${viewModel.isBarCodeValid.value}")
                 progressDialog.dismiss()
+                Toast.makeText(requireContext(), viewModel.barcodeErrorMessage.value, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        viewModel.listOfBinsThatHaveProduct.observe(viewLifecycleOwner){ newListOfBins ->
+            Log.i("listOfBinsThatHaveProduct.observe", "I have new bins -> ${newListOfBins.toString()}")
+            progressDialog.dismiss()
+            if(viewModel.isBarCodeValid.value == true && wasSearchStarted){
                 val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("SearchBinsWithProductFragment")
                 findNavController().navigate(R.id.action_searchBinsWithProductFragment_to_binsThatHaveProductFragment, bundle)
             }
-
         }
-        viewModel.listOfBinsThatHaveProduct.observe(viewLifecycleOwner){newListOfBins ->
+    }
 
-
-        }
-
-        viewModel.itemDetails.observe(viewLifecycleOwner){ newItemDetails ->
-
-        }
-
+    private fun removeAllObservers(){
+        viewModel.listOfWarehouses.removeObservers(viewLifecycleOwner)
+        viewModel.listOfBinsThatHaveProduct.removeObservers(viewLifecycleOwner)
+        viewModel.itemDetails.removeObservers(viewLifecycleOwner)
+        viewModel.isBarCodeValid.removeObservers(viewLifecycleOwner)
+        viewModel.wasLastAPICallSuccessful.removeObservers(viewLifecycleOwner)
 
     }
+
+
 
     // Populate Spinner with warehouse data
     private fun fillSpinnerWithWarehouses( newWarehouseList : List<WarehouseInfo>){

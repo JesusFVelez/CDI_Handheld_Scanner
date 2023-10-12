@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
@@ -14,6 +15,7 @@ import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentHomeScreenBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
+
 
 // Home screen fragment class
 class HomeScreenFragment : Fragment() {
@@ -28,6 +30,36 @@ class HomeScreenFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initCircularRevealAnim(view)
+    }
+
+    private fun initCircularRevealAnim(view:View){
+        view.post {
+
+            // Get the center for the clipping circle
+            val cx = (view.left + view.right) / 2
+            val cy = (view.top + view.bottom) / 2
+
+            // Get the final radius for the clipping circle
+            val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+
+            // Create the animator for this view (the start radius is zero)
+            val anim =
+                ViewAnimationUtils.createCircularReveal(view, cx, cy, 0f, finalRadius)
+
+            // Set a longer duration for the animation
+            anim.setDuration(500);  // Duration in milliseconds, e.g., 1000ms = 1 second
+
+            // Make the view visible and start the animation
+            view.visibility = View.VISIBLE
+            anim.start()
+        }
+    }
+
+
 
     // Method to create and return the view hierarchy associated with the fragment
     override fun onCreateView(
@@ -76,9 +108,5 @@ class HomeScreenFragment : Fragment() {
         return binding.root
     }
 
-    // Method called immediately after onCreateView() has returned, and fragment's view hierarchy has been instantiated
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-    }
 }
