@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
@@ -40,25 +41,6 @@ class MainActivity : AppCompatActivity() {
         // Set up the navigation controller
         val navController = this.findNavController(R.id.my_nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
-
-        // Handle back press to show a logout confirmation dialog
-        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                if (this@MainActivity.findNavController(R.id.my_nav_host_fragment).currentDestination?.id == R.id.homeScreenFragment) {
-                    AlertDialog.Builder(this@MainActivity)
-                        .setTitle("Log Out")
-                        .setMessage("Are you sure you want to log out?")
-                        .setPositiveButton("Yes") { _, _ ->
-
-                            val intent = Intent(this@MainActivity, loginActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
-                        .setNegativeButton("No", null)
-                        .show()
-                }
-            }
-        })
 
         // Initialize the connectivity manager and network request
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -97,5 +79,36 @@ class MainActivity : AppCompatActivity() {
         val navController = this.findNavController(R.id.my_nav_host_fragment)
         return navController.navigateUp()
     }
+
+//    override fun onBackPressed() {
+//        val navController = this.findNavController(R.id.my_nav_host_fragment)
+//        if (navController.popBackStack().not()) {
+//            super.onBackPressed()
+//        }
+//    }
+override fun onBackPressed() {
+    val navController = this.findNavController( R.id.my_nav_host_fragment)
+    if (navController.previousBackStackEntry != null) {
+        // If there's something on the back stack, pop it
+        navController.popBackStack()
+    } else {
+        // Otherwise, Ask the user if he wants to log out or not
+        AlertDialog.Builder(this@MainActivity)
+            .setTitle("Log Out")
+            .setMessage("Are you sure you want to log out?")
+            .setPositiveButton("Yes") { _, _ ->
+
+                val intent = Intent(this@MainActivity, loginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+}
+
+
+
+
 
 }
