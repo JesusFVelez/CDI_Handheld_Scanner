@@ -203,8 +203,9 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         viewModel.wasBinFound.observe(viewLifecycleOwner) {hasBinBeenFound ->
             if (!hasBinBeenFound){
                 progressDialog.dismiss()
-                Toast.makeText(requireContext(),
-                    getString(R.string.bin_not_found), Toast.LENGTH_LONG).show()
+//                Toast.makeText(requireContext(),
+//                    getString(R.string.bin_not_found), Toast.LENGTH_LONG).show()
+
             }
         }
 
@@ -217,6 +218,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
 
     }
+
 
 
     // Populate Spinner with warehouse data
