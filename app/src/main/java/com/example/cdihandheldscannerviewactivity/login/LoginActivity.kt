@@ -35,6 +35,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 // This class represents the login activity for the application. It extends the AppCompatActivity class
 class loginActivity : AppCompatActivity() {
 
@@ -101,6 +102,10 @@ class loginActivity : AppCompatActivity() {
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasAppBeenOpened)
+//                    Alerter.create(this)
+//                        .setTitle(R.string.alert_title)
+//                        .setText(R.string.alert_text)
+//                        .show()
                     Toast.makeText(this@loginActivity, resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
                 else
                     hasAppBeenOpened = true
