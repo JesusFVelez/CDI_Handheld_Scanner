@@ -7,5 +7,13 @@
         <item name="android:textStyle">bold|italic</item>
     </style>
 
+    <style name="CustomScannerInput">
+        <item name="android:background" >"@drawable/bin_number_text_box"</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">60dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
 
 </resources>

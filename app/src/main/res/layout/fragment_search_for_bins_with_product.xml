@@ -26,14 +26,10 @@
         android:id="@+id/itemNumberEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bin_number_text_box"
         android:hint="@string/item_number"
-        android:paddingStart="10dp"
-        android:paddingEnd="60dp"
-        android:textAlignment="center"
+        style="@style/CustomScannerInput"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:imeOptions="actionDone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <Button
