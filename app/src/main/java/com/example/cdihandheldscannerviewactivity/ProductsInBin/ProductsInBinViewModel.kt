@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cdihandheldscannerviewactivity.Network.ProductInBinInfo
-import com.example.cdihandheldscannerviewactivity.Network.ScannerAPI
-import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ProductInBinInfo
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception

@@ -1,11 +1,16 @@
 package com.example.cdihandheldscannerviewactivity.ProductsInBin
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.opengl.Visibility
 import android.os.Bundle
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -18,20 +23,25 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.PopupWindow
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.Storage.BundleUtils
-import com.example.cdihandheldscannerviewactivity.Storage.SharedPreferencesUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductInBinBinding
+import android.view.ViewGroup.LayoutParams
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.tapadoo.alerter.Alerter
 
+
+//TODO - Figure out if there is a way to blur the background behind the Popupwindow so that it does not look as bad
 class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
     // Declare UI elements and ViewModel
@@ -50,6 +60,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     private lateinit var networkRequest: NetworkRequest
 
     private var hasPageJustStarted: Boolean = false
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +94,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         // Retrieve company ID from shared preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
         viewModel.setCompanyIDFromSharedPref(companyID)
-
         return binding.root
     }
 
@@ -117,6 +128,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
                 return false
             }
         }
+
+
     }
 
     private fun initNetworkRelatedComponents(){
@@ -128,7 +141,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasPageJustStarted)
-                    Toast.makeText(requireContext(), resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
+                    AlerterUtils.startAlert(requireActivity(),resources.getString(R.string.internet_restored), "Wifi Restored", R.drawable.wifi_conected)
                 else
                     hasPageJustStarted = true
 
@@ -143,10 +156,13 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasPageJustStarted = true
-                Toast.makeText(requireContext(), resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startAlert(requireActivity(),resources.getString(R.string.internet_lost), "Wifi Lost", R.drawable.wifi_disconnected)
             }
         }
     }
+
+
+
 
 
     // Handle onResume lifecycle event
@@ -184,7 +200,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
             if(!wasAPICallSuccesfull){
                 progressDialog.dismiss()
-                Toast.makeText(requireContext(),resources.getString(R.string.network_request_error_message), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startAlert(requireActivity(),resources.getString(R.string.network_request_error_message), "Network Error", R.drawable.network_error)
             }
         }
 
@@ -203,9 +219,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         viewModel.wasBinFound.observe(viewLifecycleOwner) {hasBinBeenFound ->
             if (!hasBinBeenFound){
                 progressDialog.dismiss()
-//                Toast.makeText(requireContext(),
-//                    getString(R.string.bin_not_found), Toast.LENGTH_LONG).show()
-
+            showPopupWindow(binding.root, getString(R.string.bin_not_found))
             }
         }
 
@@ -218,6 +232,31 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
 
     }
+
+    private fun showPopupWindow(anchor: View, message: String) {
+        val layoutInflater = LayoutInflater.from(requireContext())
+        val popupContentView = layoutInflater.inflate(R.layout.error_popup, null)
+
+        val popupWindow = PopupWindow(
+            popupContentView,
+            400,
+            LayoutParams.WRAP_CONTENT,
+            true  // This allows the pop-up to be dismissible on outside touch
+        )
+        val textDescription = popupContentView.findViewById<TextView>(R.id.errorDescription)
+        textDescription.text =  message
+        val closeButton = popupContentView.findViewById<Button>(R.id.okButton)
+        closeButton.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        popupWindow.isOutsideTouchable = false
+
+        // Optionally specify a location for the pop-up window
+        popupWindow.showAtLocation(anchor, Gravity.CENTER, 0, 0)
+    }
+
+
+
 
 
 

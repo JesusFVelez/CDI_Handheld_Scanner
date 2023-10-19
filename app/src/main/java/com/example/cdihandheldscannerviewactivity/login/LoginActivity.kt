@@ -21,14 +21,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.cdihandheldscannerviewactivity.MainActivity
-import com.example.cdihandheldscannerviewactivity.Network.Company
-import com.example.cdihandheldscannerviewactivity.Network.NetworkUtils
-import com.example.cdihandheldscannerviewactivity.Network.ResponseWrapperUser
-import com.example.cdihandheldscannerviewactivity.Network.ScannerAPI
-import com.example.cdihandheldscannerviewactivity.Network.User
-import com.example.cdihandheldscannerviewactivity.Network.requestUser
+import com.example.cdihandheldscannerviewactivity.Utils.Network.Company
+import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ResponseWrapperUser
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.example.cdihandheldscannerviewactivity.Utils.Network.User
+import com.example.cdihandheldscannerviewactivity.Utils.Network.requestUser
 import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.Storage.SharedPreferencesUtils
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
 import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
@@ -102,11 +103,7 @@ class loginActivity : AppCompatActivity() {
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasAppBeenOpened)
-//                    Alerter.create(this)
-//                        .setTitle(R.string.alert_title)
-//                        .setText(R.string.alert_text)
-//                        .show()
-                    Toast.makeText(this@loginActivity, resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
+                    AlerterUtils.startAlert(this@loginActivity,resources.getString(R.string.internet_restored), "Wifi Connected", R.drawable.wifi_conected )
                 else
                     hasAppBeenOpened = true
 
@@ -121,7 +118,7 @@ class loginActivity : AppCompatActivity() {
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasAppBeenOpened = true
-                Toast.makeText(this@loginActivity, resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startAlert(this@loginActivity, resources.getString(R.string.internet_lost), "Wifi Lost", R.drawable.wifi_disconnected)
             }
         }
         // Register the Network Connection Handler
@@ -155,7 +152,7 @@ class loginActivity : AppCompatActivity() {
         viewModel.wasLastAPICallSuccessful.observe(this) {wasAPICallSuccessful ->
             if(!wasAPICallSuccessful){
                 progressDialog.dismiss()
-                Toast.makeText(this, resources.getString(R.string.network_request_error_message), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startAlert(this@loginActivity,resources.getString(R.string.network_request_error_message), "Network Error", R.drawable.network_error )
                 Log.i("API Call", "API Call did not work")
             }
         }
@@ -232,11 +229,7 @@ class loginActivity : AppCompatActivity() {
 
         if (!NetworkUtils.isDeviceOnline(this)) {
             progressDialog.dismiss()
-            Toast.makeText(
-                this,
-                resources.getString(R.string.no_internet_connection),
-                Toast.LENGTH_SHORT
-            ).show()
+            AlerterUtils.startAlert(this@loginActivity, resources.getString(R.string.no_internet_connection), "No internet connection", R.drawable.wifi_disconnected)
         } else {
             if (companySpinner.selectedItem != null) {
                 val selectedCompanyInSpinner: String = companySpinner.selectedItem.toString()
@@ -284,11 +277,7 @@ class loginActivity : AppCompatActivity() {
                         }
                             override fun onFailure(call: Call<ResponseWrapperUser>, t: Throwable) {
                             progressDialog.dismiss()
-                            Toast.makeText(
-                                this@loginActivity,
-                                resources.getString(R.string.network_request_error_message),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                                AlerterUtils.startAlert(this@loginActivity, resources.getString(R.string.network_request_error_message),"Network Error", R.drawable.network_error)
                             println("Error -> " + t.message)
                         }
 

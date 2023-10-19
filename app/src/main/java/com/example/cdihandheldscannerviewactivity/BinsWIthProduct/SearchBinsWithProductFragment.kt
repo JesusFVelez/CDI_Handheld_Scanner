@@ -26,10 +26,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.Storage.BundleUtils
-import com.example.cdihandheldscannerviewactivity.Storage.SharedPreferencesUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentSearchForBinsWithProductBinding
 
 

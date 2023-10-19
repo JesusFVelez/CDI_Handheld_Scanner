@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.Storage
+package com.example.cdihandheldscannerviewactivity.Utils.Storage
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -16,7 +16,8 @@ class SharedPreferencesUtils {
         // Method for storing user login information in shared preferences
         fun storeLoginInfoInSharedPref(username: String, companyID: String, context: Context){
             // Get the shared preferences editor
-            val sharedPref = context.getSharedPreferences(userLoginSharedPrefName,
+            val sharedPref = context.getSharedPreferences(
+                userLoginSharedPrefName,
                 AppCompatActivity.MODE_PRIVATE
             )
             val editor = sharedPref.edit()

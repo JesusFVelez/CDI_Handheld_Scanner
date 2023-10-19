@@ -67,8 +67,11 @@ dependencies {
     //ViewModel and LiveData Libraries
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-    //Alerter Dependencies
-//    implementation "com.tapadoo.android:alerter:$version_alerter"
+    //Alerter Dependencies - Might use these later on
+    implementation "com.github.Tapadoo:Alerter:7.2.4"
+
+    // Blurkit Dependency
+//    implementation "com.github.CameraKit:blurkit-android:v1.1.1"
 
 
 

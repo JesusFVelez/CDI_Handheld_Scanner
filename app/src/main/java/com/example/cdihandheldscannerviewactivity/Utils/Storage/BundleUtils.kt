@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.Storage
+package com.example.cdihandheldscannerviewactivity.Utils.Storage
 
 import android.os.Bundle
 
