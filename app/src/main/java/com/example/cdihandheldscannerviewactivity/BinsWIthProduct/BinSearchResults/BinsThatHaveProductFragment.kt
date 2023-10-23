@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cdihandheldscannerviewactivity.BinsWIthProduct.BinsWithProductAdapter
 import com.example.cdihandheldscannerviewactivity.BinsWIthProduct.BinsWithProductViewModel
 import com.example.cdihandheldscannerviewactivity.R
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentBinsThatHaveProductBinding
 
 
@@ -44,7 +44,7 @@ class BinsThatHaveProductFragment : Fragment() {
         initAdapter()
         fillItemDetailsWithViewModelInfo()
         if(viewModel.hasBinBeenFoundWithItem.value == false){
-            Toast.makeText(requireContext(), "No Bin was found with item '${viewModel.itemDetails.value!![0].itemName}'", Toast.LENGTH_LONG).show()
+            AlerterUtils.startErrorAlerter(requireActivity(), "No Bin was found with item '${viewModel.itemDetails.value!![0].itemName}'")
         }
 
         return binding.root

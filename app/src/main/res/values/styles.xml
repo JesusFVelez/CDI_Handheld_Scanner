@@ -8,11 +8,25 @@
     </style>
 
     <style name="CustomScannerInput">
-        <item name="android:background" >"@drawable/bin_number_text_box"</item>
+        <item name="android:background" >@drawable/bin_number_text_box</item>
         <item name="android:imeOptions">actionDone</item>
         <item name="android:paddingStart">10dp</item>
         <item name="android:paddingEnd">60dp</item>
         <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="PopupMessageBigText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PopupMessageSmallText">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="PopupButtons">
+        <item name="android:background">@drawable/popup_button_background</item>
     </style>
 
 

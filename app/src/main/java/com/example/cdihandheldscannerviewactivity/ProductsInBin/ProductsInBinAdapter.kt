@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.Network.ProductInBinInfo
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ProductInBinInfo
 
 
 // Adapter class for the RecyclerView displaying products in a bin

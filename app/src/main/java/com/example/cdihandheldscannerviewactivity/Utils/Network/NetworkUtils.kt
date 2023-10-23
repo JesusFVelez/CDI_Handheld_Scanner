@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.Network
+package com.example.cdihandheldscannerviewactivity.Utils.Network
 
 import android.content.Context
 import android.net.ConnectivityManager

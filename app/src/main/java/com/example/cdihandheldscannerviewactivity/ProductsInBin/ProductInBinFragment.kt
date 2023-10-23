@@ -1,11 +1,18 @@
 package com.example.cdihandheldscannerviewactivity.ProductsInBin
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.opengl.Visibility
 import android.os.Bundle
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -18,20 +25,28 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.PopupWindow
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cdihandheldscannerviewactivity.Network.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.Storage.BundleUtils
-import com.example.cdihandheldscannerviewactivity.Storage.SharedPreferencesUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductInBinBinding
+import android.view.ViewGroup.LayoutParams
+import android.view.animation.AnimationUtils
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.google.android.material.transition.platform.MaterialFadeThrough
+import com.tapadoo.alerter.Alerter
 
+
+//TODO - Figure out if there is a way to blur the background behind the Popupwindow so that it does not look as bad
 class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
     // Declare UI elements and ViewModel
@@ -50,6 +65,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     private lateinit var networkRequest: NetworkRequest
 
     private var hasPageJustStarted: Boolean = false
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +99,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         // Retrieve company ID from shared preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
         viewModel.setCompanyIDFromSharedPref(companyID)
-
         return binding.root
     }
 
@@ -117,6 +133,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
                 return false
             }
         }
+
+
     }
 
     private fun initNetworkRelatedComponents(){
@@ -128,7 +146,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasPageJustStarted)
-                    Toast.makeText(requireContext(), resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
+                    AlerterUtils.startInternetRestoredAlert(requireActivity())
                 else
                     hasPageJustStarted = true
 
@@ -143,11 +161,10 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasPageJustStarted = true
-                Toast.makeText(requireContext(), resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startInternetLostAlert(requireActivity())
             }
         }
     }
-
 
     // Handle onResume lifecycle event
     override fun onResume() {
@@ -184,7 +201,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
             if(!wasAPICallSuccesfull){
                 progressDialog.dismiss()
-                Toast.makeText(requireContext(),resources.getString(R.string.network_request_error_message), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
 
@@ -203,8 +220,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         viewModel.wasBinFound.observe(viewLifecycleOwner) {hasBinBeenFound ->
             if (!hasBinBeenFound){
                 progressDialog.dismiss()
-                Toast.makeText(requireContext(),
-                    getString(R.string.bin_not_found), Toast.LENGTH_LONG).show()
+                AlerterUtils.startErrorAlerter(requireActivity(), getString(R.string.bin_not_found))
             }
         }
 
@@ -217,6 +233,12 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
 
     }
+
+
+
+
+
+
 
 
     // Populate Spinner with warehouse data
