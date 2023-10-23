@@ -71,6 +71,7 @@ class SearchBinsWithProductFragment : Fragment() {
         initSpinner()
         initNetworkRelatedComponents()
 
+
         return binding.root
     }
 
@@ -133,6 +134,8 @@ class SearchBinsWithProductFragment : Fragment() {
             setCancelable(false)
             show()
         }
+
+        itemNumberEditText.requestFocus()
     }
 
     private fun initNetworkRelatedComponents(){

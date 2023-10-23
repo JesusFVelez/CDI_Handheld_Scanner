@@ -99,6 +99,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         // Retrieve company ID from shared preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
         viewModel.setCompanyIDFromSharedPref(companyID)
+
         return binding.root
     }
 
@@ -134,7 +135,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             }
         }
 
-
+        binNumberEditText.requestFocus()
     }
 
     private fun initNetworkRelatedComponents(){
@@ -193,13 +194,14 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         if (connectivityManager != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback)
         }
+
     }
 
     // Initialize LiveData observers
     private fun initObservers(){
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
-            if(!wasAPICallSuccesfull){
+            if(!wasAPICallSuccesfull && hasPageJustStarted){
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
@@ -210,6 +212,9 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
                 numberOfItemsTextView.text = "${newNumberOfItems.toString()} items in Bin"
             else
                 numberOfItemsTextView.text = "${newNumberOfItems.toString()} item in Bin"
+
+            if (newNumberOfItems == 0 && hasPageJustStarted && viewModel.wasBinFound.value!!)
+                AlerterUtils.startWarningAlerter(requireActivity(), "Bin is empty")
         }
 
         viewModel.listOfWarehouses.observe(viewLifecycleOwner) {newWarehousesList ->
@@ -233,13 +238,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         }
 
     }
-
-
-
-
-
-
-
 
     // Populate Spinner with warehouse data
     private fun fillSpinnerWithWarehouses( newWarehouseList : List<WarehouseInfo>){

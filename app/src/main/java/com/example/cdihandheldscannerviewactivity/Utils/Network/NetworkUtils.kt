@@ -2,12 +2,17 @@ package com.example.cdihandheldscannerviewactivity.Utils.Network
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 
 // Class for network related utilities
 class NetworkUtils() {
 
     companion object {
+
 
         // Method to check if the device is connected to the internet
         // Returns true if the device is online, false otherwise
