@@ -29,9 +29,11 @@ import com.example.cdihandheldscannerviewactivity.Utils.Network.User
 import com.example.cdihandheldscannerviewactivity.Utils.Network.requestUser
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
 import com.google.android.material.textfield.TextInputEditText
+import com.tapadoo.alerter.Alert
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -103,7 +105,7 @@ class loginActivity : AppCompatActivity() {
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasAppBeenOpened)
-                    AlerterUtils.startAlert(this@loginActivity,resources.getString(R.string.internet_restored), "Wifi Connected", R.drawable.wifi_conected )
+                    AlerterUtils.startInternetRestoredAlert(this@loginActivity)
                 else
                     hasAppBeenOpened = true
 
@@ -118,7 +120,7 @@ class loginActivity : AppCompatActivity() {
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasAppBeenOpened = true
-                AlerterUtils.startAlert(this@loginActivity, resources.getString(R.string.internet_lost), "Wifi Lost", R.drawable.wifi_disconnected)
+                AlerterUtils.startInternetLostAlert(this@loginActivity)
             }
         }
         // Register the Network Connection Handler
@@ -152,7 +154,7 @@ class loginActivity : AppCompatActivity() {
         viewModel.wasLastAPICallSuccessful.observe(this) {wasAPICallSuccessful ->
             if(!wasAPICallSuccessful){
                 progressDialog.dismiss()
-                AlerterUtils.startAlert(this@loginActivity,resources.getString(R.string.network_request_error_message), "Network Error", R.drawable.network_error )
+                AlerterUtils.startNetworkErrorAlert(this@loginActivity)
                 Log.i("API Call", "API Call did not work")
             }
         }
@@ -223,13 +225,11 @@ class loginActivity : AppCompatActivity() {
 
     // This method is called when the login button is clicked. It checks the network connection and the selected company, and then attempts to log in.
     fun loginButtonClickEvent(view: View?) {
-
-        println("Button Clicked")
         progressDialog.show()
 
         if (!NetworkUtils.isDeviceOnline(this)) {
             progressDialog.dismiss()
-            AlerterUtils.startAlert(this@loginActivity, resources.getString(R.string.no_internet_connection), "No internet connection", R.drawable.wifi_disconnected)
+            AlerterUtils.startInternetLostAlert(this)
         } else {
             if (companySpinner.selectedItem != null) {
                 val selectedCompanyInSpinner: String = companySpinner.selectedItem.toString()
@@ -268,16 +268,12 @@ class loginActivity : AppCompatActivity() {
                                 finish()
                             } else {
                                 progressDialog.dismiss()
-                                Toast.makeText(
-                                    this@loginActivity,
-                                    getString(R.string.login_declined),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                AlerterUtils.startAlertWithColor(this@loginActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
                             }
                         }
                             override fun onFailure(call: Call<ResponseWrapperUser>, t: Throwable) {
                             progressDialog.dismiss()
-                                AlerterUtils.startAlert(this@loginActivity, resources.getString(R.string.network_request_error_message),"Network Error", R.drawable.network_error)
+                                AlerterUtils.startNetworkErrorAlert(this@loginActivity)
                             println("Error -> " + t.message)
                         }
 

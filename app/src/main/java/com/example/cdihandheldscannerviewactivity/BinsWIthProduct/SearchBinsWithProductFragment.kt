@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -28,6 +27,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import com.example.cdihandheldscannerviewactivity.R
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentSearchForBinsWithProductBinding
@@ -110,7 +110,7 @@ class SearchBinsWithProductFragment : Fragment() {
             progressDialog.show()
             wasSearchStarted = true
         }else  // This assumes that the fact that there are no warehouse selected, implies that the internet is not connected because if there was internet, there would be at least a single warehouse chosen
-            Toast.makeText(requireContext(), getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
+            AlerterUtils.startInternetLostAlert(requireActivity())
     }
     private fun initUIElements(){
         warehouseSpinner = binding.warehouseSpinner
@@ -144,7 +144,7 @@ class SearchBinsWithProductFragment : Fragment() {
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasPageJustStarted)
-                    Toast.makeText(requireContext(), resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
+                    AlerterUtils.startInternetRestoredAlert(requireActivity())
                 else
                     hasPageJustStarted = true
 
@@ -159,7 +159,7 @@ class SearchBinsWithProductFragment : Fragment() {
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasPageJustStarted = true
-                Toast.makeText(requireContext(), resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startInternetLostAlert(requireActivity())
             }
         }
     }
@@ -211,7 +211,7 @@ class SearchBinsWithProductFragment : Fragment() {
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
             if(!wasAPICallSuccesfull){
                 progressDialog.dismiss()
-                Toast.makeText(requireContext(),resources.getString(R.string.network_request_error_message), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
         viewModel.listOfWarehouses.observe(viewLifecycleOwner) {newWarehousesList ->
@@ -236,7 +236,7 @@ class SearchBinsWithProductFragment : Fragment() {
             if (!isBarcodeValid && wasSearchStarted){
                 Log.i("isBarCodeValid.observe", "${viewModel.barcodeErrorMessage.value} - ${viewModel.isBarCodeValid.value}")
                 progressDialog.dismiss()
-                Toast.makeText(requireContext(), viewModel.barcodeErrorMessage.value, Toast.LENGTH_LONG).show()
+                AlerterUtils.startErrorAlerter(requireActivity(),viewModel.barcodeErrorMessage.value!!)
             }
         }
 

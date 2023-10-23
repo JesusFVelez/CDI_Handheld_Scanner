@@ -6,14 +6,13 @@ import android.net.Network
 import android.net.NetworkRequest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
 
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasPageJustStarted)
-                    Toast.makeText(this@MainActivity, resources.getString(R.string.internet_restored), Toast.LENGTH_SHORT).show()
+                    AlerterUtils.startInternetRestoredAlert(this@MainActivity)
                 else
                     hasPageJustStarted = true
             }
@@ -59,12 +58,15 @@ class MainActivity : AppCompatActivity() {
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasPageJustStarted = true
-                Toast.makeText(this@MainActivity, resources.getString(R.string.internet_lost), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startInternetLostAlert(this@MainActivity)
             }
         }
 
+
         // Register the network callback
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+
+
     }
 
     // Method called when the activity is destroyed

@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -37,7 +39,10 @@ import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductInBinBinding
 import android.view.ViewGroup.LayoutParams
+import android.view.animation.AnimationUtils
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import com.tapadoo.alerter.Alerter
 
 
@@ -141,7 +146,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasPageJustStarted)
-                    AlerterUtils.startAlert(requireActivity(),resources.getString(R.string.internet_restored), "Wifi Restored", R.drawable.wifi_conected)
+                    AlerterUtils.startInternetRestoredAlert(requireActivity())
                 else
                     hasPageJustStarted = true
 
@@ -156,14 +161,10 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasPageJustStarted = true
-                AlerterUtils.startAlert(requireActivity(),resources.getString(R.string.internet_lost), "Wifi Lost", R.drawable.wifi_disconnected)
+                AlerterUtils.startInternetLostAlert(requireActivity())
             }
         }
     }
-
-
-
-
 
     // Handle onResume lifecycle event
     override fun onResume() {
@@ -200,7 +201,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
             if(!wasAPICallSuccesfull){
                 progressDialog.dismiss()
-                AlerterUtils.startAlert(requireActivity(),resources.getString(R.string.network_request_error_message), "Network Error", R.drawable.network_error)
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
 
@@ -219,7 +220,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         viewModel.wasBinFound.observe(viewLifecycleOwner) {hasBinBeenFound ->
             if (!hasBinBeenFound){
                 progressDialog.dismiss()
-            showPopupWindow(binding.root, getString(R.string.bin_not_found))
+                AlerterUtils.startErrorAlerter(requireActivity(), getString(R.string.bin_not_found))
             }
         }
 
@@ -233,27 +234,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
     }
 
-    private fun showPopupWindow(anchor: View, message: String) {
-        val layoutInflater = LayoutInflater.from(requireContext())
-        val popupContentView = layoutInflater.inflate(R.layout.error_popup, null)
 
-        val popupWindow = PopupWindow(
-            popupContentView,
-            400,
-            LayoutParams.WRAP_CONTENT,
-            true  // This allows the pop-up to be dismissible on outside touch
-        )
-        val textDescription = popupContentView.findViewById<TextView>(R.id.errorDescription)
-        textDescription.text =  message
-        val closeButton = popupContentView.findViewById<Button>(R.id.okButton)
-        closeButton.setOnClickListener {
-            popupWindow.dismiss()
-        }
-        popupWindow.isOutsideTouchable = false
-
-        // Optionally specify a location for the pop-up window
-        popupWindow.showAtLocation(anchor, Gravity.CENTER, 0, 0)
-    }
 
 
 

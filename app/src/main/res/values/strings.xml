@@ -13,9 +13,12 @@
     <string name="loading">Loading…</string>
     <string name="error_message">An error has occurred!</string>
     <string name="network_request_error_message">There has been an error with a network request!</string>
+    <string name="network_request_error_message_title">Network Error</string>
     <string name="no_internet_connection">Your device is not connected to the internet</string>
     <string name="internet_restored">Internet Connectivity restored</string>
+    <string name="internet_restored_title">Wifi Connected</string>
     <string name="internet_lost">Internet Connectivity lost</string>
+    <string name="internet_lost_title">No internet connection</string>
     <string name="succesfull_login">You have been logged in succesfully!</string>
     <string name="login_declined">Your credentials are wrong, try again!</string>
     <string name="company_not_chosen">Company not chosen</string>
