@@ -51,6 +51,7 @@ class ProductsInBinViewModel: ViewModel() {
     val companyIDOfUser : LiveData<String>
         get() = _companyIDOfUser
 
+
     // Function to set the currently chosen adapter position
     fun setChosenAdapterPosition(position : Int){
         if (position >= 0)
@@ -68,6 +69,8 @@ class ProductsInBinViewModel: ViewModel() {
         _currentlyChosenAdapterPosition.value = 0
 
     }
+
+
 
     // Function called when ViewModel is cleared
     override fun onCleared() {
@@ -115,10 +118,11 @@ class ProductsInBinViewModel: ViewModel() {
         try{
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.retrofitService.getAllItemsInBin(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, binNumber )
+                _wasLastAPICallSuccessful.value = true
                 _listOfProducts.value = response.response.itemsInBin.itemsInBin
                 _wasBinFound.value = response.response.wasBinFound
                 _numberOfItemsInBin.value = _listOfProducts.value!!.size
-                _wasLastAPICallSuccessful.value = true
+
                 Log.i("Products In Bin View Model Product Info API Call", "Response -> ${response.toString()}" )
             }
         }catch (e : Exception){

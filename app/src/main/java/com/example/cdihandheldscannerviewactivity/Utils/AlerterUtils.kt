@@ -1,8 +1,6 @@
 package com.example.cdihandheldscannerviewactivity.Utils
 
 import android.app.Activity
-import android.content.Context
-import android.view.View
 import com.example.cdihandheldscannerviewactivity.R
 import com.tapadoo.alerter.Alerter
 
@@ -27,11 +25,24 @@ class AlerterUtils {
                 .show()
         }
 
+        fun startWarningAlerter(activity: Activity, warningMessage:String){
+            Alerter.create(activity)
+                .setTitle("Warning")
+                .setText("${warningMessage} \n \nTap to dismiss.")
+                .setIcon(R.drawable.black_warning_icon)
+                .setIconColorFilter(0)
+                .setBackgroundColorRes(R.color.CDI_Yellow)
+                .setTextAppearance(R.style.WarningText)
+                .setTitleAppearance(R.style.WarningText)
+                .enableInfiniteDuration(true)
+                .show()
+        }
+
         fun startErrorAlerter(activity: Activity, errorMessage:String){
             Alerter.create(activity)
                 .setTitle("Error")
-                .setText("${errorMessage} \n \n Tap to dismiss.")
-                .setIcon(R.drawable.error_icon)
+                .setText("${errorMessage} \n \nTap to dismiss.")
+                .setIcon(R.drawable.circle_error_icon)
                 .setBackgroundColorRes(android.R.color.holo_red_dark)
                 .enableInfiniteDuration(true)
                 .show()
