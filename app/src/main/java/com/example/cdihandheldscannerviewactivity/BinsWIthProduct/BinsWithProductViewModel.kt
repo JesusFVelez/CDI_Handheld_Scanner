@@ -43,10 +43,6 @@ class BinsWithProductViewModel :ViewModel(){
     val hasBinBeenFoundWithItem: LiveData<Boolean>
         get() = _hasBinBeenFoundWithItem
 
-
-
-
-
     private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
