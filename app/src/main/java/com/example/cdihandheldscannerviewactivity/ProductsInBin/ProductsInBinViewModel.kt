@@ -117,7 +117,7 @@ class ProductsInBinViewModel: ViewModel() {
         // API call to get product information
         try{
             viewModelScope.launch(exceptionHandler) {
-                val response = ScannerAPI.retrofitService.getAllItemsInBin(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, binNumber )
+                val response = ScannerAPI.ViewProductsInBinService.getAllItemsInBin(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, binNumber )
                 _wasLastAPICallSuccessful.value = true
                 _listOfProducts.value = response.response.itemsInBin.itemsInBin
                 _wasBinFound.value = response.response.wasBinFound
@@ -141,7 +141,7 @@ class ProductsInBinViewModel: ViewModel() {
         // API call to get list of warehouses
         viewModelScope.launch (exceptionHandler) {
             try{
-                val response = ScannerAPI.retrofitService.getWarehousesAvailable()
+                val response = ScannerAPI.GeneralService.getWarehousesAvailable()
                 _listOfWarehouses.value = response.response.warehouses.warehouses
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){

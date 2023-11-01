@@ -248,7 +248,7 @@ class loginActivity : AppCompatActivity() {
                 )
                 val requestBody = requestUser(user)
 
-                ScannerAPI.retrofitService.isLogedIn(requestBody)
+                ScannerAPI.LoginService.isLogedIn(requestBody)
                     .enqueue(object : Callback<ResponseWrapperUser> {
                         override fun onResponse(
                             call: Call<ResponseWrapperUser>,
