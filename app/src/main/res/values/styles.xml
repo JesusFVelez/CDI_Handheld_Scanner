@@ -37,5 +37,9 @@
         <item name="android:background">@drawable/popup_button_background</item>
     </style>
 
+    <style name="WarningText">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 
 </resources>

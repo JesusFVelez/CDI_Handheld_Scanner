@@ -43,10 +43,6 @@ class BinsWithProductViewModel :ViewModel(){
     val hasBinBeenFoundWithItem: LiveData<Boolean>
         get() = _hasBinBeenFoundWithItem
 
-
-
-
-
     private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
@@ -95,7 +91,7 @@ class BinsWithProductViewModel :ViewModel(){
         // API call to get list of warehouses
         viewModelScope.launch (exceptionHandler) {
             try{
-                val response = ScannerAPI.retrofitService.getWarehousesAvailable()
+                val response = ScannerAPI.GeneralService.getWarehousesAvailable()
                 _listOfWarehouses.value = response.response.warehouses.warehouses
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
@@ -119,7 +115,7 @@ class BinsWithProductViewModel :ViewModel(){
         }
         viewModelScope.launch (exceptionHandler){
             try{
-                val response = ScannerAPI.retrofitService.getItemDetailsForBinSearch(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, scannedBarCode)
+                val response = ScannerAPI.ViewBinsThatHaveItemService.getItemDetailsForBinSearch(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, scannedBarCode)
                 _barcodeErrorMessage.value = response.response.barcodeErrorMessage
                 _isBarCodeValid.value = response.response.isBarCodeValid
                 _wasLastAPICallSuccessful.value = true
@@ -141,7 +137,7 @@ class BinsWithProductViewModel :ViewModel(){
         }
         viewModelScope.launch (exceptionHandler) {
             try{
-                val response = ScannerAPI.retrofitService.getAllBinsThatHaveProduct(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, itemNumber)
+                val response = ScannerAPI.ViewBinsThatHaveItemService.getAllBinsThatHaveProduct(_companyIDOfUser.value!!, _currentWarehouseNumber.value!!, itemNumber)
                 _listOfBinsThatHaveProduct.value = response.response.binsThatHaveItem.binsThatHaveItem
                 _hasBinBeenFoundWithItem.value = response.response.hasBinBeenFoundWithItem
                 _wasLastAPICallSuccessful.value = true
