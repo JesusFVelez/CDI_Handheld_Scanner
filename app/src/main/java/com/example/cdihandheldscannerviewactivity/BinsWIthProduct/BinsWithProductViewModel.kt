@@ -111,7 +111,7 @@ class BinsWithProductViewModel :ViewModel(){
         setWarehouseNumber(warehouseName)
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
-            Log.i("~get item details for Bin search API Call" , "Error -> ${exception.message}")
+            Log.i("~get item details for Bin search API Call Exception Handler" , "Error -> ${exception.message}")
         }
         viewModelScope.launch (exceptionHandler){
             try{
