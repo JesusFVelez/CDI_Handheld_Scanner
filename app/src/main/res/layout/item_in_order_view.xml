@@ -9,7 +9,7 @@
     android:background="@drawable/listitembackgroundview">
 
     <TextView
-        android:id="@+id/ToPickText"
+        android:id="@+id/quantityToPick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
@@ -31,7 +31,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/QtyOnHandIcon"
+        android:id="@+id/binIcon"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="10dp"
@@ -50,9 +50,10 @@
         android:text="02-A-132"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/QtyOnHandIcon" />
+        app:layout_constraintStart_toEndOf="@+id/binIcon" />
 
     <TextView
+        android:id="@+id/itemName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -64,13 +65,13 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <ImageView
-        android:id="@+id/CDILogoImage"
+        android:id="@+id/itemPickingStatusIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/warning_icon"
-        app:layout_constraintStart_toStartOf="@+id/ToPickText"
-        app:layout_constraintEnd_toEndOf="@+id/ToPickText"
-        app:layout_constraintBottom_toTopOf="@+id/ToPickText"/>
+        app:layout_constraintStart_toStartOf="@+id/quantityToPick"
+        app:layout_constraintEnd_toEndOf="@+id/quantityToPick"
+        app:layout_constraintBottom_toTopOf="@+id/quantityToPick"/>
 
 
 
