@@ -10,8 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
+import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
@@ -20,7 +23,9 @@ import com.example.cdihandheldscannerviewactivity.databinding.FragmentOrderPicki
 class orderPickingMainFragment : Fragment() {
 
     private lateinit var binding: FragmentOrderPickingMainBinding
+    private lateinit var orderNumberEditText: EditText
     private lateinit var searchOrderButton: Button
+    private val viewModel: ItemPickingViewModel by activityViewModels()
 
     // Network-related variables
     private lateinit var connectivityManager: ConnectivityManager
@@ -41,6 +46,7 @@ class orderPickingMainFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_picking_main, container, false)
         initUIElements()
         initNetworkRelatedComponents()
+
 
         return binding.root
 

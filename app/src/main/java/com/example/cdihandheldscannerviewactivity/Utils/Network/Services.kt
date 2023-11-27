@@ -17,7 +17,8 @@ private val SERVICE_PATHS = mapOf("ViewBinsThatHaveItem" to "/ViewBinsThatHaveIt
                                   "CountAllItemsInWarehouse" to "/CountAllItemsInWarehouseService/",
                                   "login" to "/loginService/",
                                   "GeneralServices" to "/generalServices/",
-                                  "ViewProductsInBin" to "/ViewProductsInBinService/")
+                                  "ViewProductsInBin" to "/ViewProductsInBinService/",
+                                  "ItemPicking" to "/ItemPickingForDispatchService/")
 
 
 // Moshi instance for converting JSON to Kotlin objects
@@ -55,6 +56,14 @@ private val retrofitViewProductsInBinService = Retrofit.Builder()
     .baseUrl(BASE_URL + SERVICE_PATHS["ViewProductsInBin"]) // Set the base URL for API calls
     .build()
 
+// Retrofit instance for making API calls
+private val retrofitItemPickingForDispatchService = Retrofit.Builder()
+    .addConverterFactory(MoshiConverterFactory.create(moshi))// Use Moshi for JSON conversion
+    .baseUrl(BASE_URL + SERVICE_PATHS["ItemPicking"])// Set the base URL for API calls
+    .build()
+
+
+
 
 
 
@@ -85,6 +94,10 @@ interface Services{
     @GET("getItemDetailsForBinSearch")
     suspend fun getItemDetailsForBinSearch(@Query("companyID") companyID: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("scannedCode") scannedCode: String) : ResponseWrapperItemDetailsForBinSearch
 
+    @GET("getAllItemsInOrder")
+    suspend fun getAllItemsInOrder(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID:String, @Query("pickerUserName") pickerUserName:String) :ItemPickingResponseWrapper
+
+
 
 }
 
@@ -113,5 +126,11 @@ object ScannerAPI {
     val ViewProductsInBinService : Services by lazy{
         retrofitViewProductsInBinService.create(Services::class.java)
     }
+
+    val ItemPickingForDispatchService: Services by lazy{
+        retrofitItemPickingForDispatchService.create(Services::class.java)
+    }
+
+
 
 }
