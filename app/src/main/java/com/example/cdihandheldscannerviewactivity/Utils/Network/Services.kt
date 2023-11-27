@@ -32,7 +32,7 @@ private val retrofitLogin = Retrofit.Builder()
     .build()
 
 // Retrofit instance for making API calls
-private val retrofitCountAllItemsInWarehouseService = Retrofit.Builder()
+private val retrofitCountAllItemsInWarehouse = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi)) // Use Moshi for JSON conversion
     .baseUrl(BASE_URL + SERVICE_PATHS["CountAllItemsInWarehouse"]) // Set the base URL for API calls
     .build()
@@ -57,11 +57,7 @@ private val retrofitViewProductsInBinService = Retrofit.Builder()
 
 
 
-
-
-
-// Interface defining the API endpoints
-interface Services{
+interface loginServices{
     // Endpoint for getting companies
     @GET("getCompanies")
     suspend fun getCompanies(): ResponseWrapper
@@ -69,18 +65,11 @@ interface Services{
     // Endpoint for checking if a user is logged in
     @POST("login")
     fun isLogedIn(@Body user: requestUser): Call<ResponseWrapperUser>
+}
 
-    // Endpoint for getting available warehouses
-    @GET("getWarehouses")
-    suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
-
-    // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
-    @GET("getItemsInBin")
-    suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
-
+interface viewBinsThatHaveItemServices{
     @GET("getBinsThatHaveItem")
     suspend fun getAllBinsThatHaveProduct(@Query("companyID") companyID:String, @Query("warehouseNumber") warehouseNumber: Int, @Query("itemNumber") itemNumber:String): ResponseWrapperBinsWithProduct
-
 
     @GET("getItemDetailsForBinSearch")
     suspend fun getItemDetailsForBinSearch(@Query("companyID") companyID: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("scannedCode") scannedCode: String) : ResponseWrapperItemDetailsForBinSearch
@@ -88,30 +77,45 @@ interface Services{
 
 }
 
+interface viewProductsInBinServices{
+    // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
+    @GET("getItemsInBin")
+    suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
+}
+
+interface generalServives{
+    // Endpoint for getting available warehouses
+    @GET("getWarehouses")
+    suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
+
+}
+
+
+
 // Data class for the user request
 data class requestUser(val request: User)
 data class User(val userName: String, val password: String, val company: String)
 
 // Object for accessing the API services
 object ScannerAPI {
-    val LoginService : Services by lazy{
-        retrofitLogin.create(Services::class.java)
+    val LoginService : loginServices by lazy{
+        retrofitLogin.create(loginServices::class.java)
     }
 
-    val CountAllItemsInWarehouseService : Services by lazy{
-        retrofitCountAllItemsInWarehouseService.create(Services::class.java)
+//    val CountAllItemsInWarehouseService : Services by lazy{
+//        retrofitCountAllItemsInWarehouseService.create(Services::class.java)
+//    }
+
+    val GeneralService : generalServives by lazy{
+        retrofitGeneralService.create(generalServives::class.java)
     }
 
-    val GeneralService : Services by lazy{
-        retrofitGeneralService.create(Services::class.java)
+    val ViewBinsThatHaveItemService : viewBinsThatHaveItemServices by lazy{
+        retrofitViewBinsThatHaveItemService.create(viewBinsThatHaveItemServices::class.java)
     }
 
-    val ViewBinsThatHaveItemService : Services by lazy{
-        retrofitViewBinsThatHaveItemService.create(Services::class.java)
-    }
-
-    val ViewProductsInBinService : Services by lazy{
-        retrofitViewProductsInBinService.create(Services::class.java)
+    val ViewProductsInBinService : viewProductsInBinServices by lazy{
+        retrofitViewProductsInBinService.create(viewProductsInBinServices::class.java)
     }
 
 }
