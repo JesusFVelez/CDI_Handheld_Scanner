@@ -83,7 +83,7 @@ interface viewProductsInBinServices{
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
 }
 
-interface generalServives{
+interface generalServices{
     // Endpoint for getting available warehouses
     @GET("getWarehouses")
     suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
@@ -106,8 +106,8 @@ object ScannerAPI {
 //        retrofitCountAllItemsInWarehouseService.create(Services::class.java)
 //    }
 
-    val GeneralService : generalServives by lazy{
-        retrofitGeneralService.create(generalServives::class.java)
+    val GeneralService : generalServices by lazy{
+        retrofitGeneralService.create(generalServices::class.java)
     }
 
     val ViewBinsThatHaveItemService : viewBinsThatHaveItemServices by lazy{
