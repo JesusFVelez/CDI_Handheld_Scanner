@@ -200,8 +200,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     // Initialize LiveData observers
     private fun initObservers(){
 
-        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
-            if(!wasAPICallSuccesfull && hasPageJustStarted){
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccessful ->
+            if(!wasAPICallSuccessful && hasPageJustStarted){
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }

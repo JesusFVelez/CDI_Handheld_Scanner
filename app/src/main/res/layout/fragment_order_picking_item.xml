@@ -90,7 +90,7 @@
             android:layout_height="140dp"
             android:background="@drawable/productdetailsupperbackground"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndtOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/upperDiv">
 
             <EditText

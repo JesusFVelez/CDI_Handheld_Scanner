@@ -82,12 +82,26 @@ interface viewBinsThatHaveItemServices{
 
     @GET("getItemDetailsForBinSearch")
     suspend fun getItemDetailsForBinSearch(@Query("companyID") companyID: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("scannedCode") scannedCode: String) : ResponseWrapperItemDetailsForBinSearch
+}
 
+interface ItemPickingForDispatchServices{
     @GET("getAllItemsInOrder")
     suspend fun getAllItemsInOrder(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID:String, @Query("pickerUserName") pickerUserName:String) :ItemPickingResponseWrapper
 
+    @GET("confirmBin")
+    suspend fun confirmBin(@Query("binLocationToConfirm") binLocationToConfirm: String, @Query("orderNumber") orderNumber: String, @Query("itemNumber") itemNumber: String, @Query("itemBin") itemBin: String) :BinConfirmationResponseWrapper
 
+    @GET("confirmItem")
+    suspend fun confirmItem(@Query("scannedCode") scannedCode: String, @Query("actualItemNumber") actualItemNumber: String, @Query("companyID") companyID: String, @Query("orderNumber") orderNumber: String) :ItemConfirmationResponseWrapper
 
+    @GET("verifyIfOrderHasPicking")
+    suspend fun verifyIfOrderHasPicking(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID: String) :OrderHasPickingResponseWrapper
+
+    @GET("confirmOrder")
+    suspend fun confirmOrder(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID: String) :ConfirmOrderResponseWrapper
+
+    @GET("verifyIfClientAccountIsClosed")
+    suspend fun verifyIfClientAccountIsClosed(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID: String) :VerifyClientResponseWrapper
 }
 
 interface viewProductsInBinServices{
@@ -131,9 +145,11 @@ object ScannerAPI {
         retrofitViewProductsInBinService.create(viewProductsInBinServices::class.java)
     }
 
-    val ItemPickingForDispatchService: Services by lazy{
-        retrofitItemPickingForDispatchService.create(Services::class.java)
+    val ItemPickingForDispatchService: ItemPickingForDispatchServices by lazy{
+        retrofitItemPickingForDispatchService.create(ItemPickingForDispatchServices::class.java)
     }
+
+
 
 
 

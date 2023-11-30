@@ -1,5 +1,6 @@
 package com.example.cdihandheldscannerviewactivity.ItemPicking
 
+import android.app.Dialog
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -14,13 +15,15 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinAdapter
 import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentOrderPickingMainBinding
 
-class orderPickingMainFragment : Fragment() {
+class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     private lateinit var binding: FragmentOrderPickingMainBinding
     private lateinit var orderNumberEditText: EditText
@@ -31,8 +34,10 @@ class orderPickingMainFragment : Fragment() {
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var networkCallback : ConnectivityManager.NetworkCallback
     private lateinit var networkRequest: NetworkRequest
-
+    private lateinit var adapter : ItemPickingAdapter
     private var hasPageJustStarted: Boolean = false
+
+    private lateinit var progressDialog: Dialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,7 +51,17 @@ class orderPickingMainFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_picking_main, container, false)
         initUIElements()
         initNetworkRelatedComponents()
+        initObservers()
 
+        adapter = ItemPickingAdapter(this)
+        binding.totalPickingItemsList.adapter = adapter
+
+
+        // Retrieve company ID from shared preferences
+        val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        viewModel.setCompanyIDFromSharedPref(companyID)
+        val userNameOfPicker: String = SharedPreferencesUtils.getUserNameFromSharedPref(requireContext())
+        viewModel.setUserNameOfPickerFromSharedPref(userNameOfPicker)
 
         return binding.root
 
@@ -100,11 +115,64 @@ class orderPickingMainFragment : Fragment() {
 
     private fun initUIElements(){
         searchOrderButton = binding.searchOrderButton
+        orderNumberEditText = binding.orderNumberEditText
         searchOrderButton.setOnClickListener{
+                progressDialog.show()
+                viewModel.verifyIfOrderIsAvailableInBackend(orderNumberEditText.text.toString())
+               // viewModel.getItemsInOrder(orderNumberEditText.text.toString())
+        }
+        progressDialog = Dialog(requireContext()).apply{
+            setContentView(R.layout.dialog_loading)
+            setCancelable(false)
+        }
+
+
+    }
+
+    private fun initObservers(){
+
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){ wasLasAPICallSuccesful ->
+            if(!wasLasAPICallSuccesful){
+                progressDialog.dismiss()
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
+            }
+        }
+
+        viewModel.wasOrderFound.observe(viewLifecycleOwner){ isOrderInBackend ->
+            if(isOrderInBackend){
+                viewModel.verifyIfOrderHasPickingInBackend(orderNumberEditText.text.toString())
+            }
+            else{
+                progressDialog.dismiss()
+                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmOrder"]!!)
+            }
+        }
+
+        viewModel.orderHasPicking.observe(viewLifecycleOwner){ doesOrderHasPicking ->
+            if(doesOrderHasPicking){
+                viewModel.getItemsInOrder(orderNumberEditText.text.toString())
+            }
+            else {
+                progressDialog.dismiss()
+                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["verifyIfOrderHasPicking"]!!)
+            }
+        }
+
+        viewModel.listOfItemsInOrder.observe(viewLifecycleOwner){ newListOfItemsInOrder ->
+            newListOfItemsInOrder.let{
+                progressDialog.dismiss()
+                adapter.data = it
+            }
 
         }
 
 
+
+
+    }
+
+    override fun onItemClickListener(view: View, position: Int) {
+              //TODO - add what happens when you click on an item
     }
 
 }

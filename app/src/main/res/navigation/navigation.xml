@@ -19,6 +19,11 @@
             app:destination="@id/searchBinsWithProductFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeScreenFragment_to_orderPickingMainFragment"
+            app:destination="@id/orderPickingMainFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"
@@ -51,4 +56,8 @@
         android:name="com.example.cdihandheldscannerviewactivity.BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"
         android:label="fragment_bins_that_have_product"
         tools:layout="@layout/fragment_bins_that_have_product" />
+    <fragment
+        android:id="@+id/orderPickingMainFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment"
+        android:label="orderPickingMainFragment" />
 </navigation>

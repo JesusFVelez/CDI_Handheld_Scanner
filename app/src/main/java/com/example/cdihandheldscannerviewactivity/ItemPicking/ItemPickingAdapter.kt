@@ -25,7 +25,7 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPickingViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout., parent, false)
+        val view = layoutInflater.inflate(R.layout.item_in_order_view, parent, false)
         return ItemPickingViewHolder(view, listener)
     }
 
@@ -38,11 +38,17 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
         holder.itemNumberTextView.text = item.itemNumber
         holder.itemNameTextView.text = item.itemName + " - " + item.itemDetails
         holder.binNumberTextView.text = item.binLocation
-        holder.remainingItemsToPickTextView.text = "Picked: " + item.quantityPicked + "/" +item.totalQuantityToBePicked
+        holder.remainingItemsToPickTextView.text = "Picked: " + item.quantityPicked.toInt() + "/" + item.totalQuantityToBePicked.toInt()
+
+
         if(item.itemPickingStatus == "Picked")
-            holder.itemPickingStatusImage.setImageResource(R.drawable.)
+            holder.itemPickingStatusImage.setImageResource(R.drawable.checkmark_icon)
         else if(item.itemPickingStatus == "Partially Picked")
             holder.itemPickingStatusImage.setImageResource(R.drawable.warning_icon)
+        else if(item.itemPickingStatus == "Not Picked")
+            holder.itemPickingStatusImage.setImageResource(R.drawable.error_icon)
+        else
+            holder.itemPickingStatusImage.setImageResource(R.drawable.black_warning_icon)
 
 
     }

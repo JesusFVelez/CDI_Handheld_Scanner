@@ -29,7 +29,7 @@ data class ItemsInOrderInfo(
     @Json(name = "pendingPickQtyInCases") val pendingPickQtyInCases: Float,
     @Json(name = "pendingPickQtyInIndividualUnits") val pendingPickQtyInIndividualUnits: Float,
     @Json(name = "uomForCases") val uomForCases: String,
-    @Json(name = "oumForIndividualCases") val uomForIndividualCases: String,
+    @Json(name = "uomForIndividualItems") val uomForIndividualItems: String,
     @Json(name = "binLocation") val binLocation: String,
     @Json(name = "doesItemHaveSizes") val doesItemHaveSizes: Boolean,
     @Json(name = "doesItemHaveSerialNumber") val doesItemHaveSerialNumber: Boolean,
@@ -37,8 +37,81 @@ data class ItemsInOrderInfo(
     @Json(name = "itemSize") val itemSize: String,
     @Json(name = "itemStyleColor") val itemStyleColor: String,
     @Json(name = "howManyIndividualQtysPerUOM") val howManyIndividualQtysPerUOM: Float
+
 )
 
 
 
 
+// Bin Confirmation
+@JsonClass(generateAdapter = true)
+data class BinConfirmationResponseWrapper(
+    val response: responseBinConfirmation
+)
+
+@JsonClass(generateAdapter = true)
+data class responseBinConfirmation(
+    @Json(name = "hasBinBeenConfirmed") val hasBinBeenConfirmed: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+
+
+
+// Item Confirmation
+@JsonClass(generateAdapter = true)
+data class ItemConfirmationResponseWrapper(
+    val response: responseItemConfirmation
+)
+
+@JsonClass(generateAdapter = true)
+data class responseItemConfirmation(
+    @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String,
+    @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode:Float
+)
+
+
+
+
+// Order Has Picking
+@JsonClass(generateAdapter = true)
+data class OrderHasPickingResponseWrapper(
+    val response: responsePickingConfirmation
+)
+
+@JsonClass(generateAdapter = true)
+data class responsePickingConfirmation(
+    @Json(name = "orderHasPicking") val orderHasPicking: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+
+
+
+// Confirm Order
+@JsonClass(generateAdapter = true)
+data class ConfirmOrderResponseWrapper(
+    val response: responseOrderConfirmation
+)
+
+@JsonClass(generateAdapter = true)
+data class responseOrderConfirmation(
+    @Json(name = "isOrderAvailable") val isOrderAvailable: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+
+
+
+// Verify Client
+@JsonClass(generateAdapter = true)
+data class VerifyClientResponseWrapper(
+    val response: responseClientConfirmation
+)
+
+@JsonClass(generateAdapter = true)
+data class responseClientConfirmation(
+    @Json(name = "isOrderAvailable") val isClientAccountClosed: Boolean, // verify this
+    @Json(name = "errorMessage") val errorMessage: String
+)
