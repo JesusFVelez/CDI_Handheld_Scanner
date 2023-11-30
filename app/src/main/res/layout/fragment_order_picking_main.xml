@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/ScrollVIew"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -66,16 +66,18 @@
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
                 android:background="@drawable/menu_option_button"
                 android:text="@string/finish"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/totalPickingItemsList"/>
+                app:layout_constraintTop_toBottomOf="@+id/totalPickingItemsList" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </layout>

@@ -15,6 +15,14 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="CustomScannerInputWhite">
+        <item name="android:background" >@drawable/white_scan_text_box</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">60dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <style name="CustomOrderInput">
         <item name="android:background" >@drawable/order_number_text_box</item>
         <item name="android:imeOptions">actionDone</item>

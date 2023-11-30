@@ -15,6 +15,8 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinAdapter
 import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel
 import com.example.cdihandheldscannerviewactivity.R
@@ -37,6 +39,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private lateinit var adapter : ItemPickingAdapter
     private var hasPageJustStarted: Boolean = false
 
+
+
+    private var hasOrderBeenSearched: Boolean = false
     private lateinit var progressDialog: Dialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,9 +122,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         searchOrderButton = binding.searchOrderButton
         orderNumberEditText = binding.orderNumberEditText
         searchOrderButton.setOnClickListener{
+                hasOrderBeenSearched = true
                 progressDialog.show()
                 viewModel.verifyIfOrderIsAvailableInBackend(orderNumberEditText.text.toString())
-               // viewModel.getItemsInOrder(orderNumberEditText.text.toString())
         }
         progressDialog = Dialog(requireContext()).apply{
             setContentView(R.layout.dialog_loading)
@@ -132,47 +137,64 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private fun initObservers(){
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){ wasLasAPICallSuccesful ->
-            if(!wasLasAPICallSuccesful){
+            if(!wasLasAPICallSuccesful && hasOrderBeenSearched){
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
 
         viewModel.wasOrderFound.observe(viewLifecycleOwner){ isOrderInBackend ->
-            if(isOrderInBackend){
+            if(isOrderInBackend && hasOrderBeenSearched){
                 viewModel.verifyIfOrderHasPickingInBackend(orderNumberEditText.text.toString())
             }
-            else{
+            else if(hasOrderBeenSearched) {
                 progressDialog.dismiss()
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmOrder"]!!)
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["confirmOrder"]!!
+                )
             }
         }
 
         viewModel.orderHasPicking.observe(viewLifecycleOwner){ doesOrderHasPicking ->
-            if(doesOrderHasPicking){
-                viewModel.getItemsInOrder(orderNumberEditText.text.toString())
+            if(doesOrderHasPicking && hasOrderBeenSearched){
+                viewModel.verifyIfClientAccountIsClosedInBackend(orderNumberEditText.text.toString())
             }
-            else {
+            else if(hasOrderBeenSearched) {
+                    progressDialog.dismiss()
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        viewModel.errorMessage.value!!["verifyIfOrderHasPicking"]!!
+                    )
+                }
+
+        }
+
+        viewModel.wasClientAccountClosed.observe(viewLifecycleOwner){wasClientAccountClosed ->
+
+            if(wasClientAccountClosed && hasOrderBeenSearched){
                 progressDialog.dismiss()
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["verifyIfOrderHasPicking"]!!)
-            }
+                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["verifyIfClientAccountIsClosed"]!!)
+            }else if (hasOrderBeenSearched)
+                viewModel.getItemsInOrder(orderNumberEditText.text.toString())
         }
 
         viewModel.listOfItemsInOrder.observe(viewLifecycleOwner){ newListOfItemsInOrder ->
-            newListOfItemsInOrder.let{
-                progressDialog.dismiss()
-                adapter.data = it
-            }
-
+            if(hasOrderBeenSearched)
+                newListOfItemsInOrder.let{
+                    progressDialog.dismiss()
+                    adapter.data = it
+                }
         }
-
-
-
-
     }
 
     override fun onItemClickListener(view: View, position: Int) {
-              //TODO - add what happens when you click on an item
+        // TODO - Checkeate a ver como puedes presentar el popup message de confirm bin (ya cree el popup message en el folder de layout, usalo de para el todo de crear el popup message de item number referencia. Se llama "confirm_bin_popup.xml" )antes de ir al proximo fragment (orderPickingItemFragment)
+        // TODO - averiguarte como hacer que cuando le des "ok", llames el API de confirm bin y valida que este bien el bin y despues que entre al fragment de "orderPickingItemFragment"
+
+        // TODO -
+//        val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("orderPickingMainFragment")
+//        findNavController().navigate(R.id.action_orderPickingMainFragment_to_orderPickingItemFragment, bundle)
     }
 
 }

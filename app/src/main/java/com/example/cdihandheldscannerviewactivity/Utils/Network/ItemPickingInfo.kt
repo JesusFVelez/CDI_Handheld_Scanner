@@ -104,7 +104,7 @@ data class responseOrderConfirmation(
 
 
 
-// Verify Client
+// Verify if Client Account is closed
 @JsonClass(generateAdapter = true)
 data class VerifyClientResponseWrapper(
     val response: responseClientConfirmation
@@ -112,6 +112,6 @@ data class VerifyClientResponseWrapper(
 
 @JsonClass(generateAdapter = true)
 data class responseClientConfirmation(
-    @Json(name = "isOrderAvailable") val isClientAccountClosed: Boolean, // verify this
+    @Json(name = "isClientAccountClosed") val isClientAccountClosed: Boolean,
     @Json(name = "errorMessage") val errorMessage: String
 )

@@ -59,5 +59,15 @@
     <fragment
         android:id="@+id/orderPickingMainFragment"
         android:name="com.example.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment"
-        android:label="orderPickingMainFragment" />
+        android:label="orderPickingMainFragment" >
+        <action
+            android:id="@+id/action_orderPickingMainFragment_to_orderPickingItemFragment"
+            app:destination="@id/orderPickingItemFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderPickingItemFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails.OrderPickingItemFragment"
+        android:label="OrderPickingItemFragment" />
 </navigation>

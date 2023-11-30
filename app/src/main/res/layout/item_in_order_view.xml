@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/listitembackgroundview">
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:text="F010000087"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,24 +54,28 @@
 
     <TextView
         android:id="@+id/itemName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:text="Criada Habichuelas Rosadas A/S"
+        android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@+id/binNumber"
+        app:layout_constraintEnd_toStartOf="@+id/itemPickingStatusIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemNumber" />
 
     <ImageView
         android:id="@+id/itemPickingStatusIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/warning_icon"
-        app:layout_constraintStart_toStartOf="@+id/quantityToPick"
+        app:layout_constraintBottom_toTopOf="@+id/quantityToPick"
         app:layout_constraintEnd_toEndOf="@+id/quantityToPick"
-        app:layout_constraintBottom_toTopOf="@+id/quantityToPick"/>
+        app:layout_constraintStart_toStartOf="@+id/quantityToPick"
+        app:layout_constraintTop_toBottomOf="@+id/itemNumber" />
 
 
 

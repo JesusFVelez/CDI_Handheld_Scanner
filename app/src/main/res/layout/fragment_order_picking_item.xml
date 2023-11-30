@@ -120,7 +120,7 @@
             android:id="@+id/lowerDiv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/productdetailsupperbackground"
+            android:background="@drawable/lower_portion_item_picking"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -131,11 +131,11 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/infoDiv"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/pickingButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/lowerDiv"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintTop_toTopOf="@+id/lowerDiv">
 
                 <TextView
                     android:id="@+id/pickItemText"
