@@ -44,18 +44,18 @@
 
 
             <ImageView
-                android:id="@+id/QtyOnHandIcon"
+                android:id="@+id/binLocationIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="5dp"
                 android:gravity="center_horizontal|top"
                 android:src="@drawable/bindetailpage"
-                app:layout_constraintBottom_toBottomOf="@+id/QtyOnHandText"
-                app:layout_constraintEnd_toStartOf="@+id/QtyOnHandText"
-                app:layout_constraintTop_toTopOf="@+id/QtyOnHandText" />
+                app:layout_constraintBottom_toBottomOf="@+id/binLocationText"
+                app:layout_constraintEnd_toStartOf="@+id/binLocationText"
+                app:layout_constraintTop_toTopOf="@+id/binLocationText" />
 
             <TextView
-                android:id="@+id/QtyOnHandText"
+                android:id="@+id/binLocationText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -94,7 +94,7 @@
             app:layout_constraintTop_toBottomOf="@+id/upperDiv">
 
             <EditText
-                android:id="@+id/binNumberEditText"
+                android:id="@+id/itemNumberEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/CustomScannerInput"
@@ -112,7 +112,7 @@
                 android:text="@string/picking_info"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/binNumberEditText"/>
+                app:layout_constraintTop_toBottomOf="@id/itemNumberEditText"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -172,7 +172,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/pickItem3Text"
+                    android:id="@+id/totalQuantityOfItemsToBePickedText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"

@@ -33,9 +33,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private val viewModel: ItemPickingViewModel by activityViewModels()
 
     // Network-related variables
-    private lateinit var connectivityManager: ConnectivityManager
-    private lateinit var networkCallback : ConnectivityManager.NetworkCallback
-    private lateinit var networkRequest: NetworkRequest
+//    private lateinit var connectivityManager: ConnectivityManager
+//    private lateinit var networkCallback : ConnectivityManager.NetworkCallback
+//    private lateinit var networkRequest: NetworkRequest
     private lateinit var adapter : ItemPickingAdapter
     private var hasPageJustStarted: Boolean = false
 
@@ -55,7 +55,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_picking_main, container, false)
         initUIElements()
-        initNetworkRelatedComponents()
+        //initNetworkRelatedComponents()
         initObservers()
 
         adapter = ItemPickingAdapter(this)
@@ -79,9 +79,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
         hasPageJustStarted = false
         // Register the callback
-        if (connectivityManager != null) {
-            connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-        }
+//        if (connectivityManager != null) {
+//           connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+//        }
     }
 
 
@@ -90,33 +90,33 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         super.onPause()
 
         // Unregister the callback
-        if (connectivityManager != null) {
-            connectivityManager.unregisterNetworkCallback(networkCallback)
-        }
+//        if (connectivityManager != null) {
+//            connectivityManager.unregisterNetworkCallback(networkCallback)
+//        }
     }
 
-    private fun initNetworkRelatedComponents(){
-        // Initialize network-related components
-        connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-        networkRequest = NetworkRequest.Builder().build()
-        networkCallback = object : ConnectivityManager.NetworkCallback() {
-            // Handle network availability
-            override fun onAvailable(network: Network) {
-                // Handle connection
-                if (hasPageJustStarted)
-                    AlerterUtils.startInternetRestoredAlert(requireActivity())
-                else
-                    hasPageJustStarted = true
-
-            }
-            // Handle network loss
-            override fun onLost(network: Network) {
-                // Handle disconnection
-                hasPageJustStarted = true
-                AlerterUtils.startInternetLostAlert(requireActivity())
-            }
-        }
-    }
+//    private fun initNetworkRelatedComponents(){
+//        // Initialize network-related components
+//        connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+//        networkRequest = NetworkRequest.Builder().build()
+//        networkCallback = object : ConnectivityManager.NetworkCallback() {
+//            // Handle network availability
+//            override fun onAvailable(network: Network) {
+//                // Handle connection
+//                if (hasPageJustStarted)
+//                    AlerterUtils.startInternetRestoredAlert(requireActivity())
+//                else
+//                    hasPageJustStarted = true
+//
+//            }
+//            // Handle network loss
+//            override fun onLost(network: Network) {
+//                // Handle disconnection
+//                hasPageJustStarted = true
+//                AlerterUtils.startInternetLostAlert(requireActivity())
+//            }
+//        }
+//    }
 
     private fun initUIElements(){
         searchOrderButton = binding.searchOrderButton
