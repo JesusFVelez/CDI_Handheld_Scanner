@@ -59,10 +59,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     private lateinit var adapter : ProductsInBinAdapter
     private lateinit var progressDialog: Dialog
 
-    // Network-related variables
-    private lateinit var connectivityManager: ConnectivityManager
-    private lateinit var networkCallback : ConnectivityManager.NetworkCallback
-    private lateinit var networkRequest: NetworkRequest
+
 
     private var hasPageJustStarted: Boolean = false
 
@@ -93,7 +90,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         // Initialize LiveData observers
         initObservers()
 
-        initNetworkRelatedComponents()
 
 
         // Retrieve company ID from shared preferences
@@ -138,34 +134,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         binNumberEditText.requestFocus()
     }
 
-    private fun initNetworkRelatedComponents(){
-        // Initialize network-related components
-        connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-        networkRequest = NetworkRequest.Builder().build()
-        networkCallback = object : ConnectivityManager.NetworkCallback() {
-            // Handle network availability
-            override fun onAvailable(network: Network) {
-                // Handle connection
-                if (hasPageJustStarted)
-                    AlerterUtils.startInternetRestoredAlert(requireActivity())
-                else
-                    hasPageJustStarted = true
 
-                if(warehouseSpinner.selectedItem == null) {
-                    activity?.runOnUiThread {
-                        progressDialog.show()
-                        viewModel.getWarehousesFromBackendForSpinner()
-                    }
-                }
-            }
-            // Handle network loss
-            override fun onLost(network: Network) {
-                // Handle disconnection
-                hasPageJustStarted = true
-                AlerterUtils.startInternetLostAlert(requireActivity())
-            }
-        }
-    }
 
     // Handle onResume lifecycle event
     override fun onResume() {
@@ -179,10 +148,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
 
         hasPageJustStarted = false
-        // Register the callback
-        if (connectivityManager != null) {
-            connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-        }
+
     }
 
 
@@ -190,10 +156,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     override fun onPause() {
         super.onPause()
 
-        // Unregister the callback
-        if (connectivityManager != null) {
-            connectivityManager.unregisterNetworkCallback(networkCallback)
-        }
 
     }
 
