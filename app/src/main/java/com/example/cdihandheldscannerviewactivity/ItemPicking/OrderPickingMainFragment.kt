@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
@@ -21,6 +22,7 @@ import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinAda
 import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentOrderPickingMainBinding
@@ -32,10 +34,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private lateinit var searchOrderButton: Button
     private val viewModel: ItemPickingViewModel by activityViewModels()
 
-    // Network-related variables
-//    private lateinit var connectivityManager: ConnectivityManager
-//    private lateinit var networkCallback : ConnectivityManager.NetworkCallback
-//    private lateinit var networkRequest: NetworkRequest
     private lateinit var adapter : ItemPickingAdapter
     private var hasPageJustStarted: Boolean = false
 
@@ -55,7 +53,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_picking_main, container, false)
         initUIElements()
-        //initNetworkRelatedComponents()
         initObservers()
 
         adapter = ItemPickingAdapter(this)
@@ -78,10 +75,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         super.onResume()
 
         hasPageJustStarted = false
-        // Register the callback
-//        if (connectivityManager != null) {
-//           connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-//        }
+
     }
 
 
@@ -89,34 +83,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     override fun onPause() {
         super.onPause()
 
-        // Unregister the callback
-//        if (connectivityManager != null) {
-//            connectivityManager.unregisterNetworkCallback(networkCallback)
-//        }
     }
 
-//    private fun initNetworkRelatedComponents(){
-//        // Initialize network-related components
-//        connectivityManager = requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-//        networkRequest = NetworkRequest.Builder().build()
-//        networkCallback = object : ConnectivityManager.NetworkCallback() {
-//            // Handle network availability
-//            override fun onAvailable(network: Network) {
-//                // Handle connection
-//                if (hasPageJustStarted)
-//                    AlerterUtils.startInternetRestoredAlert(requireActivity())
-//                else
-//                    hasPageJustStarted = true
-//
-//            }
-//            // Handle network loss
-//            override fun onLost(network: Network) {
-//                // Handle disconnection
-//                hasPageJustStarted = true
-//                AlerterUtils.startInternetLostAlert(requireActivity())
-//            }
-//        }
-//    }
+
 
     private fun initUIElements(){
         searchOrderButton = binding.searchOrderButton
@@ -192,9 +161,18 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         // TODO - Checkeate a ver como puedes presentar el popup message de confirm bin (ya cree el popup message en el folder de layout, usalo de para el todo de crear el popup message de item number referencia. Se llama "confirm_bin_popup.xml" )antes de ir al proximo fragment (orderPickingItemFragment)
         // TODO - averiguarte como hacer que cuando le des "ok", llames el API de confirm bin y valida que este bien el bin y despues que entre al fragment de "orderPickingItemFragment"
 
-        // TODO -
-//        val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("orderPickingMainFragment")
-//        findNavController().navigate(R.id.action_orderPickingMainFragment_to_orderPickingItemFragment, bundle)
+        val confirmButtonOnClickListener = OnClickListener {
+            if(true) {
+                val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("orderPickingMainFragment")
+                findNavController().navigate(
+                    R.id.action_orderPickingMainFragment_to_orderPickingItemFragment,
+                    bundle
+                )
+            }
+        }
+        PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Confirm Bin", "Bin Number", confirmButtonOnClickListener)
+
+
     }
 
 }

@@ -6,10 +6,10 @@ import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.TextView
 import com.example.cdihandheldscannerviewactivity.R
@@ -19,28 +19,13 @@ class PopupWindowUtils {
     companion object{
         fun showErrorPopup(context: Context, anchor: View, message: String){
             val layoutInflater = LayoutInflater.from(context)
-            val popupContentView = layoutInflater.inflate(R.layout.error_popup, null)
+            val popupContentView = layoutInflater.inflate(R.layout.popup_error, null)
 
             val popupWindow = PopupWindow(
                 popupContentView,
                 400,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-//            val fadeOutAnimation = AnimationUtils.loadAnimation(context, R.anim.fade_out)
-//            fadeOutAnimation.setAnimationListener(object : Animation.AnimationListener {
-//                override fun onAnimationStart(animation: Animation?) {
-//                    // Animation started
-//                }
-//
-//                override fun onAnimationEnd(animation: Animation?) {
-//                    // Animation ended, dismiss the popup window
-//                    popupWindow.dismiss()
-//                }
-//
-//                override fun onAnimationRepeat(animation: Animation?) {
-//                    // Animation repeating
-//                }
-//            })
 
             popupWindow.enterTransition = MaterialFadeThrough().apply { // this worked
                 duration = 400
@@ -64,6 +49,47 @@ class PopupWindowUtils {
 
             // Optionally specify a location for the pop-up window
             popupWindow.showAtLocation(anchor, Gravity.CENTER, 0, 0)
+        }
+
+
+
+        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, confirmButtonOnClickListener: OnClickListener){
+            val layoutInflater = LayoutInflater.from(context)
+            val popupContentView = layoutInflater.inflate(R.layout.popup_confirmation, null)
+
+            val popupWindow = PopupWindow(
+                    popupContentView,
+                    400,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+            popupWindow.enterTransition = MaterialFadeThrough().apply { // this worked
+                duration = 400
+            }
+            popupWindow.exitTransition = MaterialFadeThrough().apply { // this worked
+                duration = 400
+            }
+
+            val confirmationDescriptionText: TextView
+            confirmationDescriptionText = popupContentView.findViewById(R.id.confirmationDescription)
+            confirmationDescriptionText.text = confirmationText
+
+            val confirmEditText: EditText
+            confirmEditText = popupContentView.findViewById(R.id.confirmationEditText)
+            confirmEditText.hint = confirmEditTextHint
+
+            val confirmButton: Button
+            confirmButton = popupContentView.findViewById(R.id.confirmButton)
+            confirmButton.setOnClickListener(confirmButtonOnClickListener)
+
+
+            popupWindow.apply {
+                isOutsideTouchable = false
+                isFocusable = true
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                showAtLocation(anchor, Gravity.CENTER, 0, 0)  // Optionally specify a location for the pop-up window
+            }
+
         }
     }
 }

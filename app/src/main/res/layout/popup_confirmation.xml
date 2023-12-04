@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/questionText"
+        android:id="@+id/confirmationText"
         style="@style/PopupMessageBigText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,31 +31,31 @@
         app:layout_constraintTop_toBottomOf="@+id/questionIcon" />
 
     <TextView
-        android:id="@+id/questionDescription"
+        android:id="@+id/confirmationDescription"
         style="@style/PopupMessageSmallText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="Some Prompt Goes Here"
-        app:layout_constraintEnd_toEndOf="@+id/questionText"
-        app:layout_constraintStart_toStartOf="@+id/questionText"
-        app:layout_constraintTop_toBottomOf="@+id/questionText" />
+        app:layout_constraintEnd_toEndOf="@+id/confirmationText"
+        app:layout_constraintStart_toStartOf="@+id/confirmationText"
+        app:layout_constraintTop_toBottomOf="@+id/confirmationText" />
 
     <EditText
-        android:id="@+id/binNumberEditText"
+        android:id="@+id/confirmationEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        style="@style/CustomScannerInput"
+        style="@style/CustomScannerInputWhite"
         android:hint="Some Hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/questionDescription"
+        app:layout_constraintTop_toBottomOf="@id/confirmationDescription"
         android:imeOptions="actionDone"
         />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/ConfirmButton"
+        android:id="@+id/confirmButton"
         style="@style/PopupButtons"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
@@ -65,6 +65,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/binNumberEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/confirmationEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
