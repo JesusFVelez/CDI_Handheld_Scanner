@@ -6,11 +6,13 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -90,10 +92,18 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private fun initUIElements(){
         searchOrderButton = binding.searchOrderButton
         orderNumberEditText = binding.orderNumberEditText
+        orderNumberEditText.requestFocus()
+        orderNumberEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Handle the Enter key press here
+               searchForOrder()
+                true
+            } else {
+                false
+            }
+        }
         searchOrderButton.setOnClickListener{
-                hasOrderBeenSearched = true
-                progressDialog.show()
-                viewModel.verifyIfOrderIsAvailableInBackend(orderNumberEditText.text.toString())
+            searchForOrder()
         }
         progressDialog = Dialog(requireContext()).apply{
             setContentView(R.layout.dialog_loading)
@@ -103,7 +113,23 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     }
 
+    private fun searchForOrder(){
+        hasOrderBeenSearched = true
+        progressDialog.show()
+        viewModel.verifyIfOrderIsAvailableInBackend(orderNumberEditText.text.toString())
+    }
+
     private fun initObservers(){
+
+        viewModel.wasBinConfirmed.observe(viewLifecycleOwner){wasBinConfirmed ->
+            if(wasBinConfirmed) {
+                val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("orderPickingMainFragment")
+                findNavController().navigate(
+                    R.id.action_orderPickingMainFragment_to_orderPickingItemFragment,
+                    bundle
+                )
+            }
+        }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){ wasLasAPICallSuccesful ->
             if(!wasLasAPICallSuccesful && hasOrderBeenSearched){
@@ -160,15 +186,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     override fun onItemClickListener(view: View, position: Int) {
         // TODO - Checkeate a ver como puedes presentar el popup message de confirm bin (ya cree el popup message en el folder de layout, usalo de para el todo de crear el popup message de item number referencia. Se llama "confirm_bin_popup.xml" )antes de ir al proximo fragment (orderPickingItemFragment)
         // TODO - averiguarte como hacer que cuando le des "ok", llames el API de confirm bin y valida que este bien el bin y despues que entre al fragment de "orderPickingItemFragment"
-
         val confirmButtonOnClickListener = OnClickListener {
-            if(true) {
-                val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("orderPickingMainFragment")
-                findNavController().navigate(
-                    R.id.action_orderPickingMainFragment_to_orderPickingItemFragment,
-                    bundle
-                )
-            }
+            val binConfirmationEditText = it.findViewById<EditText>(R.id.confirmationEditText)
+            viewModel.confirmBin(orderNumberEditText.text.toString(), binConfirmationEditText.text.toString(), position)
         }
         PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Confirm Bin", "Bin Number", confirmButtonOnClickListener)
 

@@ -164,6 +164,30 @@ class ItemPickingViewModel: ViewModel() {
             Log.i("Verify Client Account - Item Picking (e) " , "Error -> ${e.message}")
         }
     }
+
+    fun confirmBin(orderNumber: String, scannedBin:String, adapterPosition: Int){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Confirm Bin - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
+        }
+
+        // API call to get the products in order
+        try {
+            val binLocation = listOfItemsInOrder.value!![adapterPosition].binLocation
+            val itemNumber = listOfItemsInOrder.value!![adapterPosition].itemNumber
+            viewModelScope.launch(exceptionHandler) {
+                val response = ScannerAPI.ItemPickingForDispatchService.confirmBin(scannedBin, orderNumber, itemNumber, binLocation)
+                _wasLastAPICallSuccessful.value = true
+                _wasBinConfirmed.value = response.response.hasBinBeenConfirmed
+                _errorMessage.value!!["confirmBin"] = response.response.errorMessage
+            }
+
+        }catch (e: Exception){
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Confirm Bin - Item Picking (e) " , "Error -> ${e.message}")
+        }
+    }
+
     fun verifyIfOrderHasPickingInBackend(orderNumber:String){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
