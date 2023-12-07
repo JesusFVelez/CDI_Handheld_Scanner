@@ -85,6 +85,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             viewModel.clearListOfItems()
             bundle?.clear()
         }
+
     }
 
 

@@ -43,14 +43,12 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
         holder.remainingItemsToPickTextView.text = "Picked: " + item.quantityPicked.toInt() + "/" + item.totalQuantityToBePicked.toInt()
 
 
-        if(item.itemPickingStatus == "Picked")
-            holder.itemPickingStatusImage.setImageResource(R.drawable.checkmark_icon)
-        else if(item.itemPickingStatus == "Partially Picked")
-            holder.itemPickingStatusImage.setImageResource(R.drawable.warning_icon)
-        else if(item.itemPickingStatus == "Not Picked")
-            holder.itemPickingStatusImage.setImageResource(R.drawable.error_icon)
-        else
-            holder.itemPickingStatusImage.setImageResource(R.drawable.black_warning_icon)
+        when (item.itemPickingStatus) {
+            "Picked" -> holder.itemPickingStatusImage.setImageResource(R.drawable.checkmark_icon)
+            "Partially Picked" -> holder.itemPickingStatusImage.setImageResource(R.drawable.warning_icon)
+            "Not Picked" -> holder.itemPickingStatusImage.setImageResource(R.drawable.error_icon)
+            else -> holder.itemPickingStatusImage.setImageResource(R.drawable.black_warning_icon)
+        }
     }
 
 
