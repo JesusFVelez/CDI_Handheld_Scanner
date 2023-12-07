@@ -319,4 +319,6 @@ class ItemPickingViewModel: ViewModel() {
             Log.i("finish picking for item - Item Picking (e) " , "Error -> ${e.message}")
         }
     }
+
+    fun startPickingTimer()
 }
