@@ -191,13 +191,11 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
         viewModel.listOfItemsInOrder.observe(viewLifecycleOwner) { newListOfItemsInOrder ->
 
+
             newListOfItemsInOrder.let {
                 progressDialog.dismiss()
                 adapter.data = it
             }
-            newListOfItemsInOrder.sortedBy { it.itemPickingStatus }
-            adapter.notifyDataSetChanged()
-
         }
     }
     override fun onItemClickListener(view: View, position: Int) {

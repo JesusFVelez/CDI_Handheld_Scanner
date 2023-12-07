@@ -106,6 +106,12 @@ interface ItemPickingForDispatchServices{
 
     @PUT("finishPickingForSingleItem")
     suspend fun finishPickingForSingleItem(@Query("companyID")companyID: String, @Query("orderNumber") orderNumber: String, @Query("itemNumber") itemNumber: String, @Query("userNameOfPicker") userNameOfPicker:String, @Query("quantityBeingPicked") quantityBeingPicked:Float): finishPickingForSingleItemResponseWrapper
+
+    @POST("startPickerTimer")
+    suspend fun pickingHasStarted(@Body orderNumber: requestTimerParams, userNameOfPicker: requestTimerParams)
+
+    @POST("endPickerTimer")
+    suspend fun pickingHasEnded(@Body orderNumber: requestTimerParams, userNameOfPicker: requestTimerParams)
 }
 
 interface viewProductsInBinServices{
@@ -122,11 +128,11 @@ interface generalServices{
 }
 
 
-
 // Data class for the user request
 data class requestUser(val request: User)
 data class User(val userName: String, val password: String, val company: String)
 
+data class requestTimerParams(val orderNumber: String, val userNameOfPicker: String)
 // Object for accessing the API services
 object ScannerAPI {
     val LoginService : loginServices by lazy{
@@ -152,9 +158,5 @@ object ScannerAPI {
     val ItemPickingForDispatchService: ItemPickingForDispatchServices by lazy{
         retrofitItemPickingForDispatchService.create(ItemPickingForDispatchServices::class.java)
     }
-
-
-
-
 
 }
