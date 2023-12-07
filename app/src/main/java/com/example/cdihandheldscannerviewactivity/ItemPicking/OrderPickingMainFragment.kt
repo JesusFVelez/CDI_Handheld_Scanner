@@ -37,10 +37,10 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private val viewModel: ItemPickingViewModel by activityViewModels()
 
     private lateinit var adapter : ItemPickingAdapter
+
+
+
     private var hasPageJustStarted: Boolean = false
-
-
-
     private var hasOrderBeenSearched: Boolean = false
     private lateinit var progressDialog: Dialog
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +59,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
         adapter = ItemPickingAdapter(this)
         binding.totalPickingItemsList.adapter = adapter
-
+        hasOrderBeenSearched = false
+        hasPageJustStarted = true
+        viewModel.setChosenAdapterPosition(0)
 
         // Retrieve company ID from shared preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
@@ -77,7 +79,12 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         super.onResume()
 
         hasPageJustStarted = false
-
+        val bundle = arguments
+        val lastFragmentName : String = BundleUtils.getPastFragmentNameFromBundle(bundle)
+        if(lastFragmentName == "HomeScreen"){
+            viewModel.clearListOfItems()
+            bundle?.clear()
+        }
     }
 
 
@@ -116,33 +123,38 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private fun searchForOrder(){
         hasOrderBeenSearched = true
         progressDialog.show()
-        viewModel.verifyIfOrderIsAvailableInBackend(orderNumberEditText.text.toString())
+        viewModel.setOrderNumber(orderNumberEditText.text.toString())
+        viewModel.verifyIfOrderIsAvailableInBackend()
     }
 
-    private fun initObservers(){
+    private fun initObservers() {
 
-        viewModel.wasBinConfirmed.observe(viewLifecycleOwner){wasBinConfirmed ->
-            if(wasBinConfirmed) {
-                val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("orderPickingMainFragment")
+        viewModel.wasBinConfirmed.observe(viewLifecycleOwner) { wasBinConfirmed ->
+            if (wasBinConfirmed && !hasPageJustStarted) {
+                val bundle =
+                    BundleUtils.getBundleToSendFragmentNameToNextFragment("orderPickingMainFragment")
                 findNavController().navigate(
                     R.id.action_orderPickingMainFragment_to_orderPickingItemFragment,
                     bundle
                 )
-            }
+            } else if (!hasPageJustStarted)
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["confirmBin"]!!
+                )
         }
 
-        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){ wasLasAPICallSuccesful ->
-            if(!wasLasAPICallSuccesful && hasOrderBeenSearched){
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccesful ->
+            if (!wasLasAPICallSuccesful && hasOrderBeenSearched) {
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
 
-        viewModel.wasOrderFound.observe(viewLifecycleOwner){ isOrderInBackend ->
-            if(isOrderInBackend && hasOrderBeenSearched){
-                viewModel.verifyIfOrderHasPickingInBackend(orderNumberEditText.text.toString())
-            }
-            else if(hasOrderBeenSearched) {
+        viewModel.wasOrderFound.observe(viewLifecycleOwner) { isOrderInBackend ->
+            if (isOrderInBackend && hasOrderBeenSearched) {
+                viewModel.verifyIfOrderHasPickingInBackend()
+            } else if (hasOrderBeenSearched) {
                 progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
@@ -151,48 +163,57 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             }
         }
 
-        viewModel.orderHasPicking.observe(viewLifecycleOwner){ doesOrderHasPicking ->
-            if(doesOrderHasPicking && hasOrderBeenSearched){
-                viewModel.verifyIfClientAccountIsClosedInBackend(orderNumberEditText.text.toString())
-            }
-            else if(hasOrderBeenSearched) {
-                    progressDialog.dismiss()
-                    AlerterUtils.startErrorAlerter(
-                        requireActivity(),
-                        viewModel.errorMessage.value!!["verifyIfOrderHasPicking"]!!
-                    )
-                }
-
-        }
-
-        viewModel.wasClientAccountClosed.observe(viewLifecycleOwner){wasClientAccountClosed ->
-
-            if(wasClientAccountClosed && hasOrderBeenSearched){
+        viewModel.orderHasPicking.observe(viewLifecycleOwner) { doesOrderHasPicking ->
+            if (doesOrderHasPicking && hasOrderBeenSearched) {
+                viewModel.verifyIfClientAccountIsClosedInBackend()
+            } else if (hasOrderBeenSearched) {
                 progressDialog.dismiss()
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["verifyIfClientAccountIsClosed"]!!)
-            }else if (hasOrderBeenSearched)
-                viewModel.getItemsInOrder(orderNumberEditText.text.toString())
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["verifyIfOrderHasPicking"]!!
+                )
+            }
+
         }
 
-        viewModel.listOfItemsInOrder.observe(viewLifecycleOwner){ newListOfItemsInOrder ->
-            if(hasOrderBeenSearched)
-                newListOfItemsInOrder.let{
-                    progressDialog.dismiss()
-                    adapter.data = it
-                }
+        viewModel.wasClientAccountClosed.observe(viewLifecycleOwner) { wasClientAccountClosed ->
+
+            if (wasClientAccountClosed && hasOrderBeenSearched) {
+                progressDialog.dismiss()
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["verifyIfClientAccountIsClosed"]!!
+                )
+            } else if (hasOrderBeenSearched)
+                viewModel.getItemsInOrder()
+        }
+
+        viewModel.listOfItemsInOrder.observe(viewLifecycleOwner) { newListOfItemsInOrder ->
+
+            newListOfItemsInOrder.let {
+                progressDialog.dismiss()
+                adapter.data = it
+            }
+            newListOfItemsInOrder.sortedBy { it.itemPickingStatus }
+            adapter.notifyDataSetChanged()
+
         }
     }
-
     override fun onItemClickListener(view: View, position: Int) {
-        // TODO - Checkeate a ver como puedes presentar el popup message de confirm bin (ya cree el popup message en el folder de layout, usalo de para el todo de crear el popup message de item number referencia. Se llama "confirm_bin_popup.xml" )antes de ir al proximo fragment (orderPickingItemFragment)
-        // TODO - averiguarte como hacer que cuando le des "ok", llames el API de confirm bin y valida que este bien el bin y despues que entre al fragment de "orderPickingItemFragment"
-        val confirmButtonOnClickListener = OnClickListener {
-            val binConfirmationEditText = it.findViewById<EditText>(R.id.confirmationEditText)
-            viewModel.confirmBin(orderNumberEditText.text.toString(), binConfirmationEditText.text.toString(), position)
+        val listener = object : PopupInputListener {
+            override fun onConfirm(input: EditText) {
+                viewModel.setChosenAdapterPosition(position)
+                viewModel.setCurrentlyChosenItem()
+                viewModel.confirmBin(input.text.toString(), position)
+            }
         }
-        PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Confirm Bin", "Bin Number", confirmButtonOnClickListener)
+        PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Scan Bin '" + viewModel.listOfItemsInOrder.value!![position].binLocation + "' to continue", "Bin Number", listener)
 
 
+    }
+
+    interface PopupInputListener{
+        fun onConfirm(input: EditText)
     }
 
 }

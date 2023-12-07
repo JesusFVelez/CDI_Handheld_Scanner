@@ -33,6 +33,8 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
         return data.size
     }
 
+
+
     override fun onBindViewHolder(holder: ItemPickingViewHolder, position: Int) {
         val item = data[position]
         holder.itemNumberTextView.text = item.itemNumber

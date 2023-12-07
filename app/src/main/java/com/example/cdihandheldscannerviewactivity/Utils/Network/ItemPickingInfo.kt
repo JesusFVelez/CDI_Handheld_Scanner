@@ -115,3 +115,17 @@ data class responseClientConfirmation(
     @Json(name = "isClientAccountClosed") val isClientAccountClosed: Boolean,
     @Json(name = "errorMessage") val errorMessage: String
 )
+
+
+
+// Finish Picking for Single Item
+@JsonClass(generateAdapter = true)
+data class finishPickingForSingleItemResponseWrapper(
+    val response: finishPickingForSingleItemResponse
+)
+
+@JsonClass(generateAdapter = true)
+data class finishPickingForSingleItemResponse(
+    @Json(name = "wasPickingSuccesfull") val wasPickingSuccesfull: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)

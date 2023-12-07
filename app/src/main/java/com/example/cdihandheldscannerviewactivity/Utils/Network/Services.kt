@@ -8,6 +8,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 // Base URL for the API calls
@@ -102,6 +103,9 @@ interface ItemPickingForDispatchServices{
 
     @GET("verifyIfClientAccountIsClosed")
     suspend fun verifyIfClientAccountIsClosed(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID: String) :VerifyClientResponseWrapper
+
+    @PUT("finishPickingForSingleItem")
+    suspend fun finishPickingForSingleItem(@Query("companyID")companyID: String, @Query("orderNumber") orderNumber: String, @Query("itemNumber") itemNumber: String, @Query("userNameOfPicker") userNameOfPicker:String, @Query("quantityBeingPicked") quantityBeingPicked:Float): finishPickingForSingleItemResponseWrapper
 }
 
 interface viewProductsInBinServices{

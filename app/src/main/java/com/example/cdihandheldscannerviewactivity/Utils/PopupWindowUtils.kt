@@ -4,14 +4,17 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.TextView
+import com.example.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment
 import com.example.cdihandheldscannerviewactivity.R
 import com.google.android.material.transition.platform.MaterialFadeThrough
 
@@ -53,7 +56,7 @@ class PopupWindowUtils {
 
 
 
-        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, confirmButtonOnClickListener: OnClickListener){
+        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: orderPickingMainFragment.PopupInputListener){
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(R.layout.popup_confirmation, null)
 
@@ -77,10 +80,24 @@ class PopupWindowUtils {
             val confirmEditText: EditText
             confirmEditText = popupContentView.findViewById(R.id.confirmationEditText)
             confirmEditText.hint = confirmEditTextHint
+            confirmEditText.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                    // Handle the Enter key press here
+                    listener.onConfirm(confirmEditText)
+                    popupWindow.dismiss()
+                    true
+                } else {
+                    false
+                }
+            }
 
             val confirmButton: Button
             confirmButton = popupContentView.findViewById(R.id.confirmButton)
-            confirmButton.setOnClickListener(confirmButtonOnClickListener)
+            confirmButton.setOnClickListener{
+                listener.onConfirm(confirmEditText)
+                popupWindow.dismiss()
+            }
+
 
 
             popupWindow.apply {
