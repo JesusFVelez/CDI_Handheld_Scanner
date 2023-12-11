@@ -101,28 +101,65 @@
             android:id="@+id/barcodeIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
             android:src="@drawable/barcodeitemdetails"
             app:layout_constraintEnd_toStartOf="@+id/currentBarcodeText"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/itemName" />
 
         <TextView
             android:id="@+id/currentBarcodeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal|top"
-            android:text="@string/current_barcode"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
+            android:text="11021547851"
             android:textSize="19sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/barcodeIcon"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/itemName" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lowerDiv"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:background="@drawable/lower_portion_item_picking"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/middleDiv">
 
+        <EditText
+            android:id="@+id/itemBarcodeEditText"
+            style="@style/CustomScannerInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/barcode"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.512"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.357" />
+
+        <Button
+            android:id="@+id/pickingButton"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/menu_option_button"
+            android:text="@string/add"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/itemBarcodeEditText"
+            app:layout_constraintBottom_toBottomOf="@+id/lowerDiv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
