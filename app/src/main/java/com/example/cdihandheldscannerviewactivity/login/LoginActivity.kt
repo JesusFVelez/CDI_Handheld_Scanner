@@ -26,14 +26,12 @@ import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ResponseWrapperUser
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.example.cdihandheldscannerviewactivity.Utils.Network.User
-import com.example.cdihandheldscannerviewactivity.Utils.Network.requestUser
+import com.example.cdihandheldscannerviewactivity.Utils.Network.RequestUser
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
 import com.google.android.material.textfield.TextInputEditText
-import com.tapadoo.alerter.Alert
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -246,7 +244,7 @@ class loginActivity : AppCompatActivity() {
                     passwordEditText.text.toString(),
                     selectedCompanyID
                 )
-                val requestBody = requestUser(user)
+                val requestBody = RequestUser(user)
 
                 ScannerAPI.LoginService.isLogedIn(requestBody)
                     .enqueue(object : Callback<ResponseWrapperUser> {

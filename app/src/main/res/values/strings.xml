@@ -1,32 +1,42 @@
 <resources>
+
     <string name="app_name">CDI Handheld Scanner</string>
-    <string name="user_name">User Name</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="log_out">Log Out</string>
-    <string name="products_in_bin">View Products In Bin</string>
-    <string name="cdi_image_description">An Image of the CDI Logo</string>
-    <string name="companyText">Company</string>
-    <string name="current_barcode">Current Barcode</string>
+    <string name="bin_not_found">Selected Bin Has not been found!</string>
     <string name="bin_number">Bin Number</string>
-    <string name="search_bin">Search Bin</string>
-    <string name="on_hand">On Hand:</string>
-    <string name="loading">Loading…</string>
+    <string name="boxes">Boxes</string>
+    <string name="cdi_image_description">An Image of the CDI Logo</string>
+    <string name="company_not_chosen">Company not chosen</string>
+    <string name="companyText">Company</string>
     <string name="error_message">An error has occurred!</string>
+    <string name="finish">Finish</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="internet_lost">Internet Connectivity lost</string>
+    <string name="internet_lost_title">No internet connection</string>
+    <string name="internet_restored">Internet Connectivity restored</string>
+    <string name="internet_restored_title">Wifi Connected</string>
+    <string name="item_number">Item Number</string>
+    <string name="items_to_pick">Items to Pick</string>
+    <string name="loading">Loading…</string>
+    <string name="log_out">Log Out</string>
+    <string name="login">Login</string>
+    <string name="login_declined">Your credentials are wrong, try again!</string>
     <string name="network_request_error_message">There has been an error with a network request!</string>
     <string name="network_request_error_message_title">Network Error</string>
     <string name="no_internet_connection">Your device is not connected to the internet</string>
-    <string name="internet_restored">Internet Connectivity restored</string>
-    <string name="internet_restored_title">Wifi Connected</string>
-    <string name="internet_lost">Internet Connectivity lost</string>
-    <string name="internet_lost_title">No internet connection</string>
-    <string name="succesfull_login">You have been logged in succesfully!</string>
-    <string name="login_declined">Your credentials are wrong, try again!</string>
-    <string name="company_not_chosen">Company not chosen</string>
-    <string name="bin_not_found">Selected Bin Has not been found!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="item_number">Item Number</string>
-    <string name="search_item">Search Item</string>
+    <string name="of">of</string>
     <string name="okButtonText">Ok</string>
+    <string name="on_hand">On Hand:</string>
+    <string name="order_number">Order Number</string>
+    <string name="password">Password</string>
+    <string name="pick_item">Pick Item</string>
+    <string name="picking_info">Keep Scanning to Complete Order</string>
+    <string name="products_in_bin">View Products In Bin</string>
+    <string name="search_bin">Search Bin</string>
+    <string name="search_item">Search Item</string>
+    <string name="search_order">Search Order</string>
+    <string name="serial_number">Serial Number</string>
+    <string name="succesfull_login">You have been logged in successfully!</string>
+    <string name="units">Units</string>
+    <string name="user_name">User Name</string>
+
 </resources>
