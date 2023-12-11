@@ -46,7 +46,7 @@ import com.google.android.material.transition.platform.MaterialFadeThrough
 import com.tapadoo.alerter.Alerter
 
 
-//TODO - Figure out if there is a way to blur the background behind the Popupwindow so that it does not look as bad
+//TODO - Figure out if there is a way to blur the background behind the Popup window so that it does not look as bad
 class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
     // Declare UI elements and ViewModel
@@ -162,8 +162,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     // Initialize LiveData observers
     private fun initObservers(){
 
-        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccesfull ->
-            if(!wasAPICallSuccesfull && hasPageJustStarted){
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccessful ->
+            if(!wasAPICallSuccessful && hasPageJustStarted){
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }

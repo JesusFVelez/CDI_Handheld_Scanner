@@ -75,5 +75,14 @@ class AlerterUtils {
                 .setBackgroundColorRes(R.color.CDI_Blue)
                 .show()
         }
+
+        fun startSuccessAlert(activity: Activity, successTitle: String, successMessage: String){
+            Alerter.create(activity)
+                .setTitle(successTitle)
+                .setText(successMessage)
+                .setIcon(R.drawable.success_icon)
+                .setBackgroundColorRes(R.color.success_green)
+                .show()
+        }
     }
 }

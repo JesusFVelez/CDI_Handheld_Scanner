@@ -25,6 +25,7 @@ class HomeScreenFragment : Fragment() {
     private lateinit var logOutButton: Button
     private lateinit var productToBinButton: Button
     private lateinit var binsWithProductButton: Button
+    private lateinit var itemPickingButton: Button
 
     // Method called when the fragment is created
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +75,7 @@ class HomeScreenFragment : Fragment() {
         logOutButton = binding.logOutButton
         productToBinButton = binding.productToBinButton
         binsWithProductButton = binding.BinsWithItemButton
+        itemPickingButton = binding.ItemPickingButton
 
         // Set click listener for the log out button to show a logout confirmation dialog
         logOutButton.setOnClickListener{
@@ -101,6 +103,13 @@ class HomeScreenFragment : Fragment() {
             val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("HomeScreen")
             it.findNavController().navigate(R.id.action_homeScreenFragment_to_searchBinsWithProductFragment, bundle)
         }
+
+        itemPickingButton.setOnClickListener{
+            val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("HomeScreen")
+            it.findNavController().navigate(R.id.action_homeScreenFragment_to_orderPickingMainFragment, bundle)
+        }
+
+
 
 
 
