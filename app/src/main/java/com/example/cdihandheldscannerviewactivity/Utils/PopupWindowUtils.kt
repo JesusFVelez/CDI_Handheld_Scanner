@@ -55,6 +55,48 @@ class PopupWindowUtils {
         }
 
 
+        fun createQuestionPopup(context: Context, questionDescription: String, questionTitle:String ): PopupWindow{
+            val layoutInflater = LayoutInflater.from(context)
+            val popupContentView = layoutInflater.inflate(R.layout.popup_question, null)
+
+            val popupWindow = PopupWindow(
+                popupContentView,
+                400,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+            popupWindow.enterTransition = MaterialFadeThrough().apply { // this worked
+                duration = 400
+            }
+            popupWindow.exitTransition = MaterialFadeThrough().apply { // this worked
+                duration = 400
+            }
+
+
+            val textDescription = popupContentView.findViewById<TextView>(R.id.questionDescription)
+            textDescription.text =  questionDescription
+
+            val titleText = popupContentView.findViewById<TextView>(R.id.questionText)
+            titleText.text = questionTitle
+
+//            val yesButton = popupContentView.findViewById<Button>(R.id.YesButton)
+//            yesButton.setOnClickListener(yesOnClickListener)
+//
+//            val noButton = popupContentView.findViewById<Button>(R.id.NoButton)
+//            noButton.setOnClickListener(noOnClickListener)
+
+            popupWindow.isOutsideTouchable = false
+            popupWindow.isFocusable = true
+            popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+            // Optionally specify a location for the pop-up window
+//            popupWindow.showAtLocation(anchor, Gravity.CENTER, 0, 0)
+
+            return popupWindow
+        }
+
+
 
         fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: orderPickingMainFragment.PopupInputListener){
             val layoutInflater = LayoutInflater.from(context)

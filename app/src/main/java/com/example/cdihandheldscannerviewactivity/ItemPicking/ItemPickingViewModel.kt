@@ -1,6 +1,5 @@
 package com.example.cdihandheldscannerviewactivity.ItemPicking
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ItemsInOrderInfo
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
-import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Network.RequestTimerParams
+import com.example.cdihandheldscannerviewactivity.Utils.Network.RequestTimerParamsWrapper
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
@@ -205,8 +205,8 @@ class ItemPickingViewModel: ViewModel() {
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.ItemPickingForDispatchService.confirmBin(scannedBin, _orderNumber.value!!, itemNumber, binLocation)
                 _wasLastAPICallSuccessful.value = true
-                _wasBinConfirmed.value = response.response.hasBinBeenConfirmed
                 _errorMessage.value!!["confirmBin"] = response.response.errorMessage
+                _wasBinConfirmed.value = response.response.hasBinBeenConfirmed
 
             }
 
@@ -256,8 +256,8 @@ class ItemPickingViewModel: ViewModel() {
                 val response = ScannerAPI.ItemPickingForDispatchService.confirmItem(scannedItemCode, currentlyChosenItem.value!!.itemNumber, _companyID.value!!, _orderNumber.value!!)
                 _wasLastAPICallSuccessful.value = true
                 _errorMessage.value!!["confirmItem"] = response.response.errorMessage
-                _wasItemConfirmed.value = response.response.wasItemConfirmed
                 _UOMQtyInBarcode.value = response.response.UOMQtyInBarcode
+                _wasItemConfirmed.value = response.response.wasItemConfirmed
             }
 
         }catch (e: Exception){
@@ -305,13 +305,10 @@ class ItemPickingViewModel: ViewModel() {
         // API call to get the products in order
         try {
             viewModelScope.launch(exceptionHandler) {
-                val currentItem = _listOfItemsInOrder.value!![_currentlyChosenAdapterPosition.value!!]
-                val response = ScannerAPI.ItemPickingForDispatchService.finishPickingForSingleItem(_companyID.value!!, _orderNumber.value!!, _currentlyChosenItem.value!!.itemNumber,_userNameOfPicker.value!!,quantityBeingPicked)
+                val response = ScannerAPI.ItemPickingForDispatchService.finishPickingForSingleItem(_currentlyChosenItem.value!!.uniqueIDForPicking,_userNameOfPicker.value!!,quantityBeingPicked)
                 _wasLastAPICallSuccessful.value = true
-                _wasPickingSuccesfulyFinished.value = response.response.wasPickingSuccesfull
                 _errorMessage.value!!["finishPickingForSingleItem"] = response.response.errorMessage
-
-
+                _wasPickingSuccesfulyFinished.value = response.response.wasPickingSuccesfull
             }
 
         }catch (e: Exception){
@@ -320,5 +317,45 @@ class ItemPickingViewModel: ViewModel() {
         }
     }
 
-    fun startPickingTimer()
+    fun startPickingTimer(){
+        // Exception handler for API call
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Start Picker Timer - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
+        }
+        // API call to get the products in order
+        try {
+            viewModelScope.launch(exceptionHandler) {
+                val timerRequestBody = RequestTimerParams(_orderNumber.value!!, _userNameOfPicker.value!!)
+                val timerRequestBodyWrapper = RequestTimerParamsWrapper(timerRequestBody)
+                ScannerAPI.ItemPickingForDispatchService.startPickerTimer(timerRequestBodyWrapper)
+                _wasLastAPICallSuccessful.value = true
+            }
+
+        }catch (e: Exception){
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Start Picker Timer - Item Picking (e) " , "Error -> ${e.message}")
+        }
+    }
+
+    fun endPickingTimer(){
+        // Exception handler for API call
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("End Picker Timer - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
+        }
+        // API call to get the products in order
+        try {
+            viewModelScope.launch(exceptionHandler) {
+                val timerRequestBody = RequestTimerParams(_orderNumber.value!!, _userNameOfPicker.value!!)
+                val timerRequestBodyWrapper = RequestTimerParamsWrapper(timerRequestBody)
+                ScannerAPI.ItemPickingForDispatchService.endPickerTimer(timerRequestBodyWrapper)
+                _wasLastAPICallSuccessful.value = true
+            }
+
+        }catch (e: Exception){
+            _wasLastAPICallSuccessful.value = false
+            Log.i("End Picker Timer - Item Picking (e) " , "Error -> ${e.message}")
+        }
+    }
 }

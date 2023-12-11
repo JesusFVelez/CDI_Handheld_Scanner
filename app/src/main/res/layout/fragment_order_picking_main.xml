@@ -3,6 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/ScrollVIew"
@@ -62,6 +65,7 @@
             </androidx.recyclerview.widget.RecyclerView>
 
             <Button
+
                 android:id="@+id/finishPickingButton"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
@@ -71,6 +75,7 @@
                 android:text="@string/finish"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:enabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,4 +85,20 @@
 
     </androidx.core.widget.NestedScrollView>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabScrollDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:backgroundTint="@color/CDI_Gray"
+            app:srcCompat="@drawable/scroll_down_icon"
+            android:contentDescription="Scroll Down icon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

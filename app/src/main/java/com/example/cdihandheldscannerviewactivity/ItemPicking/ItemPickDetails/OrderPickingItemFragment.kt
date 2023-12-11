@@ -16,6 +16,7 @@ import com.example.cdihandheldscannerviewactivity.ItemPicking.ItemPickingViewMod
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ItemsInOrderInfo
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentOrderPickingItemBinding
 
 class OrderPickingItemFragment :Fragment(){
@@ -46,7 +47,7 @@ class OrderPickingItemFragment :Fragment(){
         initObservers()
 
         val currentlyChosenAdapterPosition = viewModel.currentlyChosenAdapterPosition.value!!
-        hasPageJustStarted = true
+
 
         return binding.root
     }
@@ -56,6 +57,7 @@ class OrderPickingItemFragment :Fragment(){
         itemNumberEditText.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 // Handle the Enter key press here
+                hasPageJustStarted = true
                 viewModel.confirmItemInBackend(itemNumberEditText.text.toString())
                 true
             } else {
@@ -64,6 +66,7 @@ class OrderPickingItemFragment :Fragment(){
         }
         pickItemButton = binding.pickingButton
         pickItemButton.setOnClickListener{
+            hasPageJustStarted = true
             viewModel.finishPickingForSingleItem(itemAmountEditText.text.toString().toFloat())
         }
         itemAmountEditText = binding.itemAmountEditText
@@ -84,7 +87,6 @@ class OrderPickingItemFragment :Fragment(){
                 itemAmountEditText.setText(valueToBeDisplayed.toString())
             }else if(hasPageJustStarted)
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmItem"]!!)
-
         }
 
         viewModel.wasPickingSuccesfulyFinished.observe(viewLifecycleOwner){wasPickingDoneSuccessfully ->
@@ -95,8 +97,8 @@ class OrderPickingItemFragment :Fragment(){
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["finishPickingForSingleItem"]!!)
         }
 
-        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessfull ->
-            if(!wasLastAPICallSuccessfull && hasPageJustStarted){
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
+            if(!wasLastAPICallSuccessful && hasPageJustStarted){
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
 
@@ -104,11 +106,6 @@ class OrderPickingItemFragment :Fragment(){
 
     }
 
-    // TODO - Me quede en que estaba probando el "Pick Item" button en este fragmet y me estaba saliendo un error de HTTP 500
-    // Tengo que arreglar eso y ver como hacer que despues de que se confirme el picking que me tire para la pantalla de atras
-    // para seguir pickeando mas items
-    // TODO - falta tambien añadir los otro API calls incluyendo los de start picker timer y end picker timer y algunos otros que no
-    // se han anadido a la pistola
 
     private fun setUIValues(){
 

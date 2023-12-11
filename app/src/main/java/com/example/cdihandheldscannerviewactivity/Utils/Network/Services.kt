@@ -67,17 +67,17 @@ private val retrofitItemPickingForDispatchService = Retrofit.Builder()
 
 
 
-interface loginServices{
+interface LoginServices{
     // Endpoint for getting companies
     @GET("getCompanies")
     suspend fun getCompanies(): ResponseWrapper
 
     // Endpoint for checking if a user is logged in
     @POST("login")
-    fun isLogedIn(@Body user: requestUser): Call<ResponseWrapperUser>
+    fun isLogedIn(@Body user: RequestUser): Call<ResponseWrapperUser>
 }
 
-interface viewBinsThatHaveItemServices{
+interface ViewBinsThatHaveItemServices{
     @GET("getBinsThatHaveItem")
     suspend fun getAllBinsThatHaveProduct(@Query("companyID") companyID:String, @Query("warehouseNumber") warehouseNumber: Int, @Query("itemNumber") itemNumber:String): ResponseWrapperBinsWithProduct
 
@@ -105,22 +105,22 @@ interface ItemPickingForDispatchServices{
     suspend fun verifyIfClientAccountIsClosed(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID: String) :VerifyClientResponseWrapper
 
     @PUT("finishPickingForSingleItem")
-    suspend fun finishPickingForSingleItem(@Query("companyID")companyID: String, @Query("orderNumber") orderNumber: String, @Query("itemNumber") itemNumber: String, @Query("userNameOfPicker") userNameOfPicker:String, @Query("quantityBeingPicked") quantityBeingPicked:Float): finishPickingForSingleItemResponseWrapper
+    suspend fun finishPickingForSingleItem(@Query("pickingROWID")pickingROWID: String, @Query("userNameOfPicker") userNameOfPicker:String, @Query("quantityBeingPicked") quantityBeingPicked:Float): finishPickingForSingleItemResponseWrapper
 
     @POST("startPickerTimer")
-    suspend fun pickingHasStarted(@Body orderNumber: requestTimerParams, userNameOfPicker: requestTimerParams)
+    suspend fun startPickerTimer(@Body request: RequestTimerParamsWrapper)
 
     @POST("endPickerTimer")
-    suspend fun pickingHasEnded(@Body orderNumber: requestTimerParams, userNameOfPicker: requestTimerParams)
+    suspend fun endPickerTimer(@Body request: RequestTimerParamsWrapper)
 }
 
-interface viewProductsInBinServices{
+interface ViewProductsInBinServices{
     // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
     @GET("getItemsInBin")
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
 }
 
-interface generalServices{
+interface GeneralServices{
     // Endpoint for getting available warehouses
     @GET("getWarehouses")
     suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
@@ -129,30 +129,31 @@ interface generalServices{
 
 
 // Data class for the user request
-data class requestUser(val request: User)
+data class RequestUser(val request: User)
 data class User(val userName: String, val password: String, val company: String)
 
-data class requestTimerParams(val orderNumber: String, val userNameOfPicker: String)
+data class RequestTimerParamsWrapper(val request: RequestTimerParams)
+data class RequestTimerParams(val orderNumber: String, val userNameOfPicker: String)
 // Object for accessing the API services
 object ScannerAPI {
-    val LoginService : loginServices by lazy{
-        retrofitLogin.create(loginServices::class.java)
+    val LoginService : LoginServices by lazy{
+        retrofitLogin.create(LoginServices::class.java)
     }
 
 //    val CountAllItemsInWarehouseService : Services by lazy{
 //        retrofitCountAllItemsInWarehouseService.create(Services::class.java)
 //    }
 
-    val GeneralService : generalServices by lazy{
-        retrofitGeneralService.create(generalServices::class.java)
+    val GeneralService : GeneralServices by lazy{
+        retrofitGeneralService.create(GeneralServices::class.java)
     }
 
-    val ViewBinsThatHaveItemService : viewBinsThatHaveItemServices by lazy{
-        retrofitViewBinsThatHaveItemService.create(viewBinsThatHaveItemServices::class.java)
+    val ViewBinsThatHaveItemService : ViewBinsThatHaveItemServices by lazy{
+        retrofitViewBinsThatHaveItemService.create(ViewBinsThatHaveItemServices::class.java)
     }
 
-    val ViewProductsInBinService : viewProductsInBinServices by lazy{
-        retrofitViewProductsInBinService.create(viewProductsInBinServices::class.java)
+    val ViewProductsInBinService : ViewProductsInBinServices by lazy{
+        retrofitViewProductsInBinService.create(ViewProductsInBinServices::class.java)
     }
 
     val ItemPickingForDispatchService: ItemPickingForDispatchServices by lazy{

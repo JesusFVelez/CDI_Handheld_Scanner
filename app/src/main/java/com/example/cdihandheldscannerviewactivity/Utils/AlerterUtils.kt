@@ -81,7 +81,7 @@ class AlerterUtils {
                 .setTitle(successTitle)
                 .setText(successMessage)
                 .setIcon(R.drawable.success_icon)
-                .setBackgroundColorRes(android.R.color.holo_green_dark)
+                .setBackgroundColorRes(R.color.success_green)
                 .show()
         }
     }

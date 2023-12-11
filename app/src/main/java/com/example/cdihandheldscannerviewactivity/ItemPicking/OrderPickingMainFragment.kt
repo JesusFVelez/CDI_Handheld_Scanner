@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,7 +16,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.PopupWindow
+import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -28,12 +32,15 @@ import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentOrderPickingMainBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     private lateinit var binding: FragmentOrderPickingMainBinding
     private lateinit var orderNumberEditText: EditText
     private lateinit var searchOrderButton: Button
+    private lateinit var fabScrollDown: FloatingActionButton
+    private lateinit var finishOrderPickingButton: Button
     private val viewModel: ItemPickingViewModel by activityViewModels()
 
     private lateinit var adapter : ItemPickingAdapter
@@ -86,6 +93,11 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             bundle?.clear()
         }
 
+        // For whenever the fragment comes back from the pick individual fragmemt screen
+        if(viewModel.listOfItemsInOrder.value!!.isEmpty() && viewModel.orderNumber.value != null && viewModel.orderNumber.value!! != ""){
+            searchForOrder()
+        }
+
     }
 
 
@@ -97,22 +109,59 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
 
 
+
     private fun initUIElements(){
         searchOrderButton = binding.searchOrderButton
+        searchOrderButton.setOnClickListener{
+            viewModel.setOrderNumber(orderNumberEditText.text.toString())
+            searchForOrder()
+        }
+        finishOrderPickingButton = binding.finishPickingButton
+        finishOrderPickingButton.setOnClickListener {
+                val popupWindow = PopupWindowUtils.createQuestionPopup(requireContext(), "Finished Picking the Order?", "Confirmation")
+                popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
+                    viewModel.endPickingTimer()
+                    viewModel.clearListOfItems()
+                    findNavController().navigateUp()
+                    AlerterUtils.startSuccessAlert(requireActivity(), "Finished Picking","Order has been successfully picked")
+                    popupWindow.dismiss()
+                }
+
+                popupWindow.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
+                    popupWindow.dismiss()
+                }
+
+                popupWindow.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+
+        }
+        fabScrollDown = binding.fabScrollDown
+        fabScrollDown.setOnClickListener{
+            binding.ScrollVIew.post{
+                binding.ScrollVIew.fullScroll(ScrollView.FOCUS_DOWN)
+            }
+        }
+
+
+        binding.ScrollVIew.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+            if (scrollY == (binding.ScrollVIew.getChildAt(0).measuredHeight - binding.ScrollVIew.measuredHeight)) {
+                fabScrollDown.hide()
+            } else {
+                fabScrollDown.show()
+            }
+        })
         orderNumberEditText = binding.orderNumberEditText
         orderNumberEditText.requestFocus()
         orderNumberEditText.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 // Handle the Enter key press here
+                viewModel.setOrderNumber(orderNumberEditText.text.toString())
                searchForOrder()
                 true
             } else {
                 false
             }
         }
-        searchOrderButton.setOnClickListener{
-            searchForOrder()
-        }
+
         progressDialog = Dialog(requireContext()).apply{
             setContentView(R.layout.dialog_loading)
             setCancelable(false)
@@ -124,8 +173,8 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private fun searchForOrder(){
         hasOrderBeenSearched = true
         progressDialog.show()
-        viewModel.setOrderNumber(orderNumberEditText.text.toString())
         viewModel.verifyIfOrderIsAvailableInBackend()
+
     }
 
     private fun initObservers() {
@@ -133,7 +182,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         viewModel.wasBinConfirmed.observe(viewLifecycleOwner) { wasBinConfirmed ->
             if (wasBinConfirmed && !hasPageJustStarted) {
                 val bundle =
-                    BundleUtils.getBundleToSendFragmentNameToNextFragment("orderPickingMainFragment")
+                    BundleUtils.getBundleToSendFragmentNameToNextFragment("OrderPickingMainFragment")
                 findNavController().navigate(
                     R.id.action_orderPickingMainFragment_to_orderPickingItemFragment,
                     bundle
@@ -185,17 +234,22 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
                     requireActivity(),
                     viewModel.errorMessage.value!!["verifyIfClientAccountIsClosed"]!!
                 )
-            } else if (hasOrderBeenSearched)
+            } else if (hasOrderBeenSearched) {
                 viewModel.getItemsInOrder()
+                viewModel.startPickingTimer()
+                finishOrderPickingButton.isEnabled = true
+            }
         }
 
         viewModel.listOfItemsInOrder.observe(viewLifecycleOwner) { newListOfItemsInOrder ->
-
-
             newListOfItemsInOrder.let {
                 progressDialog.dismiss()
                 adapter.data = it
             }
+            if(!newListOfItemsInOrder.isEmpty())
+                fabScrollDown.visibility = View.VISIBLE
+            else
+                fabScrollDown.visibility = View.GONE
         }
     }
     override fun onItemClickListener(view: View, position: Int) {

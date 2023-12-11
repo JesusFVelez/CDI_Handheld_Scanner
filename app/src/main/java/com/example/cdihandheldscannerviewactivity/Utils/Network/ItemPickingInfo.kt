@@ -36,8 +36,8 @@ data class ItemsInOrderInfo(
     @Json(name = "doesItemHaveEachesInOrder") val doesItemHaveEachesInOrder: Boolean,
     @Json(name = "itemSize") val itemSize: String,
     @Json(name = "itemStyleColor") val itemStyleColor: String,
-    @Json(name = "howManyIndividualQtysPerUOM") val howManyIndividualQtysPerUOM: Float
-
+    @Json(name = "howManyIndividualQtysPerUOM") val howManyIndividualQtysPerUOM: Float,
+    @Json(name = "uniqueIDForPicking") val uniqueIDForPicking: String
 )
 
 
