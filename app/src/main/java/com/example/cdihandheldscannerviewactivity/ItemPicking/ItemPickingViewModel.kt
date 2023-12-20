@@ -200,10 +200,9 @@ class ItemPickingViewModel: ViewModel() {
 
         // API call to get the products in order
         try {
-            val binLocation = listOfItemsInOrder.value!![adapterPosition].binLocation
-            val itemNumber = listOfItemsInOrder.value!![adapterPosition].itemNumber
+            val uniqueIDForPicking = listOfItemsInOrder.value!![adapterPosition].uniqueIDForPicking
             viewModelScope.launch(exceptionHandler) {
-                val response = ScannerAPI.ItemPickingForDispatchService.confirmBin(scannedBin, _orderNumber.value!!, itemNumber, binLocation)
+                val response = ScannerAPI.ItemPickingForDispatchService.confirmBin(scannedBin, uniqueIDForPicking)
                 _wasLastAPICallSuccessful.value = true
                 _errorMessage.value!!["confirmBin"] = response.response.errorMessage
                 _wasBinConfirmed.value = response.response.hasBinBeenConfirmed

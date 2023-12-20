@@ -90,7 +90,7 @@ interface ItemPickingForDispatchServices{
     suspend fun getAllItemsInOrder(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID:String, @Query("pickerUserName") pickerUserName:String) :ItemPickingResponseWrapper
 
     @GET("confirmBin")
-    suspend fun confirmBin(@Query("binLocationToConfirm") binLocationToConfirm: String, @Query("orderNumber") orderNumber: String, @Query("itemNumber") itemNumber: String, @Query("itemBin") itemBin: String) :BinConfirmationResponseWrapper
+    suspend fun confirmBin(@Query("binLocationToConfirm") binLocationToConfirm: String, @Query("pickingROWID") pickingROWID: String) :BinConfirmationResponseWrapper
 
     @GET("confirmItem")
     suspend fun confirmItem(@Query("scannedCode") scannedCode: String, @Query("actualItemNumber") actualItemNumber: String, @Query("companyID") companyID: String, @Query("orderNumber") orderNumber: String) :ItemConfirmationResponseWrapper
