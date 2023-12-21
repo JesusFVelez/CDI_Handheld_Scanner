@@ -89,6 +89,7 @@ class OrderPickingItemFragment :Fragment(){
                 else
                     itemAmountEditText.text.toString().toFloat() + viewModel.UOMQtyInBarcode.value!!
                 itemAmountEditText.setText(valueToBeDisplayed.toString())
+                itemNumberEditText.setText("")
             }else if(hasPageJustStarted)
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmItem"]!!)
         }

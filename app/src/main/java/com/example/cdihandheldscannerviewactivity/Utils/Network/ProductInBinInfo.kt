@@ -30,7 +30,7 @@ data class ProductInBinInfo(
     @Json(name = "quantityOnHand") val quantityOnHand: Double,
     @Json(name = "quantityInPicking") val quantityInPicking: Double,
     @Json(name = "expirationDateOfItem") val expirationDate: String?,
-    @Json(name = "barCode") val barCode: String,
+    @Json(name = "barCode") val barCode: String?,
     @Json(name = "unitOfMeasurement") val unitOfMeasurement: String,
     @Json(name = "quantityInUOM") val quantityInUOM: Double,
     @Json(name = "companyCode") val companyCode: String,
