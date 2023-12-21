@@ -5,8 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -18,13 +16,8 @@
         android:theme="@style/Theme.CDIHandheldScannerViewActivity"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
-
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".login.loginActivity"
+            android:name=".SetNetworkDetails.NetworkDetailsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".login.loginActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

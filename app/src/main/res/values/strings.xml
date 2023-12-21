@@ -38,5 +38,8 @@
     <string name="succesfull_login">You have been logged in successfully!</string>
     <string name="units">Units</string>
     <string name="user_name">User Name</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="port_number">Port Number</string>
+    <string name="IP_address_hint">IP Address</string>
 
 </resources>

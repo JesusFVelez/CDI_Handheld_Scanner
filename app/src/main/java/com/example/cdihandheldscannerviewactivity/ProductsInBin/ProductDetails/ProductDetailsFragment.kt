@@ -97,7 +97,10 @@ class ProductDetailsFragment : Fragment() {
         binLocationTextView.text = formattedString
 
         // Set other product details
-        BarCodeTextView.text = currentItem?.barCode.toString()
+        if(currentItem?.barCode == null)
+            BarCodeTextView.text = "N/A"
+        else
+            BarCodeTextView.text = currentItem.barCode.toString()
         QtyonHandValueTextView.text = currentItem?.quantityOnHand.toString()
         QtyInPickingValueTextView.text = currentItem?.quantityInPicking.toString()
 

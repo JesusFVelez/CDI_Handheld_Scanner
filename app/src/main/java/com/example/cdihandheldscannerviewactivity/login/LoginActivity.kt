@@ -246,18 +246,13 @@ class loginActivity : AppCompatActivity() {
                 )
                 val requestBody = RequestUser(user)
 
-                ScannerAPI.LoginService.isLogedIn(requestBody)
+                ScannerAPI.getLoginService().isLogedIn(requestBody)
                     .enqueue(object : Callback<ResponseWrapperUser> {
                         override fun onResponse(
                             call: Call<ResponseWrapperUser>,
                             response: Response<ResponseWrapperUser>
                         ) {
                             if (response.body()?.response?.isSignedIn == true) {
-                                Toast.makeText(
-                                    this@loginActivity,
-                                    getString(R.string.succesfull_login),
-                                    Toast.LENGTH_SHORT
-                                ).show()
                                 progressDialog.dismiss()
                                 SharedPreferencesUtils.storeLoginInfoInSharedPref(user.userName, selectedCompanyID, this@loginActivity)
                                 // This jumps from one Activity to another
