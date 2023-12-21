@@ -12,8 +12,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Query
 
 
-//private const val BASE_URL = "http://10.0.0.43:8811/HandHeldScannerProject/rest"
-//private lateinit var BASE_URL: String
 class ServicePaths{
     companion object {
         const val ViewBinsThatHaveItem:String = "/ViewBinsThatHaveItemService/"
@@ -36,46 +34,6 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
         .baseUrl(baseUrl + servicePath)
         .build()
 }
-
-//// Retrofit instance for making API calls
-//private val retrofitLogin = Retrofit.Builder()
-//    .addConverterFactory(MoshiConverterFactory.create(moshi)) // Use Moshi for JSON conversion
-//    .baseUrl(BASE_URL + SERVICE_PATHS["login"]) // Set the base URL for API calls
-//    .build()
-//
-//// Retrofit instance for making API calls
-//private val retrofitCountAllItemsInWarehouse = Retrofit.Builder()
-//    .addConverterFactory(MoshiConverterFactory.create(moshi)) // Use Moshi for JSON conversion
-//    .baseUrl(BASE_URL + SERVICE_PATHS["CountAllItemsInWarehouse"]) // Set the base URL for API calls
-//    .build()
-//
-//// Retrofit instance for making API calls
-//private val retrofitGeneralService = Retrofit.Builder()
-//    .addConverterFactory(MoshiConverterFactory.create(moshi)) // Use Moshi for JSON conversion
-//    .baseUrl(BASE_URL + SERVICE_PATHS["GeneralServices"]) // Set the base URL for API calls
-//    .build()
-//
-//// Retrofit instance for making API calls
-//private val retrofitViewBinsThatHaveItemService = Retrofit.Builder()
-//    .addConverterFactory(MoshiConverterFactory.create(moshi)) // Use Moshi for JSON conversion
-//    .baseUrl(BASE_URL + SERVICE_PATHS["ViewBinsThatHaveItem"]) // Set the base URL for API calls
-//    .build()
-//
-//// Retrofit instance for making API calls
-//private val retrofitViewProductsInBinService = Retrofit.Builder()
-//    .addConverterFactory(MoshiConverterFactory.create(moshi)) // Use Moshi for JSON conversion
-//    .baseUrl(BASE_URL + SERVICE_PATHS["ViewProductsInBin"]) // Set the base URL for API calls
-//    .build()
-//
-//// Retrofit instance for making API calls
-//private val retrofitItemPickingForDispatchService = Retrofit.Builder()
-//    .addConverterFactory(MoshiConverterFactory.create(moshi))// Use Moshi for JSON conversion
-//    .baseUrl(BASE_URL + SERVICE_PATHS["ItemPicking"])// Set the base URL for API calls
-//    .build()
-
-
-
-
 
 interface LoginServices{
     // Endpoint for getting companies
@@ -182,28 +140,5 @@ object ScannerAPI {
         return retrofit.create(ItemPickingForDispatchServices::class.java)
     }
 
-//    val LoginService : LoginServices by lazy{
-//        retrofitLogin.create(LoginServices::class.java)
-//    }
-
-//    val CountAllItemsInWarehouseService : Services by lazy{
-//        retrofitCountAllItemsInWarehouseService.create(Services::class.java)
-//    }
-
-//    val GeneralService : GeneralServices by lazy{
-//        retrofitGeneralService.create(GeneralServices::class.java)
-//    }
-
-//    val ViewBinsThatHaveItemService : ViewBinsThatHaveItemServices by lazy{
-//        retrofitViewBinsThatHaveItemService.create(ViewBinsThatHaveItemServices::class.java)
-//    }
-
-//    val ViewProductsInBinService : ViewProductsInBinServices by lazy{
-//        retrofitViewProductsInBinService.create(ViewProductsInBinServices::class.java)
-//    }
-
-//    val ItemPickingForDispatchService: ItemPickingForDispatchServices by lazy{
-//        retrofitItemPickingForDispatchService.create(ItemPickingForDispatchServices::class.java)
-//    }
 
 }
