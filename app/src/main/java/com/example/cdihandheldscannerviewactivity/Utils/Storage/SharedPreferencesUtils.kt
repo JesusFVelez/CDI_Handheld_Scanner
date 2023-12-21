@@ -38,20 +38,36 @@ class SharedPreferencesUtils {
             editor.apply()
         }
 
-        fun getIPAddressFromSharedPref(context: Context):String{
+
+        // Method for storing user login information in shared preferences
+        fun storeIPAndPortInSharedPref(IP: String, port: String, context: Context){
+            // Get the shared preferences editor
+            val sharedPref = context.getSharedPreferences(
+                IPPortSharedPrefName,
+                AppCompatActivity.MODE_PRIVATE
+            )
+            val editor = sharedPref.edit()
+            // Store the username and company ID in shared preferences
+            editor.putString(IPSharedPrefKey, IP)
+            editor.putString(portNumSharedPrefKey, port)
+            // Apply the changes to the shared preferences
+            editor.apply()
+        }
+
+        fun getIPAddressFromSharedPref(context: Context):String?{
             // Get the shared preferences
             val sharedPref: SharedPreferences = context.getSharedPreferences(IPPortSharedPrefName, Context.MODE_PRIVATE)
             // Retrieve the ip address from shared preferences
             val ipAddress = sharedPref.getString(IPSharedPrefKey, "N/A")
-            return ipAddress!!
+            return ipAddress
         }
 
-        fun getPortNumberFromSharedPref(context: Context):String{
+        fun getPortNumberFromSharedPref(context: Context):String?{
             // Get the shared preferences
             val sharedPref: SharedPreferences = context.getSharedPreferences(IPPortSharedPrefName, Context.MODE_PRIVATE)
             // Retrieve the port number from shared preferences
-            val ipAddress = sharedPref.getString(IPSharedPrefKey, "N/A")
-            return ipAddress!!
+            val portNumber = sharedPref.getString(portNumSharedPrefKey, "N/A")
+            return portNumber
         }
 
         // Method for retrieving the username from shared preferences

@@ -38,11 +38,33 @@ class NetworkDetailsActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView<ActivityNetworkDetailsBinding>(this,
             R.layout.activity_network_details
         )
+        if(haveIPandPortBeenEnteredAlready()){
+            enterIPandPortNumbersToScannerAPI()
+            jumpToLoginActivity()
+        }
         initUIElements()
         viewModel = ViewModelProvider(this)[NetworkDetailsViewModel::class.java]
         initObservers()
+    }
+
+    private fun enterIPandPortNumbersToScannerAPI(){
+        val ip = SharedPreferencesUtils.getIPAddressFromSharedPref(this@NetworkDetailsActivity)
+        val port = SharedPreferencesUtils.getPortNumberFromSharedPref(this@NetworkDetailsActivity)
+        ScannerAPI.setIpAddressAndPortNumber(ip!!, port!!)
+    }
 
 
+    private fun haveIPandPortBeenEnteredAlready():Boolean{
+        val ip = SharedPreferencesUtils.getIPAddressFromSharedPref(this@NetworkDetailsActivity)
+        val port = SharedPreferencesUtils.getPortNumberFromSharedPref(this@NetworkDetailsActivity)
+        return ip != "N/A" && port != "N/A"
+    }
+
+    private fun jumpToLoginActivity(){
+        // This jumps from one Activity to another
+        val intent = Intent(this@NetworkDetailsActivity, loginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun initUIElements(){
@@ -53,10 +75,9 @@ class NetworkDetailsActivity : AppCompatActivity() {
                 val ipAddress = ipAddressEditText.text.toString()
                 val portNumber = portNumberEditText.text.toString()
                 if(ipAddress != "" && portNumber != "") {
-                    ScannerAPI.setIpAddressAndPortNumber(ipAddress, portNumber)
                     hasConnectionBeenTested = true
                     progressDialog.show()
-                    verifyBackendConnection()
+                    verifyBackendConnection(ipAddress, portNumber)
                 }
                 else
                     AlerterUtils.startErrorAlerter(this,"IP Address or Port Number was left empty.")
@@ -67,7 +88,8 @@ class NetworkDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun verifyBackendConnection(){
+    private fun verifyBackendConnection(ipAddress:String, portNumber:String){
+        ScannerAPI.setIpAddressAndPortNumber(ipAddress, portNumber)
         ScannerAPI.getLoginService().testConnection()
             .enqueue(object : Callback<ConnectionTestingWrapper> {
                 override fun onResponse(
@@ -76,10 +98,8 @@ class NetworkDetailsActivity : AppCompatActivity() {
                 ) {
                     if (response.body()?.response?.hasConnectionSucceeded == true) {
                         progressDialog.dismiss()
-                        // This jumps from one Activity to another
-                        val intent = Intent(this@NetworkDetailsActivity, loginActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        SharedPreferencesUtils.storeIPAndPortInSharedPref(ipAddress, portNumber, this@NetworkDetailsActivity)
+                        jumpToLoginActivity()
                     } else {
                         progressDialog.dismiss()
                         AlerterUtils.startAlertWithColor(this@NetworkDetailsActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
