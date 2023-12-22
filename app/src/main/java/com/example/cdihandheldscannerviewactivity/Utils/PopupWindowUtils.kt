@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -20,13 +19,16 @@ import com.google.android.material.transition.platform.MaterialFadeThrough
 
 class PopupWindowUtils {
     companion object{
+
+
         fun showErrorPopup(context: Context, anchor: View, message: String){
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(R.layout.popup_error, null)
 
+            val popupWidth = getPopupWindowWidth(context)
             val popupWindow = PopupWindow(
                 popupContentView,
-                400,
+                popupWidth,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
 
@@ -59,9 +61,10 @@ class PopupWindowUtils {
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(R.layout.popup_question, null)
 
+            val popupWidth = getPopupWindowWidth(context)
             val popupWindow = PopupWindow(
                 popupContentView,
-                400,
+                popupWidth,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
 
@@ -79,12 +82,6 @@ class PopupWindowUtils {
             val titleText = popupContentView.findViewById<TextView>(R.id.questionText)
             titleText.text = questionTitle
 
-//            val yesButton = popupContentView.findViewById<Button>(R.id.YesButton)
-//            yesButton.setOnClickListener(yesOnClickListener)
-//
-//            val noButton = popupContentView.findViewById<Button>(R.id.NoButton)
-//            noButton.setOnClickListener(noOnClickListener)
-
             popupWindow.isOutsideTouchable = false
             popupWindow.isFocusable = true
             popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -97,14 +94,22 @@ class PopupWindowUtils {
         }
 
 
+        private fun getPopupWindowWidth(context: Context): Int {
+            // Get screen width
+            val displayMetrics = context.resources.displayMetrics
+            val screenWidth = displayMetrics.widthPixels
+            return screenWidth - (screenWidth * 0.05).toInt()
+        }
 
         fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: orderPickingMainFragment.PopupInputListener){
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(R.layout.popup_confirmation, null)
 
+
+            val popupWidth = getPopupWindowWidth(context)
             val popupWindow = PopupWindow(
                     popupContentView,
-                    400,
+                    popupWidth,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             )
 
