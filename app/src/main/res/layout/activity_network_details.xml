@@ -4,16 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".SetNetworkDetails.NetworkDetailsActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/login_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/line_gradient">
+        android:background="@drawable/line_gradient"
+        android:weightSum="4"
+        android:orientation="vertical"
+        >
 
         <ImageView
             android:id="@+id/CDILogoImage"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_weight="3"
             app:layout_constraintDimensionRatio="H,16:12"
             android:src="@drawable/cdi_logo___without_technologies_1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -21,29 +25,35 @@
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/cdi_image_description" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutIPAddress"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:background="@drawable/rectangle_text_box"
-            android:padding="5dp"
-            app:hintAnimationEnabled="false"
-            app:hintEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/CDILogoImage">
+            android:layout_weight="1"
+            >
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ipAddressText"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutIPAddress"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="@string/IP_address_hint"
-                android:inputType="text" />
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/rectangle_text_box"
+                android:padding="5dp"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ipAddressText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/IP_address_hint"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -90,7 +100,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPortNumber" />
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </layout>

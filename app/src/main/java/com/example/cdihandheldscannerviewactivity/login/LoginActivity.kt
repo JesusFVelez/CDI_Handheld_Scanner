@@ -183,7 +183,7 @@ class loginActivity : AppCompatActivity() {
         // Create a global layout listener. This is used to reset the Spinner's background when it closes.
         val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
             // Reset background when spinner closes
-            companySpinner.setBackgroundResource(R.drawable.drop_down_background)
+            companySpinner.setBackgroundResource(R.drawable.white_drop_down)
             viewModel.isSpinnerArrowUp = false
         }
 
@@ -191,7 +191,7 @@ class loginActivity : AppCompatActivity() {
         companySpinner.setOnTouchListener{view, event ->
             when(event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    companySpinner.setBackgroundResource(R.drawable.drop_down_arrow_up)
+                    companySpinner.setBackgroundResource(R.drawable.white_drop_down_arrow_up)
                     companySpinner.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
                     viewModel.isSpinnerArrowUp = true
                 }
@@ -213,7 +213,7 @@ class loginActivity : AppCompatActivity() {
         // Set a touch listener for the root view. This is used to reset the Spinner's background when the user touches outside of the Spinner.
         rootView.setOnTouchListener { _, _ ->
             if (viewModel.isSpinnerArrowUp) {
-                companySpinner.setBackgroundResource(R.drawable.drop_down_background)
+                companySpinner.setBackgroundResource(R.drawable.white_drop_down)
                 companySpinner.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
                 viewModel.isSpinnerArrowUp = false
             }
