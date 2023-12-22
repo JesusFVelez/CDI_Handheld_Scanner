@@ -37,7 +37,7 @@
             android:layout_weight="2">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayoutUserName"
+                    android:id="@+id/textInputLayoutIPAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rectangle_text_box"
@@ -57,67 +57,57 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/usernameText"
+                        android:id="@+id/ipAddressText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:hint="@string/user_name"
+                        android:hint="@string/IP_address_hint"
                         android:inputType="text" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayoutPassword"
+                    android:id="@+id/textInputLayoutPortNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/rectangle_text_box"
                     android:padding="5dp"
                     app:hintAnimationEnabled="false"
                     app:hintEnabled="true"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutUserName"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutUserName"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUserName"
-                    app:passwordToggleEnabled="true">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.503"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutIPAddress">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/passwordText"
+                        android:id="@+id/portNumberText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
                         android:background="@android:color/transparent"
-                        android:hint="@string/password"
-                        android:inputType="textPassword" />
+                        android:hint="@string/port_number"
+                        android:inputType="text" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
 
-                <!--         TODO make this work at some point -> android:entries="@{loginViewModel.listOfCompanies}"-->
-                <Spinner
-                    android:id="@+id/companySpinner"
-                    style="@style/DropDownStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="50dp"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
-                    app:layout_constraintHorizontal_bias="0.497"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
-
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/loginButton"
+                    android:id="@+id/testConnectionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/login_rectangle"
                     android:backgroundTint="@color/CDI_Blue"
-                    android:text="@string/login"
+                    android:text="Test Connection"
                     android:textAllCaps="false"
                     android:textColor="@color/CDI_Gray"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/companySpinner"
-                    app:layout_constraintStart_toStartOf="@+id/companySpinner"
-                    app:layout_constraintTop_toBottomOf="@+id/companySpinner" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.497"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPortNumber" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
