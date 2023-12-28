@@ -36,15 +36,21 @@ class MainActivity : AppCompatActivity() {
     lateinit var networkCallback : ConnectivityManager.NetworkCallback
     private var hasPageJustStarted: Boolean = false
 
+    private var hasSessionTimedOut: Boolean = false
+    private var isAppInForeGround: Boolean = false
 
-    // Timeout after 5 minutes of inactivity
-    val TIMEOUT_DURATION = 15 * 60 * 1000 // 15 minutes in milliseconds
+    // Timeout after 15 minutes of inactivity
+    val TIMEOUT_DURATION = 1 * 60 * 1000 // 15 minutes in milliseconds
     private var lastInteractionTime: Long = 0
     private val timeoutHandler = Handler(Looper.getMainLooper())
     private val timeoutRunnable = Runnable {
         // Handle session timeout here
-        Toast.makeText(this,"You have been signed out due to inactivity.", Toast.LENGTH_LONG).show()
-        logoutUser()
+        if(isAppInForeGround) {
+           handleSessionTimeout()
+        }
+        else{
+            hasSessionTimedOut = true
+        }
     }
 
     override fun onUserInteraction() {
@@ -52,10 +58,25 @@ class MainActivity : AppCompatActivity() {
         resetTimer()
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        isAppInForeGround = false
+    }
+
     private fun resetTimer() {
         lastInteractionTime = System.currentTimeMillis()
         timeoutHandler.removeCallbacks(timeoutRunnable)
         timeoutHandler.postDelayed(timeoutRunnable, TIMEOUT_DURATION.toLong())
+        hasSessionTimedOut = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isAppInForeGround = true
+        if(hasSessionTimedOut){
+            handleSessionTimeout()
+        }
     }
 
     private fun logoutUser() {
@@ -77,12 +98,18 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+
+    private fun handleSessionTimeout(){
+        Toast.makeText(this, "You have been signed out due to inactivity.", Toast.LENGTH_LONG)
+            .show()
+        logoutUser()
+    }
+
     // Method called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Set the content view to the main activity layout
-        @Suppress("UNUSED_VARIABLE")
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
         resetTimer()
