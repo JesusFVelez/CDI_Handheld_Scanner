@@ -129,7 +129,7 @@ class loginActivity : AppCompatActivity() {
     private fun initUIElements(){
         loginButton = binding.loginButton
         loginButton.setOnClickListener{
-            loginButtonClickEvent(it)
+            viewModel.verifyIfTooManyUsersConnected()
         }
         userNameEditTex = binding.usernameText
         passwordEditText = binding.passwordText
@@ -154,6 +154,28 @@ class loginActivity : AppCompatActivity() {
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(this@loginActivity)
                 Log.i("API Call", "API Call did not work")
+            }
+        }
+
+
+        viewModel.hasTooManyUsersConnected.observe(this){hasTooManyUsersConnected ->
+            if(!hasTooManyUsersConnected)
+                login()
+            else
+                AlerterUtils.startErrorAlerter(this@loginActivity, "Too many users connected to app")
+        }
+
+        viewModel.canUserLogin.observe(this){ canUserLogin ->
+            if(canUserLogin){
+                progressDialog.dismiss()
+                SharedPreferencesUtils.storeLoginInfoInSharedPref(viewModel.user.value!!.userName, viewModel.user.value!!.company, this@loginActivity)
+                // This jumps from one Activity to another
+                val intent = Intent(this@loginActivity, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }else{
+                progressDialog.dismiss()
+                AlerterUtils.startAlertWithColor(this@loginActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
             }
         }
     }
@@ -221,57 +243,29 @@ class loginActivity : AppCompatActivity() {
         }
     }
 
-    // This method is called when the login button is clicked. It checks the network connection and the selected company, and then attempts to log in.
-    fun loginButtonClickEvent(view: View?) {
-        progressDialog.show()
+    private fun getSelectedCompanyIDFromCompanyName(): String{
+        val selectedCompanyInSpinner: String = companySpinner.selectedItem.toString()
+        lateinit var selectedCompanyID: String
+        for (aCompany in viewModel.listOfCompanies.value!!) {
+            if (selectedCompanyInSpinner == aCompany.companyName) {
+                selectedCompanyID = aCompany.companyID
+            }
+        }
+        return selectedCompanyID
+    }
 
+    // This method is called after the verification of the number of users is finished. It checks the network connection and the selected company, and then attempts to log in.
+    private fun login() {
+        progressDialog.show()
         if (!NetworkUtils.isDeviceOnline(this)) {
             progressDialog.dismiss()
             AlerterUtils.startInternetLostAlert(this)
         } else {
             if (companySpinner.selectedItem != null) {
-                val selectedCompanyInSpinner: String = companySpinner.selectedItem.toString()
-
-                lateinit var selectedCompanyID: String
-                for (aCompany in viewModel.listOfCompanies.value!!) {
-                    if (selectedCompanyInSpinner == aCompany.companyName) {
-                        selectedCompanyID = aCompany.companyID
-                    }
-                }
-
-                val user = User(
-                    userNameEditTex.text.toString(),
-                    passwordEditText.text.toString(),
-                    selectedCompanyID
-                )
-                val requestBody = RequestUser(user)
-
-                ScannerAPI.getLoginService().isLogedIn(requestBody)
-                    .enqueue(object : Callback<ResponseWrapperUser> {
-                        override fun onResponse(
-                            call: Call<ResponseWrapperUser>,
-                            response: Response<ResponseWrapperUser>
-                        ) {
-                            if (response.body()?.response?.isSignedIn == true) {
-                                progressDialog.dismiss()
-                                SharedPreferencesUtils.storeLoginInfoInSharedPref(user.userName, selectedCompanyID, this@loginActivity)
-                                // This jumps from one Activity to another
-                                val intent = Intent(this@loginActivity, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            } else {
-                                progressDialog.dismiss()
-                                AlerterUtils.startAlertWithColor(this@loginActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
-                            }
-                        }
-                            override fun onFailure(call: Call<ResponseWrapperUser>, t: Throwable) {
-                            progressDialog.dismiss()
-                                AlerterUtils.startNetworkErrorAlert(this@loginActivity)
-                            println("Error -> " + t.message)
-                        }
-
-
-                    })
+                val selectedCompanyID = getSelectedCompanyIDFromCompanyName()
+                viewModel.setUserValues(userNameEditTex.text.toString(), passwordEditText.text.toString(), selectedCompanyID)
+                val requestBody = RequestUser(viewModel.user.value!!)
+                viewModel.canLoginWithCredentials(requestBody)
             } else {
                 progressDialog.dismiss()
                 Toast.makeText(this, getString(R.string.company_not_chosen), Toast.LENGTH_SHORT).show()

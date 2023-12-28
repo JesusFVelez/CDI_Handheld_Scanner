@@ -42,11 +42,17 @@ interface LoginServices{
 
     // Endpoint for checking if a user is logged in
     @POST("login")
-    fun isLogedIn(@Body user: RequestUser): Call<ResponseWrapperUser>
+    suspend fun isLoggedIn(@Body user: RequestUser): ResponseWrapperUser
 
     //Endpoint for testing the connection
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
+
+    @POST("logout")
+    fun logoutUser():Call<Void>
+
+    @GET("verifyIfNumberOfUsersHasExceeded")
+    suspend fun verifyIfNumberOfUsersHasExceeded(): NetworkDetailsResponseWrapper
 }
 
 interface ViewBinsThatHaveItemServices{

@@ -12,9 +12,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.cdihandheldscannerviewactivity.R
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentHomeScreenBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
+import retrofit2.Callback
+import retrofit2.Call
+import retrofit2.Response
 
 
 // Home screen fragment class
@@ -61,7 +66,6 @@ class HomeScreenFragment : Fragment() {
     }
 
 
-
     // Method to create and return the view hierarchy associated with the fragment
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,10 +88,23 @@ class HomeScreenFragment : Fragment() {
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes") { _, _ ->
 
-                    // Log out and navigate to the login activity
-                    val intent = Intent(this.activity, loginActivity::class.java)
-                    startActivity(intent)
-                    this.activity?.finish()
+                    ScannerAPI.getLoginService().logoutUser().enqueue(object: Callback<Void> {
+                        override fun onResponse(
+                            call: Call<Void>,
+                            response: Response<Void>
+                        ) {
+                            // Log out and navigate to the login activity
+                            val intent = Intent(requireActivity(), loginActivity::class.java)
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+
+                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                            AlerterUtils.startNetworkErrorAlert(requireActivity())
+                        }
+
+                    })
+
                 }
                 .setNegativeButton("No", null)
                 .show()
@@ -120,3 +137,4 @@ class HomeScreenFragment : Fragment() {
 
 
 }
+

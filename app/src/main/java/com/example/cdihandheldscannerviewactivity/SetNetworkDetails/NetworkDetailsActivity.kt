@@ -13,6 +13,7 @@ import com.example.cdihandheldscannerviewactivity.MainActivity
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ConnectionTestingWrapper
+import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkDetailsResponseWrapper
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ResponseWrapperUser
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
@@ -27,7 +28,6 @@ class NetworkDetailsActivity : AppCompatActivity() {
     private lateinit var ipAddressEditText: EditText
     private lateinit var portNumberEditText: EditText
     private lateinit var testConnectionButton: Button
-    private lateinit var viewModel: NetworkDetailsViewModel
     // Dialog for showing progress
     private lateinit var progressDialog: Dialog
 
@@ -43,8 +43,6 @@ class NetworkDetailsActivity : AppCompatActivity() {
             jumpToLoginActivity()
         }
         initUIElements()
-        viewModel = ViewModelProvider(this)[NetworkDetailsViewModel::class.java]
-        initObservers()
     }
 
     private fun enterIPandPortNumbersToScannerAPI(){
@@ -88,6 +86,8 @@ class NetworkDetailsActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun verifyBackendConnection(ipAddress:String, portNumber:String){
         ScannerAPI.setIpAddressAndPortNumber(ipAddress, portNumber)
         ScannerAPI.getLoginService().testConnection()
@@ -114,27 +114,5 @@ class NetworkDetailsActivity : AppCompatActivity() {
 
 
             })
-    }
-
-    private fun initObservers(){
-        viewModel.hasConnectionToBackendSucceeded.observe(this){ wasBackendConnectionSuccessful ->
-            if(wasBackendConnectionSuccessful && hasConnectionBeenTested){
-                // This jumps from one Activity to another
-                val intent = Intent(this@NetworkDetailsActivity, loginActivity::class.java)
-                startActivity(intent)
-                finish()
-            }else if(hasConnectionBeenTested)
-                AlerterUtils.startErrorAlerter(this, "Connection Unsuccessful \n Verify IP and Port")
-
-            progressDialog.dismiss()
-        }
-        viewModel.wasLastAPICallSuccessful.observe(this){wasLastAPICallSuccessful ->
-            if(!wasLastAPICallSuccessful){
-                progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(this@NetworkDetailsActivity)
-                Log.i("API Call", "API Call did not work")
-            }
-        }
-
     }
 }

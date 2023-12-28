@@ -88,6 +88,15 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        val isOrderBeingPicked = verifyIfOrderIsBeingPicked()
+        if(isOrderBeingPicked) {
+            viewModel.endPickingTimer()
+            viewModel.clearListOfItems()
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -111,7 +120,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     // Handle onPause lifecycle event
     override fun onPause() {
         super.onPause()
-
     }
 
 
