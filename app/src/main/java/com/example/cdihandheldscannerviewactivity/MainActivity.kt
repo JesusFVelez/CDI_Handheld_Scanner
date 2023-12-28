@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     private var isAppInForeGround: Boolean = false
 
     // Timeout after 15 minutes of inactivity
-    val TIMEOUT_DURATION = 1 * 60 * 1000 // 15 minutes in milliseconds
+    val TIMEOUT_DURATION = 15 * 60 * 1000 // 15 minutes in milliseconds
     private var lastInteractionTime: Long = 0
     private val timeoutHandler = Handler(Looper.getMainLooper())
     private val timeoutRunnable = Runnable {
