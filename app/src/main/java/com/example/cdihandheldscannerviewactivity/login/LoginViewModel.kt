@@ -89,7 +89,7 @@ class LoginViewModel:ViewModel() {
         }
         viewModelScope.launch(exceptionHandler) {
             try{
-                val response = ScannerAPI.getLoginService().verifyIfNumberOfUsersHasExceeded()
+                val response = ScannerAPI.getLoginService().verifyIfNumberOfUsersHasExceeded(_user.value!!.company)
                 _hasTooManyUsersConnected.value = response.response.hasTooManyConnections
                 _wasLastAPICallSuccessful.value = true
 

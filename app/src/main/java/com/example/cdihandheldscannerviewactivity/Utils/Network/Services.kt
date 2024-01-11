@@ -49,10 +49,10 @@ interface LoginServices{
     fun testConnection(): Call<ConnectionTestingWrapper>
 
     @POST("logout")
-    fun logoutUser():Call<Void>
+    fun logoutUser(@Query("companyID") companyID: String):Call<Void>
 
     @GET("verifyIfNumberOfUsersHasExceeded")
-    suspend fun verifyIfNumberOfUsersHasExceeded(): NetworkDetailsResponseWrapper
+    suspend fun verifyIfNumberOfUsersHasExceeded(@Query("companyID") companyID: String): NetworkDetailsResponseWrapper
 }
 
 interface ViewBinsThatHaveItemServices{

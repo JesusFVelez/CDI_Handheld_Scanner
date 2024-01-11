@@ -129,6 +129,8 @@ class loginActivity : AppCompatActivity() {
     private fun initUIElements(){
         loginButton = binding.loginButton
         loginButton.setOnClickListener{
+            val selectedCompanyID = getSelectedCompanyIDFromCompanyName()
+            viewModel.setUserValues(userNameEditTex.text.toString(), passwordEditText.text.toString(), selectedCompanyID)
             viewModel.verifyIfTooManyUsersConnected()
         }
         userNameEditTex = binding.usernameText
@@ -262,8 +264,7 @@ class loginActivity : AppCompatActivity() {
             AlerterUtils.startInternetLostAlert(this)
         } else {
             if (companySpinner.selectedItem != null) {
-                val selectedCompanyID = getSelectedCompanyIDFromCompanyName()
-                viewModel.setUserValues(userNameEditTex.text.toString(), passwordEditText.text.toString(), selectedCompanyID)
+
                 val requestBody = RequestUser(viewModel.user.value!!)
                 viewModel.canLoginWithCredentials(requestBody)
             } else {

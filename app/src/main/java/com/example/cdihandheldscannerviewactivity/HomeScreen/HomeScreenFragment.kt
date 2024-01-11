@@ -15,6 +15,7 @@ import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentHomeScreenBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
 import retrofit2.Callback
@@ -87,8 +88,8 @@ class HomeScreenFragment : Fragment() {
                 .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes") { _, _ ->
-
-                    ScannerAPI.getLoginService().logoutUser().enqueue(object: Callback<Void> {
+                    val companyID: String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+                    ScannerAPI.getLoginService().logoutUser(companyID).enqueue(object: Callback<Void> {
                         override fun onResponse(
                             call: Call<Void>,
                             response: Response<Void>

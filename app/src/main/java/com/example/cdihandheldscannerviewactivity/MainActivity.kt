@@ -19,6 +19,7 @@ import androidx.navigation.ui.NavigationUI
 import com.example.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
 import org.json.JSONObject
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var connectivityManager: ConnectivityManager
     lateinit var networkCallback : ConnectivityManager.NetworkCallback
     private var hasPageJustStarted: Boolean = false
+
 
     private var hasSessionTimedOut: Boolean = false
     private var isAppInForeGround: Boolean = false
@@ -80,7 +82,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logoutUser() {
-        ScannerAPI.getLoginService().logoutUser().enqueue(object: Callback<Void> {
+        val companyID: String = SharedPreferencesUtils.getCompanyIDFromSharedPref(this)
+        ScannerAPI.getLoginService().logoutUser(companyID).enqueue(object: Callback<Void> {
             override fun onResponse(
                 call: Call<Void>,
                 response: Response<Void>
