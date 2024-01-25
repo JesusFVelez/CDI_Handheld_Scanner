@@ -17,11 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/orderNumberEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:dropDownHeight="wrap_content"
                 style="@style/CustomOrderInput"
                 android:hint="@string/order_number"
                 app:layout_constraintEnd_toEndOf="parent"

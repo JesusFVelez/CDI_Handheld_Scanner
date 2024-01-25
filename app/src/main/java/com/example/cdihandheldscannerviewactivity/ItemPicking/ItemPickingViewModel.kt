@@ -9,6 +9,7 @@ import com.example.cdihandheldscannerviewactivity.Utils.Network.ItemsInOrderInfo
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.example.cdihandheldscannerviewactivity.Utils.Network.RequestTimerParams
 import com.example.cdihandheldscannerviewactivity.Utils.Network.RequestTimerParamsWrapper
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ordersThatAreInPickingClass
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
@@ -96,6 +97,12 @@ class ItemPickingViewModel: ViewModel() {
         get() = _wasPickingSuccesfulyFinished
 
 
+    private val _ordersThatHavePicking = MutableLiveData<List<ordersThatAreInPickingClass>>()
+    val ordersThatHavePicking: LiveData<List<ordersThatAreInPickingClass>>
+        get() = _ordersThatHavePicking
+
+
+
 
     fun setChosenAdapterPosition(position: Int){
         if (position >= 0)
@@ -110,6 +117,7 @@ class ItemPickingViewModel: ViewModel() {
 
 
     init {
+        _ordersThatHavePicking.value = mutableListOf()
         _currentlyChosenAdapterPosition.value = 0
         _errorMessage.value = mutableMapOf("confirmBin" to "",
                                     "confirmItem" to "",
@@ -355,6 +363,28 @@ class ItemPickingViewModel: ViewModel() {
         }catch (e: Exception){
             _wasLastAPICallSuccessful.value = false
             Log.i("End Picker Timer - Item Picking (e) " , "Error -> ${e.message}")
+        }
+    }
+
+
+    fun getAllOrdersThatHavePickingForSuggestions(){
+        // Exception handler for API call
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Get All orders for suggestions - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
+        }
+        // API call to get the products in order
+        try {
+            viewModelScope.launch(exceptionHandler) {
+                val response = ScannerAPI.getItemPickingForDispatchService().getAllOrdersInPickingForSuggestion(_companyID.value!!)
+                val ordersInPicking = response.response.ordersThatAreInPicking.ordersThatAreInPicking
+                _ordersThatHavePicking.value = ordersInPicking
+                _wasLastAPICallSuccessful.value = true
+            }
+
+        }catch (e: Exception){
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Get All orders for suggestions - Item Picking (e) " , "Error -> ${e.message}")
         }
     }
 }

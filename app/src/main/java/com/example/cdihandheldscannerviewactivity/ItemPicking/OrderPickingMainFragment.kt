@@ -1,6 +1,7 @@
 package com.example.cdihandheldscannerviewactivity.ItemPicking
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.KeyEvent
@@ -9,15 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Filter
 import android.widget.ScrollView
+import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ordersThatAreInPickingClass
 import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
@@ -27,7 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     private lateinit var binding: FragmentOrderPickingMainBinding
-    private lateinit var orderNumberEditText: EditText
+    private lateinit var orderNumberEditText: AutoCompleteTextView
     private lateinit var searchOrderButton: Button
     private lateinit var fabScrollDown: FloatingActionButton
     private lateinit var finishOrderPickingButton: Button
@@ -68,6 +74,14 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_picking_main, container, false)
+
+        // Retrieve company ID from shared preferences
+        val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        viewModel.setCompanyIDFromSharedPref(companyID)
+        val userNameOfPicker: String = SharedPreferencesUtils.getUserNameFromSharedPref(requireContext())
+        viewModel.setUserNameOfPickerFromSharedPref(userNameOfPicker)
+
+
         initUIElements()
         initObservers()
 
@@ -77,11 +91,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         hasPageJustStarted = true
         viewModel.setChosenAdapterPosition(0)
 
-        // Retrieve company ID from shared preferences
-        val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-        viewModel.setCompanyIDFromSharedPref(companyID)
-        val userNameOfPicker: String = SharedPreferencesUtils.getUserNameFromSharedPref(requireContext())
-        viewModel.setUserNameOfPickerFromSharedPref(userNameOfPicker)
+
 
         return binding.root
 
@@ -118,6 +128,8 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
 
     private fun initUIElements(){
+
+
         searchOrderButton = binding.searchOrderButton
         searchOrderButton.setOnClickListener{
             viewModel.setOrderNumber(orderNumberEditText.text.toString())
@@ -157,17 +169,8 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             }
         })
         orderNumberEditText = binding.orderNumberEditText
-        orderNumberEditText.requestFocus()
-        orderNumberEditText.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
-                // Handle the Enter key press here
-                viewModel.setOrderNumber(orderNumberEditText.text.toString())
-               searchForOrder()
-                true
-            } else {
-                false
-            }
-        }
+        viewModel.getAllOrdersThatHavePickingForSuggestions()
+
 
         progressDialog = Dialog(requireContext()).apply{
             setContentView(R.layout.dialog_loading)
@@ -184,7 +187,29 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     }
 
+    private fun initOrderNumberAutoCompleteTextView(newOrdersThatHavePicking: List<ordersThatAreInPickingClass>){
+        val arrayAdapterForAutoCompleteTextView = CustomOrderSuggestionAdapter(requireContext(),newOrdersThatHavePicking)
+        orderNumberEditText.setAdapter(arrayAdapterForAutoCompleteTextView)
+        orderNumberEditText.threshold = 1
+        orderNumberEditText.requestFocus()
+        orderNumberEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Handle the Enter key press here
+                viewModel.setOrderNumber(orderNumberEditText.text.toString())
+                searchForOrder()
+                true
+            } else {
+                false
+            }
+        }
+
+    }
+
     private fun initObservers() {
+        viewModel.ordersThatHavePicking.observe(viewLifecycleOwner){newOrdersThatHavePicking ->
+            if(newOrdersThatHavePicking.size > 0)
+                initOrderNumberAutoCompleteTextView(newOrdersThatHavePicking)
+        }
 
         viewModel.wasBinConfirmed.observe(viewLifecycleOwner) { wasBinConfirmed ->
             if (wasBinConfirmed && !hasPageJustStarted) {
@@ -274,6 +299,69 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     interface PopupInputListener{
         fun onConfirm(input: EditText)
+    }
+
+    class CustomOrderSuggestionAdapter(context: Context, private var suggestions: List<ordersThatAreInPickingClass>): ArrayAdapter<ordersThatAreInPickingClass>(context, 0, suggestions){
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.order_picking_suggestion_view, parent, false)
+            val orderNumberTextView = view.findViewById<TextView>(R.id.orderNumberTextView)
+            val customerTextView = view.findViewById<TextView>(R.id.customerNameTextView)
+            val orderDateTextView = view.findViewById<TextView>(R.id.orderDateValueTextView)
+            val dateWantedTextView = view.findViewById<TextView>(R.id.dateWantedValueTextView)
+
+
+            val item = suggestions[position]
+            orderNumberTextView.text = item.orderNumber
+            customerTextView.text = item.customerName
+            orderDateTextView.text = item.orderedDate
+            dateWantedTextView.text = item.dateWanted
+
+
+            return view
+        }
+        private val originalList = ArrayList(suggestions)
+
+
+        private val filter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val results = FilterResults()
+                val query = constraint?.toString()?.lowercase()
+                val filteredList = if (query.isNullOrEmpty()) {
+                    originalList
+                } else {
+                    originalList.filter {
+                        it.orderNumber.lowercase().contains(query)
+                    }
+                }
+
+                results.values = filteredList
+                results.count = filteredList.size
+
+                return results
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                clear()
+                if (results?.count ?: 0 > 0) {
+                    addAll(results?.values as List<ordersThatAreInPickingClass>)
+                    notifyDataSetChanged()
+
+                } else {
+                    notifyDataSetChanged()
+                }
+
+            }
+
+            override fun convertResultToString(resultValue: Any?): CharSequence {
+                return (resultValue as ordersThatAreInPickingClass).orderNumber
+            }
+        }
+        override fun getFilter(): Filter {
+            return filter
+
+        }
+
     }
 
 }
