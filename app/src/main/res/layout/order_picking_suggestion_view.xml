@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/suggestion_background"
+    >
+
+    <TextView
+        android:id="@+id/orderNumberTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="S32567"
+        android:padding="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/customerNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:text="Santa Monica Auto Parts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/orderNumberTextView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/orderDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order Date:"
+        app:layout_constraintStart_toStartOf="@id/customerNameTextView"
+        app:layout_constraintTop_toBottomOf="@id/customerNameTextView"
+        />
+
+    <TextView
+        android:id="@+id/orderDateValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01/01/2023"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@id/orderDateLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/customerNameTextView"
+        />
+
+    <TextView
+        android:id="@+id/dateWantedLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date Wanted:"
+        app:layout_constraintStart_toStartOf="@id/customerNameTextView"
+        app:layout_constraintTop_toBottomOf="@id/orderDateLabelTextView"
+        />
+    <TextView
+        android:id="@+id/dateWantedValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01/01/2024"
+        app:layout_constraintStart_toStartOf="@id/orderDateValueTextView"
+        app:layout_constraintTop_toBottomOf="@id/orderDateValueTextView"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

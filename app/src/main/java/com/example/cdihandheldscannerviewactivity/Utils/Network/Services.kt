@@ -82,8 +82,11 @@ interface ItemPickingForDispatchServices{
     @POST("startPickerTimer")
     suspend fun startPickerTimer(@Body request: RequestTimerParamsWrapper)
 
-    @POST("endPickerTimer")
-    suspend fun endPickerTimer(@Body request: RequestTimerParamsWrapper)
+    @PUT("updatePickerTimer")
+    suspend fun updatePickerTimer(@Query("orderNumber")orderNumber: String, @Query("pickerUserName")pickerUserName: String)
+
+    @GET("getAllOrdersInPickingForSuggestion")
+    suspend fun getAllOrdersInPickingForSuggestion(@Query("companyID") companyID: String):getOrdersForSuggestionWrapper
 }
 
 interface ViewProductsInBinServices{
