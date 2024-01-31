@@ -15,8 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.cdihandheldscannerviewactivity.ItemPicking.ItemPickingViewModel
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ItemsInOrderInfo
-import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentOrderPickingItemBinding
 
 class OrderPickingItemFragment :Fragment(){
@@ -67,7 +65,13 @@ class OrderPickingItemFragment :Fragment(){
         pickItemButton = binding.pickingButton
         pickItemButton.setOnClickListener{
             hasPageJustStarted = true
-            viewModel.finishPickingForSingleItem(itemAmountEditText.text.toString().toFloat())
+            val amountToBePickedString = itemAmountEditText.text.toString()
+            if(amountToBePickedString == "")
+                AlerterUtils.startErrorAlerter(requireActivity(),"Quantity to be picked can not be empty!")
+            else {
+                val amountToBePicked = amountToBePickedString.toFloat()
+                viewModel.finishPickingForSingleItem(amountToBePicked)
+            }
         }
         itemAmountEditText = binding.itemAmountEditText
         itemNameTextView = binding.ItemName
@@ -85,6 +89,7 @@ class OrderPickingItemFragment :Fragment(){
                 else
                     itemAmountEditText.text.toString().toFloat() + viewModel.UOMQtyInBarcode.value!!
                 itemAmountEditText.setText(valueToBeDisplayed.toString())
+                itemNumberEditText.setText("")
             }else if(hasPageJustStarted)
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmItem"]!!)
         }

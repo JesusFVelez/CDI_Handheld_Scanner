@@ -45,7 +45,7 @@ class LoginViewModel:ViewModel() {
         }
         viewModelScope.launch(exceptionHandler) {
             try{
-                var response = ScannerAPI.LoginService.getCompanies()
+                val response = ScannerAPI.getLoginService().getCompanies()
                 _listOfCompanies.value = response.response.companies.companies
                 _wasLastAPICallSuccessful.value = true
 

@@ -6,13 +6,15 @@ import android.net.Network
 import android.net.NetworkRequest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.example.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
 import com.example.cdihandheldscannerviewactivity.login.loginActivity
 
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         // Set the toolbar
         val toolbar = findViewById<Toolbar>(R.id.custom_toolbar)
         setSupportActionBar(toolbar)
+
 
         // Set up the navigation controller
         val navController = this.findNavController(R.id.my_nav_host_fragment)
@@ -82,12 +85,27 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp()
     }
 
+    private fun onLeaveOfOrderPickingMainFragment(){
+
+    }
+
 override fun onBackPressed() {
     val navController = this.findNavController( R.id.my_nav_host_fragment)
-    if (navController.previousBackStackEntry != null) {
+    if(navController.currentDestination?.id == R.id.orderPickingMainFragment) {
+        val currentFragment = navController.currentDestination
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment
+        val fragment = navHostFragment?.childFragmentManager?.fragments?.find { it is orderPickingMainFragment } as? orderPickingMainFragment
+        fragment?.let {
+            if (it.verifyIfOrderIsBeingPicked()) {
+                it.showErrorMessageWhenExitingScreenWithoutFinishingPicking()
+            } else
+                navController.navigateUp()
+            return
+        }
+    }else if (navController.previousBackStackEntry != null) {
         // If there's something on the back stack, pop it
         navController.popBackStack()
-    } else {
+    }else{
         // Otherwise, Ask the user if he wants to log out or not
         AlertDialog.Builder(this@MainActivity)
             .setTitle("Log Out")
@@ -103,7 +121,24 @@ override fun onBackPressed() {
     }
 }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home){
+           val navController = findNavController(R.id.my_nav_host_fragment)
+            val currentFragment = navController.currentDestination
+            if(currentFragment?.id == R.id.orderPickingMainFragment){
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment
+                val fragment = navHostFragment?.childFragmentManager?.fragments?.find { it is orderPickingMainFragment } as? orderPickingMainFragment
+                fragment?.let{
+                    if (it.verifyIfOrderIsBeingPicked()) {
+                        it.showErrorMessageWhenExitingScreenWithoutFinishingPicking()
+                    } else
+                        navController.navigateUp()
+                    return true
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
 
 

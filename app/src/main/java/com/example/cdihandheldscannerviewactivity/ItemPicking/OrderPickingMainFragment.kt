@@ -1,31 +1,21 @@
 package com.example.cdihandheldscannerviewactivity.ItemPicking
 
 import android.app.Dialog
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkRequest
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import android.widget.PopupWindow
 import android.widget.ScrollView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinAdapter
-import com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
@@ -48,12 +38,29 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
 
     private var hasPageJustStarted: Boolean = false
-    private var hasOrderBeenSearched: Boolean = false
+    var hasOrderBeenSearched: Boolean = false
     private lateinit var progressDialog: Dialog
+
+
+    fun verifyIfOrderIsBeingPicked(): Boolean{
+        val orderNumber = orderNumberEditText.text.toString()
+        return orderNumber != "" && hasOrderBeenSearched
+    }
+
+    fun showErrorMessageWhenExitingScreenWithoutFinishingPicking(){
+        val orderNumber = orderNumberEditText.text.toString()
+        AlerterUtils.startErrorAlerter(
+            requireActivity(),
+            "Cannot exit Item picking without finishing picking for order '${orderNumber}'"
+        )
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,7 +101,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         }
 
         // For whenever the fragment comes back from the pick individual fragmemt screen
-        if(viewModel.listOfItemsInOrder.value!!.isEmpty() && viewModel.orderNumber.value != null && viewModel.orderNumber.value!! != ""){
+        if(lastFragmentName == "null"){
             searchForOrder()
         }
 

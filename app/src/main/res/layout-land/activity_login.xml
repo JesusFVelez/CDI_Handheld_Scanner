@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.cdihandheldscannerviewactivity.login.loginActivity"  >
+
+    <data>
+        <variable
+            name="loginViewModel"
+            type="com.example.cdihandheldscannerviewactivity.login.LoginViewModel" />
+
+    </data>
+    <LinearLayout
+        android:id="@+id/login_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_gradient"
+        android:weightSum="2">
+
+
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/CDILogoImage"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/cdi_image_description"
+            android:src="@drawable/cdi_logo___without_technologies_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,16:12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle_text_box"
+                    android:padding="5dp"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/usernameText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/user_name"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle_text_box"
+                    android:padding="5dp"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutUserName"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutUserName"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUserName"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/password"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!--         TODO make this work at some point -> android:entries="@{loginViewModel.listOfCompanies}"-->
+                <Spinner
+                    android:id="@+id/companySpinner"
+                    style="@style/DropDownStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="50dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
+                    app:layout_constraintHorizontal_bias="0.497"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/loginButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/login_rectangle"
+                    android:backgroundTint="@color/CDI_Blue"
+                    android:text="@string/login"
+                    android:textAllCaps="false"
+                    android:textColor="@color/CDI_Gray"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/companySpinner"
+                    app:layout_constraintStart_toStartOf="@+id/companySpinner"
+                    app:layout_constraintTop_toBottomOf="@+id/companySpinner" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+</layout>

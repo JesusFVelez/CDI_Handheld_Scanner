@@ -183,7 +183,7 @@ class loginActivity : AppCompatActivity() {
         // Create a global layout listener. This is used to reset the Spinner's background when it closes.
         val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
             // Reset background when spinner closes
-            companySpinner.setBackgroundResource(R.drawable.drop_down_background)
+            companySpinner.setBackgroundResource(R.drawable.white_drop_down)
             viewModel.isSpinnerArrowUp = false
         }
 
@@ -191,7 +191,7 @@ class loginActivity : AppCompatActivity() {
         companySpinner.setOnTouchListener{view, event ->
             when(event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    companySpinner.setBackgroundResource(R.drawable.drop_down_arrow_up)
+                    companySpinner.setBackgroundResource(R.drawable.white_drop_down_arrow_up)
                     companySpinner.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
                     viewModel.isSpinnerArrowUp = true
                 }
@@ -213,7 +213,7 @@ class loginActivity : AppCompatActivity() {
         // Set a touch listener for the root view. This is used to reset the Spinner's background when the user touches outside of the Spinner.
         rootView.setOnTouchListener { _, _ ->
             if (viewModel.isSpinnerArrowUp) {
-                companySpinner.setBackgroundResource(R.drawable.drop_down_background)
+                companySpinner.setBackgroundResource(R.drawable.white_drop_down)
                 companySpinner.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
                 viewModel.isSpinnerArrowUp = false
             }
@@ -246,18 +246,13 @@ class loginActivity : AppCompatActivity() {
                 )
                 val requestBody = RequestUser(user)
 
-                ScannerAPI.LoginService.isLogedIn(requestBody)
+                ScannerAPI.getLoginService().isLogedIn(requestBody)
                     .enqueue(object : Callback<ResponseWrapperUser> {
                         override fun onResponse(
                             call: Call<ResponseWrapperUser>,
                             response: Response<ResponseWrapperUser>
                         ) {
                             if (response.body()?.response?.isSignedIn == true) {
-                                Toast.makeText(
-                                    this@loginActivity,
-                                    getString(R.string.succesfull_login),
-                                    Toast.LENGTH_SHORT
-                                ).show()
                                 progressDialog.dismiss()
                                 SharedPreferencesUtils.storeLoginInfoInSharedPref(user.userName, selectedCompanyID, this@loginActivity)
                                 // This jumps from one Activity to another

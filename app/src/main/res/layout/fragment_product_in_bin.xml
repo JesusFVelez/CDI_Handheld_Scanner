@@ -10,10 +10,10 @@
 <!--                     type="com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel" />-->
 
 <!--             </data>-->
-<ScrollView
+<androidx.core.widget.NestedScrollView
     android:id="@+id/ScrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     >
 
 
@@ -28,6 +28,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    style="@style/DropDownStyle"
                     android:background="@drawable/drop_down_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +75,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/productsInBinList"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -87,5 +88,5 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
 </layout>
