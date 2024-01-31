@@ -101,6 +101,10 @@ class ItemPickingViewModel: ViewModel() {
     val ordersThatHavePicking: LiveData<List<ordersThatAreInPickingClass>>
         get() = _ordersThatHavePicking
 
+    private val _hasPickingTimerAlreadyStarted = MutableLiveData<Boolean>()
+    val hasPickingTimerAlreadyStarted : LiveData<Boolean>
+        get() = _hasPickingTimerAlreadyStarted
+
 
 
 
@@ -117,6 +121,7 @@ class ItemPickingViewModel: ViewModel() {
 
 
     init {
+        _hasPickingTimerAlreadyStarted.value = false
         _ordersThatHavePicking.value = mutableListOf()
         _currentlyChosenAdapterPosition.value = 0
         _errorMessage.value = mutableMapOf("confirmBin" to "",
@@ -324,10 +329,13 @@ class ItemPickingViewModel: ViewModel() {
         }
     }
 
+
+
     fun startPickingTimer(){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
+            _hasPickingTimerAlreadyStarted.value = false
             Log.i("Start Picker Timer - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
         // API call to get the products in order
@@ -337,32 +345,41 @@ class ItemPickingViewModel: ViewModel() {
                 val timerRequestBodyWrapper = RequestTimerParamsWrapper(timerRequestBody)
                 ScannerAPI.getItemPickingForDispatchService().startPickerTimer(timerRequestBodyWrapper)
                 _wasLastAPICallSuccessful.value = true
+                _hasPickingTimerAlreadyStarted.value = true
             }
 
         }catch (e: Exception){
             _wasLastAPICallSuccessful.value = false
+            _hasPickingTimerAlreadyStarted.value = false
             Log.i("Start Picker Timer - Item Picking (e) " , "Error -> ${e.message}")
         }
     }
 
-    fun endPickingTimer(){
+    fun updatePickingTimer(typeOfUpdate: String){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
-            Log.i("End Picker Timer - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
+            Log.i("Update Picker Timer - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
         // API call to get the products in order
         try {
             viewModelScope.launch(exceptionHandler) {
-                val timerRequestBody = RequestTimerParams(_orderNumber.value!!, _userNameOfPicker.value!!)
-                val timerRequestBodyWrapper = RequestTimerParamsWrapper(timerRequestBody)
-                ScannerAPI.getItemPickingForDispatchService().endPickerTimer(timerRequestBodyWrapper)
+                ScannerAPI.getItemPickingForDispatchService().updatePickerTimer(_orderNumber.value!!, _userNameOfPicker.value!!)
                 _wasLastAPICallSuccessful.value = true
+                when(typeOfUpdate){
+                    "end" -> {
+                        _hasPickingTimerAlreadyStarted.value = false
+                    }
+
+                    "update" ->{
+                        _hasPickingTimerAlreadyStarted.value = true
+                    }
+                }
             }
 
         }catch (e: Exception){
             _wasLastAPICallSuccessful.value = false
-            Log.i("End Picker Timer - Item Picking (e) " , "Error -> ${e.message}")
+            Log.i("Update Picker Timer - Item Picking (e) " , "Error -> ${e.message}")
         }
     }
 

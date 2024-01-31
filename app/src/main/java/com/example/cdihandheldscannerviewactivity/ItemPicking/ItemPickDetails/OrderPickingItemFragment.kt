@@ -71,6 +71,7 @@ class OrderPickingItemFragment :Fragment(){
             else {
                 val amountToBePicked = amountToBePickedString.toFloat()
                 viewModel.finishPickingForSingleItem(amountToBePicked)
+                viewModel.updatePickingTimer("update")
             }
         }
         itemAmountEditText = binding.itemAmountEditText

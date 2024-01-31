@@ -139,7 +139,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         finishOrderPickingButton.setOnClickListener {
                 val popupWindow = PopupWindowUtils.createQuestionPopup(requireContext(), "Finished Picking the Order?", "Confirmation")
                 popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
-                    viewModel.endPickingTimer()
+                    viewModel.updatePickingTimer("end")
                     viewModel.clearListOfItems()
                     findNavController().navigateUp()
                     AlerterUtils.startSuccessAlert(requireActivity(), "Finished Picking","Order has been successfully picked")
@@ -266,9 +266,10 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
                     requireActivity(),
                     viewModel.errorMessage.value!!["verifyIfClientAccountIsClosed"]!!
                 )
-            } else if (hasOrderBeenSearched) {
+            } else if (hasOrderBeenSearched ) {
                 viewModel.getItemsInOrder()
-                viewModel.startPickingTimer()
+                if(!viewModel.hasPickingTimerAlreadyStarted.value!!)
+                    viewModel.startPickingTimer()
                 finishOrderPickingButton.isEnabled = true
             }
         }
