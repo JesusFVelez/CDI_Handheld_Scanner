@@ -89,6 +89,21 @@ interface ItemPickingForDispatchServices{
     suspend fun getAllOrdersInPickingForSuggestion(@Query("companyID") companyID: String):getOrdersForSuggestionWrapper
 }
 
+// All services for assign barcode
+interface AssignBarcodeToItemServices {
+    @GET("getItem")
+    suspend fun getItems(@Query("itemNumber") itemNumber: String): ResponseWrapperGetItem
+
+    @GET("wasItemFound")
+    suspend fun wasItemFount(@Query("itemNumber") itemNumber: String): ResponseWrapperWasItemFound
+
+    @GET("validateBarcode")
+    suspend fun validateBarcode(@Query("barCode") barCode: String): ResponseWrapperValidateBarcode
+
+    @PUT("setBarcode")
+    suspend fun setBarcode(@Query("itemNumber") itemNumber: String, @Query("selectedBarcode") selectedBarcode: String): ResponseWrapperSetBarcode
+}
+
 interface ViewProductsInBinServices{
     // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
     @GET("getItemsInBin")

@@ -1,22 +1,10 @@
 package com.example.cdihandheldscannerviewactivity.BarcodeAssign
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.cdihandheldscannerviewactivity.Utils.Network.BinInfo
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ItemDetailsForBinSearch
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
-import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
-import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.launch
-import java.util.Scanner
-import kotlin.Exception
 
-class BarcodeAssignViewModel: ViewModel() {
+class AssignBarcodeViewModel: ViewModel() {
 
     // Adapter Position
     private val _currentlyChosenAdapterPosition = MutableLiveData<Int>()
