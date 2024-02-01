@@ -85,8 +85,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         initUIElements()
         initObservers()
 
-        adapter = ItemPickingAdapter(this)
-        binding.totalPickingItemsList.adapter = adapter
+
         hasOrderBeenSearched = false
         hasPageJustStarted = true
         viewModel.setChosenAdapterPosition(0)
@@ -177,6 +176,8 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             setCancelable(false)
         }
 
+        adapter = ItemPickingAdapter(this)
+        binding.totalPickingItemsList.adapter = adapter
 
     }
 
@@ -226,8 +227,8 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
                 )
         }
 
-        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccesful ->
-            if (!wasLasAPICallSuccesful && hasOrderBeenSearched) {
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
+            if (!wasLasAPICallSuccessful && hasOrderBeenSearched) {
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
@@ -294,8 +295,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             }
         }
         PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Scan Bin '" + viewModel.listOfItemsInOrder.value!![position].binLocation + "' to continue", "Bin Number", listener)
-
-
     }
 
     interface PopupInputListener{
