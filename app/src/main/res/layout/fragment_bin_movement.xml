@@ -33,7 +33,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/warehouseSpinner" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/itemAmountEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
@@ -103,6 +103,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toBinNumber" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/itemsBeingMovedRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@+id/continueButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addButton">
+
+
+            </androidx.recyclerview.widget.RecyclerView>
             <Button
                 android:id="@+id/continueButton"
                 android:layout_width="150dp"
