@@ -20,6 +20,7 @@ class ServicePaths{
         const val GeneralServices:String = "/generalServices/"
         const val ViewProductsInBin:String = "/ViewProductsInBinService/"
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
+        const val RPMAccess: String = "/RPMAccessService"
     }
 }
 
@@ -95,6 +96,12 @@ interface ViewProductsInBinServices{
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
 }
 
+interface RPMAccessServices{
+    @GET("checkIfUserHasAccessToFunctionality")
+    suspend fun checkIfUserHasAccessToFunctionality(@Query("userName")userName: String, @Query("functionality") functionality:String, @Query("companyID") companyID: String): RPMAccessResponseWrapper
+
+}
+
 interface GeneralServices{
     // Endpoint for getting available warehouses
     @GET("getWarehouses")
@@ -141,6 +148,11 @@ object ScannerAPI {
     fun getItemPickingForDispatchService():ItemPickingForDispatchServices{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.ItemPicking)
         return retrofit.create(ItemPickingForDispatchServices::class.java)
+    }
+
+    fun getRPMAccessService():RPMAccessServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.RPMAccess)
+        return retrofit.create(RPMAccessServices::class.java)
     }
 
 
