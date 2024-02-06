@@ -20,6 +20,7 @@ class ServicePaths{
         const val GeneralServices:String = "/generalServices/"
         const val ViewProductsInBin:String = "/ViewProductsInBinService/"
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
+        const val AssignBarcode: String = "/AssignBarcodeService/"
     }
 }
 
@@ -95,7 +96,7 @@ interface AssignBarcodeToItemServices {
     suspend fun getItems(@Query("itemNumber") itemNumber: String): ResponseWrapperGetItem
 
     @GET("wasItemFound")
-    suspend fun wasItemFount(@Query("itemNumber") itemNumber: String): ResponseWrapperWasItemFound
+    suspend fun wasItemFound(@Query("itemNumber") itemNumber: String): ResponseWrapperWasItemFound
 
     @GET("validateBarcode")
     suspend fun validateBarcode(@Query("barCode") barCode: String): ResponseWrapperValidateBarcode
@@ -156,6 +157,11 @@ object ScannerAPI {
     fun getItemPickingForDispatchService():ItemPickingForDispatchServices{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.ItemPicking)
         return retrofit.create(ItemPickingForDispatchServices::class.java)
+    }
+
+    fun getAssignBarcodeService(): AssignBarcodeToItemServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignBarcode)
+        return retrofit.create(AssignBarcodeToItemServices::class.java)
     }
 
 
