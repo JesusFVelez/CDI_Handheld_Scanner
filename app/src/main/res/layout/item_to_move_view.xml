@@ -33,57 +33,53 @@
         android:id="@+id/fromBinIcon"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginStart="15dp"
         android:layout_marginBottom="10dp"
 
         android:src="@drawable/bindetailpage"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/itemNumber" />
 
     <TextView
         android:id="@+id/fromBinNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginBottom="10dp"
         android:text="02-A-132"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/fromBinIcon"
         app:layout_constraintStart_toEndOf="@+id/fromBinIcon" />
 
     <ImageView
         android:id="@+id/fromToArrow"
         android:layout_width="30dp"
         android:layout_height="20dp"
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="10dp"
         android:src="@drawable/black_arrow_right"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/toBinIcon"
-        app:layout_constraintStart_toEndOf="@+id/fromBinNumber"
         app:layout_constraintTop_toTopOf="@+id/fromBinNumber" />
 
     <ImageView
         android:id="@+id/toBinIcon"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginStart="145dp"
 
         android:layout_marginBottom="10dp"
         android:src="@drawable/bindetailpage"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fromBinNumber" />
+        app:layout_constraintEnd_toStartOf="@+id/toBinNumber" />
 
     <TextView
         android:id="@+id/toBinNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
         android:text="02-A-132"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/toBinIcon" />
+        app:layout_constraintEnd_toStartOf="@+id/quantityToMove" />
 
     <TextView
         android:id="@+id/itemName"
@@ -110,8 +106,7 @@
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/quantityToMove"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/itemName"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/itemName" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
