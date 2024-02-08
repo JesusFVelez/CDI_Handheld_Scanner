@@ -21,7 +21,13 @@ class BinMovementAdapter : RecyclerView.Adapter<BinMovementViewHolder>(){
     }
 }
 
-
+data class BinMovementDataClass(
+    val itemName: String,
+    val itemNumber: String,
+    val qtyToMoveFromBinToBin: Int,
+    val fromBinNumber: String,
+    val toBinNumber:String
+)
 
 class BinMovementViewHolder(itemToMoveView: View): RecyclerView.ViewHolder(itemToMoveView) {
 
@@ -36,6 +42,14 @@ class BinMovementViewHolder(itemToMoveView: View): RecyclerView.ViewHolder(itemT
     init {
 //        itemToMoveView.setOnClickListener(this)
 
+    }
+
+    fun bind(data: BinMovementDataClass){
+        itemNameTextView.text = data.itemName
+        itemNumberTextView.text = data.itemNumber
+        quantityToMoveTextView.text = data.qtyToMoveFromBinToBin.toString()
+        fromBinNumberTextView.text = data.fromBinNumber
+        toBinNumberTextView.text = data.toBinNumber
     }
 
 
