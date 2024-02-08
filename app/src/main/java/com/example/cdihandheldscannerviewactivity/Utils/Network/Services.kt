@@ -20,6 +20,7 @@ class ServicePaths{
         const val GeneralServices:String = "/generalServices/"
         const val ViewProductsInBin:String = "/ViewProductsInBinService/"
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
+        const val RPMAccess: String = "/RPMAccessService/"
     }
 }
 
@@ -47,6 +48,11 @@ interface LoginServices{
     //Endpoint for testing the connection
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
+}
+
+interface RPMAccessServices{
+    @GET("checkIfUserHasAccessToFunctionality")
+    suspend fun checkIfUserHasAccessToFunctionality(@Query("userName")userName:String, @Query("functionality") functionality:String, @Query("companyID")companyID:String): RPMAccessResponseWrapper
 }
 
 interface ViewBinsThatHaveItemServices{
