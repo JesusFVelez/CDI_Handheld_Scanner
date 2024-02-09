@@ -40,6 +40,7 @@ import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreference
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentProductInBinBinding
 import android.view.ViewGroup.LayoutParams
 import android.view.animation.AnimationUtils
+import androidx.recyclerview.widget.RecyclerView
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.google.android.material.transition.platform.MaterialFadeThrough

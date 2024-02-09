@@ -48,6 +48,7 @@ interface LoginServices{
     //Endpoint for testing the connection
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
+
 }
 
 interface ViewBinsThatHaveItemServices{

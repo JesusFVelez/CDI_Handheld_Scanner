@@ -1,23 +1,36 @@
 package com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cdihandheldscannerviewactivity.ProductsInBin.productInBinViewHolder
 import com.example.cdihandheldscannerviewactivity.R
 
-class BinMovementAdapter : RecyclerView.Adapter<BinMovementViewHolder>(){
+class BinMovementAdapter (private val trashCanOnClickListener: OnClickListener) : RecyclerView.Adapter<BinMovementViewHolder>(){
+
+    var data = listOf<BinMovementDataClass>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BinMovementViewHolder {
-        TODO("Not yet implemented")
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val view = layoutInflater.inflate(R.layout.item_to_move_view, parent, false)
+        return BinMovementViewHolder(view, trashCanOnClickListener)
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return data.size
     }
 
     override fun onBindViewHolder(holder: BinMovementViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        holder.bind(data[position])
     }
 }
 
@@ -29,25 +42,25 @@ data class BinMovementDataClass(
     val toBinNumber:String
 )
 
-class BinMovementViewHolder(itemToMoveView: View): RecyclerView.ViewHolder(itemToMoveView) {
+class BinMovementViewHolder(itemToMoveView: View, removeIconClickListener: OnClickListener): RecyclerView.ViewHolder(itemToMoveView){
 
     val itemNameTextView: TextView = itemToMoveView.findViewById(R.id.itemName)
     val itemNumberTextView: TextView = itemToMoveView.findViewById(R.id.itemNumber)
     val fromBinNumberTextView:TextView = itemToMoveView.findViewById(R.id.fromBinNumber)
     val toBinNumberTextView: TextView = itemToMoveView.findViewById(R.id.toBinNumber)
     val quantityToMoveTextView:TextView = itemToMoveView.findViewById(R.id.quantityToMove)
-    val removeItemIconImageView: ImageView = itemToMoveView.findViewById(R.id.removeItemIcon)
+    val removeItemIconButton: Button = itemToMoveView.findViewById(R.id.removeItemIcon)
 
 
     init {
 //        itemToMoveView.setOnClickListener(this)
-
+        removeItemIconButton.setOnClickListener(removeIconClickListener)
     }
 
     fun bind(data: BinMovementDataClass){
         itemNameTextView.text = data.itemName
         itemNumberTextView.text = data.itemNumber
-        quantityToMoveTextView.text = data.qtyToMoveFromBinToBin.toString()
+        quantityToMoveTextView.text = "Count: " + data.qtyToMoveFromBinToBin.toString()
         fromBinNumberTextView.text = data.fromBinNumber
         toBinNumberTextView.text = data.toBinNumber
     }
@@ -56,6 +69,3 @@ class BinMovementViewHolder(itemToMoveView: View): RecyclerView.ViewHolder(itemT
 
 }
 
-interface removeItemTrashCanClickListener {
-    fun onItemClickListener(view: View, position: Int)
-}
