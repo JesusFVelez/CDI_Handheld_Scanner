@@ -38,8 +38,8 @@ class AssignBarcodeViewModel: ViewModel() {
 
     // LiveData for getItem API call //
 
-    private val _itemInfo = MutableLiveData<List<GetItem>>()
-    val itemInfo: LiveData<List<GetItem>>
+    private val _itemInfo = MutableLiveData<GetItem>()
+    val itemInfo: LiveData<GetItem>
         get() = _itemInfo
 
     // LiveData for validateBarcode API call //
@@ -57,10 +57,7 @@ class AssignBarcodeViewModel: ViewModel() {
 
 
     init {
-        _wasItemFound.value = false
         _isBarcodeSet.value = false
-        _isBarcodeValid.value = false
-        _itemInfo.value = mutableListOf()
         _errorMessage.value = mutableMapOf(
             "wasItemFoundError" to "",
             "isBarcodeValidError" to "",
@@ -99,7 +96,7 @@ class AssignBarcodeViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 val response = ScannerAPI.getAssignBarcodeService().getItems(itemNumber)
-                _itemInfo.value = response.response.itemInfo.item_info
+                _itemInfo.value = response.response.itemInfo.item_info[0]
             } catch(e: Exception) {
                 Log.i("get set item for Barcode Assign API Call Exception Handler", "Error -> ${e.message}")
             }
@@ -148,7 +145,7 @@ class AssignBarcodeViewModel: ViewModel() {
     }
 
     // Function to Clear List of Item Details
-    fun clearItemDetails() {
-        _itemInfo.value = listOf()
-    }
+//    fun clearItemDetails() {
+//        _itemInfo.value = listOf()
+//    }
 }

@@ -20,7 +20,7 @@ class AssignBarcodeToProductFragment: Fragment() {
 
     private lateinit var itemNumberEditText: EditText
     private lateinit var itemBarcodeEditText: EditText
-    private lateinit var itemNameTextView: TextView
+    private lateinit var itemNumberTextView: TextView
     private lateinit var itemDescriptionTextView: TextView
     private lateinit var itemBarcodeTextView: TextView
     private lateinit var searchProductButton: Button
@@ -89,6 +89,7 @@ class AssignBarcodeToProductFragment: Fragment() {
         viewModel.wasItemFound.observe(viewLifecycleOwner) { wasItemConfirmed ->
             if(wasItemConfirmed && !hasPageJustStarted) {
                 viewModel.getItems(itemNumberEditText.text.toString())
+                itemBarcodeEditText.isEnabled = false
             } else {
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
@@ -97,9 +98,20 @@ class AssignBarcodeToProductFragment: Fragment() {
             }
         }
 
+        viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
+            if(itemInfo != null) {
+                itemNumberTextView.text = viewModel.itemInfo.value!!.itemNumber
+                itemDescriptionTextView.text = viewModel.itemInfo.value!!.itemDescription
+                itemBarcodeTextView.text = viewModel.itemInfo.value!!.itemBarcode
+            }
+        }
+
         viewModel.isBarcodeValid.observe(viewLifecycleOwner) { wasBarcodeValid ->
             if(wasBarcodeValid) {
                 viewModel.setBarcode(itemNumberEditText.text.toString(), itemBarcodeEditText.text.toString())
+                viewModel.getItems(itemNumberEditText.text.toString())
+                itemBarcodeTextView.text = viewModel.itemInfo.value!!.itemBarcode
+                itemBarcodeEditText.isEnabled = true
             } else {
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
