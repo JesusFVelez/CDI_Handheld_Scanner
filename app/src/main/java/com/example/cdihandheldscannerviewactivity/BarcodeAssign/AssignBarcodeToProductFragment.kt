@@ -1,15 +1,18 @@
 package com.example.cdihandheldscannerviewactivity.BarcodeAssign
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.cdihandheldscannerviewactivity.R
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentAssignBarcodeToProductBinding
 
@@ -17,9 +20,13 @@ class AssignBarcodeToProductFragment: Fragment() {
 
     private lateinit var itemNumberEditText: EditText
     private lateinit var itemBarcodeEditText: EditText
+    private lateinit var itemNameTextView: TextView
+    private lateinit var itemDescriptionTextView: TextView
+    private lateinit var itemBarcodeTextView: TextView
     private lateinit var searchProductButton: Button
     private lateinit var addButton: Button
     private lateinit var binding: FragmentAssignBarcodeToProductBinding
+    private lateinit var progressDialog: Dialog
 
     private val viewModel: AssignBarcodeViewModel by activityViewModels()
 
@@ -67,26 +74,46 @@ class AssignBarcodeToProductFragment: Fragment() {
 
         searchProductButton = binding.searchProductButton
         searchProductButton.setOnClickListener{
-            searchForItem()
+            validateItem()
         }
 
         addButton = binding.addButton
         addButton.setOnClickListener{
-            addBarcode()
+            validateBarcode()
         }
 
         itemNumberEditText.requestFocus()
     }
 
     private fun initObservers(){
+        viewModel.wasItemFound.observe(viewLifecycleOwner) { wasItemConfirmed ->
+            if(wasItemConfirmed && !hasPageJustStarted) {
+                viewModel.getItems(itemNumberEditText.text.toString())
+            } else {
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["wasItemFoundError"]!!
+                )
+            }
+        }
 
+        viewModel.isBarcodeValid.observe(viewLifecycleOwner) { wasBarcodeValid ->
+            if(wasBarcodeValid) {
+                viewModel.setBarcode(itemNumberEditText.text.toString(), itemBarcodeEditText.text.toString())
+            } else {
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["isBarcodeValidError"]!!
+                )
+            }
+        }
     }
 
-    private fun searchForItem(){
-
+    private fun validateItem(){
+        viewModel.validateItem(itemNumberEditText.text.toString())
     }
 
-    private fun addBarcode(){
-
+    private fun validateBarcode(){
+        viewModel.validateBarcode(itemBarcodeEditText.text.toString())
     }
 }

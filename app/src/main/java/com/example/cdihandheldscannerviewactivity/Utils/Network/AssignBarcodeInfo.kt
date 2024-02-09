@@ -13,7 +13,8 @@ data class ResponseWrapperWasItemFound(
 )
 @JsonClass(generateAdapter = true)
 data class ResponseWasItemFound(
-    @Json(name = "wasItemFound") val wasItemFound: Boolean
+    @Json(name = "wasItemFound") val wasItemFound: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
 )
 
 
@@ -25,19 +26,19 @@ data class ResponseWrapperGetItem(
 
 @JsonClass(generateAdapter = true)
 data class ResponseGetItem(
-    @Json(name = "itemInfo") val response: GetItemWrapper
+    @Json(name = "itemInfo") val itemInfo: GetItemWrapper
 )
 
 @JsonClass(generateAdapter = true)
 data class GetItemWrapper(
-    @Json(name = "item-info") val response: GetItem
+    @Json(name = "item-info") val item_info: List<GetItem>
 )
 
 @JsonClass(generateAdapter = true)
 data class GetItem (
     @Json(name = "itemNumber") val itemNumber: String,
     @Json(name = "itemDescription") val itemDescription: String,
-    @Json(name = "itemBarcode") val itemBarcode: String
+    @Json(name = "itemBarcode") val itemBarcode: String,
 )
 
 // Validates length of barcode

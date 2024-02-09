@@ -23,11 +23,18 @@ class AssignBarcodeViewModel: ViewModel() {
     // API Calls Values //
     //******************//
 
+    // LiveData for all error messages //
+
+    private val _errorMessage = MutableLiveData<MutableMap<String, String>>()
+    val errorMessage: LiveData<MutableMap<String, String>>
+        get() = _errorMessage
+
     // LiveData for wasItemFound API call //
 
     private val _wasItemFound = MutableLiveData<Boolean>()
     val wasItemFound: LiveData<Boolean>
         get() = _wasItemFound
+
 
     // LiveData for getItem API call //
 
@@ -41,9 +48,6 @@ class AssignBarcodeViewModel: ViewModel() {
     val isBarcodeValid: MutableLiveData<Boolean>
         get() = _isBarcodeValid
 
-    private val _isBarcodeValidError = MutableLiveData<String>()
-    val isBarcodeValidError: MutableLiveData<String>
-        get() = _isBarcodeValidError
 
     // LiveData for setBarcode API call //
 
@@ -51,9 +55,18 @@ class AssignBarcodeViewModel: ViewModel() {
     val isBarcodeSet: MutableLiveData<Boolean>
         get() = _isBarcodeSet
 
-    private val _isBarcodeSetError = MutableLiveData<String>()
-    val isBarcodeSetError: MutableLiveData<Boolean>
-        get() = _isBarcodeSet
+
+    init {
+        _wasItemFound.value = false
+        _isBarcodeSet.value = false
+        _isBarcodeValid.value = false
+        _itemInfo.value = mutableListOf()
+        _errorMessage.value = mutableMapOf(
+            "wasItemFoundError" to "",
+            "isBarcodeValidError" to "",
+            "wasBarcodeSet" to ""
+        )
+    }
 
     //*********************//
     // API Calls Functions //
@@ -78,7 +91,7 @@ class AssignBarcodeViewModel: ViewModel() {
     }
 
     //Get Item API Call//
-    fun setItem(itemNumber: String){
+    fun getItems(itemNumber: String){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             Log.i("set item for Barcode Assign API Call Exception Handler", "Error -> ${exception.message}")
         }
@@ -86,12 +99,13 @@ class AssignBarcodeViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 val response = ScannerAPI.getAssignBarcodeService().getItems(itemNumber)
-                // Need to finish this ////////////////////////////////////////////////////////////////////////////////
+                _itemInfo.value = response.response.itemInfo.item_info
             } catch(e: Exception) {
                 Log.i("get set item for Barcode Assign API Call Exception Handler", "Error -> ${e.message}")
             }
         }
     }
+
     //Validate Barcode API Call//
     fun validateBarcode(barcode: String){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -103,7 +117,6 @@ class AssignBarcodeViewModel: ViewModel() {
             try{
                 val response = ScannerAPI.getAssignBarcodeService().validateBarcode(barcode)
                 _isBarcodeValid.value = response.response.validation
-                _isBarcodeValidError.value = response.response.errorMessage
             } catch(e: Exception){
                 _isBarcodeValid.value = false
                 Log.i("get validate barcode details for Barcode Assign Exception Handler", "Error -> ${e.message}")
@@ -122,7 +135,6 @@ class AssignBarcodeViewModel: ViewModel() {
             try {
                 val response = ScannerAPI.getAssignBarcodeService().setBarcode(itemNumber, barcode)
                 _isBarcodeSet.value = response.response.wasBarcodeAssigned
-                _isBarcodeSetError.value = response.response.errorMessage
             } catch (e: Exception) {
                 _isBarcodeSet.value = false
                 Log.i("get validate barcode details for Barcode Assign API Call Exception Handler", "Error -> ${e.message}")
@@ -130,16 +142,13 @@ class AssignBarcodeViewModel: ViewModel() {
         }
     }
 
-
-    fun setAdapterPosition(position: Int) {
-        if (position >= 0)
-            _currentlyChosenAdapterPosition.value = position
-        else
-            _currentlyChosenAdapterPosition.value = 0
-    }
-
     // Function called when ViewModel is cleared
     override fun onCleared() {
         super.onCleared()
+    }
+
+    // Function to Clear List of Item Details
+    fun clearItemDetails() {
+        _itemInfo.value = listOf()
     }
 }
