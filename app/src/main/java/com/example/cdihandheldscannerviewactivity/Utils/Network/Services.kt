@@ -149,5 +149,10 @@ object ScannerAPI {
         return retrofit.create(ItemPickingForDispatchServices::class.java)
     }
 
+    fun getRPMAccessService():RPMAccessServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.RPMAccess)
+        return retrofit.create(RPMAccessServices::class.java)
+    }
+
 
 }
