@@ -160,7 +160,7 @@ class HomeScreenFragment : Fragment() {
 
     private fun menuButtonClickHandler(menuOption: HomeScreenViewModel.MenuOptionDataClass){
         progressDialog.show()
-        viewModel.setCurrentlyChosenMenuOption(menuOption.menuOptionName, menuOption.menuOptionNavigationAction)
+        viewModel.setCurrentlyChosenMenuOption(menuOption)
         viewModel.verifyInBackendIfUserHasAccessToMenuOption(menuOption)
     }
     // Method to create and return the view hierarchy associated with the fragment

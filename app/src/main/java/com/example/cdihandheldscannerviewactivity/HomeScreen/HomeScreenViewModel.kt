@@ -66,10 +66,8 @@ class HomeScreenViewModel : ViewModel(){
         _userNameOfPicker.value = userNameOfPicker
     }
 
-    fun setCurrentlyChosenMenuOption(menuName: String, menuOptionNavigationAction: Int){
-        _currentlyChosenMenuOption.value!!.menuOptionName = menuName
-        _currentlyChosenMenuOption.value!!.menuOptionNavigationAction = menuOptionNavigationAction
-
+    fun setCurrentlyChosenMenuOption(menuOption: MenuOptionDataClass){
+        _currentlyChosenMenuOption.value = menuOption
     }
 
     init{
