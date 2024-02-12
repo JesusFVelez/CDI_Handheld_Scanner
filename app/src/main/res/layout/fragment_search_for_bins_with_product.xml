@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:background="@drawable/drop_down_background"
-        android:paddingEnd="50dp"
         app:layout_constraintBottom_toTopOf="@+id/itemNumberEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
