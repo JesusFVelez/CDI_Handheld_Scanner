@@ -41,6 +41,8 @@ class HomeScreenFragment : Fragment() {
     // Dialog for showing progress
     private lateinit var progressDialog: Dialog
 
+    private var hasButtonBeenPressed = false
+
     private lateinit var viewModel: HomeScreenViewModel
     private lateinit var chosenMenuOption: HomeScreenViewModel.MenuOptionDataClass
 
@@ -57,24 +59,24 @@ class HomeScreenFragment : Fragment() {
 
     private fun initCircularRevealAnim(view:View){
         view.post {
+                // Get the center for the clipping circle
+                val cx = (view.left + view.right) / 2
+                val cy = (view.top + view.bottom) / 2
 
-            // Get the center for the clipping circle
-            val cx = (view.left + view.right) / 2
-            val cy = (view.top + view.bottom) / 2
+                // Get the final radius for the clipping circle
+                val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
 
-            // Get the final radius for the clipping circle
-            val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+                // Create the animator for this view (the start radius is zero)
+                val anim =
+                    ViewAnimationUtils.createCircularReveal(view, cx, cy, 0f, finalRadius)
 
-            // Create the animator for this view (the start radius is zero)
-            val anim =
-                ViewAnimationUtils.createCircularReveal(view, cx, cy, 0f, finalRadius)
+                // Set a longer duration for the animation
+                anim.setDuration(500);  // Duration in milliseconds, e.g., 1000ms = 1 second
 
-            // Set a longer duration for the animation
-            anim.setDuration(500);  // Duration in milliseconds, e.g., 1000ms = 1 second
+                // Make the view visible and start the animation
+                view.visibility = View.VISIBLE
+                anim.start()
 
-            // Make the view visible and start the animation
-            view.visibility = View.VISIBLE
-            anim.start()
         }
     }
 
@@ -88,7 +90,7 @@ class HomeScreenFragment : Fragment() {
 
     private fun initObservers(){
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastApiCallSuccessful ->
-            if(!wasLastApiCallSuccessful){
+            if(!wasLastApiCallSuccessful && hasButtonBeenPressed){
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
                 Log.i("API Call", "API Call did not work")
@@ -97,9 +99,11 @@ class HomeScreenFragment : Fragment() {
 
         viewModel.doesUserHaveAccessToMenuOption.observe(viewLifecycleOwner){doesUserHaveAccessToMenuOption ->
             progressDialog.dismiss()
-            if(doesUserHaveAccessToMenuOption){
+            if(doesUserHaveAccessToMenuOption && hasButtonBeenPressed){
+                hasButtonBeenPressed = false
                 navigateToMenuOption(viewModel.currentlyChosenMenuOption.value!!.menuOptionNavigationAction)
-            }else{
+            }else if(hasButtonBeenPressed){
+                hasButtonBeenPressed = false
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessageForUserAccess.value!!)
             }
 
@@ -159,6 +163,7 @@ class HomeScreenFragment : Fragment() {
 
 
     private fun menuButtonClickHandler(menuOption: HomeScreenViewModel.MenuOptionDataClass){
+        hasButtonBeenPressed = true
         progressDialog.show()
         viewModel.setCurrentlyChosenMenuOption(menuOption)
         viewModel.verifyInBackendIfUserHasAccessToMenuOption(menuOption)

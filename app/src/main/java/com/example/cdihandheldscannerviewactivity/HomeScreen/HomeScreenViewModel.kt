@@ -72,7 +72,6 @@ class HomeScreenViewModel : ViewModel(){
 
     init{
 
-
     }
 
     fun verifyInBackendIfUserHasAccessToMenuOption(menuOption: MenuOptionDataClass){
