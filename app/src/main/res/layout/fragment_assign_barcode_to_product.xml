@@ -3,6 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -52,6 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/productdetailsupperbackground"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/upperDiv">
@@ -80,7 +84,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/itemName"
+            android:id="@+id/itemDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -104,7 +108,7 @@
             android:layout_marginBottom="20dp"
             android:src="@drawable/barcodeitemdetails"
             app:layout_constraintEnd_toStartOf="@+id/currentBarcodeText"
-            app:layout_constraintTop_toBottomOf="@+id/itemName" />
+            app:layout_constraintTop_toBottomOf="@+id/itemDescription" />
 
         <TextView
             android:id="@+id/currentBarcodeText"
@@ -116,7 +120,7 @@
             android:textSize="19sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/itemName" />
+            app:layout_constraintTop_toBottomOf="@+id/itemDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -136,6 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/barcode"
+            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.512"
@@ -161,4 +166,5 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
 </layout>

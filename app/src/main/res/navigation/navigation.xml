@@ -26,7 +26,8 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_homeScreenFragment_to_assignBarcodeToProductFragment"
-            app:destination="@id/assignBarcodeToProductFragment" />
+            app:destination="@id/assignBarcodeToProductFragment"
+            app:enterAnim="@anim/slide_in_left" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"

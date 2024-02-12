@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.view.isInvisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -55,6 +56,7 @@ class AssignBarcodeToProductFragment: Fragment() {
         val bundle = arguments
         val lastFragmentName : String = BundleUtils.getPastFragmentNameFromBundle(bundle)
         if(lastFragmentName == "HomeScreen"){
+            clearFragmentState()
             bundle?.clear()
         }
         hasPageJustStarted = false
@@ -68,9 +70,17 @@ class AssignBarcodeToProductFragment: Fragment() {
         wasSearchStarted = false
     }
 
+    override fun onStop() {
+        super.onStop()
+    }
+
     private fun initUIElements() {
         itemNumberEditText = binding.itemNumberEditText
         itemBarcodeEditText = binding.itemBarcodeEditText
+
+        itemNumberTextView = binding.itemNumber
+        itemDescriptionTextView = binding.itemDescription
+        itemBarcodeTextView = binding.currentBarcodeText
 
         searchProductButton = binding.searchProductButton
         searchProductButton.setOnClickListener{
@@ -87,10 +97,10 @@ class AssignBarcodeToProductFragment: Fragment() {
 
     private fun initObservers(){
         viewModel.wasItemFound.observe(viewLifecycleOwner) { wasItemConfirmed ->
-            if(wasItemConfirmed && !hasPageJustStarted) {
+            if(wasItemConfirmed && !hasPageJustStarted && itemNumberEditText.text.toString() != "") {
                 viewModel.getItems(itemNumberEditText.text.toString())
-                itemBarcodeEditText.isEnabled = false
-            } else {
+                itemNumberEditText.isEnabled = false
+            } else if (itemNumberEditText.text.toString() != ""){
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["wasItemFoundError"]!!
@@ -100,19 +110,30 @@ class AssignBarcodeToProductFragment: Fragment() {
 
         viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
             if(itemInfo != null) {
+
+                binding.middleDiv.visibility = View.VISIBLE
+                itemBarcodeEditText.isEnabled = true
+
                 itemNumberTextView.text = viewModel.itemInfo.value!!.itemNumber
                 itemDescriptionTextView.text = viewModel.itemInfo.value!!.itemDescription
                 itemBarcodeTextView.text = viewModel.itemInfo.value!!.itemBarcode
+                
+                itemBarcodeEditText.requestFocus()
             }
         }
 
         viewModel.isBarcodeValid.observe(viewLifecycleOwner) { wasBarcodeValid ->
-            if(wasBarcodeValid) {
+            if(wasBarcodeValid && itemBarcodeEditText.text.toString() != "") {
                 viewModel.setBarcode(itemNumberEditText.text.toString(), itemBarcodeEditText.text.toString())
-                viewModel.getItems(itemNumberEditText.text.toString())
-                itemBarcodeTextView.text = viewModel.itemInfo.value!!.itemBarcode
-                itemBarcodeEditText.isEnabled = true
-            } else {
+                binding.middleDiv.visibility = View.GONE
+                itemNumberEditText.isEnabled = true
+                itemBarcodeEditText.isEnabled = false
+                itemNumberEditText.requestFocus()
+
+                AlerterUtils.startSuccessAlert(requireActivity(), "Barcode Set", "Successfully changed barcode to ${itemBarcodeEditText.text.toString()}")
+                itemBarcodeEditText.text.clear()
+
+            } else if (itemBarcodeEditText.text.toString() != "") {
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["isBarcodeValidError"]!!
@@ -128,4 +149,16 @@ class AssignBarcodeToProductFragment: Fragment() {
     private fun validateBarcode(){
         viewModel.validateBarcode(itemBarcodeEditText.text.toString())
     }
+
+    private fun clearFragmentState() {
+        itemNumberEditText.isEnabled = true
+        //itemNumberEditText.text.clear()
+
+        itemBarcodeEditText.isEnabled = false
+        //itemBarcodeEditText.text.clear()
+
+        binding.middleDiv.visibility = View.GONE
+
+    }
+
 }

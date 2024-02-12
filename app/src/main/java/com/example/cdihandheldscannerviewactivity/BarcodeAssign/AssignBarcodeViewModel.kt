@@ -78,6 +78,7 @@ class AssignBarcodeViewModel: ViewModel() {
         viewModelScope.launch (exceptionHandler){
             try{
                 val response = ScannerAPI.getAssignBarcodeService().wasItemFound(itemNumber)
+                _errorMessage.value!!["wasItemFoundError"] = response.response.errorMessage
                 _wasItemFound.value = response.response.wasItemFound
             } catch(e: Exception){
                 _wasItemFound.value = false
@@ -106,6 +107,7 @@ class AssignBarcodeViewModel: ViewModel() {
     //Validate Barcode API Call//
     fun validateBarcode(barcode: String){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+
             _isBarcodeValid.value = false
             Log.i("validate barcode for Barcode Assign API Call Exception Handler", "Error -> ${exception.message}")
         }
@@ -113,8 +115,10 @@ class AssignBarcodeViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler) {
             try{
                 val response = ScannerAPI.getAssignBarcodeService().validateBarcode(barcode)
+                _errorMessage.value!!["isBarcodeValidError"] = response.response.errorMessage
                 _isBarcodeValid.value = response.response.validation
             } catch(e: Exception){
+
                 _isBarcodeValid.value = false
                 Log.i("get validate barcode details for Barcode Assign Exception Handler", "Error -> ${e.message}")
         }
