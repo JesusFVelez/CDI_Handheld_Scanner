@@ -20,6 +20,8 @@ class ServicePaths{
         const val GeneralServices:String = "/generalServices/"
         const val ViewProductsInBin:String = "/ViewProductsInBinService/"
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
+        const val RPMAccess: String = "/RPMAccessService/"
+        const val AssignBarcode: String = "/AssignBarcodeService/"
     }
 }
 
@@ -55,6 +57,14 @@ interface LoginServices{
     suspend fun verifyIfNumberOfUsersHasExceeded(@Query("companyID") companyID: String): NetworkDetailsResponseWrapper
 }
 
+interface RPMAccessServices{
+    @GET("checkIfUserHasAccessToFunctionality")
+    suspend fun checkIfUserHasAccessToFunctionality(@Query("userName")userName:String, @Query("functionality") functionality:String, @Query("companyID")companyID:String): RPMAccessResponseWrapper
+
+    @GET("verifyIfClientUsesRPM")
+    suspend fun verifyIfClientUsesRPM(@Query("companyID") companyID: String):doesUserHaveRPMResponseWrapper
+}
+
 interface ViewBinsThatHaveItemServices{
     @GET("getBinsThatHaveItem")
     suspend fun getAllBinsThatHaveProduct(@Query("companyID") companyID:String, @Query("warehouseNumber") warehouseNumber: Int, @Query("itemNumber") itemNumber:String): ResponseWrapperBinsWithProduct
@@ -88,8 +98,26 @@ interface ItemPickingForDispatchServices{
     @POST("startPickerTimer")
     suspend fun startPickerTimer(@Body request: RequestTimerParamsWrapper)
 
-    @POST("endPickerTimer")
-    suspend fun endPickerTimer(@Body request: RequestTimerParamsWrapper)
+    @PUT("updatePickerTimer")
+    suspend fun updatePickerTimer(@Query("orderNumber")orderNumber: String, @Query("pickerUserName")pickerUserName: String)
+
+    @GET("getAllOrdersInPickingForSuggestion")
+    suspend fun getAllOrdersInPickingForSuggestion(@Query("companyID") companyID: String):getOrdersForSuggestionWrapper
+}
+
+// All services for assign barcode
+interface AssignBarcodeToItemServices {
+    @GET("getItem")
+    suspend fun getItems(@Query("itemNumber") itemNumber: String): ResponseWrapperGetItem
+
+    @GET("wasItemFound")
+    suspend fun wasItemFound(@Query("itemNumber") itemNumber: String): ResponseWrapperWasItemFound
+
+    @GET("validateBarcode")
+    suspend fun validateBarcode(@Query("barCode") barCode: String): ResponseWrapperValidateBarcode
+
+    @PUT("setBarcode")
+    suspend fun setBarcode(@Query("itemNumber") itemNumber: String, @Query("selectedBarcode") selectedBarcode: String): ResponseWrapperSetBarcode
 }
 
 interface ViewProductsInBinServices{
@@ -144,6 +172,16 @@ object ScannerAPI {
     fun getItemPickingForDispatchService():ItemPickingForDispatchServices{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.ItemPicking)
         return retrofit.create(ItemPickingForDispatchServices::class.java)
+    }
+
+    fun getRPMAccessService():RPMAccessServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.RPMAccess)
+        return retrofit.create(RPMAccessServices::class.java)
+    }
+
+    fun getAssignBarcodeService(): AssignBarcodeToItemServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignBarcode)
+        return retrofit.create(AssignBarcodeToItemServices::class.java)
     }
 
 

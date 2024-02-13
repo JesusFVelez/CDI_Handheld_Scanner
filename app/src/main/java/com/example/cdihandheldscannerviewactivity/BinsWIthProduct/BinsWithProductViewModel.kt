@@ -125,6 +125,7 @@ class BinsWithProductViewModel :ViewModel(){
                 _wasLastAPICallSuccessful.value = false
                 Log.i("get item details for Bin search API Call", "Error -> ${e.message}")
             }
+
         }
     }
 

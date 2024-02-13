@@ -129,3 +129,31 @@ data class finishPickingForSingleItemResponse(
     @Json(name = "wasPickingSuccesfull") val wasPickingSuccesfull: Boolean,
     @Json(name = "errorMessage") val errorMessage: String
 )
+
+
+
+// Get All orders that have picking for suggestions
+
+@JsonClass(generateAdapter = true)
+data class getOrdersForSuggestionWrapper(
+    val response:ordersThatAreInPickingWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class ordersThatAreInPickingWrapper(
+    @Json(name = "ordersThatAreInPicking") val ordersThatAreInPicking: ordersThatAreInPickingWrapperWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class ordersThatAreInPickingWrapperWrapper(
+    @Json(name = "ordersThatAreInPicking") val ordersThatAreInPicking: List<ordersThatAreInPickingClass>
+)
+
+
+@JsonClass(generateAdapter = true)
+data class ordersThatAreInPickingClass(
+    @Json(name = "orderNumber") val orderNumber: String,
+    @Json(name = "customerName") val customerName:String,
+    @Json(name = "orderedDate") val orderedDate: String,
+    @Json(name = "dateWanted") val dateWanted: String
+)

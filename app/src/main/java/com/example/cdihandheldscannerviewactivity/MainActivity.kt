@@ -174,13 +174,13 @@ override fun onBackPressed() {
         val currentFragment = navController.currentDestination
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment
         val fragment = navHostFragment?.childFragmentManager?.fragments?.find { it is orderPickingMainFragment } as? orderPickingMainFragment
-        fragment?.let {
-            if (it.verifyIfOrderIsBeingPicked()) {
-                it.showErrorMessageWhenExitingScreenWithoutFinishingPicking()
-            } else
-                navController.navigateUp()
-            return
-        }
+//        fragment?.let {
+//            if (it.verifyIfOrderIsBeingPicked()) {
+//                it.showErrorMessageWhenExitingScreenWithoutFinishingPicking()
+//            } else
+//                navController.navigateUp()
+//            return
+//        }
     }else if (navController.previousBackStackEntry != null) {
         // If there's something on the back stack, pop it
         navController.popBackStack()
@@ -204,17 +204,17 @@ override fun onBackPressed() {
         if(item.itemId == android.R.id.home){
            val navController = findNavController(R.id.my_nav_host_fragment)
             val currentFragment = navController.currentDestination
-            if(currentFragment?.id == R.id.orderPickingMainFragment){
-                val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment
-                val fragment = navHostFragment?.childFragmentManager?.fragments?.find { it is orderPickingMainFragment } as? orderPickingMainFragment
-                fragment?.let{
-                    if (it.verifyIfOrderIsBeingPicked()) {
-                        it.showErrorMessageWhenExitingScreenWithoutFinishingPicking()
-                    } else
-                        navController.navigateUp()
-                    return true
-                }
-            }
+//            if(currentFragment?.id == R.id.orderPickingMainFragment){
+//                val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment
+//                val fragment = navHostFragment?.childFragmentManager?.fragments?.find { it is orderPickingMainFragment } as? orderPickingMainFragment
+//                fragment?.let{
+//                    if (it.verifyIfOrderIsBeingPicked()) {
+//                        it.showErrorMessageWhenExitingScreenWithoutFinishingPicking()
+//                    } else
+//                        navController.navigateUp()
+//                    return true
+//                }
+//            }
         }
         return super.onOptionsItemSelected(item)
     }
