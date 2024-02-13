@@ -19,7 +19,7 @@ import com.example.cdihandheldscannerviewactivity.databinding.FragmentBinMovemen
 import org.w3c.dom.Text
 
 
-class BinMovementFragment : Fragment() {
+    class BinMovementFragment : Fragment() {
 
     private lateinit var binding: FragmentBinMovementBinding
 
