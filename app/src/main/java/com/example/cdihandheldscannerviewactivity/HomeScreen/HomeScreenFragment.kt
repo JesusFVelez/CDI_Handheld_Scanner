@@ -133,20 +133,21 @@ class HomeScreenFragment : Fragment() {
         viewModel.setUserNameOfPickerFromSharedPref(userName)
     }
 
-    private fun initUIElements(){
+    private fun initUIElements() {
         logOutButton = binding.logOutButton
         productToBinButton = binding.productToBinButton
         binsWithProductButton = binding.BinsWithItemButton
         itemPickingButton = binding.ItemPickingButton
         assignBarcodeButton = binding.assignBarcodeButton
+        binMovementButton = binding.BinToBinMovementButton
 
-        progressDialog = Dialog(requireContext()).apply{
+        progressDialog = Dialog(requireContext()).apply {
             setContentView(R.layout.dialog_loading)
             setCancelable(false)
         }
 
         // Set click listener for the log out button to show a logout confirmation dialog
-        logOutButton.setOnClickListener{
+        logOutButton.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out?")
@@ -162,26 +163,26 @@ class HomeScreenFragment : Fragment() {
         }
 
         // Set click listener for the product to bin button to navigate to the ProductToBinFragment
-        productToBinButton.setOnClickListener{
+        productToBinButton.setOnClickListener {
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.ProductInBinMenuOption)
         }
         // Set click listener for the product to bin button to navigate to the SearchBinsWithProductFragment
-        binsWithProductButton.setOnClickListener{
+        binsWithProductButton.setOnClickListener {
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.BinsWithProductMenuOption)
         }
 
-        itemPickingButton.setOnClickListener{
+        itemPickingButton.setOnClickListener {
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.ItemPickingMenuOption)
         }
 
-        assignBarcodeButton.setOnClickListener{
+        assignBarcodeButton.setOnClickListener {
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.AssignBarcodeMenuOption)
         }
-    }
-        binMovementButton.setOnClickListener{
-            val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("HomeScreen")
-            it.findNavController().navigate(R.id.action_homeScreenFragment_to_binMovementFragment, bundle)
+
+        binMovementButton.setOnClickListener {
+            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.BinToBinMovementOption)
         }
+    }
 
 
 

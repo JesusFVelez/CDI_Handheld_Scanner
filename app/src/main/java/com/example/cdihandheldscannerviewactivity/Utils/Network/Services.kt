@@ -20,9 +20,8 @@ class ServicePaths{
         const val GeneralServices:String = "/generalServices/"
         const val ViewProductsInBin:String = "/ViewProductsInBinService/"
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
-        const val RPMAccess: String = "/RPMAccessService/"
         const val AssignBarcode: String = "/AssignBarcodeService/"
-        const val RPMAccess: String = "/RPMAccessService"
+        const val RPMAccess: String = "/RPMAccessService/"
     }
 }
 
@@ -122,11 +121,6 @@ interface ViewProductsInBinServices{
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
 }
 
-interface RPMAccessServices{
-    @GET("checkIfUserHasAccessToFunctionality")
-    suspend fun checkIfUserHasAccessToFunctionality(@Query("userName")userName: String, @Query("functionality") functionality:String, @Query("companyID") companyID: String): RPMAccessResponseWrapper
-
-}
 
 interface GeneralServices{
     // Endpoint for getting available warehouses
