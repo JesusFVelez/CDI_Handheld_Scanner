@@ -24,6 +24,10 @@
             app:destination="@id/orderPickingMainFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeScreenFragment_to_assignBarcodeToProductFragment"
+            app:destination="@id/assignBarcodeToProductFragment"
+            app:enterAnim="@anim/slide_in_left" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"
@@ -70,4 +74,8 @@
         android:id="@+id/orderPickingItemFragment"
         android:name="com.example.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails.OrderPickingItemFragment"
         android:label="OrderPickingItemFragment" />
+    <fragment
+        android:id="@+id/assignBarcodeToProductFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.BarcodeAssign.AssignBarcodeToProductFragment"
+        android:label="assign_barcode_to_product_fragment" />
 </navigation>

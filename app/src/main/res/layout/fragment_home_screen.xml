@@ -71,16 +71,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+
                     android:background="@drawable/menu_option_button"
                     android:text="Item Picking"
                     android:textAllCaps="false"
                     android:textColor="@color/CDI_Gray"
                     android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@id/logOutButton"
+                    app:layout_constraintBottom_toTopOf="@id/assignBarcodeButton"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/productToBinButton" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/assignBarcodeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/menu_option_button"
+                    android:text="Assign Barcode"
+                    android:textAllCaps="false"
+                    android:textColor="@color/CDI_Gray"
+                    android:textSize="20sp"
+                    app:layout_constraintTop_toBottomOf="@+id/ItemPickingButton"
+                    app:layout_constraintBottom_toTopOf="@+id/logOutButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/logOutButton"
