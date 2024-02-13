@@ -100,20 +100,21 @@ class HomeScreenFragment : Fragment() {
 
         // Executes as soon as it is verified whether the client uses RPM or not
         viewModel.doesClientUseRPM.observe(viewLifecycleOwner){doesClientUseRPM ->
+            progressDialog.dismiss()
             if(doesClientUseRPM == true && hasButtonBeenPressed){
+                hasButtonBeenPressed = false
                 viewModel.verifyInBackendIfUserHasAccessToMenuOption(viewModel.currentlyChosenMenuOption.value!!)
             }else if(hasButtonBeenPressed){
+                hasButtonBeenPressed = false
                 navigateToMenuOption(viewModel.currentlyChosenMenuOption.value!!.menuOptionNavigationAction)
             }
         }
 
         viewModel.doesUserHaveAccessToMenuOption.observe(viewLifecycleOwner){doesUserHaveAccessToMenuOption ->
-            progressDialog.dismiss()
+
             if(doesUserHaveAccessToMenuOption && hasButtonBeenPressed){
-                hasButtonBeenPressed = false
                 navigateToMenuOption(viewModel.currentlyChosenMenuOption.value!!.menuOptionNavigationAction)
             }else if(hasButtonBeenPressed){
-                hasButtonBeenPressed = false
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessageForUserAccess.value!!)
             }
 
