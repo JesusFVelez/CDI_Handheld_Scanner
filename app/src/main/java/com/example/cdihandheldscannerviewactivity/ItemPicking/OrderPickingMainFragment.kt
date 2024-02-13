@@ -97,14 +97,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        val isOrderBeingPicked = verifyIfOrderIsBeingPicked()
-        if(isOrderBeingPicked) {
-            viewModel.endPickingTimer()
-            viewModel.clearListOfItems()
-        }
-    }
 
 
     override fun onResume() {
