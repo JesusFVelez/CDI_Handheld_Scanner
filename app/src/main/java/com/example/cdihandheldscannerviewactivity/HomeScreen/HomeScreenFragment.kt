@@ -38,6 +38,7 @@ class HomeScreenFragment : Fragment() {
     private lateinit var productToBinButton: Button
     private lateinit var binsWithProductButton: Button
     private lateinit var itemPickingButton: Button
+    private lateinit var assignBarcodeButton: Button
     // Dialog for showing progress
     private lateinit var progressDialog: Dialog
 
@@ -97,6 +98,15 @@ class HomeScreenFragment : Fragment() {
             }
         }
 
+        // Executes as soon as it is verified whether the client uses RPM or not
+        viewModel.doesClientUseRPM.observe(viewLifecycleOwner){doesClientUseRPM ->
+            if(doesClientUseRPM == true && hasButtonBeenPressed){
+                viewModel.verifyInBackendIfUserHasAccessToMenuOption(viewModel.currentlyChosenMenuOption.value!!)
+            }else if(hasButtonBeenPressed){
+                navigateToMenuOption(viewModel.currentlyChosenMenuOption.value!!.menuOptionNavigationAction)
+            }
+        }
+
         viewModel.doesUserHaveAccessToMenuOption.observe(viewLifecycleOwner){doesUserHaveAccessToMenuOption ->
             progressDialog.dismiss()
             if(doesUserHaveAccessToMenuOption && hasButtonBeenPressed){
@@ -125,6 +135,7 @@ class HomeScreenFragment : Fragment() {
         productToBinButton = binding.productToBinButton
         binsWithProductButton = binding.BinsWithItemButton
         itemPickingButton = binding.ItemPickingButton
+        assignBarcodeButton = binding.assignBarcodeButton
 
         progressDialog = Dialog(requireContext()).apply{
             setContentView(R.layout.dialog_loading)
@@ -159,6 +170,10 @@ class HomeScreenFragment : Fragment() {
         itemPickingButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.ItemPickingMenuOption)
         }
+
+        assignBarcodeButton.setOnClickListener{
+            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.AssignBarcodeMenuOption)
+        }
     }
 
 
@@ -166,7 +181,8 @@ class HomeScreenFragment : Fragment() {
         hasButtonBeenPressed = true
         progressDialog.show()
         viewModel.setCurrentlyChosenMenuOption(menuOption)
-        viewModel.verifyInBackendIfUserHasAccessToMenuOption(menuOption)
+        viewModel.verifyIfClientUsesRPM()
+
     }
     // Method to create and return the view hierarchy associated with the fragment
     override fun onCreateView(

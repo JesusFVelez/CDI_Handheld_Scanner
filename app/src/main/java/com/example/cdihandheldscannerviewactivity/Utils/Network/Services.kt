@@ -54,6 +54,9 @@ interface LoginServices{
 interface RPMAccessServices{
     @GET("checkIfUserHasAccessToFunctionality")
     suspend fun checkIfUserHasAccessToFunctionality(@Query("userName")userName:String, @Query("functionality") functionality:String, @Query("companyID")companyID:String): RPMAccessResponseWrapper
+
+    @GET("verifyIfClientUsesRPM")
+    suspend fun verifyIfClientUsesRPM(@Query("companyID") companyID: String):doesUserHaveRPMResponseWrapper
 }
 
 interface ViewBinsThatHaveItemServices{

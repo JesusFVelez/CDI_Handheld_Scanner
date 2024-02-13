@@ -20,6 +20,7 @@ class HomeScreenViewModel : ViewModel(){
                 val ProductInBinMenuOption = MenuOptionDataClass("Product in Bin", R.id.action_homeScreenFragment_to_productToBinFragment, "RfBtnCheckBin")
                 val BinsWithProductMenuOption = MenuOptionDataClass("Search Bins With Product",R.id.action_homeScreenFragment_to_searchBinsWithProductFragment, "RfBtnCheckItem" )
                 val ItemPickingMenuOption = MenuOptionDataClass("Item Picking", R.id.action_homeScreenFragment_to_orderPickingMainFragment, "RfBtnITEMPICKING")
+                val AssignBarcodeMenuOption = MenuOptionDataClass("Assign Barcode", R.id.action_homeScreenFragment_to_assignBarcodeToProductFragment, "RfBtnAssignBarcode")
         }
     }
     data class MenuOptionDataClass(
@@ -31,6 +32,10 @@ class HomeScreenViewModel : ViewModel(){
     private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
+
+    private val _doesClientUseRPM = MutableLiveData<Boolean>()
+    val doesClientUseRPM : LiveData<Boolean>
+        get() = _doesClientUseRPM
 
     // Picker User Name
     private val _userNameOfPicker =  MutableLiveData<String>()
@@ -59,6 +64,8 @@ class HomeScreenViewModel : ViewModel(){
 
 
 
+
+
     fun setCompanyIDFromSharedPref(companyID: String){
         _companyID.value = companyID
     }
@@ -72,6 +79,23 @@ class HomeScreenViewModel : ViewModel(){
 
     init{
 
+    }
+
+    fun verifyIfClientUsesRPM(){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Does User have RPM" , "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler) {
+            try{
+                val response = ScannerAPI.getRPMAccessService().verifyIfClientUsesRPM(_companyID.value!!)
+                _wasLastAPICallSuccessful.value = true
+                _doesClientUseRPM.value = response.response.doesClientUseRPM
+            }catch (e: Exception){
+                Log.i("Does User have RPM viewModelScope.launch method", "Error -> ${e.message}")
+                _wasLastAPICallSuccessful.value = false
+            }
+        }
     }
 
     fun verifyInBackendIfUserHasAccessToMenuOption(menuOption: MenuOptionDataClass){
