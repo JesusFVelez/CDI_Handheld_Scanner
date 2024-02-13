@@ -20,7 +20,8 @@ class ServicePaths{
         const val GeneralServices:String = "/generalServices/"
         const val ViewProductsInBin:String = "/ViewProductsInBinService/"
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
-        const val RPMAccess: String = "/RPMAccessService"
+        const val AssignBarcode: String = "/AssignBarcodeService/"
+        const val RPMAccess: String = "/RPMAccessService/"
     }
 }
 
@@ -49,6 +50,14 @@ interface LoginServices{
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
 
+}
+
+interface RPMAccessServices{
+    @GET("checkIfUserHasAccessToFunctionality")
+    suspend fun checkIfUserHasAccessToFunctionality(@Query("userName")userName:String, @Query("functionality") functionality:String, @Query("companyID")companyID:String): RPMAccessResponseWrapper
+
+    @GET("verifyIfClientUsesRPM")
+    suspend fun verifyIfClientUsesRPM(@Query("companyID") companyID: String):doesUserHaveRPMResponseWrapper
 }
 
 interface ViewBinsThatHaveItemServices{
@@ -91,17 +100,27 @@ interface ItemPickingForDispatchServices{
     suspend fun getAllOrdersInPickingForSuggestion(@Query("companyID") companyID: String):getOrdersForSuggestionWrapper
 }
 
+// All services for assign barcode
+interface AssignBarcodeToItemServices {
+    @GET("getItem")
+    suspend fun getItems(@Query("itemNumber") itemNumber: String): ResponseWrapperGetItem
+
+    @GET("wasItemFound")
+    suspend fun wasItemFound(@Query("itemNumber") itemNumber: String): ResponseWrapperWasItemFound
+
+    @GET("validateBarcode")
+    suspend fun validateBarcode(@Query("barCode") barCode: String): ResponseWrapperValidateBarcode
+
+    @PUT("setBarcode")
+    suspend fun setBarcode(@Query("itemNumber") itemNumber: String, @Query("selectedBarcode") selectedBarcode: String): ResponseWrapperSetBarcode
+}
+
 interface ViewProductsInBinServices{
     // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
     @GET("getItemsInBin")
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
 }
 
-interface RPMAccessServices{
-    @GET("checkIfUserHasAccessToFunctionality")
-    suspend fun checkIfUserHasAccessToFunctionality(@Query("userName")userName: String, @Query("functionality") functionality:String, @Query("companyID") companyID: String): RPMAccessResponseWrapper
-
-}
 
 interface GeneralServices{
     // Endpoint for getting available warehouses
@@ -154,6 +173,11 @@ object ScannerAPI {
     fun getRPMAccessService():RPMAccessServices{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.RPMAccess)
         return retrofit.create(RPMAccessServices::class.java)
+    }
+
+    fun getAssignBarcodeService(): AssignBarcodeToItemServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignBarcode)
+        return retrofit.create(AssignBarcodeToItemServices::class.java)
     }
 
 

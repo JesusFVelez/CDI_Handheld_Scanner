@@ -1,6 +1,8 @@
 <resources>
 
+    <string name="add">Add</string>
     <string name="app_name">CDI Handheld Scanner</string>
+    <string name="barcode">Barcode</string>
     <string name="bin_not_found">Selected Bin Has not been found!</string>
     <string name="bin_number">Bin Number</string>
     <string name="boxes">Boxes</string>
