@@ -102,7 +102,6 @@ class HomeScreenFragment : Fragment() {
         viewModel.doesClientUseRPM.observe(viewLifecycleOwner){doesClientUseRPM ->
             progressDialog.dismiss()
             if(doesClientUseRPM == true && hasButtonBeenPressed){
-                hasButtonBeenPressed = false
                 viewModel.verifyInBackendIfUserHasAccessToMenuOption(viewModel.currentlyChosenMenuOption.value!!)
             }else if(hasButtonBeenPressed){
                 hasButtonBeenPressed = false
@@ -113,8 +112,10 @@ class HomeScreenFragment : Fragment() {
         viewModel.doesUserHaveAccessToMenuOption.observe(viewLifecycleOwner){doesUserHaveAccessToMenuOption ->
 
             if(doesUserHaveAccessToMenuOption && hasButtonBeenPressed){
+                hasButtonBeenPressed = false
                 navigateToMenuOption(viewModel.currentlyChosenMenuOption.value!!.menuOptionNavigationAction)
             }else if(hasButtonBeenPressed){
+                hasButtonBeenPressed = false
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessageForUserAccess.value!!)
             }
 
