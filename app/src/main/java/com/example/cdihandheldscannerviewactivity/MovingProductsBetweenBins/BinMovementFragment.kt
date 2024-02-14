@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cdihandheldscannerviewactivity.R
+import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentBinMovementBinding
 import org.w3c.dom.Text
@@ -32,6 +33,8 @@ import org.w3c.dom.Text
     private lateinit var itemsBeingMovedRecyclerView:RecyclerView
     private lateinit var continueButton: Button
 
+    private lateinit var adapter: BinMovementAdapter
+
     private val viewModel: MovingProductsBetweenBinsViewModel by activityViewModels()
 
 
@@ -46,6 +49,7 @@ import org.w3c.dom.Text
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bin_movement, container, false)
+
         initUIElements()
         initObservers()
         viewModel.getWarehousesFromBackendForSpinner()
@@ -82,8 +86,19 @@ import org.w3c.dom.Text
         fromBinNumber = binding.fromBinNumber
         toBinNumber = binding.toBinNumber
         addButton = binding.addButton
-        itemsBeingMovedRecyclerView = binding.itemsBeingMovedRecyclerView
         continueButton = binding.continueButton
+
+
+        adapter = BinMovementAdapter(View.OnClickListener {
+            // TODO - Remove the item from the adapter data when the trashcan button is clicked
+        })
+        itemsBeingMovedRecyclerView = binding.itemsBeingMovedRecyclerView
+        itemsBeingMovedRecyclerView.adapter = adapter
+
+
+
+
+
 
     }
 
