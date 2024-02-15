@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -24,7 +23,6 @@ import org.w3c.dom.Text
 
     private lateinit var binding: FragmentBinMovementBinding
 
-    private lateinit var warehouseSpinner: Spinner
     private lateinit var itemNumberEditText: EditText
     private lateinit var itemAmountEditText: EditText
     private lateinit var fromBinNumber:EditText
@@ -32,6 +30,7 @@ import org.w3c.dom.Text
     private lateinit var addButton:Button
     private lateinit var itemsBeingMovedRecyclerView:RecyclerView
     private lateinit var continueButton: Button
+    private lateinit var clearButton: Button
 
     private lateinit var adapter: BinMovementAdapter
 
@@ -51,42 +50,19 @@ import org.w3c.dom.Text
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bin_movement, container, false)
 
         initUIElements()
-        initObservers()
-        viewModel.getWarehousesFromBackendForSpinner()
-
-
-
 
         return binding.root
     }
 
-    private fun initObservers(){
-        viewModel.listOfWarehouses.observe(viewLifecycleOwner){ newListOfWarehouses ->
-            fillSpinnerWithWarehouses(newListOfWarehouses)
-        }
-    }
-
-
-    // Populate Spinner with warehouse data
-    private fun fillSpinnerWithWarehouses( newWarehouseList : List<WarehouseInfo>){
-        val warehouses = mutableListOf<String>()
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, warehouses)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        warehouseSpinner.adapter = adapter
-        for (aWarehouse in viewModel.listOfWarehouses.value!!) {
-            warehouses.add(aWarehouse.warehouseName)
-        }
-        adapter.notifyDataSetChanged()
-    }
 
     private fun initUIElements(){
-        warehouseSpinner = binding.warehouseSpinner
         itemNumberEditText = binding.itemNumberEditText
         itemAmountEditText = binding.itemAmountEditText
         fromBinNumber = binding.fromBinNumber
         toBinNumber = binding.toBinNumber
         addButton = binding.addButton
         continueButton = binding.continueButton
+        clearButton = binding.clearButton
 
 
         adapter = BinMovementAdapter(View.OnClickListener {
@@ -94,10 +70,6 @@ import org.w3c.dom.Text
         })
         itemsBeingMovedRecyclerView = binding.itemsBeingMovedRecyclerView
         itemsBeingMovedRecyclerView.adapter = adapter
-
-
-
-
 
 
     }
