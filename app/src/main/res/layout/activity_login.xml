@@ -84,48 +84,46 @@
                         <!--         TODO make this work at some point -> android:entries="@{loginViewModel.listOfCompanies}"-->
 
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/warehouseSpinnerTextInputLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:hintAnimationEnabled="false"
-                            app:hintEnabled="true"
-                            android:background="@drawable/rectangle_text_box"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-
-                            <AutoCompleteTextView
-                                android:id="@+id/warehouseSpinner"
-                                android:background="@android:color/transparent"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="5dp"
-                                android:dropDownHeight="wrap_content"
-                                android:hint="@string/warehouseSpinnerHint"
-                                android:inputType="none" />
-                        </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/companySpinnerTextInputLayout"
-                            android:layout_width="wrap_content"
+                            android:layout_width="235dp"
                             android:layout_height="wrap_content"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                             app:hintEnabled="true"
                             android:background="@drawable/rectangle_text_box"
                             app:hintAnimationEnabled="false"
                             >
-                                            <AutoCompleteTextView
-                                                android:id="@+id/companySpinner"
-                                                android:layout_margin="5dp"
-                                                android:background="@android:color/transparent"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="match_parent"
-                                                android:dropDownHeight="wrap_content"
-                                                android:hint="@string/companySpinnerHint"
-                                                android:inputType="none"
-                                                 />
+
+                            <AutoCompleteTextView
+                                android:id="@+id/companySpinner"
+                                style="@style/LoginDropDowns"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:hint="@string/companySpinnerHint"
+                                />
+
 
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/warehouseSpinnerTextInputLayout"
+                            android:layout_width="235dp"
+                            android:layout_height="wrap_content"
+                            app:hintAnimationEnabled="false"
+                            app:hintEnabled="true"
+                            android:background="@drawable/rectangle_text_box"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                            <AutoCompleteTextView
+                                android:id="@+id/warehouseSpinner"
+                                style="@style/LoginDropDowns"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:hint="@string/warehouseSpinnerHint"
+                                />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
 
 
 
