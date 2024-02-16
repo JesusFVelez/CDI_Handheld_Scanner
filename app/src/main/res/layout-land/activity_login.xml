@@ -92,17 +92,65 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
 
-                <!--         TODO make this work at some point -> android:entries="@{loginViewModel.listOfCompanies}"-->
-                <Spinner
-                    android:id="@+id/companySpinner"
-                    style="@style/DropDownStyle"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/spinnerLinearLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingEnd="50dp"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
-                    app:layout_constraintHorizontal_bias="0.497"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
+                    android:weightSum="4"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/textInputLayoutPassword"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    >
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/companySpinnerTextInputLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        app:hintEnabled="true"
+                        android:background="@drawable/rectangle_text_box"
+                        app:hintAnimationEnabled="false"
+                        >
+                        <AutoCompleteTextView
+                            android:id="@+id/companySpinner"
+                            android:layout_margin="5dp"
+                            android:background="@android:color/transparent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:dropDownHeight="wrap_content"
+                            android:hint="@string/companySpinnerHint"
+                            android:inputType="none"
+                            />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/warehouseSpinnerTextInputLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        app:hintAnimationEnabled="false"
+                        app:hintEnabled="true"
+                        android:background="@drawable/rectangle_text_box"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+
+                        <AutoCompleteTextView
+                            android:id="@+id/warehouseSpinner"
+                            android:background="@android:color/transparent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:dropDownHeight="wrap_content"
+                            android:hint="@string/warehouseSpinnerHint"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/loginButton"
@@ -115,9 +163,9 @@
                     android:textAllCaps="false"
                     android:textColor="@color/CDI_Gray"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/companySpinner"
-                    app:layout_constraintStart_toStartOf="@+id/companySpinner"
-                    app:layout_constraintTop_toBottomOf="@+id/companySpinner" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerLinearLayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

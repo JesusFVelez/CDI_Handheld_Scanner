@@ -52,7 +52,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
     // Declare UI elements and ViewModel
     private lateinit var binding: FragmentProductInBinBinding
-    private lateinit var warehouseSpinner: Spinner
     private lateinit var binNumberEditText: EditText
     private lateinit var searchButton: Button
     private lateinit var numberOfItemsTextView: TextView
@@ -60,9 +59,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     private lateinit var adapter : ProductsInBinAdapter
     private lateinit var progressDialog: Dialog
 
-
-
-    private var hasPageJustStarted: Boolean = false
+    private var hasSearchButtonBeenPressed: Boolean = false
 
 
 
@@ -84,7 +81,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
         // Initialize UI elements, Spinner, and RecyclerView adapter
         initUIElements()
-        initSpinner()
         adapter = ProductsInBinAdapter(this)
         binding.productsInBinList.adapter = adapter
 
@@ -97,18 +93,21 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
         viewModel.setCompanyIDFromSharedPref(companyID)
 
+        // Retrieve warehouse number from shared preferences
+        val warehouseNumber:Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+        viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
+
         return binding.root
     }
 
     // Initialize UI elements
     private fun initUIElements(){
-        warehouseSpinner = binding.warehouseSpinner
         binNumberEditText = binding.binNumberEditText
         binNumberEditText.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 // Handle the Enter key press here
                 progressDialog.show()
-                viewModel.getProductInfoFromBackend(warehouseSpinner.selectedItem.toString(),binNumberEditText.text.toString())
+                viewModel.getProductInfoFromBackend(binNumberEditText.text.toString())
                 true
             } else {
                 false
@@ -118,13 +117,13 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         searchButton.setOnClickListener{
             // here goes the API Call for the filling of the recycler view
             progressDialog.show()
-            viewModel.getProductInfoFromBackend(warehouseSpinner.selectedItem.toString(),binNumberEditText.text.toString())
+            hasSearchButtonBeenPressed = true
+            viewModel.getProductInfoFromBackend(binNumberEditText.text.toString())
         }
         numberOfItemsTextView = binding.totalProductsTextView
         progressDialog = Dialog(requireContext()).apply{
             setContentView(R.layout.dialog_loading)
             setCancelable(false)
-            show()
         }
         binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically(): Boolean {
@@ -146,10 +145,6 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             viewModel.clearListOfProducts()
             bundle?.clear()
         }
-
-
-        hasPageJustStarted = false
-
     }
 
 
@@ -164,8 +159,9 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     private fun initObservers(){
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccessful ->
-            if(!wasAPICallSuccessful && hasPageJustStarted){
+            if(!wasAPICallSuccessful && hasSearchButtonBeenPressed){
                 progressDialog.dismiss()
+                hasSearchButtonBeenPressed = false
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
@@ -176,17 +172,16 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             else
                 numberOfItemsTextView.text = "${newNumberOfItems.toString()} item in Bin"
 
-            if (newNumberOfItems == 0 && hasPageJustStarted && viewModel.wasBinFound.value!!)
+            if (newNumberOfItems == 0 && hasSearchButtonBeenPressed && viewModel.wasBinFound.value!!)
                 AlerterUtils.startWarningAlerter(requireActivity(), "Bin is empty")
+
+            hasSearchButtonBeenPressed = false
         }
 
-        viewModel.listOfWarehouses.observe(viewLifecycleOwner) {newWarehousesList ->
-            progressDialog.dismiss()
-            fillSpinnerWithWarehouses(newWarehousesList)
-        }
 
         viewModel.wasBinFound.observe(viewLifecycleOwner) {hasBinBeenFound ->
-            if (!hasBinBeenFound){
+            if (!hasBinBeenFound && hasSearchButtonBeenPressed){
+                hasSearchButtonBeenPressed = false
                 progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(requireActivity(), getString(R.string.bin_not_found))
             }
@@ -197,66 +192,10 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
                 progressDialog.dismiss()
                 adapter.data = it
             }
-
-        }
-
-    }
-
-    // Populate Spinner with warehouse data
-    private fun fillSpinnerWithWarehouses( newWarehouseList : List<WarehouseInfo>){
-        val warehouses = mutableListOf<String>()
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, warehouses)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        warehouseSpinner.adapter = adapter
-        for (aWarehouse in viewModel.listOfWarehouses.value!!) {
-            warehouses.add(aWarehouse.warehouseName)
-        }
-        adapter.notifyDataSetChanged()
-    }
-
-    // Initialize Spinner behavior
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initSpinner(){
-
-        val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-            // Reset background when spinner closes
-            warehouseSpinner.setBackgroundResource(R.drawable.drop_down_background)
-            viewModel.setIsSpinnerArrowUp(false)
-        }
-
-        // set what happens whenever the Spinner is clicked
-        warehouseSpinner.setOnTouchListener{view, event ->
-            when(event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    warehouseSpinner.setBackgroundResource(R.drawable.drop_down_arrow_up)
-                    warehouseSpinner.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
-                    viewModel.setIsSpinnerArrowUp(true)
-                }
-            }
-            false
-        }
-
-        // set what happens whenever an item is clicked in the spinner
-        warehouseSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                warehouseSpinner.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
-                viewModel.setIsSpinnerArrowUp(false)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
-
-        // Reset the background when the user touches outside of the Spinner
-        binding.root.setOnTouchListener { _, _ ->
-            if (viewModel.isSpinnerArrowUp.value!!) {
-                warehouseSpinner.setBackgroundResource(R.drawable.drop_down_background)
-                warehouseSpinner.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
-                viewModel.setIsSpinnerArrowUp(false)
-            }
-            false
         }
     }
+
+
 
 
     // Handle item click events in the RecyclerView
