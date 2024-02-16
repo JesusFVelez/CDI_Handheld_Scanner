@@ -105,13 +105,13 @@ class loginActivity : AppCompatActivity() {
                 else
                     hasAppBeenOpened = true
 
-                if(companySpinner.text == null) {
+                if(companySpinner.text.toString() == "") {
                     runOnUiThread {
                         progressDialog.show()
                         viewModel.getCompaniesFromBackendForSpinner()
                     }
                 }
-                if(warehouseSpinner.text == null){
+                if(warehouseSpinner.text.toString() == ""){
                     runOnUiThread{
                         progressDialog.show()
                         viewModel.getWarehousesFromBackendForSpinner()
@@ -140,7 +140,7 @@ class loginActivity : AppCompatActivity() {
         // Init Company Spinner
         companySpinner = binding.companySpinner
         companySpinner.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
+            if (hasFocus && isFinishing) {
                 // Show the dropdown menu when the AutoCompleteTextView gains focus
                 (view as? AutoCompleteTextView)?.showDropDown()
             }
@@ -149,7 +149,7 @@ class loginActivity : AppCompatActivity() {
         // Init Warehouse Spinner
         warehouseSpinner = binding.warehouseSpinner
         warehouseSpinner.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
+            if (hasFocus && isFinishing) {
                 // Show the dropdown menu when the AutoCompleteTextView gains focus
                 (view as? AutoCompleteTextView)?.showDropDown()
             }
@@ -166,22 +166,18 @@ class loginActivity : AppCompatActivity() {
         }
     }
 
+
+
     // This method initializes the observers for the ViewModel. It observes changes in the list of companies and the success status of the last API call.
     private fun initObservers(){
         viewModel.listOfCompanies.observe(this) { newCompaniesList ->
             progressDialog.dismiss()
-
-//            val adapter = loginSpinnerAdapters.CompaniesDropdownAdapter(this, R.layout.dropdown_view, newCompaniesList)
-//            companySpinner.setAdapter(adapter)
-//            adapter.notifyDataSetChanged()
             fillSpinnerWithCompanies(newCompaniesList)
         }
 
         viewModel.listOfWarehouses.observe(this) {newWarehousesList ->
             progressDialog.dismiss()
             fillSpinnerWithWarehouses(newWarehousesList)
-//            val adapter = loginSpinnerAdapters.WarehouseDropdownAdapter(this, R.layout.dropdown_view, newWarehousesList)
-//            warehouseSpinner.setAdapter(adapter)
         }
 
         viewModel.wasLastAPICallSuccessful.observe(this) {wasAPICallSuccessful ->
