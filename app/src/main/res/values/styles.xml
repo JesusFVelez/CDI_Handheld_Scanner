@@ -47,6 +47,9 @@
         <item name="android:background">@drawable/white_drop_down</item>
         <item name="android:gravity">center</item>
         <item name="android:minHeight">48dp</item>
+        <item name="android:paddingEnd">50dp</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:padding">20dp</item>
     </style>
 
     <style name="PopupMessageSmallText">

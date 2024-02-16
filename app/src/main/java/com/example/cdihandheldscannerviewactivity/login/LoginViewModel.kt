@@ -6,12 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cdihandheldscannerviewactivity.Utils.Network.Company
+import com.example.cdihandheldscannerviewactivity.Utils.Network.RequestUser
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.example.cdihandheldscannerviewactivity.Utils.Network.User
+import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class LoginViewModel:ViewModel() {
+
+
 
     // These are LiveData objects that hold the list of companies and the status of the last API call
     // LiveData allows data to be observed for changes, which is useful for updating the UI in response to changes
@@ -19,23 +24,38 @@ class LoginViewModel:ViewModel() {
     val listOfCompanies : LiveData<List<Company>>
         get() = _listOfCompanies
 
+    private val _currentlyChosenCompany = MutableLiveData<Company>()
+    val currentlyChosenCompany: LiveData<Company>
+        get() = _currentlyChosenCompany
+
+    private val _listOfWarehouses = MutableLiveData<List<WarehouseInfo>>()
+    val listOfWarehouses : LiveData<List<WarehouseInfo>>
+        get() = _listOfWarehouses
+
+    private val _currentlyChosenWarehouse = MutableLiveData<WarehouseInfo>()
+    val currentlyChosenWarehouse: LiveData<WarehouseInfo>
+        get() = _currentlyChosenWarehouse
+
     private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
 
-    // This variable indicates whether the arrow of the spinner is up or not
-    var isSpinnerArrowUp: Boolean = false //TODO consider making this variable a LiveData
+    private val _isUserLoggedIn = MutableLiveData<Boolean>()
+    val isUserLoggedIn: LiveData<Boolean>
+        get() = _isUserLoggedIn
+
+
+
 
     // This initializer block is executed when the ViewModel is created. It calls the method to fetch companies from the backend
     init {
+        _listOfCompanies.value = listOf()
+        _listOfWarehouses.value = listOf()
         getCompaniesFromBackendForSpinner()
+        getWarehousesFromBackendForSpinner()
     }
 
-    // This method is called when the ViewModel is about to be destroyed. It's typically used to clean up any resources that the ViewModel is using
-    override fun onCleared() {
-        super.onCleared()
 
-    }
 
     // This method fetches the list of companies from the backend using a coroutine. If an error occurs during the API call, it logs the error and updates the LiveData object to indicate that the API call was unsuccessful
     fun getCompaniesFromBackendForSpinner() {
@@ -54,10 +74,76 @@ class LoginViewModel:ViewModel() {
                 _wasLastAPICallSuccessful.value = false
             }
         }
-
     }
 
+
+
+    fun setCompanyID(selectedCompanyInSpinner: String){
+        for (aCompany in _listOfCompanies.value!!) {
+            if (selectedCompanyInSpinner == aCompany.companyName) {
+                _currentlyChosenCompany.value = Company(aCompany.companyID,aCompany.companyName)
+            }
+        }
+    }
+
+    fun setWarehouse(selectedWarehouseInSpinner : String){
+        for(aWarehouse in listOfWarehouses.value!!){
+            if (selectedWarehouseInSpinner == aWarehouse.warehouseName){
+                _currentlyChosenWarehouse.value = WarehouseInfo(aWarehouse.warehouseNumber, aWarehouse.warehouseName)
+            }
+        }
+    }
+
+
+    fun getWarehousesFromBackendForSpinner(){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("get Warehouses API Call" , "Error -> ${exception.message}")
+        }
+
+        // API call to get list of warehouses
+        viewModelScope.launch (exceptionHandler) {
+            try{
+                val response = ScannerAPI.getGeneralService().getWarehousesAvailable()
+                _listOfWarehouses.value = response.response.warehouses.warehouses
+                _wasLastAPICallSuccessful.value = true
+            }catch (e: Exception){
+                _wasLastAPICallSuccessful.value = false
+                Log.i("Products In Bin View Model WH API Call", "Error -> ${e.message}")
+            }
+        }
+    }
+
+    fun logUserIn(username:String, password: String){
+
+        val user = User(
+            username,
+            password,
+            _currentlyChosenCompany.value!!.companyID
+        )
+        val requestBody = RequestUser(user)
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Login", "Error -> ${exception.message}")
+        }
+        // API call to get list of warehouses
+        viewModelScope.launch (exceptionHandler) {
+            try{
+                val response = ScannerAPI.getLoginService().isLoggedIn(requestBody)
+                _isUserLoggedIn.value = response.response.isSignedIn
+                _wasLastAPICallSuccessful.value = true
+            }catch (e: Exception){
+                _wasLastAPICallSuccessful.value = false
+                Log.i("Login (e)", "Error -> ${e.message}")
+            }
+        }
+    }
 }
+
+
+
+
+
 
 
 //              How to call an API without a ViewModel

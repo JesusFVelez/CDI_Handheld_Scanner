@@ -16,6 +16,11 @@ class SharedPreferencesUtils {
         private const val IPSharedPrefKey:String = "IP"
         private const val portNumSharedPrefKey: String = "PortNumber"
 
+        private const val warehouseInfoSharedPrefName: String = "WarehouseInfo"
+        private const val warehouseNameSharedPrefKey: String = "WarehouseName"
+        private const val warehouseNumberSharedPrefKey: String = "WarehouseNumber"
+
+
         // Method for storing user login information in shared preferences
         fun storeLoginInfoInSharedPref(username: String, companyID: String, context: Context){
             // Get the shared preferences editor
@@ -30,6 +35,22 @@ class SharedPreferencesUtils {
             // Apply the changes to the shared preferences
             editor.apply()
         }
+
+        // Method for storing user warehouse information in shared preferences
+        fun storeWarehouseInfoInSharedPref(warehouseName: String, warehouseNumber: Int, context: Context){
+            // Get the shared preferences editor
+            val sharedPref = context.getSharedPreferences(
+                warehouseInfoSharedPrefName,
+                AppCompatActivity.MODE_PRIVATE
+            )
+            val editor = sharedPref.edit()
+            // Store the username and company ID in shared preferences
+            editor.putString(warehouseNameSharedPrefKey, warehouseName)
+            editor.putInt(warehouseNumberSharedPrefKey, warehouseNumber)
+            // Apply the changes to the shared preferences
+            editor.apply()
+        }
+
 
         fun storeAStringInASharedPref(sharedPrefName:String, sharedPrefKey: String, sharedPrefValue: String, context: Context){
             val sharedPref = context.getSharedPreferences(sharedPrefName, AppCompatActivity.MODE_PRIVATE)
@@ -54,20 +75,39 @@ class SharedPreferencesUtils {
             editor.apply()
         }
 
-        fun getIPAddressFromSharedPref(context: Context):String?{
+        fun getIPAddressFromSharedPref(context: Context): String? {
             // Get the shared preferences
-            val sharedPref: SharedPreferences = context.getSharedPreferences(IPPortSharedPrefName, Context.MODE_PRIVATE)
+            val sharedPref: SharedPreferences =
+                context.getSharedPreferences(IPPortSharedPrefName, Context.MODE_PRIVATE)
             // Retrieve the ip address from shared preferences
-            val ipAddress = sharedPref.getString(IPSharedPrefKey, "N/A")
-            return ipAddress
+            return sharedPref.getString(IPSharedPrefKey, "N/A")
         }
 
-        fun getPortNumberFromSharedPref(context: Context):String?{
+        fun getWarehouseNameFromSharedPref(context: Context): String? {
             // Get the shared preferences
-            val sharedPref: SharedPreferences = context.getSharedPreferences(IPPortSharedPrefName, Context.MODE_PRIVATE)
+            val sharedPref: SharedPreferences = context.getSharedPreferences(
+                warehouseInfoSharedPrefName, Context.MODE_PRIVATE
+            )
+            // Retrieve the ip address from shared preferences
+            return sharedPref.getString(warehouseNameSharedPrefKey, "N/A")
+        }
+
+        fun getWarehouseNumberFromSharedPref(context: Context): Int {
+            // Get the shared preferences
+            val sharedPref: SharedPreferences = context.getSharedPreferences(
+                warehouseInfoSharedPrefName, Context.MODE_PRIVATE
+            )
+            // Retrieve the ip address from shared preferences
+            return sharedPref.getInt(warehouseNumberSharedPrefKey, 0)
+        }
+
+
+        fun getPortNumberFromSharedPref(context: Context): String? {
+            // Get the shared preferences
+            val sharedPref: SharedPreferences =
+                context.getSharedPreferences(IPPortSharedPrefName, Context.MODE_PRIVATE)
             // Retrieve the port number from shared preferences
-            val portNumber = sharedPref.getString(portNumSharedPrefKey, "N/A")
-            return portNumber
+            return sharedPref.getString(portNumSharedPrefKey, "N/A")
         }
 
         // Method for retrieving the username from shared preferences

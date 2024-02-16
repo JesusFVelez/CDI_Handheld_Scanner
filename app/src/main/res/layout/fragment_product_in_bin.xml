@@ -23,18 +23,6 @@
                 android:layout_height="wrap_content">
 
 
-                <Spinner
-                    android:id="@+id/warehouseSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    style="@style/DropDownStyle"
-                    android:background="@drawable/drop_down_background"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:paddingEnd="50dp"
-                    />
 
                 <EditText
                     android:id="@+id/binNumberEditText"
@@ -45,7 +33,7 @@
                     android:hint="@string/bin_number"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/warehouseSpinner"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:imeOptions="actionDone"
                     />
 

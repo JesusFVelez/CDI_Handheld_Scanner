@@ -14,8 +14,10 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -23,18 +25,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.cdihandheldscannerviewactivity.MainActivity
 import com.example.cdihandheldscannerviewactivity.Utils.Network.Company
 import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkUtils
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ResponseWrapperUser
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
-import com.example.cdihandheldscannerviewactivity.Utils.Network.User
-import com.example.cdihandheldscannerviewactivity.Utils.Network.RequestUser
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
 import com.google.android.material.textfield.TextInputEditText
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 // This class represents the login activity for the application. It extends the AppCompatActivity class
@@ -50,7 +46,10 @@ class loginActivity : AppCompatActivity() {
     private lateinit var userNameEditTex: TextInputEditText
     private lateinit var passwordEditText: TextInputEditText
     // Spinner for company selection
-    private lateinit var companySpinner: Spinner
+    private lateinit var companySpinner: AutoCompleteTextView
+    // Spinner for warehouse selection
+    private lateinit var warehouseSpinner: AutoCompleteTextView
+
     // Root view of the layout
     private lateinit var rootView: View
     // Dialog for showing progress
@@ -72,9 +71,8 @@ class loginActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView<ActivityLoginBinding>(this,
             R.layout.activity_login
         )
-        initUIElements()
         initViewModel()
-        initSpinner()
+        initUIElements()
         initObservers()
         initNetworkConnectionHandler()
     }
@@ -107,10 +105,16 @@ class loginActivity : AppCompatActivity() {
                 else
                     hasAppBeenOpened = true
 
-                if(companySpinner.selectedItem == null) {
+                if(companySpinner.text == null) {
                     runOnUiThread {
                         progressDialog.show()
                         viewModel.getCompaniesFromBackendForSpinner()
+                    }
+                }
+                if(warehouseSpinner.text == null){
+                    runOnUiThread{
+                        progressDialog.show()
+                        viewModel.getWarehousesFromBackendForSpinner()
                     }
                 }
             }
@@ -133,7 +137,27 @@ class loginActivity : AppCompatActivity() {
         }
         userNameEditTex = binding.usernameText
         passwordEditText = binding.passwordText
+        // Init Company Spinner
         companySpinner = binding.companySpinner
+        companySpinner.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // Show the dropdown menu when the AutoCompleteTextView gains focus
+                (view as? AutoCompleteTextView)?.showDropDown()
+            }
+        }
+
+        // Init Warehouse Spinner
+        warehouseSpinner = binding.warehouseSpinner
+        warehouseSpinner.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // Show the dropdown menu when the AutoCompleteTextView gains focus
+                (view as? AutoCompleteTextView)?.showDropDown()
+            }
+        }
+
+
+
+
         rootView = binding.root // root view of the layout
         progressDialog = Dialog(this).apply{
             setContentView(R.layout.dialog_loading)
@@ -146,7 +170,18 @@ class loginActivity : AppCompatActivity() {
     private fun initObservers(){
         viewModel.listOfCompanies.observe(this) { newCompaniesList ->
             progressDialog.dismiss()
+
+//            val adapter = loginSpinnerAdapters.CompaniesDropdownAdapter(this, R.layout.dropdown_view, newCompaniesList)
+//            companySpinner.setAdapter(adapter)
+//            adapter.notifyDataSetChanged()
             fillSpinnerWithCompanies(newCompaniesList)
+        }
+
+        viewModel.listOfWarehouses.observe(this) {newWarehousesList ->
+            progressDialog.dismiss()
+            fillSpinnerWithWarehouses(newWarehousesList)
+//            val adapter = loginSpinnerAdapters.WarehouseDropdownAdapter(this, R.layout.dropdown_view, newWarehousesList)
+//            warehouseSpinner.setAdapter(adapter)
         }
 
         viewModel.wasLastAPICallSuccessful.observe(this) {wasAPICallSuccessful ->
@@ -156,70 +191,52 @@ class loginActivity : AppCompatActivity() {
                 Log.i("API Call", "API Call did not work")
             }
         }
+
+        viewModel.isUserLoggedIn.observe(this){isUserLoggedIn ->
+            if (isUserLoggedIn) {
+                progressDialog.dismiss()
+                SharedPreferencesUtils.storeLoginInfoInSharedPref(userNameEditTex.text.toString(), viewModel.currentlyChosenCompany.value!!.companyID, this@loginActivity)
+                SharedPreferencesUtils.storeWarehouseInfoInSharedPref(viewModel.currentlyChosenWarehouse.value!!.warehouseName, viewModel.currentlyChosenWarehouse.value!!.warehouseNumber,this@loginActivity)
+                // This jumps from one Activity to another
+                val intent = Intent(this@loginActivity, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                progressDialog.dismiss()
+                AlerterUtils.startAlertWithColor(this@loginActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
+            }
+
+        }
+    }
+
+    // Populate Spinner with warehouse data
+    private fun fillSpinnerWithWarehouses( newWarehouseList : List<WarehouseInfo>){
+        val warehouses = mutableListOf<String>()
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, warehouses)
+        warehouseSpinner.setAdapter(adapter)
+        for (aWarehouse in viewModel.listOfWarehouses.value!!) {
+            warehouses.add(aWarehouse.warehouseName)
+        }
+        adapter.notifyDataSetChanged()
     }
 
     // This method populates the Spinner with a list of companies. It creates an ArrayAdapter with the company names and sets it as the adapter for the Spinner.
     private fun fillSpinnerWithCompanies(listOfCompanies: List<Company>) {
         // Create a mutable list of company names
         val companies = mutableListOf<String>()
-        // Create an ArrayAdapter with the list of company names
-        val adapter =
-            ArrayAdapter(this@loginActivity, android.R.layout.simple_spinner_item, companies)
-        // Set the layout for displaying the list of choices in the Spinner
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        // Set the ArrayAdapter as the Spinner's adapter
-        companySpinner.adapter = adapter
+
         // Add the company names to the list
         for (aCompany in listOfCompanies) {
             companies.add(aCompany.companyName)
         }
+        // Create an ArrayAdapter with the list of company names
+        val adapter =
+            ArrayAdapter(this@loginActivity,android.R.layout.simple_spinner_dropdown_item , companies)
+        // Set the ArrayAdapter as the Spinner's adapter
+        companySpinner.setAdapter(adapter)
         // Notify the adapter that the data set has changed. This causes the Spinner to re-render its view.
-        adapter.notifyDataSetChanged()
     }
 
-    // This method initializes the Spinner. It sets up listeners for various events related to the Spinner.
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initSpinner(){
-        // Create a global layout listener. This is used to reset the Spinner's background when it closes.
-        val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-            // Reset background when spinner closes
-            companySpinner.setBackgroundResource(R.drawable.white_drop_down)
-            viewModel.isSpinnerArrowUp = false
-        }
-
-        // Set a touch listener for the Spinner. This is used to change the Spinner's background when it is clicked.
-        companySpinner.setOnTouchListener{view, event ->
-            when(event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    companySpinner.setBackgroundResource(R.drawable.white_drop_down_arrow_up)
-                    companySpinner.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
-                    viewModel.isSpinnerArrowUp = true
-                }
-            }
-            false
-        }
-
-        // Set an item selected listener for the Spinner. This is used to reset the Spinner's background when an item is selected.
-        companySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                companySpinner.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
-                viewModel.isSpinnerArrowUp = false
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
-
-        // Set a touch listener for the root view. This is used to reset the Spinner's background when the user touches outside of the Spinner.
-        rootView.setOnTouchListener { _, _ ->
-            if (viewModel.isSpinnerArrowUp) {
-                companySpinner.setBackgroundResource(R.drawable.white_drop_down)
-                companySpinner.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
-                viewModel.isSpinnerArrowUp = false
-            }
-            false
-        }
-    }
 
     // This method is called when the login button is clicked. It checks the network connection and the selected company, and then attempts to log in.
     fun loginButtonClickEvent(view: View?) {
@@ -229,52 +246,16 @@ class loginActivity : AppCompatActivity() {
             progressDialog.dismiss()
             AlerterUtils.startInternetLostAlert(this)
         } else {
-            if (companySpinner.selectedItem != null) {
-                val selectedCompanyInSpinner: String = companySpinner.selectedItem.toString()
+            if (companySpinner.text.toString() != "" && warehouseSpinner.text.toString() != "") {
+                val selectedCompanyInSpinner: String = companySpinner.text.toString()
+                val selectedWarehouseInSpinner: String = warehouseSpinner.text.toString()
+                viewModel.setWarehouse(selectedWarehouseInSpinner)
+                viewModel.setCompanyID(selectedCompanyInSpinner)
+                viewModel.logUserIn(userNameEditTex.text.toString(), passwordEditText.text.toString())
 
-                lateinit var selectedCompanyID: String
-                for (aCompany in viewModel.listOfCompanies.value!!) {
-                    if (selectedCompanyInSpinner == aCompany.companyName) {
-                        selectedCompanyID = aCompany.companyID
-                    }
-                }
-
-                val user = User(
-                    userNameEditTex.text.toString(),
-                    passwordEditText.text.toString(),
-                    selectedCompanyID
-                )
-                val requestBody = RequestUser(user)
-
-                ScannerAPI.getLoginService().isLogedIn(requestBody)
-                    .enqueue(object : Callback<ResponseWrapperUser> {
-                        override fun onResponse(
-                            call: Call<ResponseWrapperUser>,
-                            response: Response<ResponseWrapperUser>
-                        ) {
-                            if (response.body()?.response?.isSignedIn == true) {
-                                progressDialog.dismiss()
-                                SharedPreferencesUtils.storeLoginInfoInSharedPref(user.userName, selectedCompanyID, this@loginActivity)
-                                // This jumps from one Activity to another
-                                val intent = Intent(this@loginActivity, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            } else {
-                                progressDialog.dismiss()
-                                AlerterUtils.startAlertWithColor(this@loginActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
-                            }
-                        }
-                            override fun onFailure(call: Call<ResponseWrapperUser>, t: Throwable) {
-                            progressDialog.dismiss()
-                                AlerterUtils.startNetworkErrorAlert(this@loginActivity)
-                            println("Error -> " + t.message)
-                        }
-
-
-                    })
             } else {
                 progressDialog.dismiss()
-                Toast.makeText(this, getString(R.string.company_not_chosen), Toast.LENGTH_SHORT).show()
+                AlerterUtils.startErrorAlerter(this, getString(R.string.company_or_warehouse_not_found))
             }
 
         }
