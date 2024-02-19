@@ -24,7 +24,7 @@ import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentHomeScreenBinding
 import com.example.cdihandheldscannerviewactivity.login.LoginViewModel
-import com.example.cdihandheldscannerviewactivity.login.loginActivity
+import com.example.cdihandheldscannerviewactivity.login.LoginActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -152,7 +152,7 @@ class HomeScreenFragment : Fragment() {
                 .setPositiveButton("Yes") { _, _ ->
 
                     // Log out and navigate to the login activity
-                    val intent = Intent(this.activity, loginActivity::class.java)
+                    val intent = Intent(this.activity, LoginActivity::class.java)
                     startActivity(intent)
                     this.activity?.finish()
                 }

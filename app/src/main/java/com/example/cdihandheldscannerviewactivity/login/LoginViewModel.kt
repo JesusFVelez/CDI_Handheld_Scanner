@@ -104,7 +104,7 @@ class LoginViewModel:ViewModel() {
         // API call to get list of warehouses
         viewModelScope.launch (exceptionHandler) {
             try{
-                val response = ScannerAPI.getGeneralService().getWarehousesAvailable()
+                val response = ScannerAPI.getLoginService().getWarehousesAvailable()
                 _listOfWarehouses.value = response.response.warehouses.warehouses
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
@@ -119,7 +119,8 @@ class LoginViewModel:ViewModel() {
         val user = User(
             username,
             password,
-            _currentlyChosenCompany.value!!.companyID
+            _currentlyChosenCompany.value!!.companyID,
+            currentlyChosenWarehouse.value!!.warehouseNumber
         )
         val requestBody = RequestUser(user)
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -139,8 +140,6 @@ class LoginViewModel:ViewModel() {
         }
     }
 }
-
-
 
 
 

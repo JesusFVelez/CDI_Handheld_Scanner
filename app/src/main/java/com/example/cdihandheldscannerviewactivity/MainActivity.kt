@@ -16,7 +16,7 @@ import androidx.navigation.ui.NavigationUI
 import com.example.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
-import com.example.cdihandheldscannerviewactivity.login.loginActivity
+import com.example.cdihandheldscannerviewactivity.login.LoginActivity
 
 // Main activity class
 class MainActivity : AppCompatActivity() {
@@ -109,7 +109,7 @@ override fun onBackPressed() {
             .setMessage("Are you sure you want to log out?")
             .setPositiveButton("Yes") { _, _ ->
 
-                val intent = Intent(this@MainActivity, loginActivity::class.java)
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
             }
