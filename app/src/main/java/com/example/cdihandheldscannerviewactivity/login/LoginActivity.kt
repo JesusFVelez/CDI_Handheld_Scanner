@@ -28,6 +28,7 @@ import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkUtils
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
 import com.google.android.material.textfield.TextInputEditText
@@ -159,11 +160,8 @@ class LoginActivity : AppCompatActivity() {
 
 
         rootView = binding.root // root view of the layout
-        progressDialog = Dialog(this).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-            show()
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(this)
+        progressDialog.show()
     }
 
 

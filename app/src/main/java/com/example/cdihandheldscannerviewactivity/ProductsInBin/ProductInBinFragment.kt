@@ -120,10 +120,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             viewModel.getProductInfoFromBackend(binNumberEditText.text.toString())
         }
         numberOfItemsTextView = binding.totalProductsTextView
-        progressDialog = Dialog(requireContext()).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
         binding.productsInBinList.layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically(): Boolean {
                 return false

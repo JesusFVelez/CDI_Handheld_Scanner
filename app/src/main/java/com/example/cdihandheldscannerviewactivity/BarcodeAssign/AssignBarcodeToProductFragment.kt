@@ -27,7 +27,6 @@ class AssignBarcodeToProductFragment: Fragment() {
     private lateinit var searchProductButton: Button
     private lateinit var addButton: Button
     private lateinit var binding: FragmentAssignBarcodeToProductBinding
-    private lateinit var progressDialog: Dialog
 
     private val viewModel: AssignBarcodeViewModel by activityViewModels()
 

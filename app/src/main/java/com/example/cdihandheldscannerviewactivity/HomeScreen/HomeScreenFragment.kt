@@ -20,6 +20,7 @@ import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.RPMAccessResponseWrapper
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentHomeScreenBinding
@@ -45,7 +46,6 @@ class HomeScreenFragment : Fragment() {
     private var hasButtonBeenPressed = false
 
     private lateinit var viewModel: HomeScreenViewModel
-    private lateinit var chosenMenuOption: HomeScreenViewModel.MenuOptionDataClass
 
 
     // Method called when the fragment is created
@@ -139,10 +139,7 @@ class HomeScreenFragment : Fragment() {
         itemPickingButton = binding.ItemPickingButton
         assignBarcodeButton = binding.assignBarcodeButton
 
-        progressDialog = Dialog(requireContext()).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         // Set click listener for the log out button to show a logout confirmation dialog
         logOutButton.setOnClickListener{

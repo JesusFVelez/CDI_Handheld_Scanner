@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentSearchForBinsWithProductBinding
@@ -100,10 +101,7 @@ class SearchBinsWithProductFragment : Fragment() {
         searcItemInBinButton.setOnClickListener{
            searchForItem()
         }
-        progressDialog = Dialog(requireContext()).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         itemNumberEditText.requestFocus()
     }

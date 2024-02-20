@@ -86,12 +86,13 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+@Deprecated("Deprecated in Java")
 override fun onBackPressed() {
     val navController = this.findNavController( R.id.my_nav_host_fragment)
-    if(navController.currentDestination?.id == R.id.orderPickingMainFragment) {
-        val currentFragment = navController.currentDestination
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment
-        val fragment = navHostFragment?.childFragmentManager?.fragments?.find { it is orderPickingMainFragment } as? orderPickingMainFragment
+//    if(navController.currentDestination?.id == R.id.orderPickingMainFragment) {
+//        val currentFragment = navController.currentDestination
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as? NavHostFragment
+//        val fragment = navHostFragment?.childFragmentManager?.fragments?.find { it is orderPickingMainFragment } as? orderPickingMainFragment
 //        fragment?.let {
 //            if (it.verifyIfOrderIsBeingPicked()) {
 //                it.showErrorMessageWhenExitingScreenWithoutFinishingPicking()
@@ -99,7 +100,8 @@ override fun onBackPressed() {
 //                navController.navigateUp()
 //            return
 //        }
-    }else if (navController.previousBackStackEntry != null) {
+//    }
+    if (navController.previousBackStackEntry != null) {
         // If there's something on the back stack, pop it
         navController.popBackStack()
     }else{
