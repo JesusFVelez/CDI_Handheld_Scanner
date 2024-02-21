@@ -39,6 +39,7 @@ class AlerterUtils {
                 .show()
         }
 
+
         fun startErrorAlerter(activity: Activity, errorMessage:String){
             Alerter.create(activity)
                 .setTitle("Error")
