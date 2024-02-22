@@ -5,6 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -22,6 +23,7 @@ class ServicePaths{
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
         const val RPMAccess: String = "/RPMAccessService/"
         const val AssignBarcode: String = "/AssignBarcodeService/"
+        const val AssignExpirationDateService: String = "/AssignExpirationDateService/"
     }
 }
 
@@ -37,6 +39,12 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
         .build()
 }
 
+//NEWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+interface AssignExpirationDateResources {
+    @PUT("assignExpireDate")
+    suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String):AssignExpDateResponseWrapper
+}
+
 interface LoginServices{
     // Endpoint for getting companies
     @GET("getCompanies")
@@ -49,7 +57,6 @@ interface LoginServices{
     //Endpoint for testing the connection
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
-
 
     // Endpoint for getting available warehouses
     @GET("getWarehouses")
@@ -145,6 +152,13 @@ object ScannerAPI {
         ipAddress = ip
         portNumber = portNum
     }
+
+    //NEWWWWWWWWWWWWWWWWWWWWWWW
+    fun getAssignExpirationDateResources(): AssignExpirationDateResources{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignExpirationDateService)
+        return retrofit.create(AssignExpirationDateResources::class.java)
+    }
+
     fun getLoginService(): LoginServices {
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.login)
         return retrofit.create(LoginServices::class.java)
