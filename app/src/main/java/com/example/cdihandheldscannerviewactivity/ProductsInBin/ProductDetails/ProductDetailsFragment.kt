@@ -74,8 +74,8 @@ class ProductDetailsFragment : Fragment() {
         BarCodeTextView = binding.barCode
         UOMValueTextView = binding.UOMAndUOMQtyView.findViewById(R.id.detailContent)
         QtyUOMValueTextView = binding.UOMAndUOMQtyView.findViewById(R.id.otherDetailContent)
-        itemNumberTextView = binding.itemNumber
-        itemNametextView = binding.itemName
+        itemNumberTextView = binding.itemNumberTextView
+        itemNametextView = binding.itemNameTextView
     }
 
     // Function to change the names of detail views
