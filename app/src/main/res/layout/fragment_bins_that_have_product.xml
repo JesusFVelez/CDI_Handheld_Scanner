@@ -29,12 +29,12 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:src="@drawable/custom_product_icon"
-                    app:layout_constraintBottom_toBottomOf="@+id/itemNumber"
+                    app:layout_constraintBottom_toBottomOf="@+id/itemNumberTextView"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/itemNumber" />
+                    app:layout_constraintTop_toTopOf="@+id/itemNumberTextView" />
 
                 <TextView
-                    android:id="@+id/itemNumber"
+                    android:id="@+id/itemNumberTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -55,12 +55,12 @@
                     android:layout_marginEnd="5dp"
                     android:gravity="center_horizontal|top"
                     android:src="@drawable/quantity_on_hand_icon"
-                    app:layout_constraintBottom_toBottomOf="@+id/QtyOnHandText"
-                    app:layout_constraintEnd_toStartOf="@+id/QtyOnHandText"
-                    app:layout_constraintTop_toTopOf="@+id/QtyOnHandText" />
+                    app:layout_constraintBottom_toBottomOf="@+id/QtyOnHandTextView"
+                    app:layout_constraintEnd_toStartOf="@+id/QtyOnHandTextView"
+                    app:layout_constraintTop_toTopOf="@+id/QtyOnHandTextView" />
 
                 <TextView
-                    android:id="@+id/QtyOnHandText"
+                    android:id="@+id/QtyOnHandTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -72,17 +72,17 @@
 
 
                 <ImageView
-                    android:id="@+id/pickinBinLocationIcon"
+                    android:id="@+id/binLocationIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="5dp"
                     android:src="@drawable/bindetailpage"
-                    app:layout_constraintBottom_toBottomOf="@id/pickingBinLocation"
-                    app:layout_constraintEnd_toStartOf="@id/pickingBinLocation"
-                    app:layout_constraintTop_toTopOf="@id/pickingBinLocation" />
+                    app:layout_constraintBottom_toBottomOf="@id/binLocationTextView"
+                    app:layout_constraintEnd_toStartOf="@id/binLocationTextView"
+                    app:layout_constraintTop_toTopOf="@id/binLocationTextView" />
 
                 <TextView
-                    android:id="@+id/pickingBinLocation"
+                    android:id="@+id/binLocationTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -102,9 +102,9 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:src="@drawable/barcodeitemdetails"
-                    app:layout_constraintBottom_toBottomOf="@+id/barCode"
+                    app:layout_constraintBottom_toBottomOf="@+id/expirationDateTextView"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/barCode" />
+                    app:layout_constraintTop_toTopOf="@+id/expirationDateTextView" />
 
 
 
@@ -149,7 +149,7 @@
 
 
                 <TextView
-                    android:id="@+id/barCode"
+                    android:id="@+id/expirationDateTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -164,7 +164,7 @@
 
 
                 <TextView
-                    android:id="@+id/itemName"
+                    android:id="@+id/itemNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -175,13 +175,13 @@
                     android:text="Habichuelas Goya"
                     android:textSize="32sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/pickingBinLocation"
+                    app:layout_constraintBottom_toTopOf="@id/binLocationTextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/itemNumber" />
+                    app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView" />
 
                 <TextView
-                    android:id="@+id/inventoryType"
+                    android:id="@+id/inventoryTypeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -189,9 +189,9 @@
                     android:gravity="center_horizontal|top"
                     android:textStyle="bold"
                     android:text="Inv. Type: UOM | CASE"
-                    app:layout_constraintEnd_toEndOf="@+id/itemName"
-                    app:layout_constraintStart_toStartOf="@+id/itemName"
-                    app:layout_constraintTop_toBottomOf="@+id/itemName" />
+                    app:layout_constraintEnd_toEndOf="@+id/itemNameTextView"
+                    app:layout_constraintStart_toStartOf="@+id/itemNameTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/itemNameTextView" />
 
                 <TextView
                     android:id="@+id/VendorItemNumberText"
@@ -202,9 +202,9 @@
                     android:gravity="center_horizontal|top"
                     android:text="Vendor Item Num: 51671891"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/itemName"
-                    app:layout_constraintStart_toStartOf="@+id/itemName"
-                    app:layout_constraintTop_toBottomOf="@+id/inventoryType" />
+                    app:layout_constraintEnd_toEndOf="@+id/itemNameTextView"
+                    app:layout_constraintStart_toStartOf="@+id/itemNameTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/inventoryTypeTextView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" >
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+<!--    tools:context=".BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ProductsInBin.ProductDetails.ProductDetailsFragment">
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/upperDiv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:background="@drawable/productdetailsupperbackground"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -47,19 +51,24 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
+
+
+
             <ImageView
                 android:id="@+id/binLocationIcon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/bindetailpage"
-                app:layout_constraintBottom_toBottomOf="@+id/binLocation"
-                app:layout_constraintEnd_toStartOf="@+id/binLocation"
-                app:layout_constraintTop_toTopOf="@+id/binLocation" />
+                app:layout_constraintBottom_toBottomOf="@id/binLocationTextView"
+                app:layout_constraintEnd_toStartOf="@id/binLocationTextView"
+                app:layout_constraintTop_toTopOf="@id/binLocationTextView" />
+
             <TextView
-                android:id="@+id/binLocation"
+                android:id="@+id/binLocationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_horizontal|top"
@@ -70,27 +79,28 @@
 
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/barcodeIcon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-
                 android:layout_marginStart="10dp"
-                android:src="@drawable/barcodeitemdetails"
+                android:src="@drawable/date_time"
                 app:layout_constraintBottom_toBottomOf="@+id/expirationDateTextView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/expirationDateTextView" />
+
 
             <TextView
                 android:id="@+id/expirationDateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_horizontal|top"
-                android:text="743709000116"
+                android:text="01/01/2025"
                 android:textSize="19sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView" />
+                app:layout_constraintStart_toEndOf="@+id/barcodeIcon" />
 
 
             <TextView
@@ -102,70 +112,80 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:gravity="center_horizontal|top"
-                android:text="Habichuelas Goya"
+                android:text="Habichuelas Goya A/S"
                 android:textSize="32sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/binLocation"
+                app:layout_constraintBottom_toTopOf="@id/binLocationTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <ScrollView-->
-<!--            android:id="@+id/detailContentScrollView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/upperDiv">-->
-<!--            >-->
-
-        <LinearLayout
-            android:id="@+id/linearLayoutContent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/LowerDiv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upperDiv">
+            app:layout_constraintTop_toBottomOf="@id/upperDiv"
+            app:layout_constraintVertical_bias="0.0">
 
-            <!--                <include-->
-            <!--                    android:id="@+id/binLocation"-->
-            <!--                    layout="@layout/product_in_bin_detail_view" />-->
+            <EditText
+                android:id="@+id/BinNumberEditText"
+                style="@style/CustomScannerInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Bin"
+                app:layout_constraintBottom_toTopOf="@+id/itemNumberEditText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/itemNumberEditText"
+                style="@style/CustomScannerInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/item_number"
+                app:layout_constraintBottom_toTopOf="@+id/NewExpirationDateEditText"
+                app:layout_constraintEnd_toEndOf="@+id/BinNumberEditText"
+                app:layout_constraintStart_toStartOf="@+id/BinNumberEditText" />
+
+            <EditText
+                android:id="@+id/NewExpirationDateEditText"
+                android:layout_width="201dp"
+                android:layout_height="54dp"
+                android:layout_marginBottom="185dp"
+                android:gravity="center"
+                android:hint="New Expiration Date"
+                app:layout_constraintBottom_toTopOf="@+id/enterButton"
+                app:layout_constraintEnd_toEndOf="@+id/itemNumberEditText"
+                app:layout_constraintHorizontal_bias="0.157"
+                app:layout_constraintStart_toStartOf="@+id/itemNumberEditText" />
 
 
-            <include
-                android:id="@+id/qtyOnHandAndInPickingView"
-                layout="@layout/product_in_bin_detail_view_two_things" />
+            <Button
+                android:id="@+id/enterButton"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/menu_option_button"
+                android:text="Enter"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-            <!--                <include-->
-            <!--                    android:id="@+id/qtyInPicking"-->
-            <!--                    layout="@layout/product_in_bin_detail_view" />-->
-
-
-            <!--                <include-->
-            <!--                    android:id="@+id/barCode"-->
-            <!--                    layout="@layout/product_in_bin_detail_view" />-->
-
-            <include
-                android:id="@+id/UOMAndUOMQtyView"
-                layout="@layout/product_in_bin_detail_view_two_things" />
-
-            <include
-                android:id="@+id/expDateView"
-                layout="@layout/product_in_bin_detail_view" />
-
-            <!--                <include-->
-            <!--                    android:id="@+id/qtyInUOM"-->
-            <!--                    layout="@layout/product_in_bin_detail_view" />-->
-        </LinearLayout>
-<!--        </ScrollView>-->
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </ScrollView>
-
+</androidx.core.widget.NestedScrollView>
 </layout>
+
