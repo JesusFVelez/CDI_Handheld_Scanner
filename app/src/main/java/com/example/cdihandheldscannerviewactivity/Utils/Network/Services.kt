@@ -39,7 +39,7 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
         .build()
 }
 
-//NEWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+//Assign Expiration Date inaterface
 interface AssignExpirationDateResources {
     @PUT("assignExpireDate")
     suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String):AssignExpDateResponseWrapper
@@ -153,7 +153,7 @@ object ScannerAPI {
         portNumber = portNum
     }
 
-    //NEWWWWWWWWWWWWWWWWWWWWWWW
+    //Assign Expiration Date function
     fun getAssignExpirationDateResources(): AssignExpirationDateResources{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignExpirationDateService)
         return retrofit.create(AssignExpirationDateResources::class.java)
