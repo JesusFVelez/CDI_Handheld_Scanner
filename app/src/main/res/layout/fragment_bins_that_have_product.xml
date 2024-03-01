@@ -77,12 +77,12 @@
                     android:layout_height="30dp"
                     android:layout_marginEnd="5dp"
                     android:src="@drawable/bindetailpage"
-                    app:layout_constraintBottom_toBottomOf="@id/binLocationTextView"
-                    app:layout_constraintEnd_toStartOf="@id/binLocationTextView"
-                    app:layout_constraintTop_toTopOf="@id/binLocationTextView" />
+                    app:layout_constraintBottom_toBottomOf="@id/pickingBinLocation"
+                    app:layout_constraintEnd_toStartOf="@id/pickingBinLocation"
+                    app:layout_constraintTop_toTopOf="@id/pickingBinLocation" />
 
                 <TextView
-                    android:id="@+id/binLocationTextView"
+                    android:id="@+id/pickingBinLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -102,9 +102,9 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:src="@drawable/barcodeitemdetails"
-                    app:layout_constraintBottom_toBottomOf="@+id/expirationDateTextView"
+                    app:layout_constraintBottom_toBottomOf="@+id/barCode"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/expirationDateTextView" />
+                    app:layout_constraintTop_toTopOf="@+id/barCode" />
 
 
 
@@ -149,7 +149,7 @@
 
 
                 <TextView
-                    android:id="@+id/expirationDateTextView"
+                    android:id="@+id/barCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -175,7 +175,7 @@
                     android:text="Habichuelas Goya"
                     android:textSize="32sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/binLocationTextView"
+                    app:layout_constraintBottom_toTopOf="@id/pickingBinLocation"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView" />

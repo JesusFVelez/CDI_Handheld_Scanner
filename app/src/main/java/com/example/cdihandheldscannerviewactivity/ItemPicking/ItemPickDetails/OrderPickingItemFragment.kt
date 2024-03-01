@@ -76,7 +76,7 @@ class OrderPickingItemFragment :Fragment(){
         }
         itemAmountEditText = binding.itemAmountEditText
         itemNameTextView = binding.ItemName
-        itemNumberTextView = binding.itemNumber
+        itemNumberTextView = binding.itemNumberTextView
         binNumberTextView = binding.binLocationText
         totalQuantityToBePickedTextView = binding.totalQuantityOfItemsToBePickedText
     }

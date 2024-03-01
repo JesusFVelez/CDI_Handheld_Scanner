@@ -147,11 +147,11 @@
                     android:text="@string/pick_item"
                     android:textSize="25dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/NewExpirationDateEditText"
+                    app:layout_constraintEnd_toStartOf="@+id/itemAmountEditText"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/NewExpirationDateEditText"
+                    android:id="@+id/itemAmountEditText"
                     style="@style/CustomUserInput"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
@@ -169,7 +169,7 @@
                     android:text="@string/of"
                     android:textSize="25dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/NewExpirationDateEditText"
+                    app:layout_constraintStart_toEndOf="@id/itemAmountEditText"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
