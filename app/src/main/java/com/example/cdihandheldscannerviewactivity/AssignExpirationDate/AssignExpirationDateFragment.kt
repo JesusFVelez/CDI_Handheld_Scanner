@@ -64,6 +64,9 @@ class AssignExpirationDateFragment : Fragment() {
             } else {
                 Toast.makeText(context, "Make sure everything is filled", Toast.LENGTH_SHORT).show()
             }
+            if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
+                viewModel.getItemInfo(itemNumber, binNumber)
+            }
         }
 
 
@@ -89,7 +92,7 @@ class AssignExpirationDateFragment : Fragment() {
                 binding.apply {
                     itemNumberTextView.text = item.itemNumber
                     itemNameTextView.text = item.itemDescription
-                    expirationDateTextView.text = item.expireDate.toString()
+                    expirationDateTextView.text = item.expireDate
                     binLocationTextView.text = item.binLocation
                 }
             }

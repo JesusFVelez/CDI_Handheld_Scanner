@@ -49,7 +49,7 @@ class AssignExpirationDateViewModel: ViewModel(){
         }
     }
 
-    fun getItemInfo(pItemNumber: String, pItemDescription: String, pBinLocation: String, pExpireDate: Date){
+    fun getItemInfo(pItemNumber: String, pBinLocation: String){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             Log.i("Item Info " , "Error -> ${exception.message}")
         }

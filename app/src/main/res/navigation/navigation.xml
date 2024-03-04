@@ -28,6 +28,10 @@
             android:id="@+id/action_homeScreenFragment_to_assignBarcodeToProductFragment"
             app:destination="@id/assignBarcodeToProductFragment"
             app:enterAnim="@anim/slide_in_left" />
+        <action
+            android:id="@+id/action_homeScreenFragment_to_placeholder"
+            app:destination="@id/assignExpirationDateFragment"
+            app:enterAnim="@anim/slide_in_left" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"
@@ -78,4 +82,8 @@
         android:id="@+id/assignBarcodeToProductFragment"
         android:name="com.example.cdihandheldscannerviewactivity.BarcodeAssign.AssignBarcodeToProductFragment"
         android:label="assign_barcode_to_product_fragment" />
+    <fragment
+        android:id="@+id/assignExpirationDateFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.AssignExpirationDate.AssignExpirationDateFragment"
+        android:label="fragment_assign_expiration_date" />
 </navigation>

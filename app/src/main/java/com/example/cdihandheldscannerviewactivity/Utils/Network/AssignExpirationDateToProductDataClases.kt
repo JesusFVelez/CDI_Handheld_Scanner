@@ -34,5 +34,5 @@ data class ItemInfo(
     @Json(name = "itemNumber") val itemNumber: String,
     @Json(name = "itemDescription") val itemDescription: String,
     @Json(name = "binLocation") val binLocation: String,
-    @Json(name = "expireDate") val expireDate: Date
+    @Json(name = "expireDate") val expireDate: String
 )
