@@ -5,23 +5,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cdihandheldscannerviewactivity.Utils.Network.ItemInfo
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class AssignExpirationDateViewModel: ViewModel(){
 
-        public val _opSuccess = MutableLiveData<Boolean>()
-        val assignExpirationDate : LiveData<Boolean>
+        private val _opSuccess = MutableLiveData<Boolean>()
+        val opSuccess : LiveData<Boolean>
             get() = _opSuccess
 
-        public val _opMessage = MutableLiveData<String>()
-        val listOfCompanies : LiveData<String>
+
+        private val _opMessage = MutableLiveData<String>()
+        val opMessage : LiveData<String>
             get() = _opMessage
 
-        public val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
-        val wasLastAPICallSuccessful : LiveData<Boolean>
-            get() = _wasLastAPICallSuccessful
+        private val _itemInfo = MutableLiveData<ItemInfo>()
+        val itemInfo : LiveData<ItemInfo>
+            get() = _itemInfo
 
 
     init{
@@ -29,22 +32,33 @@ class AssignExpirationDateViewModel: ViewModel(){
 
     fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _wasLastAPICallSuccessful.value = false
             Log.i("Assign Expire Date " , "Error -> ${exception.message}")
         }
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getAssignExpirationDateResources().assignExpireDate(pItemNumber, pBinLocation, pExpireDate)
+                val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate)
                 _opSuccess.value = response.response.opSuccess
                 _opMessage.value = response.response.opMessage
-                _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
                 Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
-                _wasLastAPICallSuccessful.value = false
             }
         }
     }
 
+    fun getItemInfo(pItemNumber: String, itemDescription: String, pBinLocation: String, pExpireDate: Date){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            Log.i("Item Info " , "Error -> ${exception.message}")
+        }
 
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                val response = ScannerAPI.getAssignExpirationDateService().getItemInformation(pItemNumber, pBinLocation)
+                _itemInfo.value = response.response.binItemInfo.response
+            }catch (e: Exception){
+                Log.i("Item Info", "Error -> ${e.message}")
+            }
+
+        }
+    }
 }

@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
@@ -29,7 +30,7 @@ class AssignExpirationDateFragment : Fragment() {
     private lateinit var NewExpirationDateEditText: EditText
     private lateinit var enterButton: Button
 
-    private lateinit var viewModel: AssignExpirationDateViewModel
+    private val viewModel: AssignExpirationDateViewModel by activityViewModels()
 
 
     override fun onCreate(saveInstance: Bundle?){
@@ -44,7 +45,6 @@ class AssignExpirationDateFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_assign_expiration_date, container, false)
 
-        viewModel = ViewModelProvider(requireActivity())[AssignExpirationDateViewModel::class.java]
         setupUI()
         observeViewModel()
 
@@ -56,6 +56,10 @@ class AssignExpirationDateFragment : Fragment() {
             val itemNumber = binding.itemNumberEditText.text.toString()
             val binNumber = binding.BinNumberEditText.text.toString()
             val newExpirationDate = binding.NewExpirationDateEditText.text.toString()
+            if(binNumber.isNotEmpty()){
+
+            }
+
             // Call the ViewModel function to assign expiration date
             viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate)
         }
@@ -63,7 +67,7 @@ class AssignExpirationDateFragment : Fragment() {
 
     private fun observeViewModel() {
         // Observe the operation success LiveData
-        viewModel._opSuccess.observe(viewLifecycleOwner) { isSuccess ->
+        viewModel.opSuccess.observe(viewLifecycleOwner) { isSuccess ->
             if (isSuccess) {
                 Toast.makeText(context, "Expiration date assigned successfully.", Toast.LENGTH_SHORT).show()
             } else {
@@ -72,17 +76,9 @@ class AssignExpirationDateFragment : Fragment() {
         }
 
         // Observe the operation message LiveData
-        viewModel._opMessage.observe(viewLifecycleOwner) { message ->
+        viewModel.opMessage.observe(viewLifecycleOwner) { message ->
             AlerterUtils.startSuccessAlert(requireActivity(),"Success",message)
-            //Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        }
-
-        // Optionally, observe the API call success status for additional UI logic
-        viewModel._wasLastAPICallSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
-            if (!isSuccessful) {
-                AlerterUtils.startNetworkErrorAlert(requireActivity())
-                //Toast.makeText(context, "API call failed. Check your connection or try again later.", Toast.LENGTH_LONG).show()
-            }
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 }

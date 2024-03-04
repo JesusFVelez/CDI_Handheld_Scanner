@@ -158,6 +158,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
                 app:layout_constraintStart_toStartOf="@+id/BinNumberEditText" />
 
             <EditText
+                android:date=""
                 android:id="@+id/NewExpirationDateEditText"
                 android:layout_width="201dp"
                 android:layout_height="54dp"
