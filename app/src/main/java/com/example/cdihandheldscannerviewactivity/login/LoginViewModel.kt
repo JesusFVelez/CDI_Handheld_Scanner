@@ -98,18 +98,18 @@ class LoginViewModel:ViewModel() {
     fun getWarehousesFromBackendForSpinner(){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
-            Log.i("get Warehouses API Call" , "Error -> ${exception.message}")
+            Log.i("Login Warehouse" , "Error -> ${exception.message}")
         }
 
         // API call to get list of warehouses
         viewModelScope.launch (exceptionHandler) {
             try{
-                val response = ScannerAPI.getGeneralService().getWarehousesAvailable()
+                val response = ScannerAPI.getLoginService().getWarehousesAvailable()
                 _listOfWarehouses.value = response.response.warehouses.warehouses
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
                 _wasLastAPICallSuccessful.value = false
-                Log.i("Products In Bin View Model WH API Call", "Error -> ${e.message}")
+                Log.i("Login warehouse (e)", "Error -> ${e.message}")
             }
         }
     }

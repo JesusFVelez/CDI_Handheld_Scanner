@@ -49,6 +49,10 @@ interface LoginServices{
     //Endpoint for testing the connection
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
+
+    // Endpoint for getting available warehouses
+    @GET("getWarehouses")
+    suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
 }
 
 interface RPMAccessServices{
@@ -121,9 +125,7 @@ interface ViewProductsInBinServices{
 }
 
 interface GeneralServices{
-    // Endpoint for getting available warehouses
-    @GET("getWarehouses")
-    suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
+
 
 }
 
