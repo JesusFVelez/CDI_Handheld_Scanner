@@ -15,9 +15,10 @@ import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ConnectionTestingWrapper
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ResponseWrapperUser
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityNetworkDetailsBinding
-import com.example.cdihandheldscannerviewactivity.login.loginActivity
+import com.example.cdihandheldscannerviewactivity.login.LoginActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -62,7 +63,7 @@ class NetworkDetailsActivity : AppCompatActivity() {
 
     private fun jumpToLoginActivity(){
         // This jumps from one Activity to another
-        val intent = Intent(this@NetworkDetailsActivity, loginActivity::class.java)
+        val intent = Intent(this@NetworkDetailsActivity, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -82,10 +83,7 @@ class NetworkDetailsActivity : AppCompatActivity() {
                 else
                     AlerterUtils.startErrorAlerter(this,"IP Address or Port Number was left empty.")
         }
-        progressDialog = Dialog(this).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(this)
     }
 
     private fun verifyBackendConnection(ipAddress:String, portNumber:String){
@@ -120,7 +118,7 @@ class NetworkDetailsActivity : AppCompatActivity() {
         viewModel.hasConnectionToBackendSucceeded.observe(this){ wasBackendConnectionSuccessful ->
             if(wasBackendConnectionSuccessful && hasConnectionBeenTested){
                 // This jumps from one Activity to another
-                val intent = Intent(this@NetworkDetailsActivity, loginActivity::class.java)
+                val intent = Intent(this@NetworkDetailsActivity, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
             }else if(hasConnectionBeenTested)

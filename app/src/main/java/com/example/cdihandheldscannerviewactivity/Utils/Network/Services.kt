@@ -50,6 +50,7 @@ interface LoginServices{
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
 
+
     // Endpoint for getting available warehouses
     @GET("getWarehouses")
     suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
@@ -126,13 +127,12 @@ interface ViewProductsInBinServices{
 
 interface GeneralServices{
 
-
 }
 
 
 // Data class for the user request
 data class RequestUser(val request: User)
-data class User(val userName: String, val password: String, val company: String)
+data class User(val userName: String, val password: String, val company: String, val warehouseNumber: Int)
 
 data class RequestTimerParamsWrapper(val request: RequestTimerParams)
 data class RequestTimerParams(val orderNumber: String, val userNameOfPicker: String)

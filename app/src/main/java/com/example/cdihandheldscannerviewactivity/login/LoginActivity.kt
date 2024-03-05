@@ -28,13 +28,14 @@ import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkUtils
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
 import com.google.android.material.textfield.TextInputEditText
 
 
 // This class represents the login activity for the application. It extends the AppCompatActivity class
-class loginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     // Declare member variables.
     // These will be initialized later in the code.
@@ -101,7 +102,7 @@ class loginActivity : AppCompatActivity() {
             override fun onAvailable(network: Network) {
                 // Handle connection
                 if (hasAppBeenOpened)
-                    AlerterUtils.startInternetRestoredAlert(this@loginActivity)
+                    AlerterUtils.startInternetRestoredAlert(this@LoginActivity)
                 else
                     hasAppBeenOpened = true
 
@@ -122,7 +123,7 @@ class loginActivity : AppCompatActivity() {
             override fun onLost(network: Network) {
                 // Handle disconnection
                 hasAppBeenOpened = true
-                AlerterUtils.startInternetLostAlert(this@loginActivity)
+                AlerterUtils.startInternetLostAlert(this@LoginActivity)
             }
         }
         // Register the Network Connection Handler
@@ -159,11 +160,8 @@ class loginActivity : AppCompatActivity() {
 
 
         rootView = binding.root // root view of the layout
-        progressDialog = Dialog(this).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-            show()
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(this)
+        progressDialog.show()
     }
 
 
@@ -183,7 +181,7 @@ class loginActivity : AppCompatActivity() {
         viewModel.wasLastAPICallSuccessful.observe(this) {wasAPICallSuccessful ->
             if(!wasAPICallSuccessful){
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(this@loginActivity)
+                AlerterUtils.startNetworkErrorAlert(this@LoginActivity)
                 Log.i("API Call", "API Call did not work")
             }
         }
@@ -191,15 +189,15 @@ class loginActivity : AppCompatActivity() {
         viewModel.isUserLoggedIn.observe(this){isUserLoggedIn ->
             if (isUserLoggedIn) {
                 progressDialog.dismiss()
-                SharedPreferencesUtils.storeLoginInfoInSharedPref(userNameEditTex.text.toString(), viewModel.currentlyChosenCompany.value!!.companyID, this@loginActivity)
-                SharedPreferencesUtils.storeWarehouseInfoInSharedPref(viewModel.currentlyChosenWarehouse.value!!.warehouseName, viewModel.currentlyChosenWarehouse.value!!.warehouseNumber,this@loginActivity)
+                SharedPreferencesUtils.storeLoginInfoInSharedPref(userNameEditTex.text.toString(), viewModel.currentlyChosenCompany.value!!.companyID, this@LoginActivity)
+                SharedPreferencesUtils.storeWarehouseInfoInSharedPref(viewModel.currentlyChosenWarehouse.value!!.warehouseName, viewModel.currentlyChosenWarehouse.value!!.warehouseNumber,this@LoginActivity)
                 // This jumps from one Activity to another
-                val intent = Intent(this@loginActivity, MainActivity::class.java)
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
                 progressDialog.dismiss()
-                AlerterUtils.startAlertWithColor(this@loginActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
+                AlerterUtils.startAlertWithColor(this@LoginActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
             }
 
         }
@@ -227,7 +225,7 @@ class loginActivity : AppCompatActivity() {
         }
         // Create an ArrayAdapter with the list of company names
         val adapter =
-            ArrayAdapter(this@loginActivity,android.R.layout.simple_spinner_dropdown_item , companies)
+            ArrayAdapter(this@LoginActivity,android.R.layout.simple_spinner_dropdown_item , companies)
         // Set the ArrayAdapter as the Spinner's adapter
         companySpinner.setAdapter(adapter)
         // Notify the adapter that the data set has changed. This causes the Spinner to re-render its view.
@@ -235,14 +233,15 @@ class loginActivity : AppCompatActivity() {
 
 
     // This method is called when the login button is clicked. It checks the network connection and the selected company, and then attempts to log in.
-    fun loginButtonClickEvent(view: View?) {
+    private fun loginButtonClickEvent(view: View?) {
         progressDialog.show()
 
         if (!NetworkUtils.isDeviceOnline(this)) {
             progressDialog.dismiss()
             AlerterUtils.startInternetLostAlert(this)
         } else {
-            if (companySpinner.text.toString() != "" && warehouseSpinner.text.toString() != "") {
+            if (companySpinner.text.toString() != "" && warehouseSpinner.text.toString() != "" &&
+                passwordEditText.text.toString() != "" && userNameEditTex.text.toString() != "") {
                 val selectedCompanyInSpinner: String = companySpinner.text.toString()
                 val selectedWarehouseInSpinner: String = warehouseSpinner.text.toString()
                 viewModel.setWarehouse(selectedWarehouseInSpinner)
@@ -251,7 +250,7 @@ class loginActivity : AppCompatActivity() {
 
             } else {
                 progressDialog.dismiss()
-                AlerterUtils.startErrorAlerter(this, getString(R.string.company_or_warehouse_not_found))
+                AlerterUtils.startErrorAlerter(this, getString(R.string.incomplete_login))
             }
 
         }

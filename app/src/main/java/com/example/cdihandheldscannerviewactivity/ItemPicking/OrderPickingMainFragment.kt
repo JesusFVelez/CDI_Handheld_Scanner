@@ -44,7 +44,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
 
     private var hasPageJustStarted: Boolean = false
-    var hasOrderBeenSearched: Boolean = false
+    private var hasOrderBeenSearched: Boolean = false
     private lateinit var progressDialog: Dialog
 
 
@@ -171,10 +171,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         viewModel.getAllOrdersThatHavePickingForSuggestions()
 
 
-        progressDialog = Dialog(requireContext()).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         adapter = ItemPickingAdapter(this)
         binding.totalPickingItemsList.adapter = adapter
@@ -208,7 +205,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     private fun initObservers() {
         viewModel.ordersThatHavePicking.observe(viewLifecycleOwner){newOrdersThatHavePicking ->
-            if(newOrdersThatHavePicking.size > 0)
+            if(newOrdersThatHavePicking.isNotEmpty())
                 initOrderNumberAutoCompleteTextView(newOrdersThatHavePicking)
         }
 

@@ -119,7 +119,8 @@ class LoginViewModel:ViewModel() {
         val user = User(
             username,
             password,
-            _currentlyChosenCompany.value!!.companyID
+            _currentlyChosenCompany.value!!.companyID,
+            currentlyChosenWarehouse.value!!.warehouseNumber
         )
         val requestBody = RequestUser(user)
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -139,8 +140,6 @@ class LoginViewModel:ViewModel() {
         }
     }
 }
-
-
 
 
 
