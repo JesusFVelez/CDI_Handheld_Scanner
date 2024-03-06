@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateBinding
@@ -28,7 +29,7 @@ class AssignExpirationDateFragment : Fragment() {
     private lateinit var NewExpirationDateEditText: EditText
     private lateinit var enterButton: Button
 
-    private val viewModel: AssignExpirationDateViewModel by activityViewModels()
+    private lateinit var viewModel: AssignExpirationDateViewModel
 
 
     override fun onCreate(saveInstance: Bundle?) {
@@ -48,29 +49,38 @@ class AssignExpirationDateFragment : Fragment() {
             false
         )
 
+        viewModel = ViewModelProvider(requireActivity())[AssignExpirationDateViewModel::class.java]
+
         setupUI()
         observeViewModel()
 
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+            binding.upperDiv.visibility = View.GONE
+
+    }
+
     private fun setupUI() {
-        with(binding) {
-            val itemNumber = itemNumberEditText.text.toString()
-            val newExpirationDate = NewExpirationDateEditText.text.toString()
-            val binNumber = BinNumberEditText.text.toString()
+        binding.enterButton.setOnClickListener {
+            // Extract string values from EditText fields correctly
+            val itemNumber = binding.itemNumberEditText.text.toString()
+            val newExpirationDate = binding.NewExpirationDateEditText.text.toString()
+            val binNumber = binding.BinNumberEditText.text.toString()
+
+            // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
-                viewModel.assignExpirationDate(itemNumber, newExpirationDate, binNumber)
+                viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate)
+                viewModel.getItemInfo(itemNumber, binNumber)
             } else {
                 Toast.makeText(context, "Make sure everything is filled", Toast.LENGTH_SHORT).show()
             }
-            if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
-                viewModel.getItemInfo(itemNumber, binNumber)
-            }
+
         }
-
-
     }
+
 
     private fun observeViewModel() {
         // Observe the operation success LiveData
@@ -82,18 +92,32 @@ class AssignExpirationDateFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                Toast.makeText(context, "Failed to assign expiration date.", Toast.LENGTH_SHORT)
-                    .show()
             }
         }
 
-        viewModel.itemInfo.observe(viewLifecycleOwner) { item ->
-            if (item != null) {
+        viewModel.opMessage.observe(viewLifecycleOwner){ message ->
+            if (message.isNotBlank()) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        viewModel.itemInfo.observe(viewLifecycleOwner) { items ->
+            // Check if the list is not empty
+            if (items.isNotEmpty()) {
+
+                val firstItem = items.first()
                 binding.apply {
-                    itemNumberTextView.text = item.itemNumber
-                    itemNameTextView.text = item.itemDescription
-                    expirationDateTextView.text = item.expireDate
-                    binLocationTextView.text = item.binLocation
+                    itemNumberTextView.text = firstItem.itemNumber
+                    itemNameTextView.text = firstItem.itemDescription
+                    expirationDateTextView.text = firstItem.expireDate
+                    binLocationTextView.text = firstItem.binLocation
+
+                    //To make upperDiv visible
+                    upperDiv.visibility = View.VISIBLE
+                }
+            } else{
+                binding.apply {
+                    upperDiv.visibility = View.GONE
                 }
             }
         }

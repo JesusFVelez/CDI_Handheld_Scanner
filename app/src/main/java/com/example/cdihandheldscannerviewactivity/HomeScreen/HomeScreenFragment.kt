@@ -140,6 +140,7 @@ class HomeScreenFragment : Fragment() {
         binsWithProductButton = binding.BinsWithItemButton
         itemPickingButton = binding.ItemPickingButton
         assignBarcodeButton = binding.assignBarcodeButton
+        assignExpirationDateButton = binding.assignExpirationDateButton
 
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 

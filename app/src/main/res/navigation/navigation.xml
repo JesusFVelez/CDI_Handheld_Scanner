@@ -29,7 +29,7 @@
             app:destination="@id/assignBarcodeToProductFragment"
             app:enterAnim="@anim/slide_in_left" />
         <action
-            android:id="@+id/action_homeScreenFragment_to_placeholder"
+            android:id="@+id/action_homeScreenFragment_to_assignExpirationDateFragment"
             app:destination="@id/assignExpirationDateFragment"
             app:enterAnim="@anim/slide_in_left" />
     </fragment>

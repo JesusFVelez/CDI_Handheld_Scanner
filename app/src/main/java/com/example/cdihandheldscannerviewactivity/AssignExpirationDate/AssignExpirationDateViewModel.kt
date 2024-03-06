@@ -22,8 +22,8 @@ class AssignExpirationDateViewModel: ViewModel(){
         val opMessage : LiveData<String>
             get() = _opMessage
 
-        private val _itemInfo = MutableLiveData<ItemInfo>()
-        val itemInfo : LiveData<ItemInfo>
+        private val _itemInfo = MutableLiveData<List<ItemInfo>>()
+        val itemInfo : LiveData<List<ItemInfo>>
             get() = _itemInfo
 
 
