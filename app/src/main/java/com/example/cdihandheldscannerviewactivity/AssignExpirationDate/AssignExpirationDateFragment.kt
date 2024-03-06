@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateBinding
 
 
@@ -28,6 +29,8 @@ class AssignExpirationDateFragment : Fragment() {
     private lateinit var itemNumberEditText: EditText
     private lateinit var NewExpirationDateEditText: EditText
     private lateinit var enterButton: Button
+
+    private var shouldShowMessage = true
 
     private lateinit var viewModel: AssignExpirationDateViewModel
 
@@ -59,8 +62,20 @@ class AssignExpirationDateFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        val bundle = arguments
+        val lastFragmentName: String = BundleUtils.getPastFragmentNameFromBundle(bundle)
+        if(lastFragmentName == "HomeScreen") {
             binding.upperDiv.visibility = View.GONE
+            shouldShowMessage = false
+            bundle?.clear()
+        }else{
+            shouldShowMessage = true
+        }
+    }
 
+    override fun onPause() {
+        super.onPause()
+        shouldShowMessage = true
     }
 
     private fun setupUI() {
@@ -75,7 +90,7 @@ class AssignExpirationDateFragment : Fragment() {
                 viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate)
                 viewModel.getItemInfo(itemNumber, binNumber)
             } else {
-                Toast.makeText(context, "Make sure everything is filled", Toast.LENGTH_SHORT).show()
+                AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
             }
 
         }
@@ -83,21 +98,10 @@ class AssignExpirationDateFragment : Fragment() {
 
 
     private fun observeViewModel() {
-        // Observe the operation success LiveData
-        viewModel.opSuccess.observe(viewLifecycleOwner) { isSuccess ->
-            if (isSuccess) {
-                Toast.makeText(
-                    context,
-                    "Expiration date assigned successfully.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-            }
-        }
-
         viewModel.opMessage.observe(viewLifecycleOwner){ message ->
-            if (message.isNotBlank()) {
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            if (message.isNotBlank() && !shouldShowMessage) {
+            /*Toast.makeText(context, message, Toast.LENGTH_LONG).show()*/
+                AlerterUtils.startWarningAlerter(requireActivity(), message)
             }
         }
 
@@ -116,9 +120,7 @@ class AssignExpirationDateFragment : Fragment() {
                     upperDiv.visibility = View.VISIBLE
                 }
             } else{
-                binding.apply {
-                    upperDiv.visibility = View.GONE
-                }
+
             }
         }
     }

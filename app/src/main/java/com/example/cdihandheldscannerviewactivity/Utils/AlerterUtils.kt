@@ -8,6 +8,7 @@ class AlerterUtils {
 
     companion object{
 
+
         fun startRegularAlert(activity:Activity, alertMessage: String, alertTitle:String, alertIcon: Int){
             Alerter.create(activity)
                 .setTitle(alertTitle)

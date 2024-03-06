@@ -27,6 +27,8 @@ class AssignExpirationDateViewModel: ViewModel(){
             get() = _itemInfo
 
 
+
+
     init{
 
 
@@ -35,6 +37,7 @@ class AssignExpirationDateViewModel: ViewModel(){
 
     fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+
             Log.i("Assign Expire Date " , "Error -> ${exception.message}")
         }
 
@@ -45,6 +48,7 @@ class AssignExpirationDateViewModel: ViewModel(){
                 _opMessage.value = response.response.opMessage
             } catch (e: Exception) {
                 Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
+
             }
         }
     }
