@@ -26,6 +26,9 @@ class AssignExpirationDateViewModel: ViewModel(){
         val itemInfo : LiveData<List<ItemInfo>>
             get() = _itemInfo
 
+    private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
+    val wasLastAPICallSuccessful : LiveData<Boolean>
+        get() = _wasLastAPICallSuccessful
 
 
 
@@ -37,32 +40,36 @@ class AssignExpirationDateViewModel: ViewModel(){
 
     fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-
+            _wasLastAPICallSuccessful.value = false
             Log.i("Assign Expire Date " , "Error -> ${exception.message}")
         }
 
         viewModelScope.launch(exceptionHandler) {
             try {
                 val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate)
-                _opSuccess.value = response.response.opSuccess
+                _wasLastAPICallSuccessful.value = true
                 _opMessage.value = response.response.opMessage
+                _opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
+                _wasLastAPICallSuccessful.value = false
                 Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
-
             }
         }
     }
 
     fun getItemInfo(pItemNumber: String, pBinLocation: String){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
             Log.i("Item Info " , "Error -> ${exception.message}")
         }
 
         viewModelScope.launch(exceptionHandler) {
             try {
                 val response = ScannerAPI.getAssignExpirationDateService().getItemInformation(pItemNumber, pBinLocation)
+                _wasLastAPICallSuccessful.value = true
                 _itemInfo.value = response.response.binItemInfo.response
             }catch (e: Exception){
+                _wasLastAPICallSuccessful.value = false
                 Log.i("Item Info", "Error -> ${e.message}")
             }
 

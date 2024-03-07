@@ -98,13 +98,14 @@ class AssignExpirationDateFragment : Fragment() {
 
 
     private fun observeViewModel() {
-        viewModel.opMessage.observe(viewLifecycleOwner){ message ->
-            if (message.isNotBlank() && !shouldShowMessage) {
-            /*Toast.makeText(context, message, Toast.LENGTH_LONG).show()*/
-                AlerterUtils.startWarningAlerter(requireActivity(), message)
-            }
+        viewModel.opSuccess.observe(viewLifecycleOwner) {success->
+                if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && !success) {
+                    AlerterUtils.startWarningAlerter(requireActivity(), viewModel.opMessage.value!!)
+                }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success){
+                    AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
+                }
+                else{}
         }
-
         viewModel.itemInfo.observe(viewLifecycleOwner) { items ->
             // Check if the list is not empty
             if (items.isNotEmpty()) {
@@ -119,8 +120,11 @@ class AssignExpirationDateFragment : Fragment() {
                     //To make upperDiv visible
                     upperDiv.visibility = View.VISIBLE
                 }
-            } else{
-
+            } else{}
+        }
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
+            if (!wasLasAPICallSuccessful) {
+                AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
             }
         }
     }
