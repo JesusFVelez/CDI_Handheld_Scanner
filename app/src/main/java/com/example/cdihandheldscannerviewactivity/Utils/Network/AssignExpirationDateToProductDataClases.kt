@@ -15,6 +15,7 @@ data class AssignExpDateResponse(
     @Json(name = "opMessage") val opMessage: String
 )
 
+
 /*Displays information in UpprDiv*/
 @JsonClass(generateAdapter = true)
 data class DisplayInfoResponseWrapper(
@@ -35,5 +36,27 @@ data class ItemInfo(
     @Json(name = "itemNumber") val itemNumber: String,
     @Json(name = "itemDescription") val itemDescription: String,
     @Json(name = "binLocation") val binLocation: String,
-    @Json(name = "expireDate") val expireDate: String
+    @Json(name = "expireDate") val expireDate: String,
+    @Json(name = "lotNumber") val lotNumber: String?
 )
+
+
+/*Get data for suggestion list*/
+@JsonClass(generateAdapter = true)
+data class GetAllItemsInBinForSuggestionResponseWrapper(
+    @Json(name = "response") val response: GetAllItemsInBinForSuggestionResponse
+)
+@JsonClass(generateAdapter = true)
+data class GetAllItemsInBinForSuggestionResponse(
+    @Json(name = "binItemInfo") val binItemInfo: List<ItemData>
+)
+@JsonClass(generateAdapter = true)
+data class ItemData(
+    @Json(name = "itemNumber") val itemNumber: String,
+    @Json(name = "itemDescription") val itemDescription: String,
+    @Json(name = "binLocation") val binLocation: String,
+    @Json(name = "expireDate") val expireDate: String,
+    @Json(name = "lotNumber") val lotNumber: String?
+)
+
+/*Assign Lot number to item*/

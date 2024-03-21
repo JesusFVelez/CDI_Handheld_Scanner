@@ -320,6 +320,8 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
 
         private val filter = object : Filter() {
+
+
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val results = FilterResults()
                 val query = constraint?.toString()?.lowercase()

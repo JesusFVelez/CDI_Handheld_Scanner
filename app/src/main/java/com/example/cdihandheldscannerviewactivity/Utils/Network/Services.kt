@@ -38,6 +38,10 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
         .baseUrl(baseUrl + servicePath)
         .build()
 }
+interface SuggestionServices {
+    @GET("getSuggestionsForItemOrBin")
+    suspend fun getSuggestionsForItemOrBin(@Query("query") query: String): GetAllItemsInBinForSuggestionResponseWrapper
+}
 
 //Assign Expiration Date inaterface
 interface AssignExpirationDateResources {
@@ -45,7 +49,7 @@ interface AssignExpirationDateResources {
     suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String):AssignExpDateResponseWrapper
 
     @GET("getItemInformation")
-    suspend fun getItemInformation(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String): DisplayInfoResponseWrapper
+    suspend fun getItemInformation(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber") pLotNumber: String): DisplayInfoResponseWrapper
 }
 
 interface LoginServices{
@@ -195,6 +199,11 @@ object ScannerAPI {
     fun getAssignExpirationDateService(): AssignExpirationDateResources{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignExpirationDateService)
         return retrofit.create(AssignExpirationDateResources::class.java)
+    }
+
+    fun getSuggestionService(): SuggestionServices {
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, "/suggestionService/")
+        return retrofit.create(SuggestionServices::class.java)
     }
 
 }

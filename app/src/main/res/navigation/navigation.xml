@@ -30,8 +30,9 @@
             app:enterAnim="@anim/slide_in_left" />
         <action
             android:id="@+id/action_homeScreenFragment_to_assignExpirationDateFragment"
-            app:destination="@id/assignExpirationDateFragment"
-            app:enterAnim="@anim/slide_in_left" />
+            app:destination="@id/SearchExpirationDateAndLotNumberFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"
@@ -83,7 +84,17 @@
         android:name="com.example.cdihandheldscannerviewactivity.BarcodeAssign.AssignBarcodeToProductFragment"
         android:label="assign_barcode_to_product_fragment" />
     <fragment
-        android:id="@+id/assignExpirationDateFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.AssignExpirationDate.AssignExpirationDateFragment"
-        android:label="fragment_assign_expiration_date" />
+        android:id="@+id/SearchExpirationDateAndLotNumberFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.SearchExpirationDateAndLot.SearchExpirationDateAndLotNumberFragment"
+        android:label="fragment_search_expiration_date_and_lot_number">
+        <action
+            android:id="@+id/action_SearchExpirationDateAndLotNumberFragment_to_AssignExpirationDateAndLotNumberFragment"
+            app:destination="@id/AssignExpirationDateAndLotNumberFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/AssignExpirationDateAndLotNumberFragment"
+        android:name="com.example.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberFragment"
+        android:label="fragment_assign_expiration_date_and_lot_number" />
 </navigation>

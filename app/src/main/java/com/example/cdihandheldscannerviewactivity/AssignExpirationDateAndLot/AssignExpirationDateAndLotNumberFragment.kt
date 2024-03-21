@@ -1,13 +1,16 @@
-package com.example.cdihandheldscannerviewactivity.AssignExpirationDate
+package com.example.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,11 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
-import com.example.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateBinding
+import com.example.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
 
 
-class AssignExpirationDateFragment : Fragment() {
-    private lateinit var binding: FragmentAssignExpirationDateBinding
+class AssignExpirationDateAndLotNumberFragment : Fragment() {
+    private lateinit var binding: FragmentAssignExpirationDateAndLotNumberBinding
 
     private lateinit var itemNumberTextView: TextView
     private lateinit var itemNameTextView: TextView
@@ -30,9 +33,14 @@ class AssignExpirationDateFragment : Fragment() {
     private lateinit var NewExpirationDateEditText: EditText
     private lateinit var enterButton: Button
 
+    /*Batch variables*/
+    private lateinit var ToggleButton: Button
+    private lateinit var newBatchEditText: EditText
+    private lateinit var batchTextView: TextView
+
     private var shouldShowMessage = true
 
-    private lateinit var viewModel: AssignExpirationDateViewModel
+    private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
 
 
     override fun onCreate(saveInstance: Bundle?) {
@@ -47,12 +55,10 @@ class AssignExpirationDateFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_assign_expiration_date,
+            R.layout.fragment_assign_expiration_date_and_lot_number,
             container,
             false
         )
-
-        viewModel = ViewModelProvider(requireActivity())[AssignExpirationDateViewModel::class.java]
 
         setupUI()
         observeViewModel()
@@ -64,7 +70,7 @@ class AssignExpirationDateFragment : Fragment() {
         super.onResume()
         val bundle = arguments
         val lastFragmentName: String = BundleUtils.getPastFragmentNameFromBundle(bundle)
-        if(lastFragmentName == "HomeScreen") {
+        if(lastFragmentName == "SearchExpirationDateAndLotNumberFragment") {
             binding.upperDiv.visibility = View.GONE
             shouldShowMessage = false
             bundle?.clear()
@@ -79,11 +85,43 @@ class AssignExpirationDateFragment : Fragment() {
     }
 
     private fun setupUI() {
+
+        ToggleButton = binding.ToggleButton
+        // Set initial toggle button state to "off"
+        ToggleButton = binding.ToggleButton.apply {
+            background = resources.getDrawable(R.drawable.toggle_switch_outline_off, null) // Use app theme's context for compatibility
+            tag = "off" // Use tag to track the state of the toggle button
+        }
+
+        // Initially disable New Lot EditText since toggle is off
+        binding.newLotEditText.isEnabled = false
+
+        // Toggle Button click listener
+        ToggleButton.setOnClickListener {
+            if (it.tag == "off") {
+                // If the button is currently off, turn it on
+                it.background = resources.getDrawable(R.drawable.toggle_switch_on, null) // Use app theme's context for compatibility
+                it.tag = "on"
+                // Enable the New Lot EditText
+                binding.newLotEditText.isEnabled = true
+            } else {
+                // If the button is currently on, turn it off
+                it.background = resources.getDrawable(R.drawable.toggle_switch_outline_off, null) // Use app theme's context for compatibility
+                it.tag = "off"
+                // Disable the New Lot EditText and clear any text
+                binding.newLotEditText.apply {
+                    isEnabled = false
+                    text.clear()
+                }
+            }
+        }
+
+        // Existing setupUI logic for the enter button
         binding.enterButton.setOnClickListener {
             // Extract string values from EditText fields correctly
-            val itemNumber = binding.itemNumberEditText.text.toString()
+            val itemNumber = viewModel.itemInfo.value!![0].itemNumber
             val newExpirationDate = binding.NewExpirationDateEditText.text.toString()
-            val binNumber = binding.BinNumberEditText.text.toString()
+            val binNumber = viewModel.itemInfo.value!![0].binLocation
 
             // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
@@ -92,8 +130,8 @@ class AssignExpirationDateFragment : Fragment() {
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
             }
-
         }
+
     }
 
 
@@ -106,22 +144,25 @@ class AssignExpirationDateFragment : Fragment() {
                 }
                 else{}
         }
+
         viewModel.itemInfo.observe(viewLifecycleOwner) { items ->
             // Check if the list is not empty
             if (items.isNotEmpty()) {
-
                 val firstItem = items.first()
                 binding.apply {
                     itemNumberTextView.text = firstItem.itemNumber
                     itemNameTextView.text = firstItem.itemDescription
                     expirationDateTextView.text = firstItem.expireDate
                     binLocationTextView.text = firstItem.binLocation
+                    binding.lotTextView.text = firstItem.lotNumber ?: "N/A" // Ensure this TextView exists and is correctly bound
 
                     //To make upperDiv visible
                     upperDiv.visibility = View.VISIBLE
                 }
-            } else{}
+            }
         }
+
+
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             if (!wasLasAPICallSuccessful) {
                 AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
