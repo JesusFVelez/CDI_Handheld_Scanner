@@ -2,6 +2,7 @@ package com.example.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -131,6 +132,53 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
             }
         }
+
+        // Add this line in your setupUI function
+        binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
+            private var previousText: String = ""
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                previousText = s.toString()
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val currentText = s.toString()
+                val deleting = currentText.length < previousText.length
+                val lastChar = currentText.lastOrNull()
+
+                if (deleting && lastChar != '-') {
+                    // If user is deleting and last char is not a dash, just return to prevent re-adding dashes
+                    return
+                }
+
+                // Logic to automatically add dashes "-" for date formatting
+                s?.let {
+                    val input = it.toString()
+
+                    // Avoid re-formatting when deleting characters
+                    if (deleting) {
+                        return
+                    }
+
+                    // Formatting logic
+                    if (input.length == 2 && !input.endsWith("-") && previousText.length < input.length) {
+                        binding.NewExpirationDateEditText.setText("$input-")
+                        binding.NewExpirationDateEditText.setSelection(input.length + 1)
+                    } else if (input.length == 5 && !input.endsWith("-") && previousText.length < input.length) {
+                        val month = input.substring(0, 2)
+                        val day = input.substring(3)
+                        if (month.toInt() <= 12) {
+                            binding.NewExpirationDateEditText.setText("$month-$day-")
+                            binding.NewExpirationDateEditText.setSelection(input.length + 1)
+                        }
+                    }
+                }
+            }
+        })
+
 
     }
 

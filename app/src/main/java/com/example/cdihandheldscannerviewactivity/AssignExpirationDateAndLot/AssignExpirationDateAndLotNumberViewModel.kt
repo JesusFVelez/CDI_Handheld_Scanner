@@ -34,21 +34,6 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
     val suggestions: LiveData<List<ItemData>>
         get() = _suggestions
 
-
-
-    /* New flag to track if the user is navigating back from AssignExpirationDateAndLotNumberFragment*/
-    val isReturningFromAssignFragment = MutableLiveData<Boolean>(false)
-
-    // Method to reset the flag
-    fun resetNavigationFlag() {
-        isReturningFromAssignFragment.value = false
-    }
-
-    // Method to set the flag
-    fun setNavigationFlag() {
-        isReturningFromAssignFragment.value = true
-    }
-
     init{}
     fun fetchSuggestionsForItemOrBin(query: String, callback: (List<ItemData>) -> Unit) {
         viewModelScope.launch {

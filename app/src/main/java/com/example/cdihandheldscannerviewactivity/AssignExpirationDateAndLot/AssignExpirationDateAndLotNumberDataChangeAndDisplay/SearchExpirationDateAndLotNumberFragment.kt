@@ -59,7 +59,6 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
                 hasSearchBeenMade = true
                 shouldShowMessage = false
                 viewModel.getItemInfo(itemNumber, binNumber)
-//                viewModel.setNavigationFlag() // Set flag when navigating away to AssignExpirationDateAndLotNumberFragment
 
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
@@ -68,15 +67,6 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-//        viewModel.isReturningFromAssignFragment.observe(viewLifecycleOwner, Observer { isReturning ->
-//            if (isReturning) {
-//                // If returning from AssignExpirationDateAndLotNumberFragment, allow searches
-//                shouldShowMessage = false
-//                viewModel.resetNavigationFlag() // Reset flag after handling
-//            } else {
-//                // Handle other onResume logic if needed
-//            }
-//        })
 
         viewModel.opSuccess.observe(viewLifecycleOwner) {success ->
             if (shouldShowMessage && !success) {
