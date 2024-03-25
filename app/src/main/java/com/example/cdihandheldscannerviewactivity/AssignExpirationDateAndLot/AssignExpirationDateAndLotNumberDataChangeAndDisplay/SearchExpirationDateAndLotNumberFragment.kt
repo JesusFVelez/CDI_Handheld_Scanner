@@ -22,6 +22,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
     private var shouldShowMessage = false
+    private var hasSearchBeenMade = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,15 +43,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         super.onResume()
         binding.itemNumberEditText.text.clear()
         binding.BinNumberEditText.text.clear()
-        viewModel.isReturningFromAssignFragment.observe(this, Observer { isReturning ->
-            if (isReturning) {
-                // If returning from AssignExpirationDateAndLotNumberFragment, allow searches
-                shouldShowMessage = false
-                viewModel.resetNavigationFlag() // Reset flag after handling
-            } else {
-                // Handle other onResume logic if needed
-            }
-        })
+
     }
     override fun onPause() {
         super.onPause()
@@ -63,8 +56,11 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             val binNumber = binding.BinNumberEditText.text.toString()
             // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && binNumber.isNotBlank()) {
+                hasSearchBeenMade = true
+                shouldShowMessage = false
                 viewModel.getItemInfo(itemNumber, binNumber)
-                viewModel.setNavigationFlag() // Set flag when navigating away to AssignExpirationDateAndLotNumberFragment
+//                viewModel.setNavigationFlag() // Set flag when navigating away to AssignExpirationDateAndLotNumberFragment
+
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
             }
@@ -72,10 +68,20 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+//        viewModel.isReturningFromAssignFragment.observe(viewLifecycleOwner, Observer { isReturning ->
+//            if (isReturning) {
+//                // If returning from AssignExpirationDateAndLotNumberFragment, allow searches
+//                shouldShowMessage = false
+//                viewModel.resetNavigationFlag() // Reset flag after handling
+//            } else {
+//                // Handle other onResume logic if needed
+//            }
+//        })
+
         viewModel.opSuccess.observe(viewLifecycleOwner) {success ->
             if (shouldShowMessage && !success) {
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.opMessage.value!!)
-            }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success){
+            }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success && hasSearchBeenMade){
                 AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
                 view?.findNavController()?.navigate(R.id.action_SearchExpirationDateAndLotNumberFragment_to_AssignExpirationDateAndLotNumberFragment)
             }
