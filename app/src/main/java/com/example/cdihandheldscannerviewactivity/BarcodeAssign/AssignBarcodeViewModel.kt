@@ -129,7 +129,7 @@ class AssignBarcodeViewModel: ViewModel() {
     fun setBarcode(itemNumber: String, barcode: String){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _isBarcodeSet.value = false
-            Log.i("set varcode for Barcode Assign API Call Exception Handler", "Error -> ${exception.message}")
+            Log.i("set barcode for Barcode Assign API Call Exception Handler", "Error -> ${exception.message}")
         }
 
         viewModelScope.launch(exceptionHandler) {

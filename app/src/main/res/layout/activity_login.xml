@@ -97,7 +97,7 @@
 
                             <AutoCompleteTextView
                                 android:id="@+id/companySpinner"
-                                style="@style/LoginDropDowns"
+                                style="@style/DropDownsStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:hint="@string/companySpinnerHint"
@@ -116,7 +116,7 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
                             <AutoCompleteTextView
                                 android:id="@+id/warehouseSpinner"
-                                style="@style/LoginDropDowns"
+                                style="@style/DropDownsStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:hint="@string/warehouseSpinnerHint"

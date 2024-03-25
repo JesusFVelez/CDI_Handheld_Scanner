@@ -44,7 +44,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
 
     private var hasPageJustStarted: Boolean = false
-    var hasOrderBeenSearched: Boolean = false
+    private var hasOrderBeenSearched: Boolean = false
     private lateinit var progressDialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,10 +156,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         viewModel.getAllOrdersThatHavePickingForSuggestions()
 
 
-        progressDialog = Dialog(requireContext()).apply{
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         adapter = ItemPickingAdapter(this)
         binding.totalPickingItemsList.adapter = adapter

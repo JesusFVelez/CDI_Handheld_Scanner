@@ -20,11 +20,12 @@ import com.example.cdihandheldscannerviewactivity.R
 import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Network.RPMAccessResponseWrapper
 import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.example.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.example.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.example.cdihandheldscannerviewactivity.databinding.FragmentHomeScreenBinding
 import com.example.cdihandheldscannerviewactivity.login.LoginViewModel
-import com.example.cdihandheldscannerviewactivity.login.loginActivity
+import com.example.cdihandheldscannerviewactivity.login.LoginActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -133,7 +134,7 @@ class HomeScreenFragment : Fragment() {
         viewModel.setUserNameOfPickerFromSharedPref(userName)
     }
 
-    private fun initUIElements() {
+    private fun initUIElements(){
         logOutButton = binding.logOutButton
         productToBinButton = binding.productToBinButton
         binsWithProductButton = binding.BinsWithItemButton
@@ -141,20 +142,17 @@ class HomeScreenFragment : Fragment() {
         assignBarcodeButton = binding.assignBarcodeButton
         binMovementButton = binding.BinToBinMovementButton
 
-        progressDialog = Dialog(requireContext()).apply {
-            setContentView(R.layout.dialog_loading)
-            setCancelable(false)
-        }
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         // Set click listener for the log out button to show a logout confirmation dialog
-        logOutButton.setOnClickListener {
+        logOutButton.setOnClickListener{
             AlertDialog.Builder(requireContext())
                 .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes") { _, _ ->
 
                     // Log out and navigate to the login activity
-                    val intent = Intent(this.activity, loginActivity::class.java)
+                    val intent = Intent(this.activity, LoginActivity::class.java)
                     startActivity(intent)
                     this.activity?.finish()
                 }
@@ -163,19 +161,19 @@ class HomeScreenFragment : Fragment() {
         }
 
         // Set click listener for the product to bin button to navigate to the ProductToBinFragment
-        productToBinButton.setOnClickListener {
+        productToBinButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.ProductInBinMenuOption)
         }
         // Set click listener for the product to bin button to navigate to the SearchBinsWithProductFragment
-        binsWithProductButton.setOnClickListener {
+        binsWithProductButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.BinsWithProductMenuOption)
         }
 
-        itemPickingButton.setOnClickListener {
+        itemPickingButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.ItemPickingMenuOption)
         }
 
-        assignBarcodeButton.setOnClickListener {
+        assignBarcodeButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.AssignBarcodeMenuOption)
         }
 
@@ -183,8 +181,6 @@ class HomeScreenFragment : Fragment() {
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.BinToBinMovementOption)
         }
     }
-
-
 
 
     private fun menuButtonClickHandler(menuOption: HomeScreenViewModel.MenuOptionDataClass){

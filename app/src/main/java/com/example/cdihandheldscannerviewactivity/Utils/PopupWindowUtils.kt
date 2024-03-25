@@ -1,5 +1,6 @@
 package com.example.cdihandheldscannerviewactivity.Utils
 
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -20,6 +21,15 @@ import com.google.android.material.transition.platform.MaterialFadeThrough
 class PopupWindowUtils {
     companion object{
 
+
+        fun getLoadingPopup(context: Context):Dialog{
+            return Dialog(context).apply{
+                setContentView(R.layout.dialog_loading)
+                setCancelable(false)
+                // Make the dialog background transparent to show the rounded corners
+                window?.setBackgroundDrawableResource(android.R.color.transparent)
+            }
+        }
 
         fun showErrorPopup(context: Context, anchor: View, message: String){
             val layoutInflater = LayoutInflater.from(context)

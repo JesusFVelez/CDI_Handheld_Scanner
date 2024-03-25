@@ -20,8 +20,8 @@ class ServicePaths{
         const val GeneralServices:String = "/generalServices/"
         const val ViewProductsInBin:String = "/ViewProductsInBinService/"
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
-        const val AssignBarcode: String = "/AssignBarcodeService/"
         const val RPMAccess: String = "/RPMAccessService/"
+        const val AssignBarcode: String = "/AssignBarcodeService/"
     }
 }
 
@@ -50,6 +50,10 @@ interface LoginServices{
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
 
+
+    // Endpoint for getting available warehouses
+    @GET("getWarehouses")
+    suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
 }
 
 interface RPMAccessServices{
@@ -121,18 +125,14 @@ interface ViewProductsInBinServices{
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
 }
 
-
 interface GeneralServices{
-    // Endpoint for getting available warehouses
-    @GET("getWarehouses")
-    suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
 
 }
 
 
 // Data class for the user request
 data class RequestUser(val request: User)
-data class User(val userName: String, val password: String, val company: String)
+data class User(val userName: String, val password: String, val company: String, val warehouseNumber: Int)
 
 data class RequestTimerParamsWrapper(val request: RequestTimerParams)
 data class RequestTimerParams(val orderNumber: String, val userNameOfPicker: String)
