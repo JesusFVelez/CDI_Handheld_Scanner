@@ -2,9 +2,11 @@ package com.example.cdihandheldscannerviewactivity.BarcodeAssign
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -75,7 +77,25 @@ class AssignBarcodeToProductFragment: Fragment() {
 
     private fun initUIElements() {
         itemNumberEditText = binding.itemNumberEditText
+        itemNumberEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Handle the Enter key press here
+                validateItem()
+                true
+            } else {
+                false
+            }
+        }
         itemBarcodeEditText = binding.itemBarcodeEditText
+        itemBarcodeEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Handle the Enter key press here
+                validateBarcode()
+                true
+            } else {
+                false
+            }
+        }
 
         itemNumberTextView = binding.itemNumberTextView
         itemDescriptionTextView = binding.itemDescription
