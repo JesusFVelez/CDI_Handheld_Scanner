@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberViewModel
@@ -39,29 +40,31 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        val bundle = arguments
-        val lastFragmentName: String = BundleUtils.getPastFragmentNameFromBundle(bundle)
-        if(lastFragmentName == "HomeScreen" || lastFragmentName == "AssignExpirationDateAndLotNumberFragment" ) {
-            shouldShowMessage = false
-            bundle?.clear()
-        }else{
-            shouldShowMessage = true
-        }
-
+        binding.itemNumberEditText.text.clear()
+        binding.BinNumberEditText.text.clear()
+        viewModel.isReturningFromAssignFragment.observe(this, Observer { isReturning ->
+            if (isReturning) {
+                // If returning from AssignExpirationDateAndLotNumberFragment, allow searches
+                shouldShowMessage = false
+                viewModel.resetNavigationFlag() // Reset flag after handling
+            } else {
+                // Handle other onResume logic if needed
+            }
+        })
     }
     override fun onPause() {
         super.onPause()
-        shouldShowMessage = false
+        shouldShowMessage = true
     }
     private fun setupUI() {
         binding.searchButton.setOnClickListener {
             // Extract string values from EditText fields correctly
             val itemNumber = binding.itemNumberEditText.text.toString()
             val binNumber = binding.BinNumberEditText.text.toString()
-            val aVar = shouldShowMessage
             // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && binNumber.isNotBlank()) {
                 viewModel.getItemInfo(itemNumber, binNumber)
+                viewModel.setNavigationFlag() // Set flag when navigating away to AssignExpirationDateAndLotNumberFragment
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
             }
@@ -70,7 +73,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.opSuccess.observe(viewLifecycleOwner) {success ->
-            if (!shouldShowMessage && !success) {
+            if (shouldShowMessage && !success) {
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.opMessage.value!!)
             }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success){
                 AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
