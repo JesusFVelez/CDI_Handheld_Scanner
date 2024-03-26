@@ -22,6 +22,7 @@ class ServicePaths{
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
         const val RPMAccess: String = "/RPMAccessService/"
         const val AssignBarcode: String = "/AssignBarcodeService/"
+        const val MoveItemsBetweenBins:String = "/MoveItemsBetweenBinsService/"
     }
 }
 
@@ -35,6 +36,33 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(baseUrl + servicePath)
         .build()
+}
+
+
+interface MoveItemsBetweenBinsServices{
+    // Endpoint for getting all the bins
+    @GET("getAllBins")
+    suspend fun getAllBins(@Query("warehouse") warehouseNumber: Int):getAllBinsResponseWrapper
+
+    // Endpoint for getting all the items in a bin
+    @GET("getAllItemsInBin")
+    suspend fun getAllItemsInBin(@Query("binNumber") binLocation:String, @Query("warehouse") warehouseNumber: Int):listOfItemsInBinResponseWrapper
+
+    //Endpoint for confirming that the entered bin exists
+    @GET("confirmBin")
+    suspend fun confirmBin(@Query("binNumber") binLocation:String, @Query("warehouse") warehouseNumber: Int): confirmBinResponseWrapper
+
+    //Endpoint for verifying if the quantity entered can be used
+    @GET("isQuantityValid")
+    suspend fun verifyIfQuantityIsValid(@Query("quantity") quantityToVerify: Float, @Query("rowNumber") rowID: String): isQuantityValidResponseWrapper
+
+    //Endpoint for moving items from one bin to another bin
+    @GET("moveItemBetweenBins")
+    suspend fun moveItemBetweenBins(@Query("rowNumber") rowID:String, @Query("newBin") newBin:String, @Query("quantity") quantityToMove: Float):moveItemBetweenBinsResponseWrapper
+
+    //Endpoint for removing an item from a bin
+    @GET("removeItem")
+    suspend fun removeItemFromBin(@Query("binNumber")binLocation: String, @Query("itemNumber") itemNumber: String, @Query("warehouse") warehouseNumber: Int)
 }
 
 interface LoginServices{
@@ -178,6 +206,11 @@ object ScannerAPI {
     fun getAssignBarcodeService(): AssignBarcodeToItemServices{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignBarcode)
         return retrofit.create(AssignBarcodeToItemServices::class.java)
+    }
+
+    fun getMovingItemsBetweenBinsService():MoveItemsBetweenBinsServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.MoveItemsBetweenBins)
+        return retrofit.create(MoveItemsBetweenBinsServices::class.java)
     }
 
 
