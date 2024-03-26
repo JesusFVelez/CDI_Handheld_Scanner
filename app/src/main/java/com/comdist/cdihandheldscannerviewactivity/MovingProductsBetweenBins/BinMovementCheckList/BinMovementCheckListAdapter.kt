@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementCheckList
+package com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementCheckList
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.R
 
 class BinMovementCheckListAdapter (private val checkListOnClickListener: OnClickListener) : RecyclerView.Adapter<BinMovementCheckListViewHolder>(){
     var data = listOf<BinMovementCheckListDataClass>()

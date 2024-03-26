@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins
+package com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,10 +12,10 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
-import com.example.cdihandheldscannerviewactivity.databinding.FragmentBinMovementBinding
+import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
+import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinMovementBinding
 import org.w3c.dom.Text
 
 

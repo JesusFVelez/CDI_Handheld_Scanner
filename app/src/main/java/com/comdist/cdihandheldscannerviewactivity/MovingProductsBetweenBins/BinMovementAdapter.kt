@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins
+package com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +8,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cdihandheldscannerviewactivity.ProductsInBin.productInBinViewHolder
-import com.example.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.ProductsInBin.productInBinViewHolder
+import com.comdist.cdihandheldscannerviewactivity.R
 
 class BinMovementAdapter (private val trashCanOnClickListener: OnClickListener) : RecyclerView.Adapter<BinMovementViewHolder>(){
 

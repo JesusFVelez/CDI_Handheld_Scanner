@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementCheckList
+package com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementCheckList
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,9 +9,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins.MovingProductsBetweenBinsViewModel
-import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.databinding.FragmentBinMovementCheckListBinding
+import com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.MovingProductsBetweenBinsViewModel
+import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinMovementCheckListBinding
 
 
 class BinMovementCheckListFragment : Fragment() {

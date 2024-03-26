@@ -1,12 +1,12 @@
-package com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins
+package com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
-import com.example.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception

@@ -85,7 +85,7 @@
         android:label="assign_barcode_to_product_fragment" />
     <fragment
         android:id="@+id/binMovementFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementFragment"
         android:label="BinMovementFragment" >
         <action
             android:id="@+id/action_binMovementFragment_to_binMovementCheckListFragment"
@@ -95,6 +95,6 @@
     </fragment>
     <fragment
         android:id="@+id/binMovementCheckListFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementCheckList.BinMovementCheckListFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementCheckList.BinMovementCheckListFragment"
         android:label="BinMovementCheckListFragment" />
 </navigation>
