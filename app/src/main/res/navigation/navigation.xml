@@ -6,7 +6,7 @@
     app:startDestination="@id/homeScreenFragment">
     <fragment
         android:id="@+id/homeScreenFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.HomeScreen.HomeScreenFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.HomeScreen.HomeScreenFragment"
         android:label="Home Screen"
         tools:layout="@layout/fragment_home_screen" >
         <action
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductInBinFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.ProductsInBin.ProductInBinFragment"
         android:label="fragment_product_to_bin"
         tools:layout="@layout/fragment_product_in_bin" >
         <action
@@ -47,11 +47,11 @@
     </fragment>
     <fragment
         android:id="@+id/productDetailsFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.ProductsInBin.ProductDetails.ProductDetailsFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.ProductsInBin.ProductDetails.ProductDetailsFragment"
         android:label="ProductDetailsFragment" />
     <fragment
         android:id="@+id/searchBinsWithProductFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.BinsWIthProduct.SearchBinsWithProductFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.BinsWIthProduct.SearchBinsWithProductFragment"
         android:label="fragment_search_for_bins_with_product"
         tools:layout="@layout/fragment_search_for_bins_with_product" >
         <action
@@ -62,12 +62,12 @@
     </fragment>
     <fragment
         android:id="@+id/binsThatHaveProductFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"
         android:label="fragment_bins_that_have_product"
         tools:layout="@layout/fragment_bins_that_have_product" />
     <fragment
         android:id="@+id/orderPickingMainFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment"
         android:label="orderPickingMainFragment" >
         <action
             android:id="@+id/action_orderPickingMainFragment_to_orderPickingItemFragment"
@@ -77,11 +77,11 @@
     </fragment>
     <fragment
         android:id="@+id/orderPickingItemFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails.OrderPickingItemFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails.OrderPickingItemFragment"
         android:label="OrderPickingItemFragment" />
     <fragment
         android:id="@+id/assignBarcodeToProductFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.BarcodeAssign.AssignBarcodeToProductFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.BarcodeAssign.AssignBarcodeToProductFragment"
         android:label="assign_barcode_to_product_fragment" />
     <fragment
         android:id="@+id/SearchExpirationDateAndLotNumberFragment"
