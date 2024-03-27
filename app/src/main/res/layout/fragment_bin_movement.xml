@@ -9,8 +9,6 @@
             android:layout_height="match_parent"
             tools:context=".MovingProductsBetweenBins.BinMovementFragment"
             tools:ignore="ExtraText">
-
-
             <TextView
                 android:id="@+id/toBinLabel"
                 android:layout_width="wrap_content"
@@ -23,16 +21,37 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
+
+            <AutoCompleteTextView
+                android:id="@+id/fromBinNumber"
+                style="@style/CustomScannerInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:dropDownHeight="wrap_content"
+                android:hint="From Bin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toBinLabel" />
+
+
+
+
+            <AutoCompleteTextView
                 android:id="@+id/itemNumberEditText"
                 style="@style/CustomScannerInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:dropDownHeight="wrap_content"
                 android:hint="@string/item_number"
                 app:layout_constraintEnd_toEndOf="@+id/fromBinNumber"
                 app:layout_constraintStart_toStartOf="@+id/fromBinNumber"
                 app:layout_constraintTop_toBottomOf="@+id/fromBinNumber" />
+
+
+
 
             <EditText
                 android:id="@+id/itemAmountEditText"
@@ -41,25 +60,16 @@
                 android:layout_marginTop="5dp"
                 android:background="@drawable/edit_text_white_backgroung"
                 android:gravity="center"
+                android:inputType="number"
                 android:hint="Item ammount"
                 app:layout_constraintEnd_toEndOf="@+id/itemNumberEditText"
                 app:layout_constraintStart_toStartOf="@+id/itemNumberEditText"
                 app:layout_constraintTop_toBottomOf="@+id/itemNumberEditText" />
 
 
-            <EditText
-                android:id="@+id/fromBinNumber"
-                style="@style/CustomScannerInput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:hint="From Bin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toBinLabel" />
 
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/toBinNumber"
                 style="@style/CustomScannerInput"
                 android:layout_width="wrap_content"
