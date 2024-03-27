@@ -13,9 +13,59 @@
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android: id="@=id/upperDiv"
+                android:id="@id/upperDiv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"?
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4px"
+                android:background="@drawable/productdetailsupperbackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/itemNumberIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_constraintBottom_toBottomOf="@+id/itemNumberTextView"
+                    android:layout_constraintStart_toStartOf="parent"
+                    android:layout_constraintTop_toTopOf="itemNumberTextView"
+                    android:src="@drawable/custom_product_icon"
+                    />
+
+                <TextView
+                    android:id="@+id/itemNumberTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="5dp"
+                    android:marginTop="10dp"
+                    android:gravity="center_horizontal|top"
+                    android:text="F010000086"
+                    android:textSize="19sp"
+                    app:layout_constraintStart_toEndOf="@+id/itemNumberIcon"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/batchNumberIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/batch_or_lote_icon"
+                    app:layout_constraintBotton_toBottomOf="@+id/lotTextView"
+                    app:layout_constraintEnd_toStartOf="@+id/lotTextView"
+                    app:layout_constraintTop_toTopOf="@+id/lotTextView"/>
+
+                <TextView
+                    android:id="@+id/lotTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
