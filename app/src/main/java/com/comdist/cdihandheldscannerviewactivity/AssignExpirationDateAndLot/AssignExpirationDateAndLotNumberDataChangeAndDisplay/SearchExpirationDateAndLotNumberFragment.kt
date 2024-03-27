@@ -1,20 +1,16 @@
-package com.example.cdihandheldscannerviewactivity.SearchExpirationDateAndLot
+package com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberDataChangeAndDisplay
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberViewModel
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentSearchExpirationDateAndLotNumberBinding
 
 
@@ -34,7 +30,6 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             container,
             false
         )
-
         setupUI()
         observeViewModel()
 

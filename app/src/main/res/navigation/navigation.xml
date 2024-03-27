@@ -85,7 +85,7 @@
         android:label="assign_barcode_to_product_fragment" />
     <fragment
         android:id="@+id/SearchExpirationDateAndLotNumberFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.SearchExpirationDateAndLot.SearchExpirationDateAndLotNumberFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberDataChangeAndDisplay.SearchExpirationDateAndLotNumberFragment"
         android:label="fragment_search_expiration_date_and_lot_number">
         <action
             android:id="@+id/action_SearchExpirationDateAndLotNumberFragment_to_AssignExpirationDateAndLotNumberFragment"
