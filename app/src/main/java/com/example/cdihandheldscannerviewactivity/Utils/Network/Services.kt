@@ -24,6 +24,7 @@ class ServicePaths{
         const val RPMAccess: String = "/RPMAccessService/"
         const val AssignBarcode: String = "/AssignBarcodeService/"
         const val AssignExpirationDateService: String = "/AssignExpirationDateService/"
+        const val AssignLotNumberService: String = "/AssignLotNumberService/"
     }
 }
 
@@ -41,6 +42,11 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
 interface SuggestionServices {
     @GET("getSuggestionsForItemOrBin")
     suspend fun getSuggestionsForItemOrBin(@Query("query") query: String): GetAllItemsInBinForSuggestionResponseWrapper
+}
+
+interface AssignLotNumberResources {
+    @PUT("assignLotNumber")
+    suspend fun assignLotNumber(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber")pLotNumber:String):AssignLotNumberResponseWrapper
 }
 
 //Assign Expiration Date inaterface
@@ -204,6 +210,11 @@ object ScannerAPI {
     fun getSuggestionService(): SuggestionServices {
         val retrofit = createRetrofitInstance(ipAddress, portNumber, "/suggestionService/")
         return retrofit.create(SuggestionServices::class.java)
+    }
+
+    fun getAssignLotNumberService(): AssignLotNumberResources {
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignLotNumberService)
+        return retrofit.create(AssignLotNumberResources::class.java)
     }
 
 }

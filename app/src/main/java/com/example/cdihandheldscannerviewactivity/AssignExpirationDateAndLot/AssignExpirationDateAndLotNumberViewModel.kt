@@ -13,18 +13,17 @@ import kotlinx.coroutines.launch
 
 class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
 
-        private val _opSuccess = MutableLiveData<Boolean>()
-        val opSuccess : LiveData<Boolean>
-            get() = _opSuccess
+    private val _opSuccess = MutableLiveData<Boolean>()
+    val opSuccess : LiveData<Boolean>
+        get() = _opSuccess
 
+    private val _opMessage = MutableLiveData<String>()
+    val opMessage : LiveData<String>
+        get() = _opMessage
 
-        private val _opMessage = MutableLiveData<String>()
-        val opMessage : LiveData<String>
-            get() = _opMessage
-
-        private val _itemInfo = MutableLiveData<List<ItemInfo>>()
-        val itemInfo : LiveData<List<ItemInfo>>
-            get() = _itemInfo
+    private val _itemInfo = MutableLiveData<List<ItemInfo>>()
+    val itemInfo : LiveData<List<ItemInfo>>
+        get() = _itemInfo
 
     private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
     val wasLastAPICallSuccessful : LiveData<Boolean>
@@ -61,6 +60,31 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
             } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
+            }
+        }
+    }
+
+    fun assignLotNumber(pItemNumber: String, pWarehouseNo: Int, pBinLocation: String, pLotNumber: String, pCompanyCode: String) {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.e("AssignLotNumber", "Error -> ${exception.localizedMessage}")
+        }
+
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                val response = ScannerAPI.getAssignLotNumberService().assignLotNumberToBinItem(pItemNumber, pWarehouseNo, pBinLocation, pLotNumber, pCompanyCode)
+                if (response.isSuccessful && response.body() != null) {
+                    _opSuccess.value = response.body()!!.response.opSuccess
+                    _opMessage.value = response.body()!!.response.opMessage
+                    _wasLastAPICallSuccessful.value = true
+                } else {
+                    _wasLastAPICallSuccessful.value = false
+                    _opMessage.value = "Failed to assign lot number: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _wasLastAPICallSuccessful.value = false
+                _opMessage.value = "Exception occurred: ${e.localizedMessage}"
+                Log.e("AssignLotNumber", "Exception -> ${e.localizedMessage}")
             }
         }
     }

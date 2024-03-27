@@ -67,17 +67,24 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-
+        viewModel.opMessage.observe(viewLifecycleOwner) { message ->
+            if (message.isNotBlank()) {
+                val success = viewModel.opSuccess.value ?: false
+                if (success) {
+                    AlerterUtils.startSuccessAlert(requireActivity(), "", message)
+                } else {
+                    AlerterUtils.startErrorAlerter(requireActivity(), message)
+                }
+            }
+        }
         viewModel.opSuccess.observe(viewLifecycleOwner) {success ->
             if (shouldShowMessage && !success) {
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.opMessage.value!!)
-            }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success && hasSearchBeenMade){
-                AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
+            }else if (!shouldShowMessage && success && hasSearchBeenMade){
+                //AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
                 view?.findNavController()?.navigate(R.id.action_SearchExpirationDateAndLotNumberFragment_to_AssignExpirationDateAndLotNumberFragment)
             }
-            else{
-                Log.i("Hello", "fivosf")
-            }
+
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->

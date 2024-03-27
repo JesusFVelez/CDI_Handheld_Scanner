@@ -4,6 +4,18 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.util.Date
 
+
+/*Assign Lot number to item*/
+@JsonClass(generateAdapter = true)
+data class AssignLotNumberResponseWrapper(
+    @Json(name = "response") val response: AssignLotNumberResponse
+)
+@JsonClass(generateAdapter = true)
+data class AssignLotNumberResponse(
+    @Json(name = "opSuccess") val opSuccess: Boolean,
+    @Json(name = "opMessage") val opMessage: String
+)
+
 /*Assigns Expirationdate to item in bin*/
 @JsonClass(generateAdapter = true)
 data class AssignExpDateResponseWrapper(
@@ -59,4 +71,3 @@ data class ItemData(
     @Json(name = "lotNumber") val lotNumber: String?
 )
 
-/*Assign Lot number to item*/

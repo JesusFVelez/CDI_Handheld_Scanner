@@ -128,6 +128,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
                 viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate)
                 viewModel.getItemInfo(itemNumber, binNumber)
+                //AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
             }
@@ -139,6 +140,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             private var previousText: String = ""
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Store the text before any change is applied.
                 previousText = s.toString()
             }
 
@@ -147,50 +149,65 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 val currentText = s.toString()
                 val deleting = currentText.length < previousText.length
-                val lastChar = currentText.lastOrNull()
 
-                if (deleting && lastChar != '-') {
-                    // If user is deleting and last char is not a dash, just return to prevent re-adding dashes
+                // Enforce a strict limit of 10 characters for the entire input, including dashes.
+                if (currentText.length > 10) {
+                    // If the user attempts to input more than 10 characters, revert to the previous valid input.
+                    binding.NewExpirationDateEditText.setText(previousText)
                     return
                 }
 
-                // Logic to automatically add dashes "-" for date formatting
-                s?.let {
-                    val input = it.toString()
-
-                    // Avoid re-formatting when deleting characters
-                    if (deleting) {
-                        return
-                    }
-
-                    // Formatting logic
-                    if (input.length == 2 && !input.endsWith("-") && previousText.length < input.length) {
-                        binding.NewExpirationDateEditText.setText("$input-")
-                        binding.NewExpirationDateEditText.setSelection(input.length + 1)
-                    } else if (input.length == 5 && !input.endsWith("-") && previousText.length < input.length) {
-                        val month = input.substring(0, 2)
-                        val day = input.substring(3)
-                        if (month.toInt() <= 12) {
-                            binding.NewExpirationDateEditText.setText("$month-$day-")
-                            binding.NewExpirationDateEditText.setSelection(input.length + 1)
+                if (!deleting) {
+                    // Logic to automatically insert dashes as the user types, ensuring the format MM-DD-YYYY.
+                    when (currentText.length) {
+                        2 -> {
+                            if (!previousText.endsWith("-")) {
+                                // Add a dash after the month part automatically if the user hasn't typed it.
+                                binding.NewExpirationDateEditText.setText("$currentText-")
+                                binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
+                            }
                         }
+                        5 -> {
+                            if (!previousText.endsWith("-")) {
+                                // Add a dash after the day part automatically.
+                                binding.NewExpirationDateEditText.setText("$currentText-")
+                                binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
+                            }
+                        }
+                    }
+                } else {
+                    // Handle the case where a user deletes text, including any dashes.
+                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
+                        // Remove the last character if it's a dash, maintaining proper date format as the user deletes characters.
+                        binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
+                        binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
                     }
                 }
             }
         })
-
-
     }
 
 
     private fun observeViewModel() {
-        viewModel.opSuccess.observe(viewLifecycleOwner) {success->
-                if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && !success) {
-                    AlerterUtils.startWarningAlerter(requireActivity(), viewModel.opMessage.value!!)
-                }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success){
-                    AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
+
+        viewModel.opMessage.observe(viewLifecycleOwner) { message ->
+            if (message.isNotBlank()) {
+                val success = viewModel.opSuccess.value ?: false
+                if (success) {
+                    AlerterUtils.startSuccessAlert(requireActivity(), "", message)
+                } else {
+                    AlerterUtils.startErrorAlerter(requireActivity(), message)
                 }
-                else{}
+            }
+        }
+
+        viewModel.opSuccess.observe(viewLifecycleOwner) {success->
+            if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && !success) {
+                AlerterUtils.startWarningAlerter(requireActivity(), viewModel.opMessage.value!!)
+            }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success){
+                AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
+            }
+            else{}
         }
 
         viewModel.itemInfo.observe(viewLifecycleOwner) { items ->
@@ -202,7 +219,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                     itemNameTextView.text = firstItem.itemDescription
                     expirationDateTextView.text = firstItem.expireDate
                     binLocationTextView.text = firstItem.binLocation
-                    binding.lotTextView.text = firstItem.lotNumber ?: "N/A" // Ensure this TextView exists and is correctly bound
+                    binding.lotTextView.text = firstItem.lotNumber //?: "N/A" // Ensure this TextView exists and is correctly bound
 
                     //To make upperDiv visible
                     upperDiv.visibility = View.VISIBLE
