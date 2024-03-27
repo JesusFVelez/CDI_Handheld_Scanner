@@ -1,4 +1,4 @@
-package com.example.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
+package com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
 
 import android.os.Bundle
 import android.text.Editable
@@ -16,10 +16,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import com.example.cdihandheldscannerviewactivity.R
-import com.example.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.example.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
-import com.example.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
+import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
+import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
 
 
 class AssignExpirationDateAndLotNumberFragment : Fragment() {

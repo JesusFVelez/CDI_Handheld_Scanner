@@ -95,6 +95,6 @@
     </fragment>
     <fragment
         android:id="@+id/AssignExpirationDateAndLotNumberFragment"
-        android:name="com.example.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberFragment"
         android:label="fragment_assign_expiration_date_and_lot_number" />
 </navigation>

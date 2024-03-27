@@ -1,13 +1,12 @@
-package com.example.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
+package com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ItemData
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ItemInfo
-import com.example.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemInfo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
