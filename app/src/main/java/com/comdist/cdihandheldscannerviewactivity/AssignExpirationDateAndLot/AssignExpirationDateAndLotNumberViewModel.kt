@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemData
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemInfo
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -63,50 +64,47 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
         }
     }
 
-    fun assignLotNumber(pItemNumber: String, pWarehouseNo: Int, pBinLocation: String, pLotNumber: String, pCompanyCode: String) {
+    fun assignLotNumber(pItemNumber: String, pBinLocation: String, pLotNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
-            Log.e("AssignLotNumber", "Error -> ${exception.localizedMessage}")
+            _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
+            Log.e("AssignLotNumber", "Exception -> ${exception.localizedMessage}")
         }
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getAssignLotNumberService().assignLotNumberToBinItem(pItemNumber, pWarehouseNo, pBinLocation, pLotNumber, pCompanyCode)
-                if (response.isSuccessful && response.body() != null) {
-                    _opSuccess.value = response.body()!!.response.opSuccess
-                    _opMessage.value = response.body()!!.response.opMessage
-                    _wasLastAPICallSuccessful.value = true
-                } else {
-                    _wasLastAPICallSuccessful.value = false
-                    _opMessage.value = "Failed to assign lot number: ${response.message()}"
-                }
+                // Assuming the Retrofit suspend function returns directly the response body
+                val response = ScannerAPI.getAssignLotNumberService().assignLotNumber(pItemNumber, pBinLocation, pLotNumber)
+                _opSuccess.value = response.response.opSuccess
+                _opMessage.value = response.response.opMessage
+                _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
+                // Exception handling for network errors or serialization/deserialization issues
                 _wasLastAPICallSuccessful.value = false
-                _opMessage.value = "Exception occurred: ${e.localizedMessage}"
                 Log.e("AssignLotNumber", "Exception -> ${e.localizedMessage}")
             }
         }
     }
 
 
-    fun getItemInfo(pItemNumber: String, pBinLocation: String){
+
+    fun getItemInfo(pItemNumber: String, pBinLocation: String, pLotNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
-            Log.i("Item Info " , "Error -> ${exception.message}")
+            Log.i("Item Info", "Error -> ${exception.message}")
         }
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getAssignExpirationDateService().getItemInformation(pItemNumber, pBinLocation, "")
+                val response = ScannerAPI.getAssignExpirationDateService().getItemInformation(pItemNumber, pBinLocation, pLotNumber)
                 _wasLastAPICallSuccessful.value = true
                 _opMessage.value = response.response.opMessage
                 _itemInfo.value = response.response.binItemInfo.response
                 _opSuccess.value = response.response.opSuccess
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Item Info", "Error -> ${e.message}")
             }
-
         }
     }
 

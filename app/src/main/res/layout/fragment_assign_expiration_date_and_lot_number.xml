@@ -177,18 +177,19 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
                 app:layout_constraintBottom_toBottomOf="@+id/newLotEditText"
                 app:layout_constraintEnd_toStartOf="@+id/newLotEditText"
                 app:layout_constraintTop_toTopOf="@+id/newLotEditText" />
+
             <AutoCompleteTextView
                 android:id="@+id/newLotEditText"
+                style="@style/CustomOrderInput"
                 android:layout_width="201dp"
                 android:layout_height="54dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="8dp"
+                android:dropDownHeight="wrap_content"
                 android:gravity="center"
                 android:hint="New Lot"
-                android:dropDownHeight="wrap_content"
-                style="@style/CustomOrderInput"
                 app:layout_constraintBottom_toTopOf="@+id/enterButton"
                 app:layout_constraintEnd_toEndOf="@+id/NewExpirationDateEditText"
-                app:layout_constraintHorizontal_bias="0.149"
+                app:layout_constraintHorizontal_bias="0.142"
                 app:layout_constraintStart_toStartOf="@+id/NewExpirationDateEditText" />
 
             <Button

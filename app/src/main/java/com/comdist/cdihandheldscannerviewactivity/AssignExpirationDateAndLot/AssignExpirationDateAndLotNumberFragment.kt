@@ -36,8 +36,8 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
     /*Batch variables*/
     private lateinit var ToggleButton: Button
-    private lateinit var newBatchEditText: EditText
-    private lateinit var batchTextView: TextView
+    private lateinit var newLotEditText: EditText
+    private lateinit var lotTextView: TextView
 
     private var shouldShowMessage = true
 
@@ -123,12 +123,12 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             val itemNumber = viewModel.itemInfo.value!![0].itemNumber
             val newExpirationDate = binding.NewExpirationDateEditText.text.toString()
             val binNumber = viewModel.itemInfo.value!![0].binLocation
-
+            val lotNumber = binding.newLotEditText.text.toString()
             // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
                 viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate)
-                viewModel.getItemInfo(itemNumber, binNumber)
-                //AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
+                    viewModel.assignLotNumber(itemNumber, binNumber, lotNumber)
+                viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
             }
@@ -219,7 +219,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                     itemNameTextView.text = firstItem.itemDescription
                     expirationDateTextView.text = firstItem.expireDate
                     binLocationTextView.text = firstItem.binLocation
-                    binding.lotTextView.text = firstItem.lotNumber //?: "N/A" // Ensure this TextView exists and is correctly bound
+                    binding.lotTextView.text = firstItem.lotNumber ?: "N/A" // Ensure this TextView exists and is correctly bound
 
                     //To make upperDiv visible
                     upperDiv.visibility = View.VISIBLE
