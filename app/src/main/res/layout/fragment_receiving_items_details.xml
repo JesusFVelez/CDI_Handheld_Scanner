@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@id/upperDiv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4px"
+                android:background="@drawable/productdetailsupperbackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/itemNumberIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/custom_product_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/itemNumberTextView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/itemNumberTextView" />
+
+                <TextView
+                    android:id="@+id/itemNumberTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal|top"
+                    android:text="F010000086"
+                    android:textSize="19sp"
+                    app:layout_constraintStart_toEndOf="@+id/itemNumberIcon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/batchNumberIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/batch_or_lote_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/lotTextView"
+                    app:layout_constraintEnd_toStartOf="@+id/lotTextView"
+                    app:layout_constraintTop_toTopOf="@+id/lotTextView" />
+
+                <TextView
+                    android:id="@+id/lotTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center_horizontal|top"
+                    android:text="46192471"
+                    android:textSize="19sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/itemNumberTextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <ImageView
+                    android:id="@+id/binLocationIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/bindetailpage"
+                    app:layout_constraintBottom_toBottomOf="@id/binLocationTextView"
+                    app:layout_constraintEnd_toStartOf="@id/binLocationTextView"
+                    app:layout_constraintTop_toTopOf="@id/binLocationTextView" />
+
+                <TextView
+                    android:id="@+id/binLocationTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center_horizontal|top"
+                    android:text="02-A-133"
+                    android:textSize="19sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+
+                <ImageView
+                    android:id="@+id/barcodeIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/date_time"
+                    app:layout_constraintBottom_toBottomOf="@+id/expirationDateTextView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/expirationDateTextView" />
+
+
+                <TextView
+                    android:id="@+id/expirationDateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center_horizontal|top"
+                    android:text="01/01/2025"
+                    android:textSize="19sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/barcodeIcon" />
+
+
+                <TextView
+                    android:id="@+id/itemNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:gravity="center_horizontal|top"
+                    android:text="Habichuelas Goya A/S"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/binLocationTextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/LowerDiv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/upperDiv"
+                app:layout_constraintVertical_bias="0.0">
+
+
+                <AutoCompleteTextView
+                    android:id="@+id/NewBinEditText"
+                    android:background="@drawable/rectangle_text_box"
+                    android:layout_width="201dp"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="12dp"
+                    android:dropDownHeight="wrap_content"
+                    android:gravity="center"
+                    android:hint="New Bin"
+                    app:layout_constraintBottom_toTopOf="@+id/newLotEditText"
+                    app:layout_constraintEnd_toEndOf="@+id/addButton"
+                    app:layout_constraintStart_toStartOf="@+id/addButton"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/newLotEditText"
+                    android:background="@drawable/rectangle_text_box"
+                    android:layout_width="201dp"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:dropDownHeight="wrap_content"
+                    android:gravity="center"
+                    android:hint="New Lot"
+                    app:layout_constraintBottom_toTopOf="@+id/QuantityEditText"
+                    app:layout_constraintEnd_toEndOf="@+id/NewBinEditText"
+                    app:layout_constraintHorizontal_bias="0.142"
+                    app:layout_constraintStart_toStartOf="@+id/NewBinEditText" />
+
+                <Button
+                    android:id="@+id/ToggleButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/toggle_switch_on"
+                    app:layout_constraintBottom_toBottomOf="@+id/newLotEditText"
+                    app:layout_constraintEnd_toStartOf="@+id/newLotEditText"
+                    app:layout_constraintTop_toTopOf="@+id/newLotEditText" />
+
+                <EditText
+                    android:id="@+id/QuantityEditText"
+                    android:background="@drawable/rectangle_text_box"
+                    android:layout_width="201dp"
+                    android:layout_height="54dp"
+                    android:layout_marginBottom="8dp"
+                    android:dropDownHeight="wrap_content"
+                    android:gravity="center"
+                    android:hint="Quantity"
+                    app:layout_constraintEnd_toEndOf="@+id/newLotEditText"
+                    app:layout_constraintHorizontal_bias="0.142"
+                    app:layout_constraintStart_toStartOf="@+id/newLotEditText"
+                    app:layout_constraintBottom_toTopOf="@id/NewExpirationDateEditText"/>
+
+
+                <Button
+                    android:id="@+id/addButton"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/menu_option_button"
+                    android:text="Add"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+
+                <AutoCompleteTextView
+                    android:id="@+id/NewExpirationDateEditText"
+                    android:background="@drawable/rectangle_text_box"
+                    android:layout_width="201dp"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="20dp"
+                    android:dropDownHeight="wrap_content"
+                    android:gravity="center"
+                    android:hint="Expiration Date"
+                    app:layout_constraintBottom_toTopOf="@+id/addButton"
+                    app:layout_constraintEnd_toEndOf="@+id/addButton"
+                    app:layout_constraintStart_toStartOf="@+id/addButton"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>

@@ -45,5 +45,6 @@
     <string name="IP_address_hint">IP Address</string>
     <string name="warehouseSpinnerHint">Warehouse</string>
     <string name="companySpinnerHint">Company</string>
+    <string name="added">Added</string>
 
 </resources>

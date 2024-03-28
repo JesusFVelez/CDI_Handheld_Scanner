@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@drawable/listitembackgroundview"
+    >
+
+    <TextView
+        android:id="@+id/expDateHeaderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exp. Date"
+        android:layout_marginBottom="20dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="20dp" />
+
+    <TextView
+        android:id="@+id/expDateInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="09/10/2024"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/expDateHeaderText"
+        app:layout_constraintStart_toStartOf="@+id/expDateHeaderText"
+        app:layout_constraintTop_toBottomOf="@+id/expDateHeaderText" />
+
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    app:layout_constraintEnd_toStartOf="@+id/onHandText"
+    app:layout_constraintStart_toEndOf="@+id/expDateHeaderText"
+    app:layout_constraintTop_toBottomOf="@id/BinInfoLinearLayout"
+    app:layout_constraintBottom_toTopOf="@+id/lotInfoLayout">
+
+    <TextView
+        android:id="@+id/productNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Habichuelas Goya"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/itemNumberText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="S11002"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/productNameText"
+        app:layout_constraintStart_toStartOf="@id/productNameText"
+        app:layout_constraintEnd_toEndOf="@id/productNameText"/>
+
+</LinearLayout>
+
+    <TextView
+        android:id="@+id/onHandText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/added"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/onHandQtyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/onHandText"
+        app:layout_constraintStart_toStartOf="@+id/onHandText"
+        app:layout_constraintTop_toBottomOf="@+id/onHandText" />
+
+    <LinearLayout
+        android:id="@+id/BinInfoLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/toBinText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bin:"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/binNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="01-0-001"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lotInfoLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/lotNumberHeaderText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lot:"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/lotNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="2022-07-05-010"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
