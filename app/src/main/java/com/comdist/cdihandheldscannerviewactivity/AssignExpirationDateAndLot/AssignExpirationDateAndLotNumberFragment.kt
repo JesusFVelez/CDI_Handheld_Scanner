@@ -227,7 +227,8 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
-                AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
+                //AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
     }

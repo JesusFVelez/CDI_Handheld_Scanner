@@ -83,7 +83,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             if (!wasLasAPICallSuccessful) {
-                AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
     }
