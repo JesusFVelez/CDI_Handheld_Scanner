@@ -50,7 +50,6 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             // Extract string values from EditText fields correctly
             val itemNumber = binding.itemNumberEditText.text.toString()
             val binNumber = binding.BinNumberEditText.text.toString()
-            val lotNumber = viewModel.itemInfo.value!![0].lotNumber
             // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && binNumber.isNotBlank()) {
                 hasSearchBeenMade = true
@@ -67,11 +66,9 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         viewModel.opMessage.observe(viewLifecycleOwner) { message ->
             if (message.isNotBlank()) {
                 val success = viewModel.opSuccess.value ?: false
-                if (success) {
-                    AlerterUtils.startSuccessAlert(requireActivity(), "", message)
-                } else {
+                if (!success) {
                     AlerterUtils.startErrorAlerter(requireActivity(), message)
-                }
+                } else{}
             }
         }
         viewModel.opSuccess.observe(viewLifecycleOwner) {success ->

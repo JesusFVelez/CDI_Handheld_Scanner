@@ -160,13 +160,15 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
                 style="@style/CustomOrderInput"
                 android:layout_width="201dp"
                 android:layout_height="54dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
                 android:dropDownHeight="wrap_content"
                 android:gravity="center"
                 android:hint="New Expiration Date"
                 app:layout_constraintBottom_toTopOf="@+id/newLotEditText"
                 app:layout_constraintEnd_toEndOf="@+id/enterButton"
-                app:layout_constraintStart_toStartOf="@+id/enterButton" />
+                app:layout_constraintStart_toStartOf="@+id/enterButton"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/ToggleButton"

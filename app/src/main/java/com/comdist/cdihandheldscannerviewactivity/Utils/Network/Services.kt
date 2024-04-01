@@ -5,7 +5,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -44,9 +43,13 @@ interface SuggestionServices {
     suspend fun getSuggestionsForItemOrBin(@Query("query") query: String): GetAllItemsInBinForSuggestionResponseWrapper
 }
 
-interface AssignLotNumberResources {
+/*interface AssignLotNumberResources {
     @PUT("assignLotNumber")
     suspend fun assignLotNumber(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber")pLotNumber:String):AssignLotNumberResponseWrapper
+}*/
+interface AssignLotNumberResources {
+    @PUT("assignLotNumber")
+    suspend fun assignLotNumber(@Query("pItemNumber") pItemNumber:String, @Query("companyID") companyID: Int, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("warehouseNumber") warehouseNumber: String):AssignLotNumberResponseWrapper
 }
 
 //Assign Expiration Date inaterface

@@ -7,18 +7,16 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
+import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
 
 
@@ -40,6 +38,8 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
     private lateinit var lotTextView: TextView
 
     private var shouldShowMessage = true
+
+    private var hasAPIBeenCalled = false
 
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
 
@@ -124,10 +124,18 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             val newExpirationDate = binding.NewExpirationDateEditText.text.toString()
             val binNumber = viewModel.itemInfo.value!![0].binLocation
             val lotNumber = binding.newLotEditText.text.toString()
+
+            val warehouseNO:Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+            viewModel.setWarehouseNOFromSharedPref(warehouseNO)
+
+            val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+            viewModel.setCompanyIDFromSharedPref(companyID)
+
             // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
+                hasAPIBeenCalled = true
                 viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate)
-                    viewModel.assignLotNumber(itemNumber, binNumber, lotNumber)
+                viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, companyID, lotNumber)
                 viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
@@ -190,17 +198,6 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
     private fun observeViewModel() {
 
-        viewModel.opMessage.observe(viewLifecycleOwner) { message ->
-            if (message.isNotBlank()) {
-                val success = viewModel.opSuccess.value ?: false
-                if (success) {
-                    AlerterUtils.startSuccessAlert(requireActivity(), "", message)
-                } else {
-                    AlerterUtils.startErrorAlerter(requireActivity(), message)
-                }
-            }
-        }
-
         viewModel.opSuccess.observe(viewLifecycleOwner) {success->
             if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && !success) {
                 AlerterUtils.startWarningAlerter(requireActivity(), viewModel.opMessage.value!!)
@@ -229,7 +226,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
-            if (!wasLasAPICallSuccessful) {
+            if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
                 AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
             }
         }

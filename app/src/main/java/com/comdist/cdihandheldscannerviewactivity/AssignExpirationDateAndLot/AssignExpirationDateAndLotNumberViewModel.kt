@@ -33,6 +33,13 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
     val suggestions: LiveData<List<ItemData>>
         get() = _suggestions
 
+    private val _companyID =  MutableLiveData<String>()
+    val companyID: LiveData<String>
+        get() = _companyID
+
+    private val _warehouseNO =  MutableLiveData<String>()
+    val warehouseNO: LiveData<String>
+        get() = _warehouseNO
     init{}
     fun fetchSuggestionsForItemOrBin(query: String, callback: (List<ItemData>) -> Unit) {
         viewModelScope.launch {
@@ -64,7 +71,13 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
         }
     }
 
-    fun assignLotNumber(pItemNumber: String, pBinLocation: String, pLotNumber: String) {
+    fun setCompanyIDFromSharedPref(companyID: String){
+        _companyID.value = companyID
+    }
+    fun setWarehouseNOFromSharedPref(warehouseNO: Int){
+        _warehouseNO.value = warehouseNO.toString()
+    }
+    fun assignLotNumber(pItemNumber: String, pWarehouseNo:Int, pBinLocation: String, pLotNumber: String, pCompanyCode: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
@@ -74,7 +87,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
         viewModelScope.launch(exceptionHandler) {
             try {
                 // Assuming the Retrofit suspend function returns directly the response body
-                val response = ScannerAPI.getAssignLotNumberService().assignLotNumber(pItemNumber, pBinLocation, pLotNumber)
+                val response = ScannerAPI.getAssignLotNumberService().assignLotNumber(pItemNumber, pWarehouseNo, pBinLocation, pLotNumber, pCompanyCode)
                 _opSuccess.value = response.response.opSuccess
                 _opMessage.value = response.response.opMessage
                 _wasLastAPICallSuccessful.value = true
