@@ -36,22 +36,28 @@
                 app:layout_constraintTop_toBottomOf="@+id/toBinLabel" />
 
 
-
-
-            <AutoCompleteTextView
-                android:id="@+id/itemNumberEditText"
-                style="@style/CustomScannerInput"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/itemNumberSpinnerTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="235dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:dropDownHeight="wrap_content"
-                android:hint="@string/item_number"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rectangle_text_box"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true"
                 app:layout_constraintEnd_toEndOf="@+id/fromBinNumber"
                 app:layout_constraintStart_toStartOf="@+id/fromBinNumber"
-                app:layout_constraintTop_toBottomOf="@+id/fromBinNumber" />
+                app:layout_constraintTop_toBottomOf="@+id/fromBinNumber">
 
+                <AutoCompleteTextView
+                    android:id="@+id/itemNumberSpinner"
+                    style="@style/DropDownsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:dropDownHeight="wrap_content"
+                    android:hint="@string/item_number" />
 
-
+            </com.google.android.material.textfield.TextInputLayout>
 
             <EditText
                 android:id="@+id/itemAmountEditText"
@@ -62,9 +68,9 @@
                 android:gravity="center"
                 android:inputType="number"
                 android:hint="Item ammount"
-                app:layout_constraintEnd_toEndOf="@+id/itemNumberEditText"
-                app:layout_constraintStart_toStartOf="@+id/itemNumberEditText"
-                app:layout_constraintTop_toBottomOf="@+id/itemNumberEditText" />
+                app:layout_constraintEnd_toEndOf="@+id/itemNumberSpinnerTextInputLayout"
+                app:layout_constraintStart_toStartOf="@+id/itemNumberSpinnerTextInputLayout"
+                app:layout_constraintTop_toBottomOf="@+id/itemNumberSpinnerTextInputLayout" />
 
 
 

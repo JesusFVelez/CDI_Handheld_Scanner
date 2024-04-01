@@ -56,7 +56,7 @@ import org.w3c.dom.Text
 
 
     private fun initUIElements(){
-        itemNumberEditText = binding.itemNumberEditText
+        itemNumberEditText = binding.itemNumberSpinner
         itemAmountEditText = binding.itemAmountEditText
         fromBinNumber = binding.fromBinNumber
         toBinNumber = binding.toBinNumber
