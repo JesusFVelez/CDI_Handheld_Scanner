@@ -53,11 +53,32 @@
     <ImageView
         android:id="@+id/binIcon"
         android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_height="0dp"
         android:src="@drawable/bindetailpage"
-        app:layout_constraintBottom_toBottomOf="@+id/lotNumberLabelTextView"
-        app:layout_constraintEnd_toStartOf="@+id/lotNumberLabelTextView"
-        app:layout_constraintTop_toTopOf="@+id/lotNumberLabelTextView" />
+        app:layout_constraintBottom_toBottomOf="@+id/binLocationlableTextView"
+        app:layout_constraintEnd_toStartOf="@+id/binLocationlableTextView"
+        app:layout_constraintTop_toTopOf="@+id/binLocationlableTextView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/binLocationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="01001"
+        app:layout_constraintBottom_toBottomOf="@+id/orderDateValueTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/orderDateValueTextView" />
+
+    <TextView
+        android:id="@+id/binLocationlableTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="1dp"
+        android:text="Bin Location:"
+        app:layout_constraintBottom_toBottomOf="@+id/binLocationTextView"
+        app:layout_constraintEnd_toStartOf="@+id/binLocationTextView"
+        app:layout_constraintTop_toTopOf="@+id/binLocationTextView" />
 
     <TextView
         android:id="@+id/orderDateValueTextView"
@@ -68,6 +89,15 @@
         app:layout_constraintStart_toEndOf="@id/expirationDateLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
 
+
+    <ImageView
+        android:id="@+id/lotIcon"
+        android:layout_width="15dp"
+        android:layout_height="0dp"
+        android:src="@drawable/batch_or_lote_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintEnd_toStartOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintTop_toTopOf="@+id/lotNumberLabelTextView" />
     <TextView
         android:id="@+id/lotNumberLabelTextView"
         android:layout_width="wrap_content"
