@@ -1,9 +1,14 @@
 package com.comdist.cdihandheldscannerviewactivity.Utils.Network
 
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignExpDateResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignLotNumberResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinConfirmationResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConfirmOrderResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConnectionTestingWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DisplayInfoResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinForSuggestionResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemConfirmationResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
@@ -66,7 +71,7 @@ interface SuggestionServices {
 
 interface AssignLotNumberResources {
     @PUT("assignLotNumberToBinItem")
-    suspend fun assignLotNumberToBinItem(@Query("pItemNumber") pItemNumber:String, @Query("companyID") companyID: Int, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("warehouseNumber") warehouseNumber: String):AssignLotNumberResponseWrapper
+    suspend fun assignLotNumberToBinItem(@Query("pItemNumber") pItemNumber:String, @Query("companyID") companyID: Int, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("warehouseNumber") warehouseNumber: String): AssignLotNumberResponseWrapper
 }
 
 //Assign Expiration Date inaterface

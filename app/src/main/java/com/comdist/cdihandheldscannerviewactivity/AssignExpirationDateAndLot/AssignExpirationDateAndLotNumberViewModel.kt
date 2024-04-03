@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemData
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemInfo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 

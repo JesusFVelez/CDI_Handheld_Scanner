@@ -1,8 +1,7 @@
-package com.comdist.cdihandheldscannerviewactivity.Utils.Network
+package com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.util.Date
 
 
 /*Assign Lot number to item*/
@@ -56,7 +55,8 @@ data class ItemInfo(
 /*Get data for suggestion list*/
 @JsonClass(generateAdapter = true)
 data class GetAllItemsInBinForSuggestionResponseWrapper(
-    @Json(name = "response") val response: GetAllItemsInBinForSuggestionResponse)
+    @Json(name = "response") val response: GetAllItemsInBinForSuggestionResponse
+)
 
 @JsonClass(generateAdapter = true)
 data class GetAllItemsInBinForSuggestionResponse(
