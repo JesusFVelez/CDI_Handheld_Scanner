@@ -200,7 +200,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
                 false
             }
         }
-
     }
 
     private fun initObservers() {

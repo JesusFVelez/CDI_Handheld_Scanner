@@ -2,10 +2,13 @@ package com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.As
 
 import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import android.widget.Filter
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -36,7 +39,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         )
 
         setupUI()
-        observeViewModel()
+        initObservers()
         return binding.root
     }
 
@@ -68,7 +71,9 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
 
 
-    private fun observeViewModel() {
+    private fun initObservers() {
+
+
         viewModel.opMessage.observe(viewLifecycleOwner) { message ->
             if (message.isNotBlank()) {
                 val success = viewModel.opSuccess.value ?: false
@@ -77,6 +82,12 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
                 } else{}
             }
         }
+
+        viewModel.suggestions.observe(viewLifecycleOwner){newSuggestions ->
+            if(newSuggestions.isNotEmpty())
+                initItemNumberAutoCompleteTextView(newSuggestions)
+        }
+
         viewModel.opSuccess.observe(viewLifecycleOwner) {success ->
             if (shouldShowMessage && !success) {
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.opMessage.value!!)
@@ -96,11 +107,31 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
     }
 
+    private fun initItemNumberAutoCompleteTextView(newItemSuggestion: List<ItemData>){
+        val arrayAdapterForAutoCompleteTextView =
+            ItemSuggestionAdapter(
+                requireContext(),
+                newItemSuggestion
+            )
+        binding.itemNumberEditText.setAdapter(arrayAdapterForAutoCompleteTextView)
+        binding.itemNumberEditText.threshold = 1
+        binding.itemNumberEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Handle the Enter key press here
+//                viewModel.setOrderNumber(orderNumberEditText.text.toString())
+//                searchForOrder()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
 
     class ItemSuggestionAdapter(context: Context, private val items: List<ItemData>) : ArrayAdapter<ItemData>(context, 0, items) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.fragment_sugestion_item_expiration_date_and_lot_number, parent, false)
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.sugestion_item_expiration_date_and_lot_number_view, parent, false)
 
             val itemNumberTextView = view.findViewById<TextView>(R.id.ItemNumberTextView)
             val descriptionTextView = view.findViewById<TextView>(R.id.descriptionTextView)
@@ -115,6 +146,50 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
             return view
         }
+
+        private val originalList = ArrayList(items)
+
+        private val filter = object : Filter() {
+
+
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val results = FilterResults()
+                val query = constraint?.toString()?.lowercase()
+                val filteredList = if (query.isNullOrEmpty()) {
+                    originalList
+                } else {
+                    originalList.filter {
+                        it.itemNumber.lowercase().contains(query)
+                    }
+                }
+
+                results.values = filteredList
+                results.count = filteredList.size
+
+                return results
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                clear()
+                if (results?.count ?: 0 > 0) {
+                    addAll(results?.values as List<ItemData>)
+                    notifyDataSetChanged()
+
+                } else {
+                    notifyDataSetChanged()
+                }
+
+            }
+
+            override fun convertResultToString(resultValue: Any?): CharSequence {
+                return (resultValue as ItemData).itemNumber
+            }
+        }
+        override fun getFilter(): Filter {
+            return filter
+        }
+
     }
 
 }
