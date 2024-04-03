@@ -11,10 +11,10 @@
         android:id="@+id/ItemNumberTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="1dp"
         android:text="S32567"
-        android:padding="20dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,14 +23,13 @@
         android:id="@+id/descriptionTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:gravity="center"
-        android:paddingTop="10dp"
+        android:paddingTop="1dp"
         android:text="Santa Monica Auto Parts"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/ItemNumberTextView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ItemNumberTextView" />
 
     <ImageView
         android:id="@+id/barcodeIcon"
@@ -56,37 +55,34 @@
         android:layout_height="0dp"
         android:src="@drawable/bindetailpage"
         app:layout_constraintBottom_toBottomOf="@+id/binLocationlableTextView"
-        app:layout_constraintEnd_toStartOf="@+id/binLocationlableTextView"
-        app:layout_constraintTop_toTopOf="@+id/binLocationlableTextView"
+        app:layout_constraintEnd_toStartOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintStart_toStartOf="@+id/lotIcon"
+        app:layout_constraintTop_toBottomOf="@+id/lotIcon"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/binLocationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:text="01001"
-        app:layout_constraintBottom_toBottomOf="@+id/orderDateValueTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/orderDateValueTextView" />
+        app:layout_constraintStart_toStartOf="@+id/dateWantedValueTextView"
+        app:layout_constraintTop_toBottomOf="@+id/dateWantedValueTextView" />
 
     <TextView
         android:id="@+id/binLocationlableTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="1dp"
         android:text="Bin Location:"
         app:layout_constraintBottom_toBottomOf="@+id/binLocationTextView"
-        app:layout_constraintEnd_toStartOf="@+id/binLocationTextView"
-        app:layout_constraintTop_toTopOf="@+id/binLocationTextView" />
+        app:layout_constraintStart_toEndOf="@+id/lotIcon"
+        app:layout_constraintTop_toBottomOf="@+id/lotNumberLabelTextView" />
 
     <TextView
         android:id="@+id/orderDateValueTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
         android:text="01/01/2023"
-        app:layout_constraintStart_toEndOf="@id/expirationDateLabelTextView"
+        app:layout_constraintStart_toStartOf="@+id/dateWantedValueTextView"
         app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
 
 
