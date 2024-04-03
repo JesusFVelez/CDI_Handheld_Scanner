@@ -1,9 +1,14 @@
 package com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberDataChangeAndDisplay
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -11,6 +16,7 @@ import androidx.navigation.findNavController
 import com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberViewModel
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemData
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentSearchExpirationDateAndLotNumberBinding
 
 
@@ -20,6 +26,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
     private var shouldShowMessage = false
     private var hasSearchBeenMade = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,14 +34,14 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_search_expiration_date_and_lot_number,
-            container,
-            false
+            container,false
         )
+
         setupUI()
         observeViewModel()
-
         return binding.root
     }
+
     override fun onResume() {
         super.onResume()
         binding.itemNumberEditText.text.clear()
@@ -62,6 +69,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         }
     }
 
+
     private fun observeViewModel() {
         viewModel.opMessage.observe(viewLifecycleOwner) { message ->
             if (message.isNotBlank()) {
@@ -81,10 +89,33 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
         }
 
+
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             if (!wasLasAPICallSuccessful) {
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
+        }
+
+    }
+
+
+    class ItemSuggestionAdapter(context: Context, private val items: List<ItemData>) : ArrayAdapter<ItemData>(context, 0, items) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.fragment_sugestion_item_expiration_date_and_lot_number, parent, false)
+
+            val itemNumberTextView = view.findViewById<TextView>(R.id.ItemNumberTextView)
+            val descriptionTextView = view.findViewById<TextView>(R.id.descriptionTextView)
+            val expirationDateTextView = view.findViewById<TextView>(R.id.orderDateValueTextView)
+            val lotNumberTextView = view.findViewById<TextView>(R.id.dateWantedValueTextView)
+
+            val item = items[position]
+            itemNumberTextView.text = item.itemNumber
+            descriptionTextView.text = item.itemDescription
+            expirationDateTextView.text = item.expireDate
+            lotNumberTextView.text = item.lotNumber ?: "N/A"
+
+            return view
         }
     }
 

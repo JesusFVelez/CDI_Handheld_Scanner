@@ -134,7 +134,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
                 hasAPIBeenCalled = true
-                viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate)
+                viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate, lotNumber)
                 viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, companyID, lotNumber)
                 viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
             } else {
@@ -214,9 +214,9 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                 binding.apply {
                     itemNumberTextView.text = firstItem.itemNumber
                     itemNameTextView.text = firstItem.itemDescription
-                    expirationDateTextView.text = firstItem.expireDate
+                    expirationDateTextView.text = firstItem.expireDate ?: "N/A"
                     binLocationTextView.text = firstItem.binLocation
-                    binding.lotTextView.text = firstItem.lotNumber ?: "N/A" // Ensure this TextView exists and is correctly bound
+                    lotTextView.text = firstItem.lotNumber ?: "N/A" // Ensure this TextView exists and is correctly bound
 
                     //To make upperDiv visible
                     upperDiv.visibility = View.VISIBLE

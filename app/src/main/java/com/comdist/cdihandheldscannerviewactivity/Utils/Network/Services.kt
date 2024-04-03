@@ -40,22 +40,18 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
 }
 interface SuggestionServices {
     @GET("getSuggestionsForItemOrBin")
-    suspend fun getSuggestionsForItemOrBin(@Query("query") query: String): GetAllItemsInBinForSuggestionResponseWrapper
+    suspend fun getSuggestionsForItemOrBin(@Query("query") query: List<ItemData>): GetAllItemsInBinForSuggestionResponseWrapper
 }
 
-/*interface AssignLotNumberResources {
-    @PUT("assignLotNumber")
-    suspend fun assignLotNumber(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber")pLotNumber:String):AssignLotNumberResponseWrapper
-}*/
 interface AssignLotNumberResources {
-    @PUT("assignLotNumber")
-    suspend fun assignLotNumber(@Query("pItemNumber") pItemNumber:String, @Query("companyID") companyID: Int, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("warehouseNumber") warehouseNumber: String):AssignLotNumberResponseWrapper
+    @PUT("assignLotNumberToBinItem")
+    suspend fun assignLotNumberToBinItem(@Query("pItemNumber") pItemNumber:String, @Query("companyID") companyID: Int, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("warehouseNumber") warehouseNumber: String):AssignLotNumberResponseWrapper
 }
 
 //Assign Expiration Date inaterface
 interface AssignExpirationDateResources {
     @PUT("assignExpireDate")
-    suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String):AssignExpDateResponseWrapper
+    suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String, @Query("pLotNumber") pLotNumber:String): AssignExpDateResponseWrapper
 
     @GET("getItemInformation")
     suspend fun getItemInformation(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber") pLotNumber: String): DisplayInfoResponseWrapper

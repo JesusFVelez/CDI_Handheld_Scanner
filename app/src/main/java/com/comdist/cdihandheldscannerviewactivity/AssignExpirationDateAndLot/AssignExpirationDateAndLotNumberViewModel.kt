@@ -41,18 +41,8 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
     val warehouseNO: LiveData<String>
         get() = _warehouseNO
     init{}
-    fun fetchSuggestionsForItemOrBin(query: String, callback: (List<ItemData>) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val response = ScannerAPI.getSuggestionService().getSuggestionsForItemOrBin(query)
-                callback.invoke(response.response.binItemInfo)
-            } catch (e: Exception) {
-                Log.e("FetchSuggestions", "Failed to fetch suggestions: ${e.message}")
 
-            }
-        }
-    }
-    fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String) {
+    fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String, pLotNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             Log.i("Assign Expire Date " , "Error -> ${exception.message}")
@@ -60,7 +50,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate)
+                val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber)
                 _wasLastAPICallSuccessful.value = true
                 _opMessage.value = response.response.opMessage
                 _opSuccess.value = response.response.opSuccess
@@ -87,7 +77,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
         viewModelScope.launch(exceptionHandler) {
             try {
                 // Assuming the Retrofit suspend function returns directly the response body
-                val response = ScannerAPI.getAssignLotNumberService().assignLotNumber(pItemNumber, pWarehouseNo, pBinLocation, pLotNumber, pCompanyCode)
+                val response = ScannerAPI.getAssignLotNumberService().assignLotNumberToBinItem(pItemNumber, pWarehouseNo, pBinLocation, pLotNumber, pCompanyCode)
                 _opSuccess.value = response.response.opSuccess
                 _opMessage.value = response.response.opMessage
                 _wasLastAPICallSuccessful.value = true
@@ -121,4 +111,22 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
         }
     }
 
+    fun fetchItemSuggestions() {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.e("ViewModel", "Failed to fetch item suggestions: ${exception.localizedMessage}")
+        }
+
+        try {
+            viewModelScope.launch(exceptionHandler) {
+                val response = ScannerAPI.getSuggestionService()
+                    .getSuggestionsForItemOrBin(_suggestions.value!!)
+                _suggestions.value = response.response.binItemInfo
+                _wasLastAPICallSuccessful.value = true
+            }
+        }catch (e: Exception){
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Get All item for suggestions - Assign Lot Number & Exp Date (e) " , "Error -> ${e.message}")
+        }
+    }
 }
