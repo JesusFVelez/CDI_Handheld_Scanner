@@ -73,7 +73,7 @@ interface AssignLotNumberResources {
 //Assign Expiration Date inaterface
 interface AssignExpirationDateResources {
 
-    @GET("getSuggestionsForItemOrBin")
+    @GET("getAllItemsInBinForSuggestion")
     suspend fun getSuggestionsForItemOrBin(@Query("pBinLocation") binLocation: String): GetAllItemsInBinForSuggestionResponseWrapper
 
     @PUT("assignExpireDate")

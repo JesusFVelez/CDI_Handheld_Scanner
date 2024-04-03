@@ -121,7 +121,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getAssignExpirationDateService()
                     .getSuggestionsForItemOrBin(binLocation)
-                _suggestions.value = response.response.binItemInfo
+                _suggestions.value = response.response.binItemInfo.binItemInfo
                 _wasLastAPICallSuccessful.value = true
             }
         }catch (e: Exception){

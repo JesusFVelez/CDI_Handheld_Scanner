@@ -54,6 +54,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         shouldShowMessage = true
     }
     private fun setupUI() {
+        viewModel.fetchItemSuggestions("")
         binding.searchButton.setOnClickListener {
             // Extract string values from EditText fields correctly
             val itemNumber = binding.itemNumberEditText.text.toString()
@@ -137,12 +138,15 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             val descriptionTextView = view.findViewById<TextView>(R.id.descriptionTextView)
             val expirationDateTextView = view.findViewById<TextView>(R.id.orderDateValueTextView)
             val lotNumberTextView = view.findViewById<TextView>(R.id.dateWantedValueTextView)
+            val binNumberTextView = view.findViewById<TextView>(R.id.binLocationTextView)
 
             val item = items[position]
             itemNumberTextView.text = item.itemNumber
             descriptionTextView.text = item.itemDescription
-            expirationDateTextView.text = item.expireDate
+            expirationDateTextView.text = item.expireDate?: "N/A"
             lotNumberTextView.text = item.lotNumber ?: "N/A"
+            binNumberTextView.text = item.binLocation
+
 
             return view
         }

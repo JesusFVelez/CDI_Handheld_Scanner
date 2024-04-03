@@ -55,19 +55,24 @@ data class ItemInfo(
 /*Get data for suggestion list*/
 @JsonClass(generateAdapter = true)
 data class GetAllItemsInBinForSuggestionResponseWrapper(
-    @Json(name = "response") val response: GetAllItemsInBinForSuggestionResponse
+    @Json(name = "response") val response: GetAllItemsInBinForSuggestionWrapper
 )
 
 @JsonClass(generateAdapter = true)
-data class GetAllItemsInBinForSuggestionResponse(
-    @Json(name = "binItemInfo") val binItemInfo: List<ItemData>
+data class GetAllItemsInBinForSuggestionWrapper(
+    @Json(name = "binItemInfo") val binItemInfo: GetAllItemsInBinForSuggestion
+)
+
+@JsonClass(generateAdapter = true)
+data class GetAllItemsInBinForSuggestion(
+    @Json(name = "bin-item-info") val binItemInfo:List<ItemData>
 )
 @JsonClass(generateAdapter = true)
 data class ItemData(
     @Json(name = "itemNumber") val itemNumber: String,
     @Json(name = "itemDescription") val itemDescription: String,
     @Json(name = "binLocation") val binLocation: String,
-    @Json(name = "expireDate") val expireDate: String,
+    @Json(name = "expireDate") val expireDate: String?,
     @Json(name = "lotNumber") val lotNumber: String?
 )
 
