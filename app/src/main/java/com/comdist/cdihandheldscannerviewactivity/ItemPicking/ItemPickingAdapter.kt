@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.R
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemsInOrderInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInOrderInfo
 
 class ItemPickingAdapter(private val listener: itemInOrderClickListener) : RecyclerView.Adapter<ItemPickingViewHolder>(){
 

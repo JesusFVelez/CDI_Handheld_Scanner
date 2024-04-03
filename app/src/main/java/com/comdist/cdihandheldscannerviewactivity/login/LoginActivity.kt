@@ -16,11 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.comdist.cdihandheldscannerviewactivity.MainActivity
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.Company
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.Company
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.NetworkUtils
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.WarehouseInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.ActivityLoginBinding
