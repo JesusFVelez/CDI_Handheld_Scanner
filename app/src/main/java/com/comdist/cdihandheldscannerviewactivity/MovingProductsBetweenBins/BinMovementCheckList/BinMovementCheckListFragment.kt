@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.MovingProductsBetweenBinsViewModel
+import com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementViewModel
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinMovementCheckListBinding
 
@@ -22,7 +22,7 @@ class BinMovementCheckListFragment : Fragment() {
     private lateinit var itemsBeingMovedRecyclerView:RecyclerView
 
 
-    private val viewModel: MovingProductsBetweenBinsViewModel by activityViewModels()
+    private val viewModel: BinMovementViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

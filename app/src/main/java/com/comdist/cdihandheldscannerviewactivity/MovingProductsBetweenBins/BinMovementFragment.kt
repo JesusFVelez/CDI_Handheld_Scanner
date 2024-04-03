@@ -5,21 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.R
-import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.WarehouseInfo
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinMovementBinding
-import org.w3c.dom.Text
 
 
-    class BinMovementFragment : Fragment() {
+class BinMovementFragment : Fragment() {
 
     private lateinit var binding: FragmentBinMovementBinding
 
@@ -34,7 +29,7 @@ import org.w3c.dom.Text
 
     private lateinit var adapter: BinMovementAdapter
 
-    private val viewModel: MovingProductsBetweenBinsViewModel by activityViewModels()
+    private val viewModel: BinMovementViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

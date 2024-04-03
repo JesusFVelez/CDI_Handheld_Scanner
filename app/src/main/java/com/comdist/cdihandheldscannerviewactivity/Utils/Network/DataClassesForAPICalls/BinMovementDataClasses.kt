@@ -1,4 +1,4 @@
-package com.comdist.cdihandheldscannerviewactivity.Utils.Network
+package com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -7,12 +7,12 @@ import com.squareup.moshi.JsonClass
 // getAllBins - backend method output data classes
 @JsonClass(generateAdapter = true)
 data class getAllBinsResponseWrapper(
-    val response:getALlBinsResponse
+    val response: getALlBinsResponse
 )
 
 @JsonClass(generateAdapter = true)
 data class getALlBinsResponse(
-    @Json(name = "ttBinList") val listOfBinsWrapper:listOfBinsWrapper
+    @Json(name = "ttBinList") val listOfBinsWrapper: listOfBinsWrapper
 )
 
 @JsonClass(generateAdapter = true)
@@ -39,7 +39,7 @@ data class listOfItemsInBinResponseWrapper(
 
 @JsonClass(generateAdapter = true)
 data class listOfItemsInBinResponse(
-    @Json(name = "ttBinItem") val listOfItemsInBinWrapper:listOfItemsInBinWrapper
+    @Json(name = "ttBinItem") val listOfItemsInBinWrapper: listOfItemsInBinWrapper
 )
 
 @JsonClass(generateAdapter = true)

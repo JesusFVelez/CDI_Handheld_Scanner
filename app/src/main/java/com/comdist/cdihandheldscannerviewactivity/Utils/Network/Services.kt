@@ -18,9 +18,14 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperWarehouse
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperWasItemFound
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.VerifyClientResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.confirmBinResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.doesUserHaveRPMResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.finishPickingForSingleItemResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.getAllBinsResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.getOrdersForSuggestionWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.isQuantityValidResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.listOfItemsInBinResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.moveItemBetweenBinsResponseWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
@@ -63,11 +68,11 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
 interface MoveItemsBetweenBinsServices{
     // Endpoint for getting all the bins
     @GET("getAllBins")
-    suspend fun getAllBins(@Query("warehouse") warehouseNumber: Int):getAllBinsResponseWrapper
+    suspend fun getAllBins(@Query("warehouse") warehouseNumber: Int): getAllBinsResponseWrapper
 
     // Endpoint for getting all the items in a bin
     @GET("getAllItemsInBin")
-    suspend fun getAllItemsInBin(@Query("binNumber") binLocation:String, @Query("warehouse") warehouseNumber: Int):listOfItemsInBinResponseWrapper
+    suspend fun getAllItemsInBin(@Query("binNumber") binLocation:String, @Query("warehouse") warehouseNumber: Int): listOfItemsInBinResponseWrapper
 
     //Endpoint for confirming that the entered bin exists
     @GET("confirmBin")
@@ -79,7 +84,7 @@ interface MoveItemsBetweenBinsServices{
 
     //Endpoint for moving items from one bin to another bin
     @GET("moveItemBetweenBins")
-    suspend fun moveItemBetweenBins(@Query("rowNumber") rowID:String, @Query("newBin") newBin:String, @Query("quantity") quantityToMove: Float):moveItemBetweenBinsResponseWrapper
+    suspend fun moveItemBetweenBins(@Query("rowNumber") rowID:String, @Query("newBin") newBin:String, @Query("quantity") quantityToMove: Float): moveItemBetweenBinsResponseWrapper
 
     //Endpoint for removing an item from a bin
     @GET("removeItem")
