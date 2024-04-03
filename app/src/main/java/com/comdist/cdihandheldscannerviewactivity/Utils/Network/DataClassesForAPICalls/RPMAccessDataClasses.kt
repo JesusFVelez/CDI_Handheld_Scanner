@@ -1,4 +1,4 @@
-package com.comdist.cdihandheldscannerviewactivity.Utils.Network
+package com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -21,7 +21,7 @@ data class RPMAccessResponse(
 // verifyIfClientUsesRPM data classes
 @JsonClass(generateAdapter = true)
 data class doesUserHaveRPMResponseWrapper(
-    val response:doesUserHaveRPMResponse
+    val response: doesUserHaveRPMResponse
 )
 
 @JsonClass(generateAdapter = true)

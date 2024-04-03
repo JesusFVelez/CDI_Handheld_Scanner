@@ -1,4 +1,4 @@
-package com.comdist.cdihandheldscannerviewactivity.Utils.Network
+package com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -136,7 +136,7 @@ data class finishPickingForSingleItemResponse(
 
 @JsonClass(generateAdapter = true)
 data class getOrdersForSuggestionWrapper(
-    val response:ordersThatAreInPickingWrapper
+    val response: ordersThatAreInPickingWrapper
 )
 
 @JsonClass(generateAdapter = true)
