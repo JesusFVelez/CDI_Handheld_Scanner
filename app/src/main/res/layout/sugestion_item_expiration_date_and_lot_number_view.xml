@@ -35,6 +35,7 @@
         android:id="@+id/barcodeIcon"
         android:layout_width="15dp"
         android:layout_height="15dp"
+        android:layout_marginEnd="3dp"
         android:src="@drawable/date_time"
         app:layout_constraintBottom_toBottomOf="@+id/expirationDateLabelTextView"
         app:layout_constraintEnd_toStartOf="@+id/expirationDateLabelTextView"
@@ -53,6 +54,7 @@
         android:id="@+id/binIcon"
         android:layout_width="15dp"
         android:layout_height="0dp"
+        android:layout_marginEnd="3dp"
         android:src="@drawable/bindetailpage"
         app:layout_constraintBottom_toBottomOf="@+id/binLocationlableTextView"
         app:layout_constraintEnd_toStartOf="@+id/lotNumberLabelTextView"
@@ -75,8 +77,9 @@
         android:layout_height="wrap_content"
         android:text="Bin Location:"
         app:layout_constraintBottom_toBottomOf="@+id/binLocationTextView"
-        app:layout_constraintStart_toEndOf="@+id/lotIcon"
-        app:layout_constraintTop_toBottomOf="@+id/lotNumberLabelTextView" />
+        app:layout_constraintStart_toStartOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintTop_toBottomOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/orderDateValueTextView"
@@ -92,17 +95,18 @@
         android:id="@+id/lotIcon"
         android:layout_width="15dp"
         android:layout_height="0dp"
+        android:layout_marginEnd="3dp"
         android:src="@drawable/batch_or_lote_icon"
         app:layout_constraintBottom_toBottomOf="@+id/lotNumberLabelTextView"
         app:layout_constraintEnd_toStartOf="@+id/lotNumberLabelTextView"
         app:layout_constraintTop_toTopOf="@+id/lotNumberLabelTextView" />
+
     <TextView
         android:id="@+id/lotNumberLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
         android:text="Lot Number:"
-        app:layout_constraintStart_toStartOf="@id/descriptionTextView"
+        app:layout_constraintStart_toStartOf="@+id/expirationDateLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/expirationDateLabelTextView" />
 
     <TextView

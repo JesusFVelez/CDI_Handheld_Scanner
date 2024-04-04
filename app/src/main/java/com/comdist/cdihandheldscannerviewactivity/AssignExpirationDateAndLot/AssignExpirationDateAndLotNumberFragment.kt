@@ -18,6 +18,9 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class AssignExpirationDateAndLotNumberFragment : Fragment() {
@@ -193,6 +196,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                 }
             }
         })
+
     }
 
 
@@ -207,18 +211,39 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             else{}
         }
 
-        viewModel.itemInfo.observe(viewLifecycleOwner) { items ->
-            // Check if the list is not empty
-            if (items.isNotEmpty()) {
-                val firstItem = items.first()
+        // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
+        viewModel.currentlyChosenItemForSearch.observe(viewLifecycleOwner) { selectedItem ->
+            selectedItem?.let { item ->
                 binding.apply {
-                    itemNumberTextView.text = firstItem.itemNumber
-                    itemNameTextView.text = firstItem.itemDescription
-                    expirationDateTextView.text = firstItem.expireDate ?: "N/A"
-                    binLocationTextView.text = firstItem.binLocation
-                    lotTextView.text = firstItem.lotNumber ?: "N/A" // Ensure this TextView exists and is correctly bound
 
-                    //To make upperDiv visible
+                    itemNumberTextView.text = item.itemNumber
+                    itemNameTextView.text = item.itemDescription
+                    binLocationTextView.text = item.binLocation
+                    expirationDateTextView.text = item.expireDate ?: "N/A"
+                    lotTextView.text = item.lotNumber ?: "N/A"
+
+                    // Parsing and formatting the date
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Adjust this format to match the incoming date format
+                    val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                    val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
+                    val formattedDate = if (date != null) outputFormat.format(date) else ""
+
+                    NewExpirationDateEditText.setText(formattedDate)
+                    newLotEditText.setText(item.lotNumber ?: "")
+
+                    upperDiv.visibility = View.VISIBLE
+
+                    val lotExists = !item.lotNumber.isNullOrEmpty()
+                    newLotEditText.isEnabled = lotExists
+                    ToggleButton.apply {
+                        if (lotExists) {
+                            background = resources.getDrawable(R.drawable.toggle_switch_on, null)
+                            tag = "on"
+                        } else {
+                            background = resources.getDrawable(R.drawable.toggle_switch_outline_off, null)
+                            tag = "off"
+                        }
+                    }
                     upperDiv.visibility = View.VISIBLE
                 }
             }
