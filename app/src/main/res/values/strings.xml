@@ -46,4 +46,7 @@
     <string name="warehouseSpinnerHint">Warehouse</string>
     <string name="companySpinnerHint">Company</string>
 
+    <string name="binLocationLabelBinMovement">Bin Location:</string>
+    <string name="QuantityOnHandBinLabelMovement">Quantity in Hand:</string>
+    <string name="QuantityInPickingLabelBinMovement">Quantity in Picking:</string>
 </resources>
