@@ -56,7 +56,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
     private fun setupUI() {
         viewModel.fetchItemSuggestions("")
-        binding.searchButton.setOnClickListener {
+        /*binding.searchButton.setOnClickListener {
             // Extract string values from EditText fields correctly
             val itemNumber = binding.itemNumberEditText.text.toString()
             val binNumber = binding.BinNumberEditText.text.toString()
@@ -68,6 +68,19 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
+            }
+        }*/
+        binding.searchButton.setOnClickListener {
+            val currentlyChosenItem = viewModel.currentlyChosenItemForSearch.value
+            val itemNumber = binding.itemNumberEditText.text.toString()
+            val binNumber = binding.BinNumberEditText.text.toString()
+            if (currentlyChosenItem == null) {
+                // Display a message to the user indicating that they must select an item
+                AlerterUtils.startWarningAlerter(requireActivity(), "Please select an item from the suggestions before proceeding.")
+            } else {
+                hasSearchBeenMade = true
+                shouldShowMessage = false
+                viewModel.getItemInfo(itemNumber, binNumber,"")
             }
         }
     }

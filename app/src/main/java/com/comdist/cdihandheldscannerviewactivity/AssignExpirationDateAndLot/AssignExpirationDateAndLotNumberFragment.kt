@@ -211,6 +211,9 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             else{}
         }
 
+
+
+
         // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
         viewModel.currentlyChosenItemForSearch.observe(viewLifecycleOwner) { selectedItem ->
             selectedItem?.let { item ->
