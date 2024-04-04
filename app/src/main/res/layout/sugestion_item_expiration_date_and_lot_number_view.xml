@@ -64,8 +64,9 @@
         android:id="@+id/binLocationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:text="01001"
-        app:layout_constraintStart_toStartOf="@+id/dateWantedValueTextView"
+        app:layout_constraintStart_toEndOf="@+id/binLocationlableTextView"
         app:layout_constraintTop_toBottomOf="@+id/dateWantedValueTextView" />
 
     <TextView
@@ -81,8 +82,9 @@
         android:id="@+id/orderDateValueTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:text="01/01/2023"
-        app:layout_constraintStart_toStartOf="@+id/dateWantedValueTextView"
+        app:layout_constraintStart_toEndOf="@+id/expirationDateLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
 
 
