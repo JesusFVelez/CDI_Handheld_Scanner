@@ -199,12 +199,12 @@ class LoginActivity : AppCompatActivity() {
     // Populate Spinner with warehouse data
     private fun fillSpinnerWithWarehouses( newWarehouseList : List<WarehouseInfo>){
         val warehouses = mutableListOf<String>()
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, warehouses)
-        warehouseSpinner.setAdapter(adapter)
+
         for (aWarehouse in viewModel.listOfWarehouses.value!!) {
             warehouses.add(aWarehouse.warehouseName)
         }
-        adapter.notifyDataSetChanged()
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, warehouses)
+        warehouseSpinner.setAdapter(adapter)
     }
 
     // This method populates the Spinner with a list of companies. It creates an ArrayAdapter with the company names and sets it as the adapter for the Spinner.
