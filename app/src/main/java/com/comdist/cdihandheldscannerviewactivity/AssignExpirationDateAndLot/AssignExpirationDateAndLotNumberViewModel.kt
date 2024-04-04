@@ -40,6 +40,10 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
     private val _warehouseNO =  MutableLiveData<String>()
     val warehouseNO: LiveData<String>
         get() = _warehouseNO
+
+    private val _currentlyChosenItemForSearch = MutableLiveData<ItemData>()
+    val currentlyChosenItemForSearch: LiveData<ItemData>
+        get() = _currentlyChosenItemForSearch
     init{}
 
     fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String, pLotNumber: String) {
@@ -109,6 +113,10 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
                 Log.i("Item Info", "Error -> ${e.message}")
             }
         }
+    }
+
+    fun setCurrentlyChosenItemForSearch(chosenItem: ItemData){
+        _currentlyChosenItemForSearch.value = chosenItem
     }
 
     fun fetchItemSuggestions(binLocation: String) {

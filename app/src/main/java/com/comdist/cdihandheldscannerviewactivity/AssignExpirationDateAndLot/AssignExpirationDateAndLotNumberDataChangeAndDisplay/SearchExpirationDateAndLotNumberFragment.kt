@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
@@ -125,6 +126,15 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             } else {
                 false
             }
+        }
+
+        binding.itemNumberEditText.onItemClickListener = AdapterView.OnItemClickListener{parent, view, position, id ->
+                // Your code here. For example:
+                val selectedItem = parent.getItemAtPosition(position) as ItemData
+                viewModel.setCurrentlyChosenItemForSearch(selectedItem)
+                binding.BinNumberEditText.setText(selectedItem.binLocation)
+
+                // Handle the clicked suggestion here
         }
     }
 
