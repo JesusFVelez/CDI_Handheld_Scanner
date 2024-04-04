@@ -67,7 +67,7 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
 
 interface AssignLotNumberResources {
     @PUT("assignLotNumberToBinItem")
-    suspend fun assignLotNumberToBinItem(@Query("pItemNumber") pItemNumber:String, @Query("companyID") companyID: Int, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("warehouseNumber") warehouseNumber: String): AssignLotNumberResponseWrapper
+    suspend fun assignLotNumberToBinItem(@Query("pItemNumber") pItemNumber:String, @Query("pCompanyCode") companyID: String, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("pWarehouseNo") warehouseNumber: Int): AssignLotNumberResponseWrapper
 }
 
 //Assign Expiration Date inaterface

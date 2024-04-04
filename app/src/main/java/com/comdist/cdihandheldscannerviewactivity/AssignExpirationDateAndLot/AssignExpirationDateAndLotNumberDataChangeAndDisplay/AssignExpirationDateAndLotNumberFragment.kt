@@ -139,7 +139,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
                 hasAPIBeenCalled = true
                 viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate, lotNumber)
-                viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, companyID, lotNumber)
+                viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, lotNumber, companyID)
                 viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
