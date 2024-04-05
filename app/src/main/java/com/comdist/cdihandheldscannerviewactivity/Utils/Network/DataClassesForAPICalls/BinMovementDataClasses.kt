@@ -49,6 +49,7 @@ data class listOfItemsInBinWrapper(
 
 @JsonClass(generateAdapter = true)
 data class itemsInBin(
+    @Json(name = "tt-item-name") val itemName:String,
     @Json(name = "tt-warehouse-no") val warehouseNumber: Int,
     @Json(name = "tt-bin-loc") val binLocation: String,
     @Json(name = "tt-item-number") val itemNumber: String,
@@ -58,11 +59,11 @@ data class itemsInBin(
     @Json(name = "tt-qty-on-hand") val quantityOnHand: Float,
     @Json(name = "tt-in-picking") val quantityInPicking: Float,
     @Json(name = "tt-size") val size: String,
-    @Json(name = "tt-date-created") val dateCreated: String,
+    @Json(name = "tt-date-created") val dateCreated: String?,
     @Json(name = "tt-company-code") val companyCode:String,
     @Json(name = "tt-qty-picked") val quantityPicked: Float,
     @Json(name = "tt-lot-number") val lotNumber: String,
-    @Json(name = "tt-expire-date") val expireDate: String,
+    @Json(name = "tt-expire-date") val expireDate: String?,
     @Json(name = "tt-weight") val weight: Float,
     @Json(name = "tt-row-id") val rowID: String
     )

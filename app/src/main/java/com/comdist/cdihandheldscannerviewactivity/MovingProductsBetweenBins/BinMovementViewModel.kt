@@ -5,8 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWarehouse
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.binInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -26,6 +28,21 @@ class BinMovementViewModel: ViewModel() {
     val listOfBinsInWarehouse: LiveData<List<binInfo>>
         get() = _listOfBinsInWarehouse
 
+    private val _listOfAllItemsInAllBins = MutableLiveData<List<itemsInBin>>()
+    val listOfAllItemsInAllBins: LiveData<List<itemsInBin>>
+        get() = _listOfAllItemsInAllBins
+
+    // Company ID
+    private val _companyID =  MutableLiveData<String>()
+    val companyID: LiveData<String>
+        get() = _companyID
+
+    // Company ID
+    private val _warehouseNumber =  MutableLiveData<Int>()
+    val warehouseNumber: LiveData<Int>
+        get() = _warehouseNumber
+
+
 
     init {
         _errorMessage.value = mutableMapOf(
@@ -34,8 +51,17 @@ class BinMovementViewModel: ViewModel() {
             "isQuantityValid" to "",
             "moveItemBetweenBins" to ""
         )
+    }
 
-        fun getAllBinsFromBackend(warehouseNumber: Int) {
+    fun setCompanyIDFromSharedPref(companyID: String){
+        _companyID.value = companyID
+    }
+
+    fun setWarehouseFromSharedPref(warehouse: Int){
+        _warehouseNumber.value = warehouse
+    }
+
+        fun getAllBinsFromBackend() {
             // Exception handler for API call
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
                 _wasLastAPICallSuccessful.value = false
@@ -49,7 +75,7 @@ class BinMovementViewModel: ViewModel() {
             try {
                 viewModelScope.launch(exceptionHandler) {
                     val response =
-                        ScannerAPI.getMovingItemsBetweenBinsService().getAllBins(warehouseNumber)
+                        ScannerAPI.getMovingItemsBetweenBinsService().getAllBins(_companyID.value!!,_warehouseNumber.value!!)
                     _wasLastAPICallSuccessful.value = true
                     _listOfBinsInWarehouse.value = response.response.listOfBinsWrapper.listOfBins
                 }
@@ -60,6 +86,31 @@ class BinMovementViewModel: ViewModel() {
             }
         }
 
+        fun getAllItemsInAllBinsFromBackend() {
+            // Exception handler for API call
+            val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+                _wasLastAPICallSuccessful.value = false
+                Log.i(
+                    "Get All Items In Bin - Bin Movement (exceptionHandler) ",
+                    "Error -> ${exception.message}"
+                )
+            }
 
-    }
+            // API call to get the products in order
+            try {
+                viewModelScope.launch(exceptionHandler) {
+                    val response =
+                        ScannerAPI.getMovingItemsBetweenBinsService().getAllItemsInAllBin(_companyID.value!!, _warehouseNumber.value!!)
+                    _wasLastAPICallSuccessful.value = true
+                    _listOfAllItemsInAllBins.value = response.response.listOfItemsInBinWrapper.listOfItemsInBin
+                }
+
+            } catch (e: Exception) {
+                _wasLastAPICallSuccessful.value = false
+                Log.i("Get All Items In Bin - Bin Movement (e) ", "Error -> ${e.message}")
+            }
+        }
+
+
+
 }

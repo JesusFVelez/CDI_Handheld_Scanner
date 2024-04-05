@@ -68,15 +68,15 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
 interface MoveItemsBetweenBinsServices{
     // Endpoint for getting all the bins
     @GET("getAllBins")
-    suspend fun getAllBins(@Query("warehouse") warehouseNumber: Int): getAllBinsResponseWrapper
+    suspend fun getAllBins(@Query("companyID") companyID: String ,@Query("warehouse") warehouseNumber: Int): getAllBinsResponseWrapper
 
     // Endpoint for getting all the items in a bin
-    @GET("getAllItemsInBin")
-    suspend fun getAllItemsInBin(@Query("binNumber") binLocation:String, @Query("warehouse") warehouseNumber: Int): listOfItemsInBinResponseWrapper
+    @GET("getAllItemsInAllBins")
+    suspend fun getAllItemsInAllBin(@Query("companyID") companyID: String ,@Query("warehouse") warehouseNumber: Int): listOfItemsInBinResponseWrapper
 
     //Endpoint for confirming that the entered bin exists
     @GET("confirmBin")
-    suspend fun confirmBin(@Query("binNumber") binLocation:String, @Query("warehouse") warehouseNumber: Int): confirmBinResponseWrapper
+    suspend fun confirmBin(@Query("binNumber") binLocation:String, @Query("companyID") companyID: String, @Query("warehouse") warehouseNumber: Int): confirmBinResponseWrapper
 
     //Endpoint for verifying if the quantity entered can be used
     @GET("isQuantityValid")
@@ -88,7 +88,7 @@ interface MoveItemsBetweenBinsServices{
 
     //Endpoint for removing an item from a bin
     @GET("removeItem")
-    suspend fun removeItemFromBin(@Query("binNumber")binLocation: String, @Query("itemNumber") itemNumber: String, @Query("warehouse") warehouseNumber: Int)
+    suspend fun removeItemFromBin(@Query("binNumber")binLocation: String, @Query("itemNumber") itemNumber: String, @Query("companyID") companyID: String, @Query("warehouse") warehouseNumber: Int)
 }
 
 interface LoginServices{
