@@ -27,19 +27,9 @@ import java.util.Locale
 class AssignExpirationDateAndLotNumberFragment : Fragment() {
     private lateinit var binding: FragmentAssignExpirationDateAndLotNumberBinding
 
-    private lateinit var itemNumberTextView: TextView
-    private lateinit var itemNameTextView: TextView
-    private lateinit var expirationDateTextView: TextView
-    private lateinit var binLocationTextView: TextView
-    private lateinit var BinNumberEditText: EditText
-    private lateinit var itemNumberEditText: EditText
-    private lateinit var NewExpirationDateEditText: EditText
-    private lateinit var enterButton: Button
 
     /*Batch variables*/
     private lateinit var ToggleButton: Button
-    private lateinit var newLotEditText: EditText
-    private lateinit var lotTextView: TextView
 
     private var shouldShowMessage = true
 

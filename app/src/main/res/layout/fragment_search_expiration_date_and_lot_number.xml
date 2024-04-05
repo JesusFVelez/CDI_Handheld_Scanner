@@ -2,63 +2,44 @@
 
 <!--    tools:context=".BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"-->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
 
+            <EditText
+                android:id="@+id/itemNumberSearchEditText"
+                android:layout_width="201dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="10dp"
+                android:dropDownHeight="wrap_content"
+                android:gravity="center"
+                android:hint="Search for Item"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-                <AutoCompleteTextView
-                    android:id="@+id/BinNumberEditText"
-                    style="@style/CustomOrderInput"
-                    android:layout_width="201dp"
-                    android:layout_height="54dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginBottom="10dp"
-                    android:dropDownHeight="wrap_content"
-                    android:hint="Bin"
-                    app:layout_constraintBottom_toTopOf="@+id/itemNumberEditText"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/itemSearchList"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/itemNumberSearchEditText">
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                <AutoCompleteTextView
-                    android:id="@+id/itemNumberEditText"
-                    style="@style/CustomOrderInput"
-                    android:layout_width="201dp"
-                    android:layout_height="54dp"
-                    android:layout_marginBottom="30dp"
-                    android:dropDownHeight="wrap_content"
-                    android:hint="@string/item_number"
-                    app:layout_constraintBottom_toTopOf="@+id/searchButton"
-                    app:layout_constraintEnd_toEndOf="@+id/BinNumberEditText"
-                    app:layout_constraintHorizontal_bias="0.142"
-                    app:layout_constraintStart_toStartOf="@+id/BinNumberEditText" />
+    </layout>
 
-                <Button
-                    android:id="@+id/searchButton"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/menu_option_button"
-                    android:text="Search"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
 

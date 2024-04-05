@@ -2,6 +2,8 @@ package com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -23,10 +25,13 @@ import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentSearchExpi
 
 class SearchExpirationDateAndLotNumberFragment : Fragment() {
     private lateinit var binding: FragmentSearchExpirationDateAndLotNumberBinding
-
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
+    private lateinit var itemSuggestionAdapter: ItemSuggestionAdapter
+
     private var shouldShowMessage = false
     private var hasSearchBeenMade = false
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +40,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_search_expiration_date_and_lot_number,
-            container,false
+            container, false
         )
 
         setupUI()
@@ -45,8 +50,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.itemNumberEditText.text.clear()
-        binding.BinNumberEditText.text.clear()
+        binding.itemNumberSearchEditText.text.clear()
 
     }
     override fun onPause() {
@@ -54,39 +58,30 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         shouldShowMessage = true
     }
     private fun setupUI() {
-        viewModel.fetchItemSuggestions("")
-        /*binding.searchButton.setOnClickListener {
-            // Extract string values from EditText fields correctly
-            val itemNumber = binding.itemNumberEditText.text.toString()
-            val binNumber = binding.BinNumberEditText.text.toString()
-            // Use extracted String values for checks and ViewModel operations
-            if (itemNumber.isNotBlank() && binNumber.isNotBlank()) {
-                hasSearchBeenMade = true
-                shouldShowMessage = false
-                viewModel.getItemInfo(itemNumber, binNumber,"")
+        // Assuming viewModel.fetchItemSuggestions("") has already populated the suggestions
+        itemSuggestionAdapter = ItemSuggestionAdapter(requireContext(), listOf())
+        binding.itemSearchList.adapter = itemSuggestionAdapter
 
-            } else {
-                AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
+        // Attach TextWatcher to itemNumberSearchEditText for filtering
+        binding.itemNumberSearchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                // Assuming ItemSuggestionAdapter already implements Filterable
+                itemSuggestionAdapter.filter.filter(s)
             }
-        }*/
-        binding.searchButton.setOnClickListener {
-            val currentlyChosenItem = viewModel.currentlyChosenItemForSearch.value
-            val itemNumber = binding.itemNumberEditText.text.toString()
-            val binNumber = binding.BinNumberEditText.text.toString()
-            if (currentlyChosenItem == null) {
-                // Display a message to the user indicating that they must select an item
-                AlerterUtils.startWarningAlerter(requireActivity(), "Please select an item from the suggestions before proceeding.")
-            } else {
-                hasSearchBeenMade = true
-                shouldShowMessage = false
-                viewModel.getItemInfo(itemNumber, binNumber,"")
-            }
-        }
+
+            override fun afterTextChanged(s: Editable) {}
+        })
     }
 
 
     private fun initObservers() {
 
+        viewModel.suggestions.observe(viewLifecycleOwner) { newSuggestions ->
+            // Update adapter's dataset
+            itemSuggestionAdapter.updateData(newSuggestions)
+        }
 
         viewModel.opMessage.observe(viewLifecycleOwner) { message ->
             if (message.isNotBlank()) {
@@ -127,9 +122,9 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
                 requireContext(),
                 newItemSuggestion
             )
-        binding.itemNumberEditText.setAdapter(arrayAdapterForAutoCompleteTextView)
-        binding.itemNumberEditText.threshold = 1
-        binding.itemNumberEditText.setOnEditorActionListener { v, actionId, event ->
+        binding.itemNumberSearchEditText.setAdapter(arrayAdapterForAutoCompleteTextView)
+        binding.itemNumberSearchEditText.threshold = 1
+        binding.itemNumberSearchEditText.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 // Handle the Enter key press here
 //                viewModel.setOrderNumber(orderNumberEditText.text.toString())
@@ -140,18 +135,20 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             }
         }
 
-        binding.itemNumberEditText.onItemClickListener = AdapterView.OnItemClickListener{parent, view, position, id ->
+        binding.itemNumberSearchEditText.onItemClickListener = AdapterView.OnItemClickListener{parent, view, position, id ->
                 // Your code here. For example:
                 val selectedItem = parent.getItemAtPosition(position) as ItemData
                 viewModel.setCurrentlyChosenItemForSearch(selectedItem)
-                binding.BinNumberEditText.setText(selectedItem.binLocation)
-
-                // Handle the clicked suggestion here
         }
     }
 
-
-    class ItemSuggestionAdapter(context: Context, private val items: List<ItemData>) : ArrayAdapter<ItemData>(context, 0, items) {
+    fun ItemSuggestionAdapter.updateData(newData: List<ItemData>) {
+        // Assuming ItemSuggestionAdapter stores items in a List called 'items'
+        items.clear()
+        items.addAll(newData)
+        notifyDataSetChanged()
+    }
+    class ItemSuggestionAdapter(context: Context, internal val items: List<ItemData>) : ArrayAdapter<ItemData>(context, 0, items) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.sugestion_item_expiration_date_and_lot_number_view, parent, false)
