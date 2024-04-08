@@ -114,9 +114,9 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         // Existing setupUI logic for the enter button
         binding.enterButton.setOnClickListener {
             // Extract string values from EditText fields correctly
-            val itemNumber = viewModel.itemInfo.value!![0].itemNumber
+            val itemNumber = viewModel.currentlyChosenItemForSearch.value!!.itemNumber
             val newExpirationDate = binding.NewExpirationDateEditText.text.toString()
-            val binNumber = viewModel.itemInfo.value!![0].binLocation
+            val binNumber = viewModel.currentlyChosenItemForSearch.value!!.binLocation
             val lotNumber = binding.newLotEditText.text.toString()
 
             val warehouseNO:Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())

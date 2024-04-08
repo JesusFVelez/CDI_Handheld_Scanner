@@ -1,5 +1,6 @@
 package com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -24,12 +25,15 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentSearchExpirationDateAndLotNumberBinding
 import androidx.navigation.fragment.findNavController
+import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 
 
 class SearchExpirationDateAndLotNumberFragment : Fragment() {
     private lateinit var binding: FragmentSearchExpirationDateAndLotNumberBinding
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
     private lateinit var itemSuggestionAdapter: ItemSuggestionRecyclerViewAdapter
+
+    private lateinit var progressDialog: Dialog
 
     private var shouldShowMessage = false
 
@@ -56,6 +60,9 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
     private fun setupUI() {
         // Initialize your adapter with the item click lambda
+
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
+
         itemSuggestionAdapter = ItemSuggestionRecyclerViewAdapter(requireContext()) { selectedItem ->
             viewModel.setCurrentlyChosenItemForSearch(selectedItem)
             navigateToAssignExpirationDateAndLotNumberFragment()
@@ -63,6 +70,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         binding.itemSearchList.adapter = itemSuggestionAdapter
 
         // Setup AutoCompleteTextView
+        progressDialog.show()
         viewModel.fetchItemSuggestions("") // Assuming this will populate `viewModel.suggestions`
     }
 
@@ -73,11 +81,13 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     private fun initObservers() {
 
         viewModel.suggestions.observe(viewLifecycleOwner) { newSuggestions ->
+            progressDialog.dismiss()
             initItemNumberAutoCompleteTextView(newSuggestions)
         }
 
         viewModel.opMessage.observe(viewLifecycleOwner) { message ->
             if (message.isNotBlank()) {
+                progressDialog.dismiss()
                 val success = viewModel.opSuccess.value ?: false
                 if (!success) {
                     AlerterUtils.startErrorAlerter(requireActivity(), message)
@@ -85,14 +95,10 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             }
         }
 
-        viewModel.suggestions.observe(viewLifecycleOwner){newSuggestions ->
-            if(newSuggestions.isNotEmpty())
-                initItemNumberAutoCompleteTextView(newSuggestions)
-        }
-
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             if (!wasLasAPICallSuccessful) {
+                progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
