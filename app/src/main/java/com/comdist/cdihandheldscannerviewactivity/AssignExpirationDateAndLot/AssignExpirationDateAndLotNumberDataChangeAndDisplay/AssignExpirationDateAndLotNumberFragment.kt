@@ -1,5 +1,6 @@
 package com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberDataChangeAndDisplay
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -16,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberViewModel
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
@@ -37,6 +39,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
 
+    private lateinit var progressDialog: Dialog
 
     override fun onCreate(saveInstance: Bundle?) {
         super.onCreate(saveInstance)
@@ -80,6 +83,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
     }
 
     private fun setupUI() {
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         ToggleButton = binding.ToggleButton
         // Set initial toggle button state to "off"
@@ -119,21 +123,25 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             val binNumber = viewModel.currentlyChosenItemForSearch.value!!.binLocation
             val lotNumber = binding.newLotEditText.text.toString()
 
+            progressDialog.show()
             val warehouseNO:Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
             viewModel.setWarehouseNOFromSharedPref(warehouseNO)
 
             val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
             viewModel.setCompanyIDFromSharedPref(companyID)
 
+
             // Use extracted String values for checks and ViewModel operations
             if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
                 hasAPIBeenCalled = true
                 viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate, lotNumber)
-                viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, companyID, lotNumber)
+                viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, lotNumber, companyID)
                 viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
             } else {
-                AlerterUtils.startErrorAlerter(requireActivity(), "Make sure everything is filled")
+                progressDialog.dismiss()
+                AlerterUtils.startErrorAlerter(requireActivity(), "Make sure date is filled")
             }
+
         }
 
         // Add this line in your setupUI function
@@ -194,6 +202,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
     private fun observeViewModel() {
 
         viewModel.opSuccess.observe(viewLifecycleOwner) {success->
+            progressDialog.dismiss()
             if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && !success) {
                 AlerterUtils.startWarningAlerter(requireActivity(), viewModel.opMessage.value!!)
             }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success){
@@ -203,7 +212,13 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         }
 
 
-
+        viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
+            itemInfo.firstOrNull()?.let { item ->
+                // Update UI
+                binding.expirationDateTextView.text = item.expireDate ?: "N/A"
+                binding.lotTextView.text = item.lotNumber ?: "N/A"
+            }
+        }
 
         // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
         viewModel.currentlyChosenItemForSearch.observe(viewLifecycleOwner) { selectedItem ->
@@ -245,6 +260,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
+            progressDialog.dismiss()
             if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
                 //AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
                 AlerterUtils.startNetworkErrorAlert(requireActivity())

@@ -103,6 +103,13 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             }
         }
 
+        viewModel.suggestions.observe(viewLifecycleOwner) { newSuggestions ->
+            progressDialog.dismiss()
+            // This ensures the RecyclerView is updated with the initial data as soon as it's available.
+            itemSuggestionAdapter.updateData(newSuggestions)
+        }
+
+
     }
 
     private fun initItemNumberAutoCompleteTextView(newItemSuggestion: List<ItemData>) {
@@ -159,7 +166,6 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             val expirationDateTextView: TextView = view.findViewById(R.id.orderDateValueTextView)
             val binLocationTextView: TextView = view.findViewById(R.id.binLocationTextView)
             val lotNumberTextView: TextView = view.findViewById(R.id.dateWantedValueTextView)
-
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
