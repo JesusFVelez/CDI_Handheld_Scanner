@@ -5,15 +5,14 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.comdist.cdihandheldscannerviewactivity.ProductsInBin.productInBinViewHolder
 import com.comdist.cdihandheldscannerviewactivity.R
 
-class BinMovementAdapter (private val trashCanOnClickListener: OnClickListener) : RecyclerView.Adapter<BinMovementViewHolder>(){
+class BinMovementAdapter () : RecyclerView.Adapter<BinMovementViewHolder>(){
 
-    var data = listOf<BinMovementDataClass>()
+    var data = mutableListOf<BinMovementDataClass>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -22,7 +21,20 @@ class BinMovementAdapter (private val trashCanOnClickListener: OnClickListener) 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BinMovementViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = layoutInflater.inflate(R.layout.item_to_move_view, parent, false)
-        return BinMovementViewHolder(view, trashCanOnClickListener)
+        return BinMovementViewHolder(view)
+    }
+
+    // Method to add an item
+    fun addItem(item: BinMovementDataClass?) {
+        data.add(item!!)
+        notifyItemInserted(data.size - 1)
+    }
+
+
+    //Method to remove an item
+    private fun removeItem(item: BinMovementDataClass?){
+        data.remove(item)
+        notifyItemRemoved(data.indexOf(item))
     }
 
     override fun getItemCount(): Int {
@@ -30,8 +42,10 @@ class BinMovementAdapter (private val trashCanOnClickListener: OnClickListener) 
     }
 
     override fun onBindViewHolder(holder: BinMovementViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(data[position], {removeItem(data[position])})
     }
+
+
 }
 
 data class BinMovementDataClass(
@@ -42,7 +56,7 @@ data class BinMovementDataClass(
     val toBinNumber:String
 )
 
-class BinMovementViewHolder(itemToMoveView: View, removeIconClickListener: OnClickListener): RecyclerView.ViewHolder(itemToMoveView){
+class BinMovementViewHolder(itemToMoveView: View): RecyclerView.ViewHolder(itemToMoveView){
 
     val itemNameTextView: TextView = itemToMoveView.findViewById(R.id.itemName)
     val itemNumberTextView: TextView = itemToMoveView.findViewById(R.id.itemNumber)
@@ -52,18 +66,18 @@ class BinMovementViewHolder(itemToMoveView: View, removeIconClickListener: OnCli
     val removeItemIconButton: Button = itemToMoveView.findViewById(R.id.removeItemIcon)
 
 
-    init {
-//        itemToMoveView.setOnClickListener(this)
-        removeItemIconButton.setOnClickListener(removeIconClickListener)
-    }
-
-    fun bind(data: BinMovementDataClass){
+    fun bind(data: BinMovementDataClass, onRemoveOfItem:(Int) -> Unit){
         itemNameTextView.text = data.itemName
         itemNumberTextView.text = data.itemNumber
         quantityToMoveTextView.text = "Count: " + data.qtyToMoveFromBinToBin.toString()
         fromBinNumberTextView.text = data.fromBinNumber
         toBinNumberTextView.text = data.toBinNumber
+        removeItemIconButton.setOnClickListener{
+            onRemoveOfItem(adapterPosition)
+        }
+
     }
+
 
 
 

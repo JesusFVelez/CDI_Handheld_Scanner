@@ -126,14 +126,15 @@ class BinMovementFragment : Fragment() {
 
         toBinNumber = binding.toBinNumber
         addButton = binding.addButton
+        addButton.setOnClickListener{
+            val newItemToAdd = BinMovementDataClass(viewModel.)
+            adapter.addItem()
+        }
         continueButton = binding.continueButton
         clearButton = binding.clearButton
 
 
-        adapter = BinMovementAdapter(View.OnClickListener {
-            // TODO - Remove the item from the adapter data when the trashcan button is clicked
-        })
-
+        adapter = BinMovementAdapter()
         itemsBeingMovedRecyclerView = binding.itemsBeingMovedRecyclerView
         itemsBeingMovedRecyclerView.adapter = adapter
 
