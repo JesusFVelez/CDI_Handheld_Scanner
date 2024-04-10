@@ -119,22 +119,26 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
         _currentlyChosenItemForSearch.value = chosenItem
     }
 
-    fun fetchItemSuggestions(binLocation: String) {
+    fun fetchItemSuggestions(filter: String = "") {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             Log.e("ViewModel", "Failed to fetch item suggestions: ${exception.localizedMessage}")
         }
 
-        try {
-            viewModelScope.launch(exceptionHandler) {
-                val response = ScannerAPI.getAssignExpirationDateService()
-                    .getSuggestionsForItemOrBin(binLocation)
-                _suggestions.value = response.response.binItemInfo.binItemInfo
-                _wasLastAPICallSuccessful.value = true
+        viewModelScope.launch(exceptionHandler) {
+            val response = ScannerAPI.getAssignExpirationDateService()
+                .getSuggestionsForItemOrBin()
+            val filteredSuggestions = if (filter.isNotEmpty()) {
+                response.response.binItemInfo.binItemInfo.filter {
+                    it.itemNumber.contains(filter, ignoreCase = true) ||
+                            it.barCode?.contains(filter, ignoreCase = true) == true
+                }
+            } else {
+                response.response.binItemInfo.binItemInfo
             }
-        }catch (e: Exception){
-            _wasLastAPICallSuccessful.value = false
-            Log.i("Get All item for suggestions - Assign Lot Number & Exp Date (e) " , "Error -> ${e.message}")
+            _suggestions.value = filteredSuggestions
+            _wasLastAPICallSuccessful.value = true
         }
     }
+
 }

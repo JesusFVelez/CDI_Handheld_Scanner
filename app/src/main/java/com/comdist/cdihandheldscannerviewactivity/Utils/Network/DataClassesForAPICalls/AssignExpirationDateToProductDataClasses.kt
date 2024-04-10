@@ -73,6 +73,7 @@ data class ItemData(
     @Json(name = "itemDescription") val itemDescription: String,
     @Json(name = "binLocation") val binLocation: String,
     @Json(name = "expireDate") val expireDate: String?,
-    @Json(name = "lotNumber") val lotNumber: String?
+    @Json(name = "lotNumber") val lotNumber: String?,
+    @Json(name = "barCode") val barCode: String?
 )
 

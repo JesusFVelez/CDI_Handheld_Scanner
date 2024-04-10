@@ -71,7 +71,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
         // Setup AutoCompleteTextView
         progressDialog.show()
-        viewModel.fetchItemSuggestions("") // Assuming this will populate `viewModel.suggestions`
+        viewModel.fetchItemSuggestions() // Assuming this will populate `viewModel.suggestions`
     }
 
     private fun navigateToAssignExpirationDateAndLotNumberFragment() {
@@ -142,6 +142,15 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        /*binding.itemNumberSearchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.fetchItemSuggestions(s.toString())
+            }
+        })*/
+
     }
 
 

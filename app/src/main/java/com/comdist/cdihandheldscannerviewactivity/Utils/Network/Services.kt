@@ -74,7 +74,7 @@ interface AssignLotNumberResources {
 interface AssignExpirationDateResources {
 
     @GET("getAllItemsInBinForSuggestion")
-    suspend fun getSuggestionsForItemOrBin(@Query("pBinLocation") binLocation: String): GetAllItemsInBinForSuggestionResponseWrapper
+    suspend fun getSuggestionsForItemOrBin(): GetAllItemsInBinForSuggestionResponseWrapper
 
     @PUT("assignExpireDate")
     suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String, @Query("pLotNumber") pLotNumber:String): AssignExpDateResponseWrapper
