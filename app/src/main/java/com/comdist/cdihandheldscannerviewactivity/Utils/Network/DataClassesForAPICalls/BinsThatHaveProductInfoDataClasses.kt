@@ -1,4 +1,4 @@
-package com.comdist.cdihandheldscannerviewactivity.Utils.Network
+package com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 // All the JSON Response Data classes for the getBinsThatHaveItem backend end point
 @JsonClass(generateAdapter = true)
 data class ResponseWrapperBinsWithProduct(
-    val response: ResponseBinsWithProduct
+    @Json(name = "response") val response: ResponseBinsWithProduct
 )
 
 @JsonClass(generateAdapter = true)
