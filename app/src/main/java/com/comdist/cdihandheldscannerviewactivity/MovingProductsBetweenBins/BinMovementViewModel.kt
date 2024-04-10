@@ -42,6 +42,10 @@ class BinMovementViewModel: ViewModel() {
     val warehouseNumber: LiveData<Int>
         get() = _warehouseNumber
 
+    private val _currentlyChosenItemToMove = MutableLiveData<itemsInBin>()
+    val currentlyChosenItemToMove: LiveData<itemsInBin>
+        get() = _currentlyChosenItemToMove
+
 
 
     init {
@@ -51,6 +55,10 @@ class BinMovementViewModel: ViewModel() {
             "isQuantityValid" to "",
             "moveItemBetweenBins" to ""
         )
+    }
+
+    fun setCurrentlyChosenItemToMove(itemToMove: itemsInBin){
+        _currentlyChosenItemToMove.value = itemToMove
     }
 
     fun setCompanyIDFromSharedPref(companyID: String){

@@ -47,10 +47,6 @@ class BinMovementFragment : Fragment() {
 
     }
 
-
-
-
-
     private fun fillItemNumberSpinnerWithItems( listOfItemsInBin:List<itemsInBin>){
         val itemsInBin = mutableListOf<itemsInBin>()
         for (anItem in listOfItemsInBin){
@@ -104,6 +100,7 @@ class BinMovementFragment : Fragment() {
         itemNumberSpinner = binding.itemNumberSpinner
         itemNumberSpinner.setOnItemClickListener{ parent, view, position, id ->
             val selectedItem = itemNumberDropdownAdapter.getItem(position) as itemsInBin
+            viewModel.setCurrentlyChosenItemToMove(selectedItem)
             itemNumberSpinner.setText(selectedItem.itemNumber.uppercase(),false)
         }
         itemAmountEditText = binding.itemAmountEditText
@@ -127,8 +124,13 @@ class BinMovementFragment : Fragment() {
         toBinNumber = binding.toBinNumber
         addButton = binding.addButton
         addButton.setOnClickListener{
-            val newItemToAdd = BinMovementDataClass(viewModel.)
-            adapter.addItem()
+            val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
+            val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
+            val quantityToMove = itemAmountEditText.text.toString().toInt()
+            val fromBin = fromBinNumber.text.toString()
+            val toBin = toBinNumber.text.toString()
+            val newItemToAdd = BinMovementDataClass(itemName, itemNumber, quantityToMove, fromBin, toBin)
+            adapter.addItem(newItemToAdd)
         }
         continueButton = binding.continueButton
         clearButton = binding.clearButton
