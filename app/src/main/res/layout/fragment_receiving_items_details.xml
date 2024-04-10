@@ -163,13 +163,13 @@
                     android:dropDownHeight="wrap_content"
                     android:gravity="center"
                     android:hint="New Bin"
-                    app:layout_constraintBottom_toTopOf="@+id/newLotEditText"
+                    app:layout_constraintBottom_toTopOf="@+id/newLotAutoCompleteTextView"
                     app:layout_constraintEnd_toEndOf="@+id/addButton"
                     app:layout_constraintStart_toStartOf="@+id/addButton"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <AutoCompleteTextView
-                    android:id="@+id/newLotEditText"
+                    android:id="@+id/newLotAutoCompleteTextView"
                     android:background="@drawable/rectangle_text_box"
                     android:layout_width="201dp"
                     android:layout_height="54dp"
@@ -189,9 +189,9 @@
                     android:layout_height="50dp"
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/toggle_switch_on"
-                    app:layout_constraintBottom_toBottomOf="@+id/newLotEditText"
-                    app:layout_constraintEnd_toStartOf="@+id/newLotEditText"
-                    app:layout_constraintTop_toTopOf="@+id/newLotEditText" />
+                    app:layout_constraintBottom_toBottomOf="@+id/newLotAutoCompleteTextView"
+                    app:layout_constraintEnd_toStartOf="@+id/newLotAutoCompleteTextView"
+                    app:layout_constraintTop_toTopOf="@+id/newLotAutoCompleteTextView" />
 
                 <EditText
                     android:id="@+id/QuantityEditText"
@@ -202,9 +202,9 @@
                     android:dropDownHeight="wrap_content"
                     android:gravity="center"
                     android:hint="Quantity"
-                    app:layout_constraintEnd_toEndOf="@+id/newLotEditText"
+                    app:layout_constraintEnd_toEndOf="@+id/newLotAutoCompleteTextView"
                     app:layout_constraintHorizontal_bias="0.142"
-                    app:layout_constraintStart_toStartOf="@+id/newLotEditText"
+                    app:layout_constraintStart_toStartOf="@+id/newLotAutoCompleteTextView"
                     app:layout_constraintBottom_toTopOf="@id/NewExpirationDateEditText"/>
 
 

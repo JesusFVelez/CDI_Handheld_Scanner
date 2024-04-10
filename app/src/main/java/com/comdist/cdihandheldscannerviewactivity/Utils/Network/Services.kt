@@ -22,6 +22,7 @@ class ServicePaths{
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
         const val RPMAccess: String = "/RPMAccessService/"
         const val AssignBarcode: String = "/AssignBarcodeService/"
+        const val ReceivingProducts: String = "/ReceivingProductService/"
     }
 }
 
@@ -119,6 +120,23 @@ interface AssignBarcodeToItemServices {
     suspend fun setBarcode(@Query("itemNumber") itemNumber: String, @Query("selectedBarcode") selectedBarcode: String): ResponseWrapperSetBarcode
 }
 
+interface ReceivingProductsServices {
+    @GET("getDoorBins")
+    suspend fun getDoorBins(@Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String)
+
+    @GET("getItemInfo")
+    suspend fun getItemInfo(@Query("scannedCode") scannedCode: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String)
+
+    @GET("getPreReceiving")
+    suspend fun getPreReceiving(@Query("binNumber") binNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String)
+
+    @GET("getPreReceivingInfo")
+    suspend fun getPreReceivingInfo(@Query("preReceiving") preReceivingNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String)
+
+
+
+
+}
 interface ViewProductsInBinServices{
     // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
     @GET("getItemsInBin")

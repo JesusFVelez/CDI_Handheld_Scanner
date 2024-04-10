@@ -3,7 +3,7 @@ package com.comdist.cdihandheldscannerviewactivity.Utils.Network
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-// All the JSON Response Data classes for the Receiving backend end point
+// All the JSON Response Data classes for the Move Items Between Bins backend end point
 
 // Requests all bins on a warehouse
 @JsonClass(generateAdapter = true)
