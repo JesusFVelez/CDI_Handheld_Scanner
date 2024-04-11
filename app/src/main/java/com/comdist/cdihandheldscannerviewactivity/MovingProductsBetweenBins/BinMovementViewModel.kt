@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWarehouse
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.binInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -49,6 +49,14 @@ class BinMovementViewModel: ViewModel() {
     private val _wasBinConfirmed = MutableLiveData<Boolean>()
     val wasBinConfirmed: LiveData<Boolean>
         get() = _wasBinConfirmed
+
+    private val _wasItemMovedSuccessfully = MutableLiveData<Boolean>()
+    val wasItemMovedSuccessfully: LiveData<Boolean>
+        get() = _wasItemMovedSuccessfully
+
+    private val _allItemsMoved = MutableLiveData<Boolean>()
+    val allItemsMoved: LiveData<Boolean>
+        get() = _allItemsMoved
 
 
 
@@ -123,7 +131,43 @@ class BinMovementViewModel: ViewModel() {
             }
         }
 
+    fun resetAllItemsMovedFlag() {
+        _allItemsMoved.value = false
+    }
 
+
+    fun moveItemsBetweenBins(itemsToMove: List<BinMovementDataClass>) {
+        // Exception handler for API call
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i(
+                "Move Item Between Bins - Bin Movement (exceptionHandler) ",
+                "Error -> ${exception.message}"
+            )
+        }
+
+        viewModelScope.launch {
+            val jobs = itemsToMove.map { itemToMove ->
+                launch {
+                    try {
+                        val response = ScannerAPI.getMovingItemsBetweenBinsService()
+                            .moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
+                        _wasLastAPICallSuccessful.value = true
+                        _wasItemMovedSuccessfully.value = response.response.wasItemMoved
+                        _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
+                    } catch (e: Exception) {
+                        _wasLastAPICallSuccessful.value = false
+                        Log.i("API Error", "Error -> ${e.message}")
+                    }
+                }
+            }
+            // Wait for all jobs to complete
+            jobs.joinAll()
+
+            // After all jobs are complete, notify the UI
+            _allItemsMoved.value = true // You need to add this LiveData<Boolean> to your ViewModel
+        }
+    }
 
 
     fun moveItemBetweenBins(itemToMove: BinMovementDataClass){
@@ -142,6 +186,8 @@ class BinMovementViewModel: ViewModel() {
                 val response =
                     ScannerAPI.getMovingItemsBetweenBinsService().moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
                 _wasLastAPICallSuccessful.value = true
+                _wasItemMovedSuccessfully.value = response.response.wasItemMoved
+                _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
 
 
             }

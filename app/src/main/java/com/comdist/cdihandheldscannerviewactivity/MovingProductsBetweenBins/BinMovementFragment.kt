@@ -1,5 +1,6 @@
 package com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
+import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinMovementBinding
 
@@ -36,6 +38,7 @@ class BinMovementFragment : Fragment() {
     private lateinit var itemsBeingMovedRecyclerView:RecyclerView
     private lateinit var continueButton: Button
     private lateinit var clearButton: Button
+    private lateinit var progressDialog: Dialog
 
     private lateinit var adapter: BinMovementAdapter
     private lateinit var itemNumberDropdownAdapter:CustomItemDropDownAdapter
@@ -77,19 +80,52 @@ class BinMovementFragment : Fragment() {
         val warehouseNumber: Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
         viewModel.setWarehouseFromSharedPref(warehouseNumber)
 
+        progressDialog.show()
         //getting all items from backend to fill the item number drop down
         viewModel.getAllItemsInAllBinsFromBackend()
 
         return binding.root
     }
 
+    private fun clearAllItemsFromRecyclerView(){
+        adapter.clearAllItems()
+        adapter.notifyDataSetChanged()
+    }
+
     private fun initObservers(){
+
+        viewModel.allItemsMoved.observe(viewLifecycleOwner) { allMoved ->
+            progressDialog.dismiss()
+            if (allMoved) {
+                // Reset the flag or handle as needed
+                AlerterUtils.startSuccessAlert(requireActivity(), "Success","Successfully Moved items to respective bins")
+                viewModel.resetAllItemsMovedFlag()
+                clearAllItemsFromRecyclerView()
+                progressDialog.show()
+                viewModel.getAllItemsInAllBinsFromBackend()
+            }
+
+        }
+
+        viewModel.wasItemMovedSuccessfully.observe(viewLifecycleOwner){wasItemMoved ->
+            if (!wasItemMoved) {
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["moveItemBetweenBins"]!!
+                )
+            }
+
+        }
+
+
         viewModel.listOfBinsInWarehouse.observe(viewLifecycleOwner){
         }
 
         viewModel.listOfAllItemsInAllBins.observe(viewLifecycleOwner){newListOfItemsInBin ->
-            if(fromBinNumber.text.toString().isNotEmpty())
-                fillItemNumberSpinnerWithItems( newListOfItemsInBin)
+            progressDialog.dismiss()
+            if(fromBinNumber.text.toString().isNotEmpty()) {
+                fillItemNumberSpinnerWithItems(newListOfItemsInBin)
+            }
         }
     }
 
@@ -123,6 +159,8 @@ class BinMovementFragment : Fragment() {
             }
         })
 
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
+
         toBinNumber = binding.toBinNumber
         addButton = binding.addButton
         addButton.setOnClickListener{
@@ -145,7 +183,7 @@ class BinMovementFragment : Fragment() {
                 val quantityAvailable = quantityOnHand - quantityToBePicked
 
 
-                if (quantityToMove >= (quantityOnHand - quantityToBePicked)) {
+                if (quantityToMove > (quantityOnHand - quantityToBePicked)) {
                     AlerterUtils.startErrorAlerter(
                         requireActivity(),
                         "Cannot move ${quantityToMove} units because there is only ${quantityAvailable} units available."
@@ -161,9 +199,8 @@ class BinMovementFragment : Fragment() {
 
         continueButton = binding.continueButton
         continueButton.setOnClickListener {
-            for (items in adapter.data){
-
-            }
+            progressDialog.show()
+            viewModel.moveItemsBetweenBins(adapter.data)
         }
 
 

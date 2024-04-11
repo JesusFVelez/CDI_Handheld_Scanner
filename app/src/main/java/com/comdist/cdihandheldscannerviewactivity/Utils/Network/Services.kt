@@ -83,7 +83,7 @@ interface MoveItemsBetweenBinsServices{
     suspend fun verifyIfQuantityIsValid(@Query("quantity") quantityToVerify: Float, @Query("rowNumber") rowID: String): isQuantityValidResponseWrapper
 
     //Endpoint for moving items from one bin to another bin
-    @GET("moveItemBetweenBins")
+    @PUT("moveItemBetweenBins")
     suspend fun moveItemBetweenBins(@Query("rowNumber") rowID:String, @Query("newBin") newBin:String, @Query("quantity") quantityToMove: Float): moveItemBetweenBinsResponseWrapper
 
     //Endpoint for removing an item from a bin
