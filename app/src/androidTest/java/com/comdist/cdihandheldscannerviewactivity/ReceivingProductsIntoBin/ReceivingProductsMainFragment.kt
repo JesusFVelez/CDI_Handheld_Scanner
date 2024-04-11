@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
@@ -15,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingItemsMainBinding
+import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 
 class ReceivingProductsMainFragment : Fragment() {
 
@@ -25,6 +27,7 @@ class ReceivingProductsMainFragment : Fragment() {
     private lateinit var preReceivingTextView: TextView
     private lateinit var purchaseOrderNumberTextView: TextView
     private lateinit var searchButton: Button
+    private lateinit var finishButton: Button
 
     private val viewModel: ReceivingProductsViewModel by activityViewModels()
     private lateinit var binding: FragmentReceivingItemsMainBinding
@@ -43,6 +46,16 @@ class ReceivingProductsMainFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receiving_items_main, container, false)
 
+        // Retrieve company ID from shared preferences
+        val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        viewModel.setCompanyIDFromSharedPref(companyID)
+
+        // Retrieve warehouse number from shared preferences
+        val warehouseNumber: Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+        viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
+
+        hasPageJustStarted = true
+
         initUIElements()
         initObservers()
 
@@ -59,10 +72,6 @@ class ReceivingProductsMainFragment : Fragment() {
         }
 
         hasPageJustStarted = false
-        binNumberAutoCompleteTextView.text.clear()
-        doorBinNumberTextView.text = ""
-        preReceivingTextView.text = ""
-        purchaseOrderNumberTextView.text = ""
     }
 
     // Handles onPause lifecycle event
@@ -83,10 +92,11 @@ class ReceivingProductsMainFragment : Fragment() {
         preReceivingTextView = binding.PreReceivingTextView
         purchaseOrderNumberTextView = binding.POInfoTextView
         searchButton = binding.SearchBinButton
+        finishButton = binding.FinishReceivingButton
 
         binNumberAutoCompleteTextView.setOnEditorActionListener{ v, actionId, event ->
             if(actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
-                getPreReceiving()
+                viewModel.getPreReceiving(binNumberAutoCompleteTextView.text.toString(), viewModel.warehouseNumber.value!!, viewModel.companyID.value!!.toString())
                 true
             } else {
                 false

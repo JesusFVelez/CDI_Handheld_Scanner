@@ -31,7 +31,8 @@ data class ResponseWrapperItemDetailsWrapper(
 @JsonClass(generateAdapter = true)
 data class ResponseItemDetailsWrapper(
     @Json(name="errorMessage") val errorMessage: String,
-    @Json(name="itemInfo") val itemInfo: ResponseItemInfoList
+    @Json(name="itemInfo") val itemInfo: ResponseItemInfoList,
+    @Json(name="wasItemFound") val wasItemFound: Boolean
 )
 @JsonClass(generateAdapter = true)
 data class ResponseItemInfoList(
@@ -56,17 +57,6 @@ data class PreReceiving (
     @Json(name="wasPreReveivingFound") val wasPreReceivingFound: Boolean
 )
 
-// Confirms existence of a bin
-@JsonClass(generateAdapter = true)
-data class ResponseConfirmBin(
-    @Json(name="response") val response: BinConfirmation
-)
-@JsonClass(generateAdapter = true)
-data class BinConfirmation (
-    @Json(name="wasBinFound") val wasPreReceivingFound: Boolean,
-    @Json(name="errorMessage") val errorMessage: String
-)
-
 // Request Pre-Receiving Info
 @JsonClass(generateAdapter = true)
 data class ResponseGetPreReceiving(
@@ -89,13 +79,24 @@ data class PreReceivingInfo (
     @Json(name="tt-purchase-order") val tt_purchase_order: String
 )
 
+// Confirms existence of a bin
+@JsonClass(generateAdapter = true)
+data class ResponseConfirmBin(
+    @Json(name="response") val response: BinConfirmation
+)
+@JsonClass(generateAdapter = true)
+data class BinConfirmation (
+    @Json(name="wasBinFound") val wasPreReceivingFound: Boolean,
+    @Json(name="errorMessage") val errorMessage: String
+)
+
 // Moves an item to a door bin
 @JsonClass(generateAdapter = true)
 data class ResponseMoveItemToDoorBin(
-    @Json(name="response") val response: MovementConfirmationToDoor
+    @Json(name="response") val response: MovementConfirmationToDoorBin
 )
 @JsonClass(generateAdapter = true)
-data class MovementConfirmationToDoor  (
+data class MovementConfirmationToDoorBin  (
     @Json(name="errorMessage") val errorMessage: String,
     @Json(name="wasItemMovedToDoor") val wasItemMovedToDoor: Boolean
 )

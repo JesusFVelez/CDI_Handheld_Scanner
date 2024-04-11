@@ -127,8 +127,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
 
     private fun initUIElements(){
-
-
         searchOrderButton = binding.searchOrderButton
         searchOrderButton.setOnClickListener{
             viewModel.setOrderNumber(orderNumberEditText.text.toString())

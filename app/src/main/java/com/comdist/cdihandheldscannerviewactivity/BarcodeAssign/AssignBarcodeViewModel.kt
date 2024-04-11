@@ -145,9 +145,4 @@ class AssignBarcodeViewModel: ViewModel() {
     override fun onCleared() {
         super.onCleared()
     }
-
-    // Function to Clear List of Item Details
-//    fun clearItemDetails() {
-//        _itemInfo.value = listOf()
-//    }
 }
