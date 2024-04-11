@@ -53,8 +53,8 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
 
 
 class ItemPickingViewHolder(orderProductView: View, private val listener: itemInOrderClickListener):RecyclerView.ViewHolder(orderProductView), View.OnClickListener {
-    val itemNumberTextView: TextView = orderProductView.findViewById(R.id.itemNumber)
-    val itemNameTextView: TextView = orderProductView.findViewById(R.id.itemName)
+    val itemNumberTextView: TextView = orderProductView.findViewById(R.id.itemNumberTextView)
+    val itemNameTextView: TextView = orderProductView.findViewById(R.id.itemNameTextView)
     val itemPickingStatusImage: ImageView = orderProductView.findViewById(R.id.itemPickingStatusIcon)
     val binNumberTextView: TextView = orderProductView.findViewById(R.id.binNumber)
     val remainingItemsToPickTextView: TextView = orderProductView.findViewById(R.id.quantityToPick)

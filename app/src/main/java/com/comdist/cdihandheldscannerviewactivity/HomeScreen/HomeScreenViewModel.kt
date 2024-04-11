@@ -22,6 +22,7 @@ class HomeScreenViewModel : ViewModel(){
                 val ItemPickingMenuOption = MenuOptionDataClass("Item Picking", R.id.action_homeScreenFragment_to_orderPickingMainFragment, "RfBtnITEMPICKING")
                 val AssignBarcodeMenuOption = MenuOptionDataClass("Assign Barcode", R.id.action_homeScreenFragment_to_assignBarcodeToProductFragment, "RfBtnAssignBarcode")
                 val BinToBinMovementOption = MenuOptionDataClass("Bin to Bin Movement", R.id.action_homeScreenFragment_to_binMovementFragment, "RfBtnWHRFMOV")
+                val EditItemMenuOption = MenuOptionDataClass("Assign Expiration", R.id.action_homeScreenFragment_to_assignExpirationDateFragment, "RfBtnAssignExpirationDate")
         }
     }
     data class MenuOptionDataClass(

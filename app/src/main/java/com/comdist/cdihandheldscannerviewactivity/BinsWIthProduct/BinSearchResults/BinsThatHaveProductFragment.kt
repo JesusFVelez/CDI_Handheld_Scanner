@@ -53,12 +53,12 @@ class BinsThatHaveProductFragment : Fragment() {
 
 
     private fun initUIElements(){
-        itemNumberTextView = binding.itemNumber
+        itemNumberTextView = binding.itemNumberTextView
         barcodeTextView = binding.barCode
         pickingBinTextView = binding.pickingBinLocation
-        quantityOnHandTextView = binding.QtyOnHandText
-        itemNameTextView = binding.itemName
-        inventoryTypeTextView = binding.inventoryType
+        quantityOnHandTextView = binding.QtyOnHandTextView
+        itemNameTextView = binding.itemNameTextView
+        inventoryTypeTextView = binding.inventoryTypeTextView
         vendorItemNumberTextView = binding.VendorItemNumberText
         binding.ListofBinsThatHaveProd.layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically(): Boolean {

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--    tools:context=".BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/upperDiv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/productdetailsupperbackground"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/itemNumberIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/custom_product_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/itemNumberTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/itemNumberTextView" />
+
+            <TextView
+                android:id="@+id/itemNumberTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal|top"
+                android:text="F010000086"
+                android:textSize="19sp"
+                app:layout_constraintStart_toEndOf="@+id/itemNumberIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/batchNumberIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/batch_or_lote_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/lotTextView"
+                app:layout_constraintEnd_toStartOf="@+id/lotTextView"
+                app:layout_constraintTop_toTopOf="@+id/lotTextView" />
+
+            <TextView
+                android:id="@+id/lotTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_horizontal|top"
+                android:text="46192471"
+                android:textSize="19sp"
+                app:layout_constraintBottom_toBottomOf="@+id/itemNumberTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/binLocationIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/bindetailpage"
+                app:layout_constraintBottom_toBottomOf="@id/binLocationTextView"
+                app:layout_constraintEnd_toStartOf="@id/binLocationTextView"
+                app:layout_constraintTop_toTopOf="@id/binLocationTextView" />
+
+            <TextView
+                android:id="@+id/binLocationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_horizontal|top"
+                android:text="02-A-133"
+                android:textSize="19sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/barcodeIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/date_time"
+                app:layout_constraintBottom_toBottomOf="@+id/expirationDateTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/expirationDateTextView" />
+
+
+            <TextView
+                android:id="@+id/expirationDateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_horizontal|top"
+                android:text="01/01/2025"
+                android:textSize="19sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barcodeIcon" />
+
+
+            <TextView
+                android:id="@+id/itemNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:gravity="center_horizontal|top"
+                android:text="Habichuelas Goya A/S"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/binLocationTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/LowerDiv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/upperDiv"
+            app:layout_constraintVertical_bias="0.0">
+
+
+            <AutoCompleteTextView
+                android:id="@+id/NewExpirationDateEditText"
+                style="@style/item_date_text_box"
+                android:layout_width="201dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:dropDownHeight="wrap_content"
+                android:gravity="center"
+                android:hint="Expiration Date"
+                app:layout_constraintBottom_toTopOf="@+id/newLotEditText"
+                app:layout_constraintEnd_toEndOf="@+id/enterButton"
+                app:layout_constraintHorizontal_bias="0.509"
+                app:layout_constraintStart_toStartOf="@+id/enterButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <Button
+                android:id="@+id/ToggleButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/toggle_switch_on"
+                app:layout_constraintBottom_toBottomOf="@+id/newLotEditText"
+                app:layout_constraintEnd_toStartOf="@+id/newLotEditText"
+                app:layout_constraintTop_toTopOf="@+id/newLotEditText" />
+
+            <AutoCompleteTextView
+                android:id="@+id/newLotEditText"
+                style="@style/lot_edit_text_box"
+                android:layout_width="201dp"
+                android:layout_height="54dp"
+                android:layout_marginBottom="8dp"
+                android:dropDownHeight="wrap_content"
+                android:gravity="center"
+                android:hint="New Lot"
+                app:layout_constraintBottom_toTopOf="@+id/enterButton"
+                app:layout_constraintEnd_toEndOf="@+id/NewExpirationDateEditText"
+                app:layout_constraintHorizontal_bias="0.142"
+                app:layout_constraintStart_toStartOf="@+id/NewExpirationDateEditText" />
+
+            <Button
+                android:id="@+id/enterButton"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/menu_option_button"
+                android:text="Enter"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
+</layout>
+

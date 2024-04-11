@@ -33,6 +33,7 @@ class HomeScreenFragment : Fragment() {
     private lateinit var itemPickingButton: Button
     private lateinit var binMovementButton: Button
     private lateinit var assignBarcodeButton: Button
+    private lateinit var assignExpirationDateButton: Button
     // Dialog for showing progress
     private lateinit var progressDialog: Dialog
 
@@ -54,23 +55,23 @@ class HomeScreenFragment : Fragment() {
 
     private fun initCircularRevealAnim(view:View){
         view.post {
-                // Get the center for the clipping circle
-                val cx = (view.left + view.right) / 2
-                val cy = (view.top + view.bottom) / 2
+            // Get the center for the clipping circle
+            val cx = (view.left + view.right) / 2
+            val cy = (view.top + view.bottom) / 2
 
-                // Get the final radius for the clipping circle
-                val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+            // Get the final radius for the clipping circle
+            val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
 
-                // Create the animator for this view (the start radius is zero)
-                val anim =
-                    ViewAnimationUtils.createCircularReveal(view, cx, cy, 0f, finalRadius)
+            // Create the animator for this view (the start radius is zero)
+            val anim =
+                ViewAnimationUtils.createCircularReveal(view, cx, cy, 0f, finalRadius)
 
-                // Set a longer duration for the animation
-                anim.setDuration(500);  // Duration in milliseconds, e.g., 1000ms = 1 second
+            // Set a longer duration for the animation
+            anim.setDuration(500);  // Duration in milliseconds, e.g., 1000ms = 1 second
 
-                // Make the view visible and start the animation
-                view.visibility = View.VISIBLE
-                anim.start()
+            // Make the view visible and start the animation
+            view.visibility = View.VISIBLE
+            anim.start()
 
         }
     }
@@ -133,6 +134,7 @@ class HomeScreenFragment : Fragment() {
         itemPickingButton = binding.ItemPickingButton
         assignBarcodeButton = binding.assignBarcodeButton
         binMovementButton = binding.BinToBinMovementButton
+        assignExpirationDateButton = binding.assignExpirationDateButton
 
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
@@ -171,6 +173,9 @@ class HomeScreenFragment : Fragment() {
 
         binMovementButton.setOnClickListener {
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.BinToBinMovementOption)
+        }
+        assignExpirationDateButton.setOnClickListener{
+            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.EditItemMenuOption)
         }
     }
 
