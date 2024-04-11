@@ -276,7 +276,10 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
                     // Parsing and formatting the date
                     val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Adjust this format to match the incoming date format
-                    val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                    val outputFormat = SimpleDateFormat("MM-dd-yyyy"
+
+
+                        , Locale.getDefault())
                     val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
                     val formattedDate = if (date != null) outputFormat.format(date) else ""
 
