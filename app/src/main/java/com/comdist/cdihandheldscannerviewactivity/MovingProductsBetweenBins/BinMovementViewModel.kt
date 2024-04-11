@@ -46,6 +46,10 @@ class BinMovementViewModel: ViewModel() {
     val currentlyChosenItemToMove: LiveData<itemsInBin>
         get() = _currentlyChosenItemToMove
 
+    private val _wasBinConfirmed = MutableLiveData<Boolean>()
+    val wasBinConfirmed: LiveData<Boolean>
+        get() = _wasBinConfirmed
+
 
 
     init {
@@ -118,6 +122,35 @@ class BinMovementViewModel: ViewModel() {
                 Log.i("Get All Items In Bin - Bin Movement (e) ", "Error -> ${e.message}")
             }
         }
+
+
+
+
+    fun moveItemBetweenBins(itemToMove: BinMovementDataClass){
+        // Exception handler for API call
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i(
+                "Move Item Between Bins - Bin Movement (exceptionHandler) ",
+                "Error -> ${exception.message}"
+            )
+        }
+
+        // API call to get the products in order
+        try {
+            viewModelScope.launch(exceptionHandler) {
+                val response =
+                    ScannerAPI.getMovingItemsBetweenBinsService().moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
+                _wasLastAPICallSuccessful.value = true
+
+
+            }
+
+        } catch (e: Exception) {
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Move Item Between Bins - Bin Movement (e) ", "Error -> ${e.message}")
+        }
+    }
 
 
 

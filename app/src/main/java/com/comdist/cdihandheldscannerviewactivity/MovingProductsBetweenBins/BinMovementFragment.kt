@@ -18,6 +18,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinMovementBinding
@@ -114,6 +115,7 @@ class BinMovementFragment : Fragment() {
                 // Code to execute as text is changing
                 val filteredList = filterItemsByBinLocation(s.toString())
                 fillItemNumberSpinnerWithItems(filteredList)
+                itemNumberSpinner.text.clear()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -124,24 +126,71 @@ class BinMovementFragment : Fragment() {
         toBinNumber = binding.toBinNumber
         addButton = binding.addButton
         addButton.setOnClickListener{
-            val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
-            val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
-            val quantityToMove = itemAmountEditText.text.toString().toInt()
-            val fromBin = fromBinNumber.text.toString()
-            val toBin = toBinNumber.text.toString()
-            val newItemToAdd = BinMovementDataClass(itemName, itemNumber, quantityToMove, fromBin, toBin)
-            adapter.addItem(newItemToAdd)
+            val isAtLeastOneEditTextEmpty = verifyIfAtLeastOneEditTextIsEmpty()
+            if(isAtLeastOneEditTextEmpty)
+                AlerterUtils.startErrorAlerter(requireActivity(), "All fields must be filled")
+            else {
+                val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
+                val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
+                val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
+                val quantityToMove = itemAmountEditText.text.toString().toInt()
+                val fromBin = fromBinNumber.text.toString()
+                val toBin = toBinNumber.text.toString()
+
+
+                val quantityToBePicked =
+                    viewModel.currentlyChosenItemToMove.value!!.quantityInPicking.toInt()
+                val quantityOnHand =
+                    viewModel.currentlyChosenItemToMove.value!!.quantityOnHand.toInt()
+                val quantityAvailable = quantityOnHand - quantityToBePicked
+
+
+                if (quantityToMove >= (quantityOnHand - quantityToBePicked)) {
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        "Cannot move ${quantityToMove} units because there is only ${quantityAvailable} units available."
+                    )
+                } else {
+                    val newItemToAdd =
+                        BinMovementDataClass(itemName, itemNumber, rowIDOfItem ,quantityToMove, fromBin, toBin)
+                    adapter.addItem(newItemToAdd)
+                    clearAllBinMovementEditText()
+                }
+            }
         }
+
         continueButton = binding.continueButton
+        continueButton.setOnClickListener {
+            for (items in adapter.data){
+
+            }
+        }
+
+
         clearButton = binding.clearButton
+        clearButton.setOnClickListener { clearAllBinMovementEditText() }
 
+        adapter = BinMovementAdapter { hasItems ->
+            continueButton.isEnabled = hasItems
+        }
 
-        adapter = BinMovementAdapter()
         itemsBeingMovedRecyclerView = binding.itemsBeingMovedRecyclerView
         itemsBeingMovedRecyclerView.adapter = adapter
 
 
     }
+
+    private fun verifyIfAtLeastOneEditTextIsEmpty():Boolean{
+        return fromBinNumber.text.isEmpty() || toBinNumber.text.isEmpty() || itemAmountEditText.text.isEmpty() || itemNumberSpinner.text.isEmpty()
+    }
+
+    private fun clearAllBinMovementEditText(){
+        fromBinNumber.text.clear()
+        toBinNumber.text.clear()
+        itemAmountEditText.text.clear()
+        itemNumberSpinner.text.clear()
+    }
+
 
     class CustomItemDropDownAdapter(context: Context, private var suggestions: List<itemsInBin>): ArrayAdapter<itemsInBin>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -151,7 +200,7 @@ class BinMovementFragment : Fragment() {
             val binLocationTextView = view.findViewById<TextView>(R.id.binLocationValueTextView)
             val quantityOnHandTextView = view.findViewById<TextView>(R.id.QuantityInHandValueTextView)
             val quantityInPickingTextView = view.findViewById<TextView>(R.id.QuantityInPickingValueTextView)
-
+            val quantityAvailableToMoveTextView = view.findViewById<TextView>(R.id.QuantityAvailableValueTextView)
 
             val item = suggestions[position]
             itemDescriptionTextView.text = item.itemName
@@ -159,6 +208,7 @@ class BinMovementFragment : Fragment() {
             binLocationTextView.text = item.binLocation
             quantityOnHandTextView.text = item.quantityOnHand.toString()
             quantityInPickingTextView.text = item.quantityInPicking.toString()
+            quantityAvailableToMoveTextView.text = (item.quantityOnHand - item.quantityInPicking).toString()
 
 
             return view

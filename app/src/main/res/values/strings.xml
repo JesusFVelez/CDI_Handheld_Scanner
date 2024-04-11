@@ -49,7 +49,7 @@
     <string name="binLocationLabelBinMovement">Bin Location:</string>
     <string name="QuantityOnHandBinLabelMovement">On Hand:</string>
     <string name="QuantityInPickingLabelBinMovement">In Picking:</string>
-    <string name="item_ammount">Item amount</string>
+    <string name="amount_to_move">Amount to move</string>
     <string name="to_bin">To Bin</string>
     <string name="add_button">Add</string>
     <string name="clear_button">Clear</string>

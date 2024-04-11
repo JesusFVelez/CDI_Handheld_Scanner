@@ -53,11 +53,11 @@
         android:id="@+id/fromToArrow"
         android:layout_width="30dp"
         android:layout_height="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="10dp"
         android:src="@drawable/black_arrow_right"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/toBinIcon"
+        app:layout_constraintStart_toEndOf="@+id/fromBinNumber"
         app:layout_constraintTop_toTopOf="@+id/fromBinNumber" />
 
     <ImageView
@@ -74,12 +74,11 @@
         android:id="@+id/toBinNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
         android:text="02-A-132"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/quantityToMove" />
+        app:layout_constraintEnd_toEndOf="@+id/itemName" />
 
     <TextView
         android:id="@+id/itemName"
@@ -98,15 +97,15 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/removeItemIcon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:background="@drawable/icon_red_trash_can"
         android:backgroundTint="@color/red"
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/quantityToMove"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/itemName" />
+        app:layout_constraintStart_toEndOf="@+id/itemName"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

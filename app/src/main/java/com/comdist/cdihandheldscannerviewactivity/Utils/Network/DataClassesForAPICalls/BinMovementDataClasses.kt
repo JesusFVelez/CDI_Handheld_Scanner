@@ -79,7 +79,8 @@ data class confirmBinResponseWrapper(
 
 @JsonClass(generateAdapter = true)
 data class confirmBinResponse(
-    @Json(name = "wasBinConfirmed") val wasBinConfirmed: Boolean
+    @Json(name = "wasBinConfirmed") val wasBinConfirmed: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
 )
 
 

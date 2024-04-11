@@ -1,5 +1,6 @@
 package com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -9,8 +10,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 
-class BinMovementAdapter () : RecyclerView.Adapter<BinMovementViewHolder>(){
+class BinMovementAdapter (private val onDataSetChanged: (Boolean) -> Unit) : RecyclerView.Adapter<BinMovementViewHolder>(){
 
     var data = mutableListOf<BinMovementDataClass>()
         set(value) {
@@ -28,6 +30,7 @@ class BinMovementAdapter () : RecyclerView.Adapter<BinMovementViewHolder>(){
     fun addItem(item: BinMovementDataClass?) {
         data.add(item!!)
         notifyItemInserted(data.size - 1)
+        onDataSetChanged(true)
     }
 
 
@@ -35,6 +38,7 @@ class BinMovementAdapter () : RecyclerView.Adapter<BinMovementViewHolder>(){
     private fun removeItem(item: BinMovementDataClass?){
         data.remove(item)
         notifyItemRemoved(data.indexOf(item))
+        onDataSetChanged(data.isNotEmpty())
     }
 
     override fun getItemCount(): Int {
@@ -51,6 +55,7 @@ class BinMovementAdapter () : RecyclerView.Adapter<BinMovementViewHolder>(){
 data class BinMovementDataClass(
     val itemName: String,
     val itemNumber: String,
+    val rowIDOfItemInFromBin: String,
     val qtyToMoveFromBinToBin: Int,
     val fromBinNumber: String,
     val toBinNumber:String
@@ -73,7 +78,18 @@ class BinMovementViewHolder(itemToMoveView: View): RecyclerView.ViewHolder(itemT
         fromBinNumberTextView.text = data.fromBinNumber
         toBinNumberTextView.text = data.toBinNumber
         removeItemIconButton.setOnClickListener{
-            onRemoveOfItem(adapterPosition)
+
+            // Create popup window to ask whether user wants to delete item or not
+            val popupWindow = PopupWindowUtils.createQuestionPopup(it.context, "Are you sure you want to delete item from the list?", "Delete Item")
+            popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
+                onRemoveOfItem(adapterPosition)
+                popupWindow.dismiss()
+            }
+            popupWindow.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
+                popupWindow.dismiss()
+            }
+            popupWindow.showAtLocation(it.rootView, Gravity.CENTER, 0, 0)
+
         }
 
     }
