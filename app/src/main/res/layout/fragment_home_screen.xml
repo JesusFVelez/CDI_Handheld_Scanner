@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/menu_option_button"
-                android:text="Assign Expiration Date"
+                android:text="Edit Item"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
                 android:textSize="20sp"

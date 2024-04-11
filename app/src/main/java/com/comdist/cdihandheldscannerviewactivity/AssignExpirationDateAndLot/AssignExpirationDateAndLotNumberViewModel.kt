@@ -140,5 +140,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
             _wasLastAPICallSuccessful.value = true
         }
     }
-
+    fun resetSuccessFlag() {
+        _opSuccess.value = false // Or null, if your logic allows
+    }
 }

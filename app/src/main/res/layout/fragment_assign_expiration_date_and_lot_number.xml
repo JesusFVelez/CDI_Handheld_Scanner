@@ -157,18 +157,20 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 
             <AutoCompleteTextView
                 android:id="@+id/NewExpirationDateEditText"
-                style="@style/CustomOrderInput"
+                style="@style/item_date_text_box"
                 android:layout_width="201dp"
                 android:layout_height="54dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
                 android:dropDownHeight="wrap_content"
                 android:gravity="center"
-                android:hint="New Expiration Date"
+                android:hint="Expiration Date"
                 app:layout_constraintBottom_toTopOf="@+id/newLotEditText"
                 app:layout_constraintEnd_toEndOf="@+id/enterButton"
+                app:layout_constraintHorizontal_bias="0.509"
                 app:layout_constraintStart_toStartOf="@+id/enterButton"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
 
             <Button
                 android:id="@+id/ToggleButton"
@@ -182,7 +184,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 
             <AutoCompleteTextView
                 android:id="@+id/newLotEditText"
-                style="@style/CustomOrderInput"
+                style="@style/lot_edit_text_box"
                 android:layout_width="201dp"
                 android:layout_height="54dp"
                 android:layout_marginBottom="8dp"

@@ -10,7 +10,6 @@ import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.DataBindingUtil.inflate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -169,7 +168,7 @@ class HomeScreenFragment : Fragment() {
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.AssignBarcodeMenuOption)
         }
         assignExpirationDateButton.setOnClickListener{
-            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.AssignExpirationMenuOption)
+            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.EditItemMenuOption)
         }
     }
 

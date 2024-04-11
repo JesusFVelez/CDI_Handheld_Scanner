@@ -21,6 +21,7 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -36,6 +37,8 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
     private var shouldShowMessage = true
 
     private var hasAPIBeenCalled = false
+
+    private var isEnterPressed = false
 
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
 
@@ -73,7 +76,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             shouldShowMessage = false
             bundle?.clear()
         }else{
-            shouldShowMessage = true
+           shouldShowMessage = true
         }
     }
 
@@ -116,32 +119,44 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         }
 
         // Existing setupUI logic for the enter button
-        binding.enterButton.setOnClickListener {
-            // Extract string values from EditText fields correctly
+            binding.enterButton.setOnClickListener {
+            isEnterPressed = true
             val itemNumber = viewModel.currentlyChosenItemForSearch.value!!.itemNumber
-            val newExpirationDate = binding.NewExpirationDateEditText.text.toString()
+            val newExpirationDateStr = binding.NewExpirationDateEditText.text.toString()
             val binNumber = viewModel.currentlyChosenItemForSearch.value!!.binLocation
             val lotNumber = binding.newLotEditText.text.toString()
 
-            progressDialog.show()
-            val warehouseNO:Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
-            viewModel.setWarehouseNOFromSharedPref(warehouseNO)
+            // Step 2: Parse the date input
+            val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
+            try {
+                val newExpirationDate = dateFormat.parse(newExpirationDateStr)
 
-            val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-            viewModel.setCompanyIDFromSharedPref(companyID)
+                // Step 3: Validate the parsed date
+                if (newExpirationDate != null && isValidDate(newExpirationDateStr)) {
+                    // Proceed if the date is valid
+                    progressDialog.show()
+                    val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+                    viewModel.setWarehouseNOFromSharedPref(warehouseNO)
 
+                    val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+                    viewModel.setCompanyIDFromSharedPref(companyID)
 
-            // Use extracted String values for checks and ViewModel operations
-            if (itemNumber.isNotBlank() && newExpirationDate.isNotBlank() && binNumber.isNotBlank()) {
-                hasAPIBeenCalled = true
-                viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDate, lotNumber)
-                viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, lotNumber, companyID)
-                viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
-            } else {
-                progressDialog.dismiss()
-                AlerterUtils.startErrorAlerter(requireActivity(), "Make sure date is filled")
+                    if (itemNumber.isNotBlank() && binNumber.isNotBlank()) {
+                        hasAPIBeenCalled = true
+                        viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDateStr, lotNumber)
+                        viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, lotNumber, companyID)
+                        viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
+                    } else {
+                        progressDialog.dismiss()
+                        AlerterUtils.startErrorAlerter(requireActivity(), "Make sure date is filled")
+                    }
+                } else {
+                    // Step 4: Show an error message for invalid date
+                    AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date. Please enter a valid date (MM-DD-YYYY).")
+                }
+            } catch (e: ParseException) {
+                AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
             }
-
         }
 
         // Add this line in your setupUI function
@@ -198,23 +213,51 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
     }
 
+    // Function to validate the date
+    private fun isValidDate(dateStr: String): Boolean {
+        val parts = dateStr.split("-")
+        if (parts.size == 3) {
+            val month = parts[0].toInt()
+            val day = parts[1].toInt()
+            val year = parts[2].toInt()
+
+            if (month !in 1..12) return false
+
+            val maxDays = when (month) {
+                1, 3, 5, 7, 8, 10, 12 -> 31
+                4, 6, 9, 11 -> 30
+                2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+                else -> return false
+            }
+
+            if (day !in 1..maxDays) return false
+        } else {
+            return false
+        }
+
+        return true
+    }
 
     private fun observeViewModel() {
 
-        viewModel.opSuccess.observe(viewLifecycleOwner) {success->
+        viewModel.opSuccess.observe(viewLifecycleOwner) { success ->
             progressDialog.dismiss()
-            if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && !success) {
-                AlerterUtils.startWarningAlerter(requireActivity(), viewModel.opMessage.value!!)
-            }else if (viewModel.opMessage.value!!.isNotBlank() && !shouldShowMessage && success){
-                AlerterUtils.startSuccessAlert(requireActivity(),"", viewModel.opMessage.value!!)
-            }
-            else{}
+                if (shouldShowMessage && success && isEnterPressed) {
+                    // Display success message
+                    AlerterUtils.startSuccessAlert(requireActivity(), "Success!", "Assigned succesfully")
+                    isEnterPressed = false
+                    viewModel.resetSuccessFlag()
+                }
         }
+
 
 
         viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
             itemInfo.firstOrNull()?.let { item ->
                 // Update UI
+                binding.itemNumberTextView.text = item.itemNumber
+                binding.itemNameTextView.text = item.itemDescription
+                binding.binLocationTextView.text = item.binLocation
                 binding.expirationDateTextView.text = item.expireDate ?: "N/A"
                 binding.lotTextView.text = item.lotNumber ?: "N/A"
             }
