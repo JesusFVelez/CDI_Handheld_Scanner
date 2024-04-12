@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DoorBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemInfo
-
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.PreReceiving
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.PreReceivingInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ResponsePreReceiving
