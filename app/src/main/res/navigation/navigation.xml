@@ -38,6 +38,11 @@
             app:destination="@id/SearchExpirationDateAndLotNumberFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeScreenFragment_to_receivingProductsMainFragment"
+            app:destination="@id/receivingProductsMainFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"
@@ -116,4 +121,18 @@
         android:id="@+id/AssignExpirationDateAndLotNumberFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberDataChangeAndDisplay.AssignExpirationDateAndLotNumberFragment"
         android:label="fragment_assign_expiration_date_and_lot_number" />
+    <fragment
+        android:id="@+id/receivingProductsMainFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.ReceivingProductsMainFragment"
+        android:label="ReceivingProductsMainFragment" >
+        <action
+            android:id="@+id/action_receivingProductsMainFragment_to_recevingProductsDetailsFragment"
+            app:destination="@id/recevingProductsDetailsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/recevingProductsDetailsFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.RecevingProductsDetailsFragment"
+        android:label="RecevingProductsDetailsFragment" />
 </navigation>

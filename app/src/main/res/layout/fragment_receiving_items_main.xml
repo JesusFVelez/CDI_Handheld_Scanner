@@ -175,18 +175,18 @@
                 app:layout_constraintTop_toTopOf="parent">
             </androidx.recyclerview.widget.RecyclerView>
             </androidx.constraintlayout.widget.ConstraintLayout>
-            <Button
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/addItemButton"
                 android:layout_width="56dp"
                 android:layout_height="58dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
                 android:layout_marginRight="5dp"
-                android:text="+"
+                android:backgroundTint="@color/CDI_Blue"
+                android:src="@drawable/add_sign"
                 android:textSize="21sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/lowerDiv"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="@+id/lowerDiv"
+                app:layout_constraintEnd_toEndOf="parent" />
             <Button
                 android:id="@+id/FinishReceivingButton"
                 android:layout_width="150dp"

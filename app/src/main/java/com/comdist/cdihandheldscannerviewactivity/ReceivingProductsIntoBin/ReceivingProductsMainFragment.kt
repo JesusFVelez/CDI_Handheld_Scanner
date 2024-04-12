@@ -5,20 +5,16 @@ import android.widget.Button
 import android.content.Context
 import android.widget.Filter
 import androidx.fragment.app.Fragment
-import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import android.view.View
 import android.view.ViewGroup
 import com.comdist.cdihandheldscannerviewactivity.R
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DoorBinList
-import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DoorBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingItemsMainBinding
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
@@ -113,10 +109,12 @@ class ReceivingProductsMainFragment : Fragment() {
 
     }
 
-    private fun initBinNumberAutoCompleteTextView(binNumbers: List<DoorBinList>){
+    private fun initBinNumberAutoCompleteTextView(binNumbers: List<DoorBin>){
         val arrayAdapterForAutoCompleteTextView = CustomBinNumberSuggestionAdapter(requireContext(),binNumbers)
     }
     private fun initObservers(){
+
+
 
         viewModel.doorBins.observe(viewLifecycleOwner){doorBinsList ->
             if(doorBinsList.isNotEmpty())
@@ -134,9 +132,9 @@ class ReceivingProductsMainFragment : Fragment() {
         binding.middleDiv.visibility = View.GONE
     }
 
-    class CustomBinNumberSuggestionAdapter(context: Context, private var suggestions: List<DoorBinList>): ArrayAdapter<DoorBinList>(context, 0, suggestions){
+    class CustomBinNumberSuggestionAdapter(context: Context, private var suggestions: List<DoorBin>): ArrayAdapter<DoorBin>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.bin_list_view, parent, false)
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.suggestion_receiving_door_bin_view, parent, false)
             val binNumberAutoCompleteTextView = view.findViewById<TextView>(R.id.preReceivingTextView)
 
             val item = suggestions[position]
@@ -169,7 +167,7 @@ class ReceivingProductsMainFragment : Fragment() {
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 clear()
                 if (results?.count ?: 0 > 0) {
-                    addAll(results?.values as List<DoorBinList>)
+                    addAll(results?.values as List<DoorBin>)
                     notifyDataSetChanged()
                 } else {
                     notifyDataSetChanged()
@@ -177,7 +175,7 @@ class ReceivingProductsMainFragment : Fragment() {
             }
 
             override fun convertResultToString(resultValue: Any?): CharSequence {
-                return (resultValue as DoorBinList).bin_number
+                return (resultValue as DoorBin).bin_number
             }
         }
     }
