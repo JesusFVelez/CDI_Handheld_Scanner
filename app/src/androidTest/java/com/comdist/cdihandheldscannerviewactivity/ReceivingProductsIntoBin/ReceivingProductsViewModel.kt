@@ -5,8 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DoorBinList
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemInfoList
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DoorBin
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemInfo
+
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.PreReceiving
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.PreReceivingInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ResponsePreReceiving
@@ -34,12 +35,12 @@ class ReceivingProductsViewModel: ViewModel() {
         get() = _errorMessage
 
     // Objects for temporary tables from backend
-    private val _itemInfo = MutableLiveData<List<ItemInfoList>>()
-    val itemInfo: LiveData<List<ItemInfoList>>
+    private val _itemInfo = MutableLiveData<List<ItemInfo>>()
+    val itemInfo: LiveData<List<ItemInfo>>
         get() = _itemInfo
 
-    private val _doorBins = MutableLiveData<List<DoorBinList>>()
-    val doorBins: LiveData<List<DoorBinList>>
+    private val _doorBins = MutableLiveData<List<DoorBin>>()
+    val doorBins: LiveData<List<DoorBin>>
         get() = _doorBins
 
     private val _preReceivingInfo = MutableLiveData<List<PreReceivingInfo>>()
@@ -143,7 +144,7 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 val response = ScannerAPI.getReceivingProductService().getPreReceivingInfo(preReceivingNumber, _warehouseNumber.value!!, _companyID.value!!)
-                _preReceivingInfo.value = listOf(response.response.ttPreReceiving.tt_pre_receiving)
+                _preReceivingInfo.value = response.response.ttPreReceiving.tt_pre_receiving
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = true
@@ -161,9 +162,9 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 val response = ScannerAPI.getReceivingProductService().getItemInfo(scannedCode, warehouseNumber, companyID)
-                _itemInfo.value = response.itemInfo.item_info
-                _wasItemFound.value = response.wasItemFound
-                _errorMessage.value!!["wasItemFoundError"] = response.errorMessage
+                _itemInfo.value = response.response.itemInfo.item_info
+                _errorMessage.value!!["wasItemFoundError"] = response.response.errorMessage
+                _wasItemFound.value = response.response.wasItemFound
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = false
@@ -181,8 +182,8 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 val response = ScannerAPI.getReceivingProductService().wasBinFound(binNumber, warehouseNumber, companyID)
-                _wasBinFound.value = response.wasPreReceivingFound
-                _errorMessage.value!!["wasBinFoundError"] = response.errorMessage
+                _wasBinFound.value = response.response.wasPreReceivingFound
+                _errorMessage.value!!["wasBinFoundError"] = response.response.errorMessage
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = false
@@ -200,8 +201,8 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(scannedCode, doorBin, quantity, lotNumber, expireDate, warehouseNumber, companyID)
-                _wasItemMovedToDoor.value = response.wasItemMovedToDoor
-                _errorMessage.value!!["wasItemMovedToDoorError"] = response.errorMessage
+                _wasItemMovedToDoor.value = response.response.wasItemMovedToDoor
+                _errorMessage.value!!["wasItemMovedToDoorError"] = response.response.errorMessage
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = false

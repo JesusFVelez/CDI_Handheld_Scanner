@@ -16,10 +16,10 @@ data class ResponseDoorBinListWrapper(
 )
 @JsonClass(generateAdapter = true)
 data class ResponseDoorBinList(
-    @Json(name="tt-bin-list") val tt_bin_list: DoorBinList
+    @Json(name="tt-bin-list") val tt_bin_list: List<DoorBin>
 )
 @JsonClass(generateAdapter = true)
-data class DoorBinList (
+data class DoorBin (
     @Json(name="bin-number") val bin_number: String,
     @Json(name="bin-receiving") val bin_receiving: String
 )
@@ -37,10 +37,10 @@ data class ResponseItemDetailsWrapper(
 )
 @JsonClass(generateAdapter = true)
 data class ResponseItemInfoList(
-    @Json(name="item-info") val item_info: ItemInfoList
+    @Json(name="item-info") val item_info: List<ItemInfo>
 )
 @JsonClass(generateAdapter = true)
-data class ItemInfoList(
+data class ItemInfo(
     @Json(name="itemNumber") val itemNumber: String,
     @Json(name="itemDescription") val itemDescription: String,
     @Json(name="itemBarcode") val itemBarcode: String
@@ -55,7 +55,7 @@ data class ResponsePreReceiving(
 data class PreReceiving (
     @Json(name="preReceivingNumber") val preReceivingNumber: String,
     @Json(name="errorMessage") val errorMessage: String,
-    @Json(name="wasPreReveivingFound") val wasPreReceivingFound: Boolean
+    @Json(name="wasPreReceivingFound") val wasPreReceivingFound: Boolean
 )
 
 // Request Pre-Receiving Info
@@ -71,7 +71,7 @@ data class GetPreReceiving (
 )
 @JsonClass(generateAdapter = true)
 data class PreReceivingInfoWrapper (
-    @Json(name="tt-pre-receiving") val tt_pre_receiving: PreReceivingInfo
+    @Json(name="tt-pre-receiving") val tt_pre_receiving: List<PreReceivingInfo>
 )
 @JsonClass(generateAdapter = true)
 data class PreReceivingInfo (
