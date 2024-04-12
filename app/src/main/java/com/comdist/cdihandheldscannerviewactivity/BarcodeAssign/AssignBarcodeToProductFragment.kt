@@ -95,7 +95,7 @@ class AssignBarcodeToProductFragment: Fragment() {
             }
         }
 
-        itemNumberTextView = binding.itemNumber
+        itemNumberTextView = binding.itemNumberTextView
         itemDescriptionTextView = binding.itemDescription
         itemBarcodeTextView = binding.currentBarcodeText
 

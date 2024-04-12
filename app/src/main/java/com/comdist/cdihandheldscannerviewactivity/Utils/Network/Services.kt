@@ -1,9 +1,14 @@
 package com.comdist.cdihandheldscannerviewactivity.Utils.Network
 
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignExpDateResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignLotNumberResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinConfirmationResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConfirmOrderResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConnectionTestingWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DisplayInfoResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinForSuggestionResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemConfirmationResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
@@ -44,6 +49,8 @@ class ServicePaths{
         const val RPMAccess: String = "/RPMAccessService/"
         const val AssignBarcode: String = "/AssignBarcodeService/"
         const val ReceivingProducts: String = "/ReceivingProductService/"
+        const val AssignExpirationDateService: String = "/AssignExpirationDateService/"
+        const val AssignLotNumberService: String = "/AssignLotNumberService/"
     }
 }
 
@@ -59,6 +66,24 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
         .build()
 }
 
+interface AssignLotNumberResources {
+    @PUT("assignLotNumberToBinItem")
+    suspend fun assignLotNumberToBinItem(@Query("pItemNumber") pItemNumber:String, @Query("pCompanyCode") companyID: String, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("pWarehouseNo") warehouseNumber: Int): AssignLotNumberResponseWrapper
+}
+
+//Assign Expiration Date inaterface
+interface AssignExpirationDateResources {
+
+    @GET("getAllItemsInBinForSuggestion")
+    suspend fun getSuggestionsForItemOrBin(): GetAllItemsInBinForSuggestionResponseWrapper
+
+    @PUT("assignExpireDate")
+    suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String, @Query("pLotNumber") pLotNumber:String): AssignExpDateResponseWrapper
+
+    @GET("getItemInformation")
+    suspend fun getItemInformation(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber") pLotNumber: String): DisplayInfoResponseWrapper
+}
+
 interface LoginServices{
     // Endpoint for getting companies
     @GET("getCompanies")
@@ -71,7 +96,6 @@ interface LoginServices{
     //Endpoint for testing the connection
     @GET("testConnection")
     fun testConnection(): Call<ConnectionTestingWrapper>
-
 
     // Endpoint for getting available warehouses
     @GET("getWarehouses")
@@ -231,5 +255,14 @@ object ScannerAPI {
         return retrofit.create(ReceivingProductsServices::class.java)
     }
 
+    fun getAssignExpirationDateService(): AssignExpirationDateResources{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignExpirationDateService)
+        return retrofit.create(AssignExpirationDateResources::class.java)
+    }
+
+    fun getAssignLotNumberService(): AssignLotNumberResources {
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignLotNumberService)
+        return retrofit.create(AssignLotNumberResources::class.java)
+    }
 
 }

@@ -196,7 +196,6 @@ class ItemPickingViewModel: ViewModel() {
                 _wasLastAPICallSuccessful.value = true
                 _errorMessage.value!!["verifyIfClientAccountIsClosed"] = response.response.errorMessage
                 _wasClientAccountClosed.value = response.response.isClientAccountClosed
-
             }
 
         }catch (e: Exception){

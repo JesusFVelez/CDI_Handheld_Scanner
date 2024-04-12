@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/itemNumber"
+        android:id="@+id/itemNumberTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -53,7 +53,7 @@
         app:layout_constraintStart_toEndOf="@+id/binIcon" />
 
     <TextView
-        android:id="@+id/itemName"
+        android:id="@+id/itemNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -65,7 +65,7 @@
         app:layout_constraintBottom_toTopOf="@+id/binNumber"
         app:layout_constraintEnd_toStartOf="@+id/itemPickingStatusIcon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView" />
 
     <ImageView
         android:id="@+id/itemPickingStatusIcon"
@@ -75,7 +75,7 @@
         app:layout_constraintBottom_toTopOf="@+id/quantityToPick"
         app:layout_constraintEnd_toEndOf="@+id/quantityToPick"
         app:layout_constraintStart_toStartOf="@+id/quantityToPick"
-        app:layout_constraintTop_toBottomOf="@+id/itemNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView" />
 
 
 
