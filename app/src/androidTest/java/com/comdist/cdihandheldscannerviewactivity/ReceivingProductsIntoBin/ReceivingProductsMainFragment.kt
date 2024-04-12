@@ -1,19 +1,24 @@
 package com.comdist.cdihandheldscannerviewactivity.ReceivingProductsIntoBin
 
 import android.os.Bundle
+import android.widget.Button
+import android.content.Context
+import android.widget.Filter
+import androidx.fragment.app.Fragment
 import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import android.view.View
+import android.view.ViewGroup
 import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DoorBinList
+import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingItemsMainBinding
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
@@ -28,6 +33,7 @@ class ReceivingProductsMainFragment : Fragment() {
     private lateinit var purchaseOrderNumberTextView: TextView
     private lateinit var searchButton: Button
     private lateinit var finishButton: Button
+    private lateinit var addButton: Button
 
     private val viewModel: ReceivingProductsViewModel by activityViewModels()
     private lateinit var binding: FragmentReceivingItemsMainBinding
@@ -58,6 +64,8 @@ class ReceivingProductsMainFragment : Fragment() {
 
         initUIElements()
         initObservers()
+
+        viewModel.getDoorBins()
 
         return binding.root
     }
@@ -93,24 +101,93 @@ class ReceivingProductsMainFragment : Fragment() {
         purchaseOrderNumberTextView = binding.POInfoTextView
         searchButton = binding.SearchBinButton
         finishButton = binding.FinishReceivingButton
+        addButton = binding.addItemButton
 
-        binNumberAutoCompleteTextView.setOnEditorActionListener{ v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
-                viewModel.getPreReceiving(binNumberAutoCompleteTextView.text.toString(), viewModel.warehouseNumber.value!!, viewModel.companyID.value!!.toString())
-                true
-            } else {
-                false
-            }
+        searchButton.setOnClickListener {
+            viewModel.getPreReceivingInfo(binNumberAutoCompleteTextView.text.toString())
+        }
+
+        finishButton.setOnClickListener {
+
         }
 
     }
 
+    private fun initBinNumberAutoCompleteTextView(binNumbers: List<DoorBinList>){
+        val arrayAdapterForAutoCompleteTextView = CustomBinNumberSuggestionAdapter(requireContext(),binNumbers)
+    }
     private fun initObservers(){
 
+        viewModel.doorBins.observe(viewLifecycleOwner){doorBinsList ->
+            if(doorBinsList.isNotEmpty())
+                TODO("Add things here")
+        }
+        viewModel.preReceivingInfo.observe(viewLifecycleOwner){newPreReceivingInfo ->
+            if(newPreReceivingInfo.isNotEmpty()){
+
+            }
+
+        }
     }
 
     private fun clearFragmentState() {
         binding.middleDiv.visibility = View.GONE
     }
+
+    class CustomBinNumberSuggestionAdapter(context: Context, private var suggestions: List<DoorBinList>): ArrayAdapter<DoorBinList>(context, 0, suggestions){
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.bin_list_view, parent, false)
+            val binNumberAutoCompleteTextView = view.findViewById<TextView>(R.id.preReceivingTextView)
+
+            val item = suggestions[position]
+            binNumberAutoCompleteTextView.text = item.bin_number
+
+            return view
+        }
+
+        private val originalList = ArrayList(suggestions)
+
+        private val filter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val results = FilterResults()
+                val query = constraint?.toString()?.lowercase()
+                val filteredList = if (query.isNullOrEmpty()) {
+                    originalList
+                } else {
+                    originalList.filter {
+                        it.bin_number.lowercase().contains(query)
+                    }
+                }
+
+                results.values = filteredList
+                results.count = filteredList.size
+
+                return results
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                clear()
+                if (results?.count ?: 0 > 0) {
+                    addAll(results?.values as List<DoorBinList>)
+                    notifyDataSetChanged()
+                } else {
+                    notifyDataSetChanged()
+                }
+            }
+
+            override fun convertResultToString(resultValue: Any?): CharSequence {
+                return (resultValue as DoorBinList).bin_number
+            }
+        }
+    }
+
+
+//    val binNumberTextView = view.findViewById<TextView>(R.id.binNumberText)
+//    val productDescription = view.findViewById<TextView>(R.id.productNameText)
+//    val itemNumber = view.findViewById<TextView>(R.id.itemNumberText)
+//    val lotNumber = view.findViewById<TextView>(R.id.lotNumberText)
+//    val quantity = view.findViewById<TextView>(R.id.onHandQtyText)
+//    val expirationDate = view.findViewById<TextView>(R.id.expDateInfoText)
 
 }

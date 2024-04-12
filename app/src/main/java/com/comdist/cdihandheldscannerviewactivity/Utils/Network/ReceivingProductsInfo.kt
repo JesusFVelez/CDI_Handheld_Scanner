@@ -20,7 +20,8 @@ data class ResponseDoorBinList(
 )
 @JsonClass(generateAdapter = true)
 data class DoorBinList (
-    @Json(name="bin-number") val bin_number: String
+    @Json(name="bin-number") val bin_number: String,
+    @Json(name="bin-receiving") val bin_receiving: String
 )
 
 // Request item details
