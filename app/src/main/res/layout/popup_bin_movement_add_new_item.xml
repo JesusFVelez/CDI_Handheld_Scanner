@@ -48,14 +48,14 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/itemNumberSpinnerTextInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@drawable/rectangle_text_box"
         app:hintAnimationEnabled="false"
         app:hintEnabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/fromBinNumber"
+        app:layout_constraintStart_toStartOf="@id/fromBinNumber"
         app:layout_constraintTop_toBottomOf="@+id/fromBinNumber">
 
         <AutoCompleteTextView
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:dropDownHeight="wrap_content"
-            android:hint="@string/item_number" />
+            android:hint="Item" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
