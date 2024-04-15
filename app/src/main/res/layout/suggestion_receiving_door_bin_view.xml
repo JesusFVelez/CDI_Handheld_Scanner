@@ -1,15 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:background="@drawable/listitembackgroundview"
+    android:weightSum="3"
+    android:background="@drawable/suggestion_background"
     >
     <LinearLayout
+        android:layout_marginStart="20dp"
+        android:id="@+id/doorBinLinearLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
+        android:layout_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/doorBinLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Door Bin:"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="@+id/preReceivingTextView"
+            app:layout_constraintStart_toStartOf="@id/preReceivingTextView"
+            app:layout_constraintEnd_toEndOf="@id/preReceivingTextView"/>
+
+        <TextView
+            android:id="@+id/doorBinValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="997001"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="-"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_marginEnd="30dp"
+        android:id="@+id/preReceivingLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_weight="1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +79,7 @@
             app:layout_constraintEnd_toEndOf="@id/preReceivingTextView"/>
 
         <TextView
-            android:id="@+id/preReceivingTextView"
+            android:id="@+id/preReceivingValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="S14587"
@@ -39,4 +89,4 @@
     </LinearLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DoorBin
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ItemInfo
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.PreReceiving
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.PreReceivingInfo
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ResponsePreReceiving
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DoorBin
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.PreReceivingInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ReceivingItemInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -34,16 +33,16 @@ class ReceivingProductsViewModel: ViewModel() {
         get() = _errorMessage
 
     // Objects for temporary tables from backend
-    private val _itemInfo = MutableLiveData<List<ItemInfo>>()
-    val itemInfo: LiveData<List<ItemInfo>>
+    private val _itemInfo = MutableLiveData<List<ReceivingItemInfo>>()
+    val itemInfo: LiveData<List<ReceivingItemInfo>>
         get() = _itemInfo
 
     private val _doorBins = MutableLiveData<List<DoorBin>>()
     val doorBins: LiveData<List<DoorBin>>
         get() = _doorBins
 
-    private val _preReceivingInfo = MutableLiveData<List<PreReceivingInfo>>()
-    val preReceivingInfo: LiveData<List<PreReceivingInfo>>
+    private val _preReceivingInfo = MutableLiveData<PreReceivingInfo>()
+    val preReceivingInfo: LiveData<PreReceivingInfo>
         get() = _preReceivingInfo
 
     // Booleans for error handling
@@ -143,7 +142,7 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 val response = ScannerAPI.getReceivingProductService().getPreReceivingInfo(preReceivingNumber, _warehouseNumber.value!!, _companyID.value!!)
-                _preReceivingInfo.value = response.response.ttPreReceiving.tt_pre_receiving
+                _preReceivingInfo.value = response.response.ttPreReceiving.tt_pre_receiving[0]
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = true

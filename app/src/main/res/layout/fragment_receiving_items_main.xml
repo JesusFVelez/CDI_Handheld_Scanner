@@ -109,9 +109,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="@drawable/document_icon"
-                    app:layout_constraintEnd_toStartOf="@+id/PreReceivingTextView"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintEnd_toStartOf="@+id/PreReceivingTextView" />
 
                 <TextView
                     android:id="@+id/PreReceivingTextView"
@@ -119,9 +117,7 @@
                     android:layout_height="wrap_content"
                     android:text="F010000089"
                     android:layout_marginTop="5dp"
-                    app:layout_constraintStart_toEndOf="@id/PreReceivingIconImageView"
-                    app:layout_constarintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintStart_toEndOf="@id/PreReceivingIconImageView" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -165,21 +161,24 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/totalPickingItemsList"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="20dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-            </androidx.recyclerview.widget.RecyclerView>
+                    android:id="@+id/totalPickingItemsList"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                </androidx.recyclerview.widget.RecyclerView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/addItemButton"
                 android:layout_width="56dp"
                 android:layout_height="58dp"
+                android:enabled="false"
                 android:layout_marginRight="5dp"
                 android:backgroundTint="@color/CDI_Blue"
                 android:src="@drawable/add_sign"

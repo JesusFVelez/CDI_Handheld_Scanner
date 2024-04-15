@@ -1,4 +1,4 @@
-package com.comdist.cdihandheldscannerviewactivity.Utils.Network
+package com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -37,10 +37,10 @@ data class ResponseItemDetailsWrapper(
 )
 @JsonClass(generateAdapter = true)
 data class ResponseItemInfoList(
-    @Json(name="item-info") val item_info: List<ItemInfo>
+    @Json(name="item-info") val item_info: List<ReceivingItemInfo>
 )
 @JsonClass(generateAdapter = true)
-data class ItemInfo(
+data class ReceivingItemInfo(
     @Json(name="itemNumber") val itemNumber: String,
     @Json(name="itemDescription") val itemDescription: String,
     @Json(name="itemBarcode") val itemBarcode: String
