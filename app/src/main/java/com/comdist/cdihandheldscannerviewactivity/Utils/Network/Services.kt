@@ -217,6 +217,9 @@ interface ReceivingProductsServices {
     @GET("getPreReceivingInfo")
     suspend fun getPreReceivingInfo(@Query("preReceiving") preReceivingNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseGetPreReceiving
 
+    @GET("getItemsInBin")
+    suspend fun getItemsInBin(@Query("doorBinNumber") doorBin: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String)
+
     @GET("wasBinFound")
     suspend fun wasBinFound(@Query("binNumber") bunNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseConfirmBin
 
