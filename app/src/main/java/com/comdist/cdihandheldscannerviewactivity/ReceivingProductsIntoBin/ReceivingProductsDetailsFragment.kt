@@ -42,7 +42,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
     private lateinit var quantityEditText: EditText
     private lateinit var newExpirationDateEditText: EditText
 
-    // button declarations
+    // Button declarations
     private lateinit var addButton: Button
 
     //Loading declaration

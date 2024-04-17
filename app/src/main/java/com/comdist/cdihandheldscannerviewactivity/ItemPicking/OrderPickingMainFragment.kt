@@ -66,20 +66,14 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         val userNameOfPicker: String = SharedPreferencesUtils.getUserNameFromSharedPref(requireContext())
         viewModel.setUserNameOfPickerFromSharedPref(userNameOfPicker)
 
-
         initUIElements()
         initObservers()
-
 
         hasOrderBeenSearched = false
         hasPageJustStarted = true
         viewModel.setChosenAdapterPosition(0)
 
-
-
         return binding.root
-
-
     }
 
 

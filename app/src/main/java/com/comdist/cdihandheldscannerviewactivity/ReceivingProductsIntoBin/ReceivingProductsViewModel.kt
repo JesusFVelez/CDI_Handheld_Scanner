@@ -352,5 +352,14 @@ class ReceivingProductsViewModel: ViewModel() {
         }
     }
 
+    fun clearListOfItems(){
+        _listOfItemsToMoveInPreReceiving.value = mutableListOf()
+    }
+
+    fun clearDoorBinText() {
+        _doorBins.value = listOf()
+        _preReceivingNumber.value = ""
+    }
+
 
 }

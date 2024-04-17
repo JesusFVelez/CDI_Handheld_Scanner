@@ -225,7 +225,7 @@ interface ReceivingProductsServices {
     suspend fun wasBinFound(@Query("binNumber") bunNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseConfirmBin
 
     @PUT("addItemToDoorBin")
-    suspend fun addItemToDoorBin(@Query("designatedBin") designatedBin:String, @Query("scannedCode") scannedCode: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
+    suspend fun addItemToDoorBin(@Query("designatedBin") designatedBin:String, @Query("itemNumber") itemNumber: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
 
     @PUT("moveItemFromDoor")
     suspend fun moveItemFromDoorBin(@Query("designatedBin") designatedBin: String, @Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("expirationDate") expirationDate: String, @Query("quantity") quantity: Int, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemFromDoorBin

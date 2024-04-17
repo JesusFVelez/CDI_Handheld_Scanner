@@ -39,7 +39,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ReceivingProductsMainFragment : Fragment(){
 
-
     // Main Fragment Variables
     private lateinit var binNumberAutoCompleteTextView: AutoCompleteTextView
     private lateinit var doorBinNumberTextView: TextView
@@ -77,8 +76,6 @@ class ReceivingProductsMainFragment : Fragment(){
         val warehouseNumber: Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
         viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
 
-
-
         initUIElements()
         initObservers()
 
@@ -88,13 +85,13 @@ class ReceivingProductsMainFragment : Fragment(){
         return binding.root
     }
 
-
-
     override fun onResume() {
         super.onResume()
         val bundle = arguments
         val lastFragmentName : String = BundleUtils.getPastFragmentNameFromBundle(bundle)
         if(lastFragmentName == "HomeScreen"){
+            viewModel.clearListOfItems()
+            viewModel.clearDoorBinText()
             clearMiddleDiv()
             bundle?.clear()
         }
@@ -105,8 +102,6 @@ class ReceivingProductsMainFragment : Fragment(){
             searchButton.isEnabled = false
             binNumberAutoCompleteTextView.isEnabled = false
         }
-
-
     }
 
     // Handles onPause lifecycle event
@@ -120,7 +115,6 @@ class ReceivingProductsMainFragment : Fragment(){
     override fun onStop() {
         super.onStop()
     }
-
 
     private fun initUIElements(){
         binNumberAutoCompleteTextView = binding.DoorBinAutoTextView
@@ -157,7 +151,6 @@ class ReceivingProductsMainFragment : Fragment(){
             progressDialog.show()
             viewModel.moveItemsToRespectiveBins()
         }
-
     }
 
     override fun onDestroy() {
@@ -194,7 +187,6 @@ class ReceivingProductsMainFragment : Fragment(){
             val selectedItem = binNumberAutoCompleteTextView.adapter.getItem(position) as DoorBin
             viewModel.setCurrentlyChosenDoorBin(selectedItem)
         }
-
     }
 
     private fun clearAllItemsFromRecyclerView(){
@@ -218,8 +210,6 @@ class ReceivingProductsMainFragment : Fragment(){
                 searchButton.isEnabled = true
                 binNumberAutoCompleteTextView.isEnabled = true
             }
-
-
         }
 
         viewModel.isDoorBinEmpty.observe(viewLifecycleOwner){isDoorBinEmpty ->
