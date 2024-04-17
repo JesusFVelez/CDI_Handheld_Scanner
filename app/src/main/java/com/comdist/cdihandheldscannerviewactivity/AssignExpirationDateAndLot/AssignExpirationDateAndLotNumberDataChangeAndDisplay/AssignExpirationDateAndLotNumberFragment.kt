@@ -242,14 +242,22 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
         viewModel.opSuccess.observe(viewLifecycleOwner) { success ->
             progressDialog.dismiss()
-                if (shouldShowMessage && success && isEnterPressed) {
-                    // Display success message
-                    AlerterUtils.startSuccessAlert(requireActivity(), "Success!", "Assigned succesfully")
+
+            // Directly use the message from opMessage LiveData
+            val message = viewModel.opMessage.value ?: ""
+
+            if (message.isNotBlank()) {
+                if (!success) {
+                    // If not successful, show error message
+                    AlerterUtils.startErrorAlerter(requireActivity(), message)
+                } else if (shouldShowMessage && success && isEnterPressed) {
+                    // On success and specific conditions, show success alert
+                    AlerterUtils.startSuccessAlert(requireActivity(), "Success!", "Assigned successfully")
                     isEnterPressed = false
                     viewModel.resetSuccessFlag()
                 }
+            }
         }
-
 
 
         viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->

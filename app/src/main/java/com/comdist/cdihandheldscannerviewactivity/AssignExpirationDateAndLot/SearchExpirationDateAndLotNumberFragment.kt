@@ -85,16 +85,6 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
             initItemNumberAutoCompleteTextView(newSuggestions)
         }
 
-        viewModel.opMessage.observe(viewLifecycleOwner) { message ->
-            if (message.isNotBlank()) {
-                progressDialog.dismiss()
-                val success = viewModel.opSuccess.value ?: false
-                if (!success) {
-                    AlerterUtils.startErrorAlerter(requireActivity(), message)
-                } else{}
-            }
-        }
-
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             if (!wasLasAPICallSuccessful) {
