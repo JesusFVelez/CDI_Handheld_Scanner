@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,20 +22,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/DoorBinAutoTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/rectangle_text_box"
-                    android:id="@+id/DoorBinAutoTextView"
-                    android:layout_width="201dp"
-                    android:layout_height="54dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="12dp"
-                    android:dropDownHeight="wrap_content"
-                    android:hint="Door Bin Number"
-                    android:gravity="center"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                <AutoCompleteTextView
+                    android:id="@+id/DoorBinAutoTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:dropDownHeight="wrap_content"
+                    android:hint="Door Bin Number"
+                    style="@style/DropDownsStyle"
+
                     />
+            </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/SearchBinButton"
@@ -43,13 +52,14 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
+                    android:background="@drawable/menu_option_button"
                     android:text="Search"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/DoorBinAutoTextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/DoorBinAutoTextInputLayout" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -164,7 +174,6 @@
                     android:id="@+id/totalPickingItemsList"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginTop="16dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -178,26 +187,30 @@
                 android:id="@+id/addItemButton"
                 android:layout_width="56dp"
                 android:layout_height="58dp"
-                android:enabled="false"
                 android:layout_marginRight="5dp"
+                android:layout_marginBottom="12dp"
                 android:backgroundTint="@color/CDI_Blue"
+                android:enabled="false"
                 android:src="@drawable/add_sign"
                 android:textSize="21sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/lowerDiv"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintBottom_toTopOf="@+id/FinishReceivingButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lowerDiv" />
+
             <Button
                 android:id="@+id/FinishReceivingButton"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/menu_option_button"
+                android:enabled="false"
                 android:text="Finish"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/addItemButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </layout>

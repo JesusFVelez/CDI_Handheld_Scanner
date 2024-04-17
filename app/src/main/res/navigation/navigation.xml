@@ -126,13 +126,13 @@
         android:name="com.comdist.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.ReceivingProductsMainFragment"
         android:label="ReceivingProductsMainFragment" >
         <action
-            android:id="@+id/action_receivingProductsMainFragment_to_recevingProductsDetailsFragment"
-            app:destination="@id/recevingProductsDetailsFragment"
+            android:id="@+id/action_receivingProductsMainFragment_to_receivingProductsDetailsFragment"
+            app:destination="@id/receivingProductsDetailsFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/recevingProductsDetailsFragment"
-        android:name="com.comdist.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.RecevingProductsDetailsFragment"
-        android:label="RecevingProductsDetailsFragment" />
+        android:id="@+id/receivingProductsDetailsFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.ReceivingProductsDetailsFragment"
+        android:label="ReceivingProductsDetailsFragment" />
 </navigation>

@@ -34,6 +34,7 @@ class HomeScreenFragment : Fragment() {
     private lateinit var binMovementButton: Button
     private lateinit var assignBarcodeButton: Button
     private lateinit var assignExpirationDateButton: Button
+    private lateinit var receivingButton: Button
     // Dialog for showing progress
     private lateinit var progressDialog: Dialog
 
@@ -135,6 +136,7 @@ class HomeScreenFragment : Fragment() {
         assignBarcodeButton = binding.assignBarcodeButton
         binMovementButton = binding.BinToBinMovementButton
         assignExpirationDateButton = binding.assignExpirationDateButton
+        receivingButton = binding.ReceivingButton
 
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
@@ -177,6 +179,10 @@ class HomeScreenFragment : Fragment() {
         assignExpirationDateButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.EditItemMenuOption)
         }
+        receivingButton.setOnClickListener {
+            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.ReceivingMenuOption)
+        }
+
     }
 
 

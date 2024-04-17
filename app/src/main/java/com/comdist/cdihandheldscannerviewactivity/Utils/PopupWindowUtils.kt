@@ -37,6 +37,10 @@ class PopupWindowUtils {
             }
         }
 
+        interface PopupInputListener{
+            fun onConfirm(input: EditText)
+        }
+
         fun showErrorPopup(context: Context, anchor: View, message: String){
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(R.layout.popup_error, null)
@@ -149,7 +153,7 @@ class PopupWindowUtils {
         }
 
 
-        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: orderPickingMainFragment.PopupInputListener){
+        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener){
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(R.layout.popup_confirmation, null)
 

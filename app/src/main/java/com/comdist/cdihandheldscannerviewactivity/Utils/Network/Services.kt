@@ -12,13 +12,14 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmBin
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseDoorBinListWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseGetPreReceiving
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseItemsInBinWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseMoveItemFromDoorBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseMoveItemToDoorBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponsePreReceiving
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperBinsWithProduct
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperDoorBinListWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperGetItem
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperItemDetailsForBinSearch
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperItemDetailsWrapper
@@ -59,7 +60,7 @@ class ServicePaths{
         const val ItemPicking: String = "/ItemPickingForDispatchService/"
         const val RPMAccess: String = "/RPMAccessService/"
         const val AssignBarcode: String = "/AssignBarcodeService/"
-        const val ReceivingProducts: String = "/ReceivingProductService/"
+        const val ReceivingProducts: String = "/ReceivingProductsService/"
         const val MoveItemsBetweenBins:String = "/MoveItemsBetweenBinsService/"
         const val AssignExpirationDateService: String = "/AssignExpirationDateService/"
         const val AssignLotNumberService: String = "/AssignLotNumberService/"
@@ -206,7 +207,7 @@ interface AssignBarcodeToItemServices {
 
 interface ReceivingProductsServices {
     @GET("getDoorBins")
-    suspend fun getDoorBins(@Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseDoorBinListWrapper
+    suspend fun getDoorBins(@Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseWrapperDoorBinListWrapper
 
     @GET("getItemInfo")
     suspend fun getItemInfo(@Query("scannedCode") scannedCode: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseWrapperItemDetailsWrapper
@@ -218,15 +219,15 @@ interface ReceivingProductsServices {
     suspend fun getPreReceivingInfo(@Query("preReceiving") preReceivingNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseGetPreReceiving
 
     @GET("getItemsInBin")
-    suspend fun getItemsInBin(@Query("doorBinNumber") doorBin: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String)
+    suspend fun getItemsInBin(@Query("doorBinNumber") doorBin: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseItemsInBinWrapper
 
     @GET("wasBinFound")
     suspend fun wasBinFound(@Query("binNumber") bunNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseConfirmBin
 
     @PUT("addItemToDoorBin")
-    suspend fun addItemToDoorBin(@Query("scannedCode") scannedCode: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
+    suspend fun addItemToDoorBin(@Query("designatedBin") designatedBin:String, @Query("scannedCode") scannedCode: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
 
-    @PUT("moveItemFromDoorBin")
+    @PUT("moveItemFromDoor")
     suspend fun moveItemFromDoorBin(@Query("designatedBin") designatedBin: String, @Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("expirationDate") expirationDate: String, @Query("quantity") quantity: Int, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemFromDoorBin
 
 

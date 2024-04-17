@@ -266,7 +266,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         }
     }
     override fun onItemClickListener(view: View, position: Int) {
-        val listener = object : PopupInputListener {
+        val listener = object : PopupWindowUtils.Companion.PopupInputListener {
             override fun onConfirm(input: EditText) {
                 viewModel.setChosenAdapterPosition(position)
                 viewModel.setCurrentlyChosenItem()
@@ -276,9 +276,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Scan Bin '" + viewModel.listOfItemsInOrder.value!![position].binLocation + "' to continue", "Bin Number", listener)
     }
 
-    interface PopupInputListener{
-        fun onConfirm(input: EditText)
-    }
+
 
     class CustomOrderSuggestionAdapter(context: Context, private var suggestions: List<ordersThatAreInPickingClass>): ArrayAdapter<ordersThatAreInPickingClass>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
