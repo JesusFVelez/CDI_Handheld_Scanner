@@ -158,6 +158,7 @@ class ReceivingProductsMainFragment : Fragment(){
             questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
                 progressDialog.show()
                 viewModel.moveItemsToRespectiveBins()
+                questionPopup.dismiss()
             }
 
             questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
