@@ -150,3 +150,14 @@ data class MovementConfirmationFromDoor  (
     @Json(name="errorMessage") val errorMessage: String,
     @Json(name="wasItemMoved") val wasItemMoved: Boolean
 )
+
+// Deletes items from door bins
+@JsonClass(generateAdapter = true)
+data class ResponseDeleteItemFromDoorBin(
+    @Json(name="response") val response: DeleteItemsFromDoorBin
+)
+@JsonClass(generateAdapter = true)
+data class DeleteItemsFromDoorBin(
+    @Json(name="wasItemDeleted") val wesItemDeleted: Boolean,
+    @Json(name="errorMessage") val errorMessage: String
+)

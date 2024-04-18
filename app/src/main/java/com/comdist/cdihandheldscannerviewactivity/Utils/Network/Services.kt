@@ -12,6 +12,7 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmBin
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseDeleteItemFromDoorBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseGetPreReceiving
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseItemsInBinWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseMoveItemFromDoorBin
@@ -229,6 +230,9 @@ interface ReceivingProductsServices {
 
     @PUT("moveItemFromDoor")
     suspend fun moveItemFromDoorBin(@Query("designatedBin") designatedBin: String, @Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("expirationDate") expirationDate: String, @Query("quantity") quantity: Int, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemFromDoorBin
+
+    @PUT("deleteItemFromDoorBin")
+    suspend fun deleteItemFromDoorInBin(@Query("doorBinNumber") doorBinNumber: String, @Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseDeleteItemFromDoorBin
 
 
 }
