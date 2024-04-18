@@ -222,6 +222,7 @@ class BinMovementFragment : Fragment() {
             questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
                 progressDialog.show()
                 viewModel.moveItemsBetweenBins(adapter.data)
+                questionPopup.dismiss()
             }
 
             questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
