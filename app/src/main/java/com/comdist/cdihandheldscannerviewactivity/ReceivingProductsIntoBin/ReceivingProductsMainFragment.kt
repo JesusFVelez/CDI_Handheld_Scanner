@@ -92,6 +92,8 @@ class ReceivingProductsMainFragment : Fragment(){
         if(lastFragmentName == "HomeScreen"){
             viewModel.clearListOfItems()
             viewModel.clearDoorBinText()
+            finishButton.isEnabled = false
+            addButton.isEnabled = false
             clearMiddleDiv()
             bundle?.clear()
         }
@@ -128,7 +130,7 @@ class ReceivingProductsMainFragment : Fragment(){
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         searchButton.setOnClickListener {
-            if(doorBinNumberTextView.text.isNotEmpty()) {
+            if(binNumberAutoCompleteTextView.text.isNotEmpty()) {
                 progressDialog.show()
                 viewModel.getPreReceivingInfo()
                 searchButton.isEnabled = false
@@ -151,6 +153,8 @@ class ReceivingProductsMainFragment : Fragment(){
             progressDialog.show()
             viewModel.moveItemsToRespectiveBins()
         }
+        viewModel.clearListOfItems()
+        initRecyclerViewAdapter()
     }
 
     override fun onDestroy() {

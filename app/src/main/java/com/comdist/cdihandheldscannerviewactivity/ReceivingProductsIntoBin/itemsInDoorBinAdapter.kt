@@ -64,7 +64,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, pr
         holder.binToBeMovedTo.text = item.binToBeMovedTo
         holder.lotNumberTextView.text = item.lotNumber
         holder.expirationDateTextView.text = item.expirationDate
-        holder.quantityInDoorBinTextView.text = item.quantityOfItemsAddedToDoorBin.toString()
+        holder.quantityInDoorBinTextView.text = "Added: " + item.quantityOfItemsAddedToDoorBin.toString()
     }
 
 
@@ -77,7 +77,7 @@ class ItemsInDoorBinViewHolder(itemInDoorBinView: View, private val listener: it
     val binToBeMovedTo: TextView = itemInDoorBinView.findViewById(R.id.binNumberText)
     val lotNumberTextView: TextView = itemInDoorBinView.findViewById(R.id.lotNumberText)
     val expirationDateTextView: TextView = itemInDoorBinView.findViewById(R.id.expDateInfoText)
-    val quantityInDoorBinTextView: TextView = itemInDoorBinView.findViewById(R.id.onHandQtyText)
+    val quantityInDoorBinTextView: TextView = itemInDoorBinView.findViewById(R.id.addedText)
 
     init{
         itemInDoorBinView.setOnClickListener(this)

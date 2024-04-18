@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:background="@drawable/listitembackgroundview"
@@ -29,59 +30,60 @@
         app:layout_constraintTop_toBottomOf="@+id/expDateHeaderText" />
 
 
-<LinearLayout
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center"
-    app:layout_constraintEnd_toStartOf="@+id/onHandText"
-    app:layout_constraintStart_toEndOf="@+id/expDateHeaderText"
-    app:layout_constraintTop_toBottomOf="@id/BinInfoLinearLayout"
-    app:layout_constraintBottom_toTopOf="@+id/lotInfoLayout">
-
-    <TextView
-        android:id="@+id/productNameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Habichuelas Goya"
-        android:textSize="15sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/itemNumberText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="S11002"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/productNameText"
-        app:layout_constraintStart_toStartOf="@id/productNameText"
-        app:layout_constraintEnd_toEndOf="@id/productNameText"/>
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/lotInfoLayout"
+        app:layout_constraintEnd_toStartOf="@+id/addedText"
+        app:layout_constraintStart_toEndOf="@+id/expDateHeaderText"
+        app:layout_constraintTop_toBottomOf="@id/BinInfoLinearLayout">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/productNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Habichuelas Goya"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/onHandText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:text="@string/added"
-        android:textSize="12sp"
+        <TextView
+            android:id="@+id/itemNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="S11002"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/productNameText"
+            app:layout_constraintStart_toStartOf="@id/productNameText"
+            app:layout_constraintTop_toBottomOf="@+id/productNameText" />
+
+    </LinearLayout>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/trashcanIconButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/icon_red_trash_can"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/onHandQtyText"
+        android:id="@+id/addedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="100"
+        android:layout_marginEnd="10dp"
+        android:text="Added: 5"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/onHandText"
-        app:layout_constraintStart_toStartOf="@+id/onHandText"
-        app:layout_constraintTop_toBottomOf="@+id/onHandText" />
+        app:layout_constraintStart_toStartOf="@id/trashcanIconButton"
+        app:layout_constraintEnd_toEndOf="@id/trashcanIconButton"
+        app:layout_constraintTop_toBottomOf="@+id/trashcanIconButton" />
 
     <LinearLayout
         android:id="@+id/BinInfoLinearLayout"
