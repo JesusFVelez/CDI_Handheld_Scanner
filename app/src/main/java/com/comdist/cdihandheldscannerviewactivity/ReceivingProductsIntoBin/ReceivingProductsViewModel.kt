@@ -246,9 +246,12 @@ class ReceivingProductsViewModel: ViewModel() {
             try{
                 _hasAPIBeenCalled.value = true
                 val response = ScannerAPI.getReceivingProductService().getItemInfo(scannedCode, warehouseNumber.value!!, companyID.value!!)
-                _itemInfo.value = response.response.itemInfo.item_info[0]
                 _errorMessage.value!!["wasItemFoundError"] = response.response.errorMessage
                 _wasItemFound.value = response.response.wasItemFound
+                val listOfItemInfo = response.response.itemInfo.item_info
+                if(listOfItemInfo.isNotEmpty())
+                    _itemInfo.value = response.response.itemInfo.item_info[0]
+
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = false
@@ -257,7 +260,7 @@ class ReceivingProductsViewModel: ViewModel() {
         }
     }
 
-    fun wasBinFound(binNumber: String, warehouseNumber: Int, companyID: String){
+    fun wasBinFound(binNumber: String){
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasBinFound.value = false
@@ -266,7 +269,7 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().wasBinFound(binNumber, warehouseNumber, companyID)
+                val response = ScannerAPI.getReceivingProductService().wasBinFound(binNumber, _warehouseNumber.value!!, _companyID.value!!)
                 _wasBinFound.value = response.response.wasPreReceivingFound
                 _errorMessage.value!!["wasBinFoundError"] = response.response.errorMessage
                 _wasLasAPICallSuccessful.value = true
@@ -349,14 +352,14 @@ class ReceivingProductsViewModel: ViewModel() {
         }
     }
 
-    fun deleteItemFromDoorBin(doorBinNumber: String, itemNumber: String, lotNumber: String, warehouseNumber: Int, companyID: String) {
+    fun deleteItemFromDoorBin(doorBinNumber: String, itemNumber: String, lotNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("set delete item from door bin API Call Exception Handler", "Error -> ${exception.message}")
         }
         viewModelScope.launch(exceptionHandler){
             try{
-                val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(doorBinNumber, itemNumber, lotNumber, warehouseNumber, companyID)
+                val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(doorBinNumber, itemNumber, lotNumber, _warehouseNumber.value!!, _companyID.value!!)
                 _wasLasAPICallSuccessful.value = true
             } catch(e: Exception) {
                 _wasLasAPICallSuccessful.value = false

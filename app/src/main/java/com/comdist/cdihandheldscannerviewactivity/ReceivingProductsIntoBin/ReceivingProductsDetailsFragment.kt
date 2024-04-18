@@ -178,12 +178,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
             val areNecessaryFieldsFilled = verifyIfAllNecessaryFieldsAreFilled()
             if(areNecessaryFieldsFilled){
                 val expirationDate = newExpirationDateEditText.text.toString()
-                val newLotNumber = newLotAutoCompleteTextView.text.toString()
-                val quantityToAddToDoor = quantityEditText.text.toString().toInt()
                 val newBinOfItem = newBinEditText.text.toString()
-                val itemNumber = itemNumberTextView.text.toString()
-                val itemName = itemNameTextView.text.toString()
-                val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
 
                 val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
                 try {
@@ -191,9 +186,10 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
                     // Step 3: Validate the parsed date
                     if (newExpirationDate != null && isValidDate(expirationDate)) {
-                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, newBinOfItem, doorBin , itemNumber, newLotNumber, quantityToAddToDoor)
+
                         progressDialog.show()
-                        viewModel.moveItemToDoor(itemToAdd)
+                        viewModel.wasBinFound(newBinOfItem)
+                        //viewModel.moveItemToDoor(itemToAdd)
                     } else {
                         // Step 4: Show an error message for invalid date
                         AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date. Please enter a valid date (MM-DD-YYYY).")
@@ -216,13 +212,45 @@ class ReceivingProductsDetailsFragment : Fragment() {
         viewModel.wasItemMovedToDoor.observe(viewLifecycleOwner){wasItemMovedToDoor ->
             progressDialog.dismiss()
             if(wasItemMovedToDoor && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item was added successfully to door bin")
                 findNavController().navigateUp()
             }else if(viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemMovedToBinError"]!!)
             }
             viewModel.resetHasAPIBeenCalled()
         }
+
+        viewModel.wasBinFound.observe(viewLifecycleOwner){ wasBinFound ->
+            if(wasBinFound && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
+                val expirationDate = newExpirationDateEditText.text.toString()
+                val newLotNumber = newLotAutoCompleteTextView.text.toString()
+                val quantityToAddToDoor = quantityEditText.text.toString().toInt()
+                val newBinOfItem = newBinEditText.text.toString()
+                val itemNumber = itemNumberTextView.text.toString()
+                val itemName = itemNameTextView.text.toString()
+                val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
+                val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, newBinOfItem, doorBin , itemNumber, newLotNumber, quantityToAddToDoor)
+                viewModel.moveItemToDoor(itemToAdd)
+            }else if(viewModel.hasAPIBeenCalled.value!!){
+                progressDialog.dismiss()
+                viewModel.resetHasAPIBeenCalled()
+                AlerterUtils.startErrorAlerter(requireActivity(), "Please enter a valid Bin!")
+            }
+
+        }
+
+        viewModel.wasLasAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
+            if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
+                progressDialog.dismiss()
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
+            }
+        }
+
+
     }
 
     private fun populateEditTextWithViewModelValues(){

@@ -6,6 +6,7 @@ import android.widget.Button
 import android.content.Context
 import android.location.GnssAntennaInfo.Listener
 import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
 import android.widget.Filter
 import androidx.fragment.app.Fragment
@@ -16,12 +17,14 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.EditText
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.ui.node.getOrAddAdapter
+import androidx.compose.ui.text.toUpperCase
 import androidx.navigation.fragment.findNavController
 import com.comdist.cdihandheldscannerviewactivity.ItemPicking.itemInOrderClickListener
 import com.comdist.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment
@@ -36,6 +39,7 @@ import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingI
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.google.android.material.animation.AnimatableView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.Locale
 
 class ReceivingProductsMainFragment : Fragment(){
 
@@ -122,7 +126,7 @@ class ReceivingProductsMainFragment : Fragment(){
         binNumberAutoCompleteTextView = binding.DoorBinAutoTextView
         doorBinNumberTextView = binding.DoorBinTextView
         preReceivingTextView = binding.PreReceivingTextView
-        purchaseOrderNumberTextView = binding.POInfoTextView
+        purchaseOrderNumberTextView = binding.PONumberTextView
         searchButton = binding.SearchBinButton
         finishButton = binding.FinishReceivingButton
         addButton = binding.addItemButton
@@ -150,8 +154,18 @@ class ReceivingProductsMainFragment : Fragment(){
         }
 
         finishButton.setOnClickListener {
-            progressDialog.show()
-            viewModel.moveItemsToRespectiveBins()
+            val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to finish moving items from door bin to designated bins?", "Move Items?")
+            questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
+                progressDialog.show()
+                viewModel.moveItemsToRespectiveBins()
+            }
+
+            questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
+                questionPopup.dismiss()
+            }
+
+            questionPopup.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+
         }
         viewModel.clearListOfItems()
         initRecyclerViewAdapter()
@@ -171,9 +185,18 @@ class ReceivingProductsMainFragment : Fragment(){
                 progressDialog.show()
             }
         }
-        recyclerViewAdapter = itemsInDoorBinAdapter(listener){hasItem ->
+
+
+        recyclerViewAdapter = itemsInDoorBinAdapter(listener, { hasItem ->
+
             finishButton.isEnabled = hasItem
-        }
+
+        },{ item: itemsInDoorBinAdapter.ItemInDoorBinDataClass ->
+
+            viewModel.deleteItemFromDoorBin(item.doorBin, item.itemNumber, item.lotNumber)
+
+        })
+
         recyclerViewAdapter.addItems(viewModel.listOfItemsToMoveInPreReceiving.value!!)
         binding.totalPickingItemsList.adapter = recyclerViewAdapter
     }
@@ -256,9 +279,9 @@ class ReceivingProductsMainFragment : Fragment(){
         viewModel.preReceivingInfo.observe(viewLifecycleOwner){newPreReceivingInfo ->
             viewModel.resetHasAPIBeenCalled()
             binding.middleDiv.visibility = View.VISIBLE
-            doorBinNumberTextView.text = binNumberAutoCompleteTextView.text.toString()
-            preReceivingTextView.text = newPreReceivingInfo.tt_pre_receiving_number
-            purchaseOrderNumberTextView.text = newPreReceivingInfo.tt_purchase_order
+            doorBinNumberTextView.text = binNumberAutoCompleteTextView.text.toString().uppercase()
+            preReceivingTextView.text = newPreReceivingInfo.tt_pre_receiving_number.uppercase()
+            purchaseOrderNumberTextView.text = newPreReceivingInfo.tt_purchase_order.uppercase()
             addButton.isEnabled = true
             viewModel.getItemsInDoor()
         }
@@ -277,8 +300,8 @@ class ReceivingProductsMainFragment : Fragment(){
 
 
             val item = suggestions[position]
-            doorBinTextView.text = item.bin_number
-            preReceivingTextView.text = item.bin_receiving
+            doorBinTextView.text = item.bin_number.uppercase()
+            preReceivingTextView.text = item.bin_receiving.uppercase()
 
 
             return view

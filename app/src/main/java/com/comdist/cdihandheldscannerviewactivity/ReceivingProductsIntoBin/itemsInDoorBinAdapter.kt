@@ -1,10 +1,13 @@
 package com.comdist.cdihandheldscannerviewactivity.ReceivingProductsIntoBin
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.ItemPicking.ItemPickingViewHolder
 import com.comdist.cdihandheldscannerviewactivity.ItemPicking.itemInOrderClickListener
@@ -12,10 +15,11 @@ import com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinM
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInOrderInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.confirmBinResponse
+import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, private val onDataSetChanged: (Boolean) -> Unit) : RecyclerView.Adapter<ItemsInDoorBinViewHolder>(){
+class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, val onDataSetChanged: (Boolean) -> Unit, val removeItemFromDoorBinInBackend: (ItemInDoorBinDataClass) -> Unit) : RecyclerView.Adapter<ItemsInDoorBinViewHolder>(){
 
     data class ItemInDoorBinDataClass(
         val expirationDate: String,
@@ -27,7 +31,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, pr
         val quantityOfItemsAddedToDoorBin:Int)
 
     // Data source for the adapter
-    var data = listOf<ItemInDoorBinDataClass>()
+    var data = mutableListOf<ItemInDoorBinDataClass>()
         set(value) {
             field = value
             notifyDataSetChanged()  // Notify the adapter that the data set has changed
@@ -43,15 +47,23 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, pr
         return data.size
     }
 
+    //Method to remove an item
+    fun removeItem(item: ItemInDoorBinDataClass?){
+        data.remove(item)
+        removeItemFromDoorBinInBackend(item!!)
+        notifyItemRemoved(data.indexOf(item))
+        onDataSetChanged(data.isNotEmpty())
+    }
+
     // Method to add an item
-    fun addItems(items: List<ItemInDoorBinDataClass>?) {
+    fun addItems(items: MutableList<ItemInDoorBinDataClass>?) {
         data = items!!
         notifyItemInserted(data.size)
         onDataSetChanged(true)
     }
 
     fun clearAllItems(){
-        data = listOf()
+        data = mutableListOf()
         notifyDataSetChanged()
         onDataSetChanged(data.isNotEmpty())
     }
@@ -65,6 +77,19 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, pr
         holder.lotNumberTextView.text = item.lotNumber
         holder.expirationDateTextView.text = item.expirationDate
         holder.quantityInDoorBinTextView.text = "Added: " + item.quantityOfItemsAddedToDoorBin.toString()
+        holder.removeItemButton.setOnClickListener{
+            // Create popup window to ask whether user wants to delete item or not
+            val popupWindow = PopupWindowUtils.createQuestionPopup(it.context, "Are you sure you want to delete item from the list?", "Delete Item")
+            popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
+                removeItem(item)
+                popupWindow.dismiss()
+            }
+            popupWindow.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
+                popupWindow.dismiss()
+            }
+            popupWindow.showAtLocation(it.rootView, Gravity.CENTER, 0, 0)
+        }
+
     }
 
 
@@ -78,6 +103,7 @@ class ItemsInDoorBinViewHolder(itemInDoorBinView: View, private val listener: it
     val lotNumberTextView: TextView = itemInDoorBinView.findViewById(R.id.lotNumberText)
     val expirationDateTextView: TextView = itemInDoorBinView.findViewById(R.id.expDateInfoText)
     val quantityInDoorBinTextView: TextView = itemInDoorBinView.findViewById(R.id.addedText)
+    val removeItemButton: AppCompatButton = itemInDoorBinView.findViewById(R.id.trashcanIconButton)
 
     init{
         itemInDoorBinView.setOnClickListener(this)
