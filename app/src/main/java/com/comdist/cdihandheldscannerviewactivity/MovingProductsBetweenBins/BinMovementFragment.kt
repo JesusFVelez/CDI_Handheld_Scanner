@@ -218,8 +218,19 @@ class BinMovementFragment : Fragment() {
 
         continueButton = binding.continueButton
         continueButton.setOnClickListener {
-            progressDialog.show()
-            viewModel.moveItemsBetweenBins(adapter.data)
+            val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to commit the movements?", "Move Items?")
+            questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
+                progressDialog.show()
+                viewModel.moveItemsBetweenBins(adapter.data)
+            }
+
+            questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
+                questionPopup.dismiss()
+            }
+
+            questionPopup.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+
+
         }
         adapter = BinMovementAdapter { hasItems ->
             continueButton.isEnabled = hasItems
