@@ -346,9 +346,22 @@ class ReceivingProductsViewModel: ViewModel() {
             jobs.joinAll()
 
             _allItemsMoved.value = true
+        }
+    }
 
-
-
+    fun deleteItemFromDoorBin(doorBinNumber: String, itemNumber: String, lotNumber: String, warehouseNumber: Int, companyID: String) {
+        val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
+            _wasLasAPICallSuccessful.value = false
+            Log.i("set delete item from door bin API Call Exception Handler", "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler){
+            try{
+                val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(doorBinNumber, itemNumber, lotNumber, warehouseNumber, companyID)
+                _wasLasAPICallSuccessful.value = true
+            } catch(e: Exception) {
+                _wasLasAPICallSuccessful.value = false
+                Log.i("get delete item from door bin API Call Exception Handler", "Error -> ${e.message}")
+            }
         }
     }
 
