@@ -6,7 +6,8 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,20 +32,20 @@
                     android:background="@drawable/rectangle_text_box"
                     app:hintAnimationEnabled="false"
                     app:hintEnabled="true"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                <AutoCompleteTextView
-                    android:id="@+id/DoorBinAutoTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:dropDownHeight="wrap_content"
-                    android:hint="Door Bin Number"
-                    style="@style/DropDownsStyle"
+                    <AutoCompleteTextView
+                        android:id="@+id/DoorBinAutoTextView"
+                        style="@style/DropDownsStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:dropDownHeight="wrap_content"
+                        android:hint="Door Bin Number"
 
-                    />
-            </com.google.android.material.textfield.TextInputLayout>
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/SearchBinButton"
@@ -68,10 +69,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/productdetailsupperbackground"
-                app:layout_constraintTop_toBottomOf="@id/upperDiv"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                >
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/upperDiv">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/BinInfoLinearLayout"
@@ -110,24 +110,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/BinInfoLinearLayout"
-                    >
-                <ImageView
-                    android:id="@+id/PreReceivingIconImageView"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/document_icon"
-                    app:layout_constraintEnd_toStartOf="@+id/PreReceivingTextView" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/BinInfoLinearLayout">
 
-                <TextView
-                    android:id="@+id/PreReceivingTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="F010000089"
-                    android:layout_marginTop="5dp"
-                    app:layout_constraintStart_toEndOf="@id/PreReceivingIconImageView" />
+                    <ImageView
+                        android:id="@+id/PreReceivingIconImageView"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/document_icon"
+                        app:layout_constraintEnd_toStartOf="@+id/PreReceivingTextView" />
+
+                    <TextView
+                        android:id="@+id/PreReceivingTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="F010000089"
+                        app:layout_constraintStart_toEndOf="@id/PreReceivingIconImageView" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -162,41 +162,32 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lowerDiv"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/totalPickingItemsList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/middleDiv"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:layout_height="0dp"
+                android:layout_marginBottom="10dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@+id/addItemButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/middleDiv">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/totalPickingItemsList"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                </androidx.recyclerview.widget.RecyclerView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/addItemButton"
                 android:layout_width="56dp"
                 android:layout_height="58dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="20dp"
                 android:backgroundTint="@color/CDI_Blue"
                 android:enabled="false"
                 android:src="@drawable/add_sign"
                 android:textSize="21sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/FinishReceivingButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lowerDiv" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <Button
                 android:id="@+id/FinishReceivingButton"

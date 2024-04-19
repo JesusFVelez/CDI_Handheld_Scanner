@@ -157,8 +157,8 @@ class ReceivingProductsMainFragment : Fragment(){
             val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to finish moving items from door bin to designated bins?", "Move Items?")
             questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
                 progressDialog.show()
-                viewModel.moveItemsToRespectiveBins()
                 questionPopup.dismiss()
+                viewModel.moveItemsToRespectiveBins()
             }
 
             questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
