@@ -71,7 +71,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
     fun setWarehouseNOFromSharedPref(warehouseNO: Int){
         _warehouseNO.value = warehouseNO.toString()
     }
-    fun assignLotNumber(pItemNumber: String, pWarehouseNo:Int, pBinLocation: String, pLotNumber: String, pCompanyCode: String) {
+    fun assignLotNumber(pItemNumber: String, pWarehouseNo:Int, pBinLocation: String, pLotNumber: String, pCompanyCode: String, pOldLot: String?) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"

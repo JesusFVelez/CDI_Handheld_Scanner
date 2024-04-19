@@ -9,8 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -124,7 +122,8 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             val itemNumber = viewModel.currentlyChosenItemForSearch.value!!.itemNumber
             val newExpirationDateStr = binding.NewExpirationDateEditText.text.toString()
             val binNumber = viewModel.currentlyChosenItemForSearch.value!!.binLocation
-            val lotNumber = binding.newLotEditText.text.toString()
+            val newLotNumber = binding.newLotEditText.text.toString()
+            val oldLot = viewModel.currentlyChosenItemForSearch.value!!.lotNumber
 
             // Step 2: Parse the date input
             val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
@@ -143,9 +142,9 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
                     if (itemNumber.isNotBlank() && binNumber.isNotBlank()) {
                         hasAPIBeenCalled = true
-                        viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDateStr, lotNumber)
-                        viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, lotNumber, companyID)
-                        viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
+                        viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDateStr, newLotNumber)
+                        viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, newLotNumber, companyID, oldLot)
+                        viewModel.getItemInfo(itemNumber, binNumber, newLotNumber)
                     } else {
                         progressDialog.dismiss()
                         AlerterUtils.startErrorAlerter(requireActivity(), "Make sure date is filled")
