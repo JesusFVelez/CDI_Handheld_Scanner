@@ -229,8 +229,9 @@ class BinMovementFragment : Fragment() {
             val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to commit the movements?", "Move Items?")
             questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
                 progressDialog.show()
-                viewModel.moveItemsBetweenBins(adapter.data)
                 questionPopup.dismiss()
+                viewModel.moveItemsBetweenBins(adapter.data)
+
             }
 
             questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{

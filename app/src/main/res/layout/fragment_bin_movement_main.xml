@@ -59,7 +59,7 @@
             android:layout_height="50dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/menu_option_button"
-            android:text="Continue"
+            android:text="Finish"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

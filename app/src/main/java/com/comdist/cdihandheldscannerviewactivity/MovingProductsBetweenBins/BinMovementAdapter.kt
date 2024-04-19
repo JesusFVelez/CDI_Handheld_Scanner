@@ -88,8 +88,8 @@ class BinMovementViewHolder(itemToMoveView: View): RecyclerView.ViewHolder(itemT
             // Create popup window to ask whether user wants to delete item or not
             val popupWindow = PopupWindowUtils.createQuestionPopup(it.context, "Are you sure you want to delete item from the list?", "Delete Item")
             popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
-                onRemoveOfItem(adapterPosition)
                 popupWindow.dismiss()
+                onRemoveOfItem(adapterPosition)
             }
             popupWindow.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
                 popupWindow.dismiss()
