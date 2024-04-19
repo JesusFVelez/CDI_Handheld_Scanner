@@ -93,26 +93,40 @@
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
                 android:textSize="20sp"
-                app:layout_constraintTop_toBottomOf="@+id/ItemPickingButton"
                 app:layout_constraintBottom_toTopOf="@+id/assignExpirationDateButton"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ItemPickingButton" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/assignExpirationDateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:background="@drawable/menu_option_button"
                 android:text="Assign Expiration Date"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
                 android:textSize="20sp"
-                app:layout_constraintTop_toBottomOf="@+id/assignBarcodeButton"
-                app:layout_constraintBottom_toTopOf="@+id/logOutButton"
+                app:layout_constraintBottom_toTopOf="@+id/BinToBinMovementButton"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/assignBarcodeButton" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/BinToBinMovementButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/menu_option_button"
+                    android:text="Bin to Bin Movement"
+                    android:textAllCaps="false"
+                    android:textColor="@color/CDI_Gray"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@+id/logOutButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/assignExpirationDateButton" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/logOutButton"

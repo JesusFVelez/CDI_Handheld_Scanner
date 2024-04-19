@@ -47,21 +47,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private var hasOrderBeenSearched: Boolean = false
     private lateinit var progressDialog: Dialog
 
-
-    fun verifyIfOrderIsBeingPicked(): Boolean{
-        val orderNumber = orderNumberEditText.text.toString()
-        return orderNumber != "" && hasOrderBeenSearched
-    }
-
-    fun showErrorMessageWhenExitingScreenWithoutFinishingPicking(){
-        val orderNumber = orderNumberEditText.text.toString()
-        AlerterUtils.startErrorAlerter(
-            requireActivity(),
-            "Cannot exit Item picking without finishing picking for order '${orderNumber}'"
-        )
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

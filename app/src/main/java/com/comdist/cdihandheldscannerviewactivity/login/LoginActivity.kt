@@ -203,6 +203,7 @@ class LoginActivity : AppCompatActivity() {
         for (aWarehouse in viewModel.listOfWarehouses.value!!) {
             warehouses.add(aWarehouse.warehouseName)
         }
+
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, warehouses)
         warehouseSpinner.setAdapter(adapter)
     }

@@ -4,18 +4,24 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.TextView
 import com.comdist.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment
+import com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementDataClass
 import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
 import com.google.android.material.transition.platform.MaterialFadeThrough
 
 class PopupWindowUtils {
@@ -110,6 +116,38 @@ class PopupWindowUtils {
             val screenWidth = displayMetrics.widthPixels
             return screenWidth - (screenWidth * 0.05).toInt()
         }
+
+        fun getCustomPopup(context: Context, customPopupXML: Int): PopupWindow{
+            val layoutInflater = LayoutInflater.from(context)
+            val popupContentView = layoutInflater.inflate(customPopupXML, null)
+
+
+            val popupWidth = getPopupWindowWidth(context)
+            val popupWindow = PopupWindow(
+                popupContentView,
+                popupWidth,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+            popupWindow.enterTransition = MaterialFadeThrough().apply { // this worked
+                duration = 400
+            }
+            popupWindow.exitTransition = MaterialFadeThrough().apply { // this worked
+                duration = 400
+            }
+
+
+
+            popupWindow.apply {
+                isOutsideTouchable = false
+                isFocusable = true
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
+
+            return popupWindow
+
+        }
+
 
         fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: orderPickingMainFragment.PopupInputListener){
             val layoutInflater = LayoutInflater.from(context)

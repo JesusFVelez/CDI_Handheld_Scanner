@@ -10,7 +10,7 @@ import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil.inflate
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -31,6 +31,7 @@ class HomeScreenFragment : Fragment() {
     private lateinit var productToBinButton: Button
     private lateinit var binsWithProductButton: Button
     private lateinit var itemPickingButton: Button
+    private lateinit var binMovementButton: Button
     private lateinit var assignBarcodeButton: Button
     private lateinit var assignExpirationDateButton: Button
     // Dialog for showing progress
@@ -39,6 +40,7 @@ class HomeScreenFragment : Fragment() {
     private var hasButtonBeenPressed = false
 
     private lateinit var viewModel: HomeScreenViewModel
+    private lateinit var chosenMenuOption: HomeScreenViewModel.MenuOptionDataClass
 
 
     // Method called when the fragment is created
@@ -131,6 +133,7 @@ class HomeScreenFragment : Fragment() {
         binsWithProductButton = binding.BinsWithItemButton
         itemPickingButton = binding.ItemPickingButton
         assignBarcodeButton = binding.assignBarcodeButton
+        binMovementButton = binding.BinToBinMovementButton
         assignExpirationDateButton = binding.assignExpirationDateButton
 
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
@@ -167,6 +170,10 @@ class HomeScreenFragment : Fragment() {
         assignBarcodeButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.AssignBarcodeMenuOption)
         }
+
+        binMovementButton.setOnClickListener {
+            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.BinToBinMovementOption)
+        }
         assignExpirationDateButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.EditItemMenuOption)
         }
@@ -188,7 +195,7 @@ class HomeScreenFragment : Fragment() {
     ): View? {
 
         // Inflate the layout for this fragment
-        binding = inflate(inflater, R.layout.fragment_home_screen, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home_screen, container, false)
 
 
 
@@ -199,8 +206,6 @@ class HomeScreenFragment : Fragment() {
         // Return the view for this fragment
         return binding.root
     }
-
-
 
 
 
