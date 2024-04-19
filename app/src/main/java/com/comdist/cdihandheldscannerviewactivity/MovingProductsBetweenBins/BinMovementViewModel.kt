@@ -60,6 +60,7 @@ class BinMovementViewModel: ViewModel() {
 
 
 
+
     init {
         _errorMessage.value = mutableMapOf(
             "confirmBin" to "",
@@ -68,6 +69,10 @@ class BinMovementViewModel: ViewModel() {
             "moveItemBetweenBins" to ""
         )
     }
+
+    private val _hasAPIBeenCalled = MutableLiveData<Boolean>()
+    val hasAPIBeenCalled:LiveData<Boolean>
+        get() = _hasAPIBeenCalled
 
     fun setCurrentlyChosenItemToMove(itemToMove: itemsInBin){
         _currentlyChosenItemToMove.value = itemToMove
@@ -79,6 +84,10 @@ class BinMovementViewModel: ViewModel() {
 
     fun setWarehouseFromSharedPref(warehouse: Int){
         _warehouseNumber.value = warehouse
+    }
+
+    fun resetHasAPIBeenCalled(){
+        _hasAPIBeenCalled.value = false
     }
 
         fun getAllBinsFromBackend() {

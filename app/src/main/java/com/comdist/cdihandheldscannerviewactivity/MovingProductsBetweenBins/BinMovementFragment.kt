@@ -120,6 +120,14 @@ class BinMovementFragment : Fragment() {
         viewModel.listOfBinsInWarehouse.observe(viewLifecycleOwner){
         }
 
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
+            if(!wasLastAPICallSuccessful){
+                //viewModel.resetHasAPIBeenCalled()
+                progressDialog.dismiss()
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
+            }
+        }
+
         viewModel.listOfAllItemsInAllBins.observe(viewLifecycleOwner){newListOfItemsInBin ->
             progressDialog.dismiss()
             val fromBinNumber = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.fromBinNumber)
