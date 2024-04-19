@@ -83,7 +83,8 @@ class OrderPickingItemFragment :Fragment(){
 
     private fun initObservers(){
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner){wasItemConfirmed ->
-            if(wasItemConfirmed && hasPageJustStarted){
+            if(wasItemConfirmed && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 var valueToBeDisplayed: Float = 0.0f
                 valueToBeDisplayed = if(viewModel.UOMQtyInBarcode.value == 0.0f)
                     itemAmountEditText.text.toString().toFloat() + viewModel.currentlyChosenItem.value!!.howManyIndividualQtysPerUOM
@@ -91,20 +92,32 @@ class OrderPickingItemFragment :Fragment(){
                     itemAmountEditText.text.toString().toFloat() + viewModel.UOMQtyInBarcode.value!!
                 itemAmountEditText.setText(valueToBeDisplayed.toString())
                 itemNumberEditText.setText("")
-            }else if(hasPageJustStarted)
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmItem"]!!)
+            }else if(viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["confirmItem"]!!
+                )
+            }
         }
 
-        viewModel.wasPickingSuccesfulyFinished.observe(viewLifecycleOwner){wasPickingDoneSuccessfully ->
-            if(wasPickingDoneSuccessfully && hasPageJustStarted){
+        viewModel.wasPickingSuccessfullyFinished.observe(viewLifecycleOwner){ wasPickingDoneSuccessfully ->
+            if(wasPickingDoneSuccessfully && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startSuccessAlert(requireActivity(), "Picking Successful", "Item '" + viewModel.currentlyChosenItem.value!!.itemName + "' was successfully picked")
                 findNavController().navigateUp()
-            }else if(hasPageJustStarted)
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["finishPickingForSingleItem"]!!)
+            }else if(viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["finishPickingForSingleItem"]!!
+                )
+            }
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
-            if(!wasLastAPICallSuccessful && hasPageJustStarted){
+            if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
 

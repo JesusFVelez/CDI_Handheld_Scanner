@@ -95,8 +95,9 @@ class BinMovementFragment : Fragment() {
 
         viewModel.allItemsMoved.observe(viewLifecycleOwner) { allMoved ->
             progressDialog.dismiss()
-            if (allMoved) {
+            if (allMoved && viewModel.hasAPIBeenCalled.value!!) {
                 // Reset the flag or handle as needed
+                viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startSuccessAlert(requireActivity(), "Success","Successfully Moved items to respective bins")
                 viewModel.resetAllItemsMovedFlag()
                 clearAllItemsFromRecyclerView()
@@ -107,7 +108,8 @@ class BinMovementFragment : Fragment() {
         }
 
         viewModel.wasItemMovedSuccessfully.observe(viewLifecycleOwner){wasItemMoved ->
-            if (!wasItemMoved) {
+            if (!wasItemMoved && viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["moveItemBetweenBins"]!!

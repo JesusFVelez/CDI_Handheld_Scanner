@@ -5,18 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comdist.cdihandheldscannerviewactivity.Utils.BaseViewModel
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ProductInBinInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception
 // ViewModel class for managing Products in a Bin
-class ProductsInBinViewModel: ViewModel() {
-
-    // LiveData and MutableLiveData for various UI states and data
-    private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
-    val wasLastAPICallSuccessful : LiveData<Boolean>
-        get() = _wasLastAPICallSuccessful
+class ProductsInBinViewModel: BaseViewModel() {
 
     private val _wasBinFound = MutableLiveData<Boolean>()
     val wasBinFound : LiveData<Boolean>
@@ -26,8 +22,6 @@ class ProductsInBinViewModel: ViewModel() {
     val listOfProducts : LiveData<List<ProductInBinInfo>>
         get() = _listOfProducts
 
-
-
     private val _numberOfItemsInBin = MutableLiveData<Int>()
     val numberOfItemsInBin : LiveData<Int>
         get() = _numberOfItemsInBin
@@ -35,14 +29,6 @@ class ProductsInBinViewModel: ViewModel() {
     private val _currentlyChosenAdapterPosition = MutableLiveData<Int>()
     val currentlyChosenAdapterPosition: LiveData<Int>
         get() = _currentlyChosenAdapterPosition
-
-    private val _companyIDOfUser = MutableLiveData<String>()
-    val companyIDOfUser : LiveData<String>
-        get() = _companyIDOfUser
-
-    private val _warehouseNumberOfUser = MutableLiveData<Int>()
-    val warehouseNumberOfUser: LiveData<Int>
-        get() = _warehouseNumberOfUser
 
 
     // Function to set the currently chosen adapter position
@@ -68,14 +54,6 @@ class ProductsInBinViewModel: ViewModel() {
     }
 
 
-    // Function to set the company ID from shared preferences
-    fun setCompanyIDFromSharedPref(companyID: String){
-        _companyIDOfUser.value = companyID
-    }
-
-    fun setWarehouseNumberFromSharedPref(warehouseNumber: Int){
-        _warehouseNumberOfUser.value = warehouseNumber
-    }
 
     // Function to fetch product information from the backend
     fun getProductInfoFromBackend(binNumber : String ){
@@ -89,7 +67,8 @@ class ProductsInBinViewModel: ViewModel() {
         // API call to get product information
         try{
             viewModelScope.launch(exceptionHandler) {
-                val response = ScannerAPI.getViewProductsInBinService().getAllItemsInBin(_companyIDOfUser.value!!, _warehouseNumberOfUser.value!!, binNumber )
+                _hasAPIBeenCalled.value = true
+                val response = ScannerAPI.getViewProductsInBinService().getAllItemsInBin(_companyID.value!!, _warehouseNumber.value!!, binNumber )
                 _wasLastAPICallSuccessful.value = true
                 _listOfProducts.value = response.response.itemsInBin.itemsInBin
                 _wasBinFound.value = response.response.wasBinFound

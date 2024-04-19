@@ -3,8 +3,8 @@ package com.comdist.cdihandheldscannerviewactivity.ItemPicking
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comdist.cdihandheldscannerviewactivity.Utils.BaseViewModel
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInOrderInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.RequestTimerParams
@@ -13,7 +13,7 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-class ItemPickingViewModel: ViewModel() {
+class ItemPickingViewModel: BaseViewModel() {
 
     // Adapter Position
     private val _currentlyChosenAdapterPosition = MutableLiveData<Int>()
@@ -31,29 +31,10 @@ class ItemPickingViewModel: ViewModel() {
         get() = _listOfItemsInOrder
 
 
-    // Company ID
-    private val _companyID =  MutableLiveData<String>()
-    val companyID: LiveData<String>
-        get() = _companyID
-
-
     // Picker User Name
     private val _userNameOfPicker =  MutableLiveData<String>()
     val userNameOfPicker: LiveData<String>
         get() = _userNameOfPicker
-
-
-    // Error Message
-    private val _errorMessage = MutableLiveData<MutableMap<String,String>>()
-    val errorMessage : LiveData<MutableMap<String,String>>
-        get() = _errorMessage
-
-
-    // API Call Confirmation
-    private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
-    val wasLastAPICallSuccessful : LiveData<Boolean>
-        get() = _wasLastAPICallSuccessful
-
 
     // Order Found Validation
     private val _wasOrderFound = MutableLiveData<Boolean>()
@@ -92,9 +73,9 @@ class ItemPickingViewModel: ViewModel() {
     val UOMQtyInBarcode:LiveData<Float>
         get() = _UOMQtyInBarcode
 
-    private val _wasPickingSuccesfulyFinished = MutableLiveData<Boolean>()
-    val wasPickingSuccesfulyFinished: LiveData<Boolean>
-        get() = _wasPickingSuccesfulyFinished
+    private val _wasPickingSuccessfullyFinished = MutableLiveData<Boolean>()
+    val wasPickingSuccessfullyFinished: LiveData<Boolean>
+        get() = _wasPickingSuccessfullyFinished
 
 
     private val _ordersThatHavePicking = MutableLiveData<List<ordersThatAreInPickingClass>>()
@@ -153,6 +134,7 @@ class ItemPickingViewModel: ViewModel() {
 
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getItemPickingForDispatchService().confirmOrder(
                     _orderNumber.value!!,
@@ -170,14 +152,9 @@ class ItemPickingViewModel: ViewModel() {
         }
     }
 
-    fun setCompanyIDFromSharedPref(companyID: String){
-        _companyID.value = companyID
-    }
     fun setUserNameOfPickerFromSharedPref(userNameOfPicker: String){
         _userNameOfPicker.value = userNameOfPicker
     }
-
-
 
     fun verifyIfClientAccountIsClosedInBackend(){
         // Exception handler for API call
@@ -188,6 +165,7 @@ class ItemPickingViewModel: ViewModel() {
 
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getItemPickingForDispatchService().verifyIfClientAccountIsClosed(
                     _orderNumber.value!!,
@@ -212,6 +190,7 @@ class ItemPickingViewModel: ViewModel() {
 
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             val uniqueIDForPicking = listOfItemsInOrder.value!![adapterPosition].uniqueIDForPicking
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getItemPickingForDispatchService().confirmBin(scannedBin, uniqueIDForPicking)
@@ -236,6 +215,7 @@ class ItemPickingViewModel: ViewModel() {
 
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getItemPickingForDispatchService().verifyIfOrderHasPicking(
                     _orderNumber.value!!,
@@ -263,6 +243,7 @@ class ItemPickingViewModel: ViewModel() {
         }
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getItemPickingForDispatchService().confirmItem(scannedItemCode, currentlyChosenItem.value!!.itemNumber, _companyID.value!!, _orderNumber.value!!)
                 _wasLastAPICallSuccessful.value = true
@@ -291,6 +272,7 @@ class ItemPickingViewModel: ViewModel() {
 
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getItemPickingForDispatchService().getAllItemsInOrder(
                     _orderNumber.value!!,
@@ -315,11 +297,12 @@ class ItemPickingViewModel: ViewModel() {
         }
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getItemPickingForDispatchService().finishPickingForSingleItem(_currentlyChosenItem.value!!.uniqueIDForPicking,_userNameOfPicker.value!!,quantityBeingPicked)
                 _wasLastAPICallSuccessful.value = true
                 _errorMessage.value!!["finishPickingForSingleItem"] = response.response.errorMessage
-                _wasPickingSuccesfulyFinished.value = response.response.wasPickingSuccesfull
+                _wasPickingSuccessfullyFinished.value = response.response.wasPickingSuccesfull
             }
 
         }catch (e: Exception){
@@ -339,6 +322,7 @@ class ItemPickingViewModel: ViewModel() {
         }
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val timerRequestBody = RequestTimerParams(_orderNumber.value!!, _userNameOfPicker.value!!)
                 val timerRequestBodyWrapper = RequestTimerParamsWrapper(timerRequestBody)
@@ -362,6 +346,7 @@ class ItemPickingViewModel: ViewModel() {
         }
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 ScannerAPI.getItemPickingForDispatchService().updatePickerTimer(_orderNumber.value!!, _userNameOfPicker.value!!)
                 _wasLastAPICallSuccessful.value = true
@@ -391,6 +376,7 @@ class ItemPickingViewModel: ViewModel() {
         }
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val response = ScannerAPI.getItemPickingForDispatchService().getAllOrdersInPickingForSuggestion(_companyID.value!!)
                 val ordersInPicking = response.response.ordersThatAreInPicking.ordersThatAreInPicking

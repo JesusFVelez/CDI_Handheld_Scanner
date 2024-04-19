@@ -189,36 +189,44 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     private fun initObservers() {
         viewModel.ordersThatHavePicking.observe(viewLifecycleOwner){newOrdersThatHavePicking ->
-            if(newOrdersThatHavePicking.isNotEmpty())
+            if(newOrdersThatHavePicking.isNotEmpty() && viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 initOrderNumberAutoCompleteTextView(newOrdersThatHavePicking)
+            }
         }
 
         viewModel.wasBinConfirmed.observe(viewLifecycleOwner) { wasBinConfirmed ->
-            if (wasBinConfirmed && !hasPageJustStarted) {
+            if (wasBinConfirmed && viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 val bundle =
                     BundleUtils.getBundleToSendFragmentNameToNextFragment("OrderPickingMainFragment")
                 findNavController().navigate(
                     R.id.action_orderPickingMainFragment_to_orderPickingItemFragment,
                     bundle
                 )
-            } else if (!hasPageJustStarted)
+            } else if (viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["confirmBin"]!!
                 )
+            }
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
-            if (!wasLasAPICallSuccessful && hasOrderBeenSearched) {
+            if (!wasLasAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
 
         viewModel.wasOrderFound.observe(viewLifecycleOwner) { isOrderInBackend ->
-            if (isOrderInBackend && hasOrderBeenSearched) {
+            if (isOrderInBackend && viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 viewModel.verifyIfOrderHasPickingInBackend()
-            } else if (hasOrderBeenSearched) {
+            } else if (viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
@@ -228,9 +236,11 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         }
 
         viewModel.orderHasPicking.observe(viewLifecycleOwner) { doesOrderHasPicking ->
-            if (doesOrderHasPicking && hasOrderBeenSearched) {
+            if (doesOrderHasPicking && viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 viewModel.verifyIfClientAccountIsClosedInBackend()
-            } else if (hasOrderBeenSearched) {
+            } else if (viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
@@ -242,13 +252,15 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
         viewModel.wasClientAccountClosed.observe(viewLifecycleOwner) { wasClientAccountClosed ->
 
-            if (wasClientAccountClosed && hasOrderBeenSearched) {
+            if (wasClientAccountClosed &&  viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["verifyIfClientAccountIsClosed"]!!
                 )
-            } else if (hasOrderBeenSearched ) {
+            } else if (viewModel.hasAPIBeenCalled.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 viewModel.getItemsInOrder()
                 if(!viewModel.hasPickingTimerAlreadyStarted.value!!)
                     viewModel.startPickingTimer()

@@ -6,13 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.Utils.BaseViewModel
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 
-class HomeScreenViewModel : ViewModel(){
+class HomeScreenViewModel : BaseViewModel(){
 
     // Hardcoded Menu Options with the action ids, names and function names
     class MenuOptions{
@@ -31,10 +32,6 @@ class HomeScreenViewModel : ViewModel(){
         var menuOptionFunctionName:String
     )
 
-    private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
-    val wasLastAPICallSuccessful : LiveData<Boolean>
-        get() = _wasLastAPICallSuccessful
-
     private val _doesClientUseRPM = MutableLiveData<Boolean>()
     val doesClientUseRPM : LiveData<Boolean>
         get() = _doesClientUseRPM
@@ -44,11 +41,6 @@ class HomeScreenViewModel : ViewModel(){
     val userNameOfPicker: LiveData<String>
         get() = _userNameOfPicker
 
-
-    // Company ID
-    private val _companyID =  MutableLiveData<String>()
-    val companyID: LiveData<String>
-        get() = _companyID
 
     private val _doesUserHaveAccessToMenuOption = MutableLiveData<Boolean>()
     val doesUserHaveAccessToMenuOption:LiveData<Boolean>
@@ -67,10 +59,6 @@ class HomeScreenViewModel : ViewModel(){
 
 
 
-
-    fun setCompanyIDFromSharedPref(companyID: String){
-        _companyID.value = companyID
-    }
     fun setUserNameOfPickerFromSharedPref(userNameOfPicker: String){
         _userNameOfPicker.value = userNameOfPicker
     }
@@ -90,6 +78,7 @@ class HomeScreenViewModel : ViewModel(){
         }
         viewModelScope.launch(exceptionHandler) {
             try{
+                _hasAPIBeenCalled.value = true
                 val response = ScannerAPI.getRPMAccessService().verifyIfClientUsesRPM(_companyID.value!!)
                 _wasLastAPICallSuccessful.value = true
                 _doesClientUseRPM.value = response.response.doesClientUseRPM
@@ -107,6 +96,7 @@ class HomeScreenViewModel : ViewModel(){
         }
         viewModelScope.launch(exceptionHandler) {
             try{
+                _hasAPIBeenCalled.value = true
                 val response = ScannerAPI.getRPMAccessService().checkIfUserHasAccessToFunctionality(_userNameOfPicker.value!!, menuOption.menuOptionFunctionName, _companyID.value!!)
                 _wasLastAPICallSuccessful.value = true
                 _errorMessageForUserAccess.value = response.response.errorMessage

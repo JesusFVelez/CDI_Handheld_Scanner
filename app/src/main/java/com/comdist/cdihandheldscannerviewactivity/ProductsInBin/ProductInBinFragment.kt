@@ -71,7 +71,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
         // Retrieve warehouse number from shared preferences
         val warehouseNumber:Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
-        viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
+        viewModel.setWarehouseFromSharedPref(warehouseNumber)
 
         return binding.root
     }
@@ -132,7 +132,8 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
     private fun initObservers(){
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccessful ->
-            if(!wasAPICallSuccessful && hasSearchButtonBeenPressed){
+            if(!wasAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 hasSearchButtonBeenPressed = false
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
@@ -145,15 +146,17 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             else
                 numberOfItemsTextView.text = "${newNumberOfItems.toString()} item in Bin"
 
-            if (newNumberOfItems == 0 && hasSearchButtonBeenPressed && viewModel.wasBinFound.value!!)
+            if (newNumberOfItems == 0 && viewModel.hasAPIBeenCalled.value!! && viewModel.wasBinFound.value!!) {
+                viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startWarningAlerter(requireActivity(), "Bin is empty")
+            }
 
             hasSearchButtonBeenPressed = false
         }
 
 
         viewModel.wasBinFound.observe(viewLifecycleOwner) {hasBinBeenFound ->
-            if (!hasBinBeenFound && hasSearchButtonBeenPressed){
+            if (!hasBinBeenFound && viewModel.hasAPIBeenCalled.value!!){
                 hasSearchButtonBeenPressed = false
                 progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(requireActivity(), getString(R.string.bin_not_found))

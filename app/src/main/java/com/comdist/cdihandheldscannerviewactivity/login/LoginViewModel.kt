@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comdist.cdihandheldscannerviewactivity.Utils.BaseViewModel
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.Company
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.RequestUser
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
@@ -14,7 +15,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class LoginViewModel:ViewModel() {
+class LoginViewModel:BaseViewModel() {
 
 
 
@@ -35,10 +36,6 @@ class LoginViewModel:ViewModel() {
     private val _currentlyChosenWarehouse = MutableLiveData<WarehouseInfo>()
     val currentlyChosenWarehouse: LiveData<WarehouseInfo>
         get() = _currentlyChosenWarehouse
-
-    private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
-    val wasLastAPICallSuccessful : LiveData<Boolean>
-        get() = _wasLastAPICallSuccessful
 
     private val _isUserLoggedIn = MutableLiveData<Boolean>()
     val isUserLoggedIn: LiveData<Boolean>

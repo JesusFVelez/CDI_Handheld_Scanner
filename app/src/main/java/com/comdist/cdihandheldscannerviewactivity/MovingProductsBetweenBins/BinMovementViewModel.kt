@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comdist.cdihandheldscannerviewactivity.Utils.BaseViewModel
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.binInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
@@ -13,16 +14,8 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class BinMovementViewModel: ViewModel() {
+class BinMovementViewModel: BaseViewModel() {
     // LiveData and MutableLiveData for various UI states and data
-    private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
-    val wasLastAPICallSuccessful: LiveData<Boolean>
-        get() = _wasLastAPICallSuccessful
-
-    // Error Message
-    private val _errorMessage = MutableLiveData<MutableMap<String, String>>()
-    val errorMessage: LiveData<MutableMap<String, String>>
-        get() = _errorMessage
 
     private val _listOfBinsInWarehouse = MutableLiveData<List<binInfo>>()
     val listOfBinsInWarehouse: LiveData<List<binInfo>>
@@ -32,15 +25,6 @@ class BinMovementViewModel: ViewModel() {
     val listOfAllItemsInAllBins: LiveData<List<itemsInBin>>
         get() = _listOfAllItemsInAllBins
 
-    // Company ID
-    private val _companyID =  MutableLiveData<String>()
-    val companyID: LiveData<String>
-        get() = _companyID
-
-    // Company ID
-    private val _warehouseNumber =  MutableLiveData<Int>()
-    val warehouseNumber: LiveData<Int>
-        get() = _warehouseNumber
 
     private val _currentlyChosenItemToMove = MutableLiveData<itemsInBin>()
     val currentlyChosenItemToMove: LiveData<itemsInBin>
@@ -73,14 +57,6 @@ class BinMovementViewModel: ViewModel() {
         _currentlyChosenItemToMove.value = itemToMove
     }
 
-    fun setCompanyIDFromSharedPref(companyID: String){
-        _companyID.value = companyID
-    }
-
-    fun setWarehouseFromSharedPref(warehouse: Int){
-        _warehouseNumber.value = warehouse
-    }
-
         fun getAllBinsFromBackend() {
             // Exception handler for API call
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -94,6 +70,7 @@ class BinMovementViewModel: ViewModel() {
             // API call to get the products in order
             try {
                 viewModelScope.launch(exceptionHandler) {
+                    _hasAPIBeenCalled.value = true
                     val response =
                         ScannerAPI.getMovingItemsBetweenBinsService().getAllBins(_companyID.value!!,_warehouseNumber.value!!)
                     _wasLastAPICallSuccessful.value = true
@@ -118,6 +95,7 @@ class BinMovementViewModel: ViewModel() {
 
             // API call to get the products in order
             try {
+                _hasAPIBeenCalled.value = true
                 viewModelScope.launch(exceptionHandler) {
                     val response =
                         ScannerAPI.getMovingItemsBetweenBinsService().getAllItemsInAllBin(_companyID.value!!, _warehouseNumber.value!!)
@@ -150,6 +128,7 @@ class BinMovementViewModel: ViewModel() {
             val jobs = itemsToMove.map { itemToMove ->
                 launch {
                     try {
+                        _hasAPIBeenCalled.value = true
                         val response = ScannerAPI.getMovingItemsBetweenBinsService()
                             .moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
                         _wasLastAPICallSuccessful.value = true
@@ -182,6 +161,7 @@ class BinMovementViewModel: ViewModel() {
 
         // API call to get the products in order
         try {
+            _hasAPIBeenCalled.value = true
             viewModelScope.launch(exceptionHandler) {
                 val response =
                     ScannerAPI.getMovingItemsBetweenBinsService().moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())

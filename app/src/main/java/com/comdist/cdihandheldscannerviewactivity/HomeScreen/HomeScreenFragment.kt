@@ -86,7 +86,8 @@ class HomeScreenFragment : Fragment() {
 
     private fun initObservers(){
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastApiCallSuccessful ->
-            if(!wasLastApiCallSuccessful && hasButtonBeenPressed){
+            if(!wasLastApiCallSuccessful && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
                 Log.i("API Call", "API Call did not work")
@@ -96,9 +97,11 @@ class HomeScreenFragment : Fragment() {
         // Executes as soon as it is verified whether the client uses RPM or not
         viewModel.doesClientUseRPM.observe(viewLifecycleOwner){doesClientUseRPM ->
             progressDialog.dismiss()
-            if(doesClientUseRPM == true && hasButtonBeenPressed){
+            if(doesClientUseRPM == true && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 viewModel.verifyInBackendIfUserHasAccessToMenuOption(viewModel.currentlyChosenMenuOption.value!!)
-            }else if(hasButtonBeenPressed){
+            }else if(viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 hasButtonBeenPressed = false
                 navigateToMenuOption(viewModel.currentlyChosenMenuOption.value!!.menuOptionNavigationAction)
             }
@@ -106,10 +109,12 @@ class HomeScreenFragment : Fragment() {
 
         viewModel.doesUserHaveAccessToMenuOption.observe(viewLifecycleOwner){doesUserHaveAccessToMenuOption ->
 
-            if(doesUserHaveAccessToMenuOption && hasButtonBeenPressed){
+            if(doesUserHaveAccessToMenuOption && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 hasButtonBeenPressed = false
                 navigateToMenuOption(viewModel.currentlyChosenMenuOption.value!!.menuOptionNavigationAction)
-            }else if(hasButtonBeenPressed){
+            }else if(viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 hasButtonBeenPressed = false
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessageForUserAccess.value!!)
             }
