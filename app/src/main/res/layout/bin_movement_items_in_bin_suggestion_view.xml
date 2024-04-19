@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/suggestion_background"
+    android:padding="20dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/itemDescriptionTextView"
+        android:layout_width="wrap_content"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_height="wrap_content"
+        android:text="50/2 Panadol 500 MG Dispenser"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/itemNumberTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="S11001"
+        app:layout_constraintEnd_toEndOf="@+id/itemDescriptionTextView"
+        app:layout_constraintStart_toStartOf="@+id/itemDescriptionTextView"
+        app:layout_constraintTop_toBottomOf="@+id/itemDescriptionTextView" />
+
+    <LinearLayout
+        android:id="@+id/BinLocationLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/itemNumberTextView"
+        app:layout_constraintStart_toStartOf="@+id/itemNumberTextView"
+        app:layout_constraintTop_toBottomOf="@id/itemNumberTextView">
+
+        <TextView
+            android:id="@+id/binLocationLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="@string/binLocationLabelBinMovement"
+            app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView"
+            tools:layout_editor_absoluteX="241dp" />
+
+        <TextView
+            android:id="@+id/binLocationValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01-001"
+
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/QuantityInHandLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/BinLocationLinearLayout"
+        app:layout_constraintTop_toBottomOf="@id/BinLocationLinearLayout">
+
+        <TextView
+            android:id="@+id/QuantityInHandLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="@string/QuantityOnHandBinLabelMovement" />
+
+        <TextView
+            android:id="@+id/QuantityInHandValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/QuantityInPickingLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="@+id/QuantityInHandLinearLayout"
+        app:layout_constraintStart_toStartOf="@+id/QuantityInHandLinearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/QuantityInHandLinearLayout">
+
+        <TextView
+            android:id="@+id/QuantityInPickingLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="@string/QuantityInPickingLabelBinMovement" />
+
+        <TextView
+            android:id="@+id/QuantityInPickingValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/QuantityAvailableLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintStart_toStartOf="@+id/QuantityInPickingLinearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/QuantityInPickingLinearLayout">
+
+        <TextView
+            android:id="@+id/QuantityAvailableLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="Available:" />
+
+        <TextView
+            android:id="@+id/QuantityAvailableValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

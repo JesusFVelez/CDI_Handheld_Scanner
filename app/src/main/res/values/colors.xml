@@ -9,5 +9,6 @@
     <color name="CDI_Banner_Blue">#010891</color>
     <color name="warning_yellow">#FECC00</color>
     <color name="success_green">#4BB543</color>
+    <color name="red"> #870A0A</color>
     <color name="ic_launcher_background">#1775ab</color>
 </resources>

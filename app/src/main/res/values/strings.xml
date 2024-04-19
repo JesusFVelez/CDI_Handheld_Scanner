@@ -37,7 +37,7 @@
     <string name="search_item">Search Item</string>
     <string name="search_order">Search Picking</string>
     <string name="serial_number">Serial Number</string>
-    <string name="succesfull_login">You have been logged in successfully!</string>
+    <string name="successful_login">You have been logged in successfully!</string>
     <string name="units">Units</string>
     <string name="user_name">User Name</string>
     <string name="title_activity_main">MainActivity</string>
@@ -46,4 +46,11 @@
     <string name="warehouseSpinnerHint">Warehouse</string>
     <string name="companySpinnerHint">Company</string>
 
+    <string name="binLocationLabelBinMovement">Bin Location:</string>
+    <string name="QuantityOnHandBinLabelMovement">On Hand:</string>
+    <string name="QuantityInPickingLabelBinMovement">In Picking:</string>
+    <string name="amount_to_move">Amount to move</string>
+    <string name="to_bin">To Bin</string>
+    <string name="add_button">Add</string>
+    <string name="clear_button">Clear</string>
 </resources>
