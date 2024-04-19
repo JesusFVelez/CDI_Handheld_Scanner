@@ -122,7 +122,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             val itemNumber = viewModel.currentlyChosenItemForSearch.value!!.itemNumber
             val newExpirationDateStr = binding.NewExpirationDateEditText.text.toString()
             val binNumber = viewModel.currentlyChosenItemForSearch.value!!.binLocation
-            val newLotNumber = binding.newLotEditText.text.toString()
+            val lotNumber = binding.newLotEditText.text.toString()
             val oldLot = viewModel.currentlyChosenItemForSearch.value!!.lotNumber
 
             // Step 2: Parse the date input
@@ -142,9 +142,9 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
                     if (itemNumber.isNotBlank() && binNumber.isNotBlank()) {
                         hasAPIBeenCalled = true
-                        viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDateStr, newLotNumber)
-                        viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, newLotNumber, companyID, oldLot)
-                        viewModel.getItemInfo(itemNumber, binNumber, newLotNumber)
+                        viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDateStr, lotNumber)
+                        viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, lotNumber, companyID, oldLot)
+                        viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
                     } else {
                         progressDialog.dismiss()
                         AlerterUtils.startErrorAlerter(requireActivity(), "Make sure date is filled")
