@@ -81,7 +81,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
         viewModelScope.launch(exceptionHandler) {
             try {
                 // Assuming the Retrofit suspend function returns directly the response body
-                val response = ScannerAPI.getAssignLotNumberService().assignLotNumberToBinItem(pItemNumber, pCompanyCode , pBinLocation, pLotNumber, pWarehouseNo )
+                val response = ScannerAPI.getAssignLotNumberService().assignLotNumberToBinItem(pItemNumber, pCompanyCode , pBinLocation, pLotNumber, pWarehouseNo, pOldLot )
                 _opSuccess.value = response.response.opSuccess
                 _opMessage.value = response.response.opMessage
                 _wasLastAPICallSuccessful.value = true

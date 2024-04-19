@@ -100,7 +100,14 @@ interface MoveItemsBetweenBinsServices{
 
 interface AssignLotNumberResources {
     @PUT("assignLotNumberToBinItem")
-    suspend fun assignLotNumberToBinItem(@Query("pItemNumber") pItemNumber:String, @Query("pCompanyCode") companyID: String, @Query("pBinLocation") pBinLocation:String, @Query("pLotNumber") pLotNumber:String, @Query("pWarehouseNo") warehouseNumber: Int): AssignLotNumberResponseWrapper
+    suspend fun assignLotNumberToBinItem(
+        @Query("pItemNumber") pItemNumber: String,
+        @Query("pCompanyCode") companyID: String,
+        @Query("pBinLocation") pBinLocation: String,
+        @Query("pLotNumber") pLotNumber: String,
+        @Query("pWarehouseNo") warehouseNumber: Int,
+        pOldLot: String?
+    ): AssignLotNumberResponseWrapper
 }
 
 //Assign Expiration Date inaterface
