@@ -106,7 +106,7 @@ interface AssignLotNumberResources {
         @Query("pBinLocation") pBinLocation: String,
         @Query("pLotNumber") pLotNumber: String,
         @Query("pWarehouseNo") warehouseNumber: Int,
-        pOldLot: String?
+        @Query("pOldLot") pOldLot: String?
     ): AssignLotNumberResponseWrapper
 }
 
