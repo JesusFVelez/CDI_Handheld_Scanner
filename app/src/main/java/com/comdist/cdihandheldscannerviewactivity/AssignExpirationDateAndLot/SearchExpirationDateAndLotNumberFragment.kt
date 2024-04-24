@@ -35,7 +35,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
     private lateinit var progressDialog: Dialog
 
-    private var shouldShowMessage = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -56,7 +56,6 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
     override fun onPause() {
         super.onPause()
-        shouldShowMessage = true
     }
     private fun setupUI() {
         // Initialize your adapter with the item click lambda

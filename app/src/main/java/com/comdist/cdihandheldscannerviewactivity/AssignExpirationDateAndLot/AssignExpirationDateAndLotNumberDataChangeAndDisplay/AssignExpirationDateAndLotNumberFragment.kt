@@ -60,7 +60,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         )
 
         setupUI()
-        observeViewModel()
+        initObservers()
 
         return binding.root
     }
@@ -80,7 +80,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        shouldShowMessage = true
+        shouldShowMessage = false
     }
 
     private fun setupUI() {
@@ -119,6 +119,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         // Existing setupUI logic for the enter button
             binding.enterButton.setOnClickListener {
             isEnterPressed = true
+            shouldShowMessage = true //NEW
             val itemNumber = viewModel.currentlyChosenItemForSearch.value!!.itemNumber
             val newExpirationDateStr = binding.NewExpirationDateEditText.text.toString()
             val binNumber = viewModel.currentlyChosenItemForSearch.value!!.binLocation
@@ -237,12 +238,11 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         return true
     }
 
-    private fun observeViewModel() {
+    /*private fun observeViewModel() {
 
         viewModel.opSuccess.observe(viewLifecycleOwner) { success ->
             progressDialog.dismiss()
 
-            // Ensure the message is retrieved only once when needed to avoid duplicate alerts
             val message = viewModel.opMessage.value ?: ""
             if (message.isNotBlank() && isEnterPressed && shouldShowMessage) {
                 if (!success) {
@@ -318,6 +318,94 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
+    }*/
+
+    private fun initObservers() {
+
+        viewModel.opSuccess.observe(viewLifecycleOwner) { success ->
+            // Always dismiss the progress dialog when the observer is triggered
+            progressDialog.dismiss()
+
+            // Ensure the message is fetched fresh when needed
+            val message = viewModel.opMessage.value ?: "No message available"
+
+            if (isEnterPressed && shouldShowMessage) {
+                if (success) {
+                    // If the operation was successful, show a success alert
+                    AlerterUtils.startSuccessAlert(requireActivity(), "Success!", message)
+                } else if (!success) {
+                    // If the operation failed, show an error alert
+                    AlerterUtils.startErrorAlerter(requireActivity(), message)
+                }
+
+                // After handling, reset the enter button state
+                isEnterPressed = false
+            }
+        }
+
+
+        viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
+            itemInfo.firstOrNull()?.let { item ->
+                // Update UI
+                binding.itemNumberTextView.text = item.itemNumber
+                binding.itemNameTextView.text = item.itemDescription
+                binding.binLocationTextView.text = item.binLocation
+                binding.expirationDateTextView.text = item.expireDate ?: "N/A"
+                binding.lotTextView.text = item.lotNumber ?: "N/A"
+            }
+        }
+
+        // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
+        viewModel.currentlyChosenItemForSearch.observe(viewLifecycleOwner) { selectedItem ->
+            selectedItem?.let { item ->
+                binding.apply {
+
+                    itemNumberTextView.text = item.itemNumber
+                    itemNameTextView.text = item.itemDescription
+                    binLocationTextView.text = item.binLocation
+                    expirationDateTextView.text = item.expireDate ?: "N/A"
+                    lotTextView.text = item.lotNumber ?: "N/A"
+
+                    // Parsing and formatting the date
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Adjust this format to match the incoming date format
+                    val outputFormat = SimpleDateFormat("MM-dd-yyyy"
+
+
+                        , Locale.getDefault())
+                    val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
+                    val formattedDate = if (date != null) outputFormat.format(date) else ""
+
+                    NewExpirationDateEditText.setText(formattedDate)
+                    newLotEditText.setText(item.lotNumber ?: "")
+
+                    upperDiv.visibility = View.VISIBLE
+
+                    val lotExists = !item.lotNumber.isNullOrEmpty()
+                    newLotEditText.isEnabled = lotExists
+                    ToggleButton.apply {
+                        if (lotExists) {
+                            background = resources.getDrawable(R.drawable.toggle_switch_on, null)
+                            tag = "on"
+                        } else {
+                            background = resources.getDrawable(R.drawable.toggle_switch_outline_off, null)
+                            tag = "off"
+                        }
+                    }
+                    upperDiv.visibility = View.VISIBLE
+                }
+            }
+        }
+
+
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
+            progressDialog.dismiss()
+            if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
+                //AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
+            }
+        }
     }
+
+
 }
 

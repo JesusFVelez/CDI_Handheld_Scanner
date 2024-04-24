@@ -56,8 +56,8 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
             try {
                 val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber)
                 _wasLastAPICallSuccessful.value = true
-                _opMessage.value = response.response.opMessage
-                _opSuccess.value = response.response.opSuccess
+                //_opMessage.value = response.response.opMessage
+                //_opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
@@ -82,8 +82,8 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
             try {
                 // Assuming the Retrofit suspend function returns directly the response body
                 val response = ScannerAPI.getAssignLotNumberService().assignLotNumberToBinItem(pItemNumber, pCompanyCode , pBinLocation, pLotNumber, pWarehouseNo, pOldLot )
-                _opSuccess.value = response.response.opSuccess
                 _opMessage.value = response.response.opMessage
+                _opSuccess.value = response.response.opSuccess
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
                 // Exception handling for network errors or serialization/deserialization issues
@@ -105,9 +105,9 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
             try {
                 val response = ScannerAPI.getAssignExpirationDateService().getItemInformation(pItemNumber, pBinLocation, pLotNumber)
                 _wasLastAPICallSuccessful.value = true
-                _opMessage.value = response.response.opMessage
+                //_opMessage.value = response.response.opMessage
                 _itemInfo.value = response.response.binItemInfo.response
-                _opSuccess.value = response.response.opSuccess
+                //_opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Item Info", "Error -> ${e.message}")
