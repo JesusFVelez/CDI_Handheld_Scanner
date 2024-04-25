@@ -242,6 +242,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 clearMiddleDiv()
                 searchButton.isEnabled = true
                 binNumberAutoCompleteTextView.isEnabled = true
+                finishButton.isEnabled = false
             }
         }
 
@@ -259,8 +260,11 @@ class ReceivingProductsMainFragment : Fragment(){
         viewModel.doorBins.observe(viewLifecycleOwner){doorBinsList ->
             progressDialog.dismiss()
             viewModel.resetHasAPIBeenCalled()
-            if(doorBinsList.isNotEmpty() )
+            if(doorBinsList.isNotEmpty()) {
+                finishButton.isEnabled = true
                 initBinNumberAutoCompleteTextView(doorBinsList)
+            }else
+                finishButton.isEnabled = false
         }
 
         viewModel.wasItemFound.observe(viewLifecycleOwner){wasItemFound ->

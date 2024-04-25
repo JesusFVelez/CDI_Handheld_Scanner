@@ -103,6 +103,7 @@
                     android:background="@drawable/rectangle_text_box"
                     android:dropDownHeight="wrap_content"
                     android:gravity="center"
+                    android:inputType="number"
                     android:hint="Quantity"
                     app:layout_constraintBottom_toTopOf="@id/NewExpirationDateEditText"
                     app:layout_constraintEnd_toEndOf="@+id/newLotAutoCompleteTextView"
