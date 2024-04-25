@@ -67,7 +67,7 @@ class ReceivingProductsViewModel: ViewModel() {
         get() = _wasLasAPICallSuccessful
 
     private val _wasPreReceivingFound = MutableLiveData<Boolean>()
-    val preReceiving: LiveData<Boolean>
+    val wasPreReceivingFound: LiveData<Boolean>
         get() = _wasPreReceivingFound
 
     private val _wasItemFound = MutableLiveData<Boolean>()
@@ -104,7 +104,6 @@ class ReceivingProductsViewModel: ViewModel() {
         get() = _allItemsMoved
 
     init {
-        _wasPreReceivingFound.value = false
         _errorMessage.value = mutableMapOf(
             "wasItemFoundError" to "",
             "wasPreReceivingFoundError" to "",
@@ -197,7 +196,10 @@ class ReceivingProductsViewModel: ViewModel() {
             try{
                 _hasAPIBeenCalled.value = true
                 val response = ScannerAPI.getReceivingProductService().getPreReceivingInfo(_currentlyChosenDoorBin.value!!.bin_receiving, _warehouseNumber.value!!, _companyID.value!!)
-                _preReceivingInfo.value = response.response.ttPreReceiving.tt_pre_receiving[0]
+                _errorMessage.value!!["wasPreReceivingFoundError"] = response.response.errorMessage
+                _wasPreReceivingFound.value = response.response.wasPreReFound
+                if(_wasPreReceivingFound.value!!)
+                    _preReceivingInfo.value = response.response.ttPreReceiving.tt_pre_receiving[0]
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = true

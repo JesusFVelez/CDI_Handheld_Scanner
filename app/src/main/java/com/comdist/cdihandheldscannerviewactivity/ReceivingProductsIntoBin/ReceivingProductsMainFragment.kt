@@ -128,6 +128,7 @@ class ReceivingProductsMainFragment : Fragment(){
         preReceivingTextView = binding.PreReceivingTextView
         purchaseOrderNumberTextView = binding.PONumberTextView
         searchButton = binding.SearchBinButton
+        searchButton.isEnabled = false
         finishButton = binding.FinishReceivingButton
         addButton = binding.addItemButton
 
@@ -214,6 +215,10 @@ class ReceivingProductsMainFragment : Fragment(){
         binNumberAutoCompleteTextView.setOnItemClickListener{parent, view, position, id ->
             val selectedItem = binNumberAutoCompleteTextView.adapter.getItem(position) as DoorBin
             viewModel.setCurrentlyChosenDoorBin(selectedItem)
+            if(selectedItem.bin_receiving.uppercase() == "NOT ASSIGNED")
+                searchButton.isEnabled = false
+            else
+                searchButton.isEnabled = true
         }
     }
 
@@ -277,14 +282,26 @@ class ReceivingProductsMainFragment : Fragment(){
             }
         }
 
+        viewModel.wasPreReceivingFound.observe(viewLifecycleOwner){wasPrereFound ->
+            if(!wasPrereFound && viewModel.hasAPIBeenCalled.value!!) {
+                progressDialog.dismiss()
+                viewModel.resetHasAPIBeenCalled()
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["wasPreReceivingFoundError"]!!
+                )
+            }
+        }
+
         viewModel.preReceivingInfo.observe(viewLifecycleOwner){newPreReceivingInfo ->
-            viewModel.resetHasAPIBeenCalled()
-            binding.middleDiv.visibility = View.VISIBLE
-            doorBinNumberTextView.text = binNumberAutoCompleteTextView.text.toString().uppercase()
-            preReceivingTextView.text = newPreReceivingInfo.tt_pre_receiving_number.uppercase()
-            purchaseOrderNumberTextView.text = newPreReceivingInfo.tt_purchase_order.uppercase()
-            addButton.isEnabled = true
-            viewModel.getItemsInDoor()
+                viewModel.resetHasAPIBeenCalled()
+                binding.middleDiv.visibility = View.VISIBLE
+                doorBinNumberTextView.text =
+                    binNumberAutoCompleteTextView.text.toString().uppercase()
+                preReceivingTextView.text = newPreReceivingInfo.tt_pre_receiving_number.uppercase()
+                purchaseOrderNumberTextView.text = newPreReceivingInfo.tt_purchase_order.uppercase()
+                addButton.isEnabled = true
+                viewModel.getItemsInDoor()
         }
     }
 
