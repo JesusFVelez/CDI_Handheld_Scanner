@@ -73,7 +73,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
         val item = data[position]
         holder.itemNumberTextView.text = item.itemNumber
         holder.itemNameTextView.text = item.itemName
-        holder.binToBeMovedTo.text = item.binToBeMovedTo
+        holder.binToBeMovedTo.text = "Floor"
         holder.lotNumberTextView.text = item.lotNumber
         holder.expirationDateTextView.text = item.expirationDate
         holder.quantityInDoorBinTextView.text = "Added: " + item.quantityOfItemsAddedToDoorBin.toString()

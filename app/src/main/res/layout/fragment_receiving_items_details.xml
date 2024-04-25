@@ -81,7 +81,7 @@
 
 
                 <AutoCompleteTextView
-                    android:id="@+id/NewBinEditText"
+                    android:id="@+id/newLotAutoCompleteTextView"
                     android:layout_width="201dp"
                     android:layout_height="54dp"
                     android:layout_marginTop="40dp"
@@ -89,26 +89,11 @@
                     android:background="@drawable/rectangle_text_box"
                     android:dropDownHeight="wrap_content"
                     android:gravity="center"
-                    android:hint="New Bin"
-                    app:layout_constraintBottom_toTopOf="@+id/newLotAutoCompleteTextView"
-                    app:layout_constraintEnd_toEndOf="@+id/addButton"
-                    app:layout_constraintStart_toStartOf="@+id/addButton"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <AutoCompleteTextView
-                    android:id="@+id/newLotAutoCompleteTextView"
-                    android:layout_width="201dp"
-                    android:layout_height="54dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/rectangle_text_box"
-                    android:dropDownHeight="wrap_content"
-                    android:gravity="center"
                     android:hint="New Lot"
                     app:layout_constraintBottom_toTopOf="@+id/QuantityEditText"
-                    app:layout_constraintEnd_toEndOf="@+id/NewBinEditText"
-                    app:layout_constraintHorizontal_bias="0.142"
-                    app:layout_constraintStart_toStartOf="@+id/NewBinEditText" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
                     android:id="@+id/QuantityEditText"

@@ -37,7 +37,6 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
 
     //EditText declarations
-    private lateinit var newBinEditText: EditText
     private lateinit var newLotAutoCompleteTextView: EditText
     private lateinit var quantityEditText: EditText
     private lateinit var newExpirationDateEditText: EditText
@@ -109,7 +108,6 @@ class ReceivingProductsDetailsFragment : Fragment() {
         populateUpperDivUiElements()
 
         // edit text initializations
-        newBinEditText = binding.NewBinEditText
         newLotAutoCompleteTextView = binding.newLotAutoCompleteTextView
         quantityEditText = binding.QuantityEditText
         newExpirationDateEditText = binding.NewExpirationDateEditText
@@ -178,7 +176,6 @@ class ReceivingProductsDetailsFragment : Fragment() {
             val areNecessaryFieldsFilled = verifyIfAllNecessaryFieldsAreFilled()
             if(areNecessaryFieldsFilled){
                 val expirationDate = newExpirationDateEditText.text.toString()
-                val newBinOfItem = newBinEditText.text.toString()
 
                 val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
                 try {
@@ -186,10 +183,15 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
                     // Step 3: Validate the parsed date
                     if (newExpirationDate != null && isValidDate(expirationDate)) {
-
+                        val expirationDate = newExpirationDateEditText.text.toString()
+                        val newLotNumber = newLotAutoCompleteTextView.text.toString()
+                        val quantityToAddToDoor = quantityEditText.text.toString().toInt()
+                        val itemNumber = itemNumberTextView.text.toString()
+                        val itemName = itemNameTextView.text.toString()
+                        val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
+                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "9970F", doorBin , itemNumber, newLotNumber, quantityToAddToDoor)
                         progressDialog.show()
-                        viewModel.wasBinFound(newBinOfItem)
-                        //viewModel.moveItemToDoor(itemToAdd)
+                        viewModel.moveItemToDoor(itemToAdd)
                     } else {
                         // Step 4: Show an error message for invalid date
                         AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date. Please enter a valid date (MM-DD-YYYY).")
@@ -197,10 +199,6 @@ class ReceivingProductsDetailsFragment : Fragment() {
                 } catch (e: ParseException) {
                     AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
                 }
-
-
-
-
             }else{
                 AlerterUtils.startErrorAlerter(requireActivity(), "Please fill all required fields, excluding lot number")
             }
@@ -222,26 +220,6 @@ class ReceivingProductsDetailsFragment : Fragment() {
             viewModel.resetHasAPIBeenCalled()
         }
 
-        viewModel.wasBinFound.observe(viewLifecycleOwner){ wasBinFound ->
-            if(wasBinFound && viewModel.hasAPIBeenCalled.value!!){
-                viewModel.resetHasAPIBeenCalled()
-                val expirationDate = newExpirationDateEditText.text.toString()
-                val newLotNumber = newLotAutoCompleteTextView.text.toString()
-                val quantityToAddToDoor = quantityEditText.text.toString().toInt()
-                val newBinOfItem = newBinEditText.text.toString()
-                val itemNumber = itemNumberTextView.text.toString()
-                val itemName = itemNameTextView.text.toString()
-                val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
-                val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, newBinOfItem, doorBin , itemNumber, newLotNumber, quantityToAddToDoor)
-                viewModel.moveItemToDoor(itemToAdd)
-            }else if(viewModel.hasAPIBeenCalled.value!!){
-                progressDialog.dismiss()
-                viewModel.resetHasAPIBeenCalled()
-                AlerterUtils.startErrorAlerter(requireActivity(), "Please enter a valid Bin!")
-            }
-
-        }
-
         viewModel.wasLasAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
             if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
                 viewModel.resetHasAPIBeenCalled()
@@ -258,12 +236,10 @@ class ReceivingProductsDetailsFragment : Fragment() {
         val expirationDate = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].expirationDate
         val lotNumber = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].lotNumber
         val quantityBeingMoved = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].quantityOfItemsAddedToDoorBin.toString()
-        val binToBeMovedTo = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].binToBeMovedTo
 
         newExpirationDateEditText.setText(expirationDate)
         newLotAutoCompleteTextView.setText(lotNumber)
         quantityEditText.setText(quantityBeingMoved)
-        newBinEditText.setText(binToBeMovedTo)
     }
     private fun populateUpperDivUiElements(){
         itemNameTextView.text = viewModel.itemInfo.value!!.itemDescription
@@ -271,7 +247,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
     }
 
     private fun verifyIfAllNecessaryFieldsAreFilled():Boolean{
-        return newBinEditText.text.isNotEmpty() && quantityEditText.text.isNotEmpty() && newExpirationDateEditText.text.isNotEmpty()
+        return quantityEditText.text.isNotEmpty() && newExpirationDateEditText.text.isNotEmpty()
     }
 
 }
