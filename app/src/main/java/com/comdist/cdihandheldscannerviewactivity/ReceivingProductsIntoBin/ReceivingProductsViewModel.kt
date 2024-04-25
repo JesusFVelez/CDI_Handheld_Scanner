@@ -311,7 +311,7 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(designatedBin, itemNumber, lotNumber, expirationDate, quantity, warehouseNumber, companyID)
+                val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(itemNumber, lotNumber, expirationDate, quantity, warehouseNumber, companyID)
                 _wasItemMovedToBin.value = response.response.wasItemMoved
                 _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
                 _wasLasAPICallSuccessful.value = true
@@ -337,7 +337,7 @@ class ReceivingProductsViewModel: ViewModel() {
                 launch{
                     try{
                         _hasAPIBeenCalled.value = true
-                        val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(itemToMove.binToBeMovedTo, itemToMove.itemNumber, itemToMove.lotNumber, itemToMove.expirationDate, itemToMove.quantityOfItemsAddedToDoorBin, _warehouseNumber.value!!, _companyID.value!!)
+                        val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(itemToMove.itemNumber, itemToMove.lotNumber, itemToMove.expirationDate, itemToMove.quantityOfItemsAddedToDoorBin, _warehouseNumber.value!!, _companyID.value!!)
                         _wasItemMovedToBin.value = response.response.wasItemMoved
                         _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
                         _wasLasAPICallSuccessful.value = true

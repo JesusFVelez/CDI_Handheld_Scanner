@@ -155,7 +155,7 @@ class ReceivingProductsMainFragment : Fragment(){
         }
 
         finishButton.setOnClickListener {
-            val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to finish moving items from door bin to designated bins?", "Move Items?")
+            val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to finish moving items from door bin to floor bin (9970F)?", "Move Items?")
             questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
                 progressDialog.show()
                 questionPopup.dismiss()
