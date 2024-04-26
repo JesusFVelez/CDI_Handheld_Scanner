@@ -11,12 +11,11 @@
         android:id="@+id/quantityToMove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="20dp"
         android:text="Count: 3"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="@id/removeItemIcon"
+        app:layout_constraintStart_toStartOf="@id/removeItemIcon"
+        app:layout_constraintTop_toBottomOf="@id/removeItemIcon" />
 
     <TextView
         android:id="@+id/itemNumber"
@@ -97,12 +96,13 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/removeItemIcon"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/icon_red_trash_can"
         android:backgroundTint="@color/red"
         android:text=""
-        app:layout_constraintBottom_toTopOf="@+id/quantityToMove"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemName"
         app:layout_constraintTop_toTopOf="parent" />

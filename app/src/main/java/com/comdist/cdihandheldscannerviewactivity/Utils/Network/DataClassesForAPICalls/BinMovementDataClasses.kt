@@ -65,7 +65,10 @@ data class itemsInBin(
     @Json(name = "tt-lot-number") val lotNumber: String,
     @Json(name = "tt-expire-date") val expireDate: String?,
     @Json(name = "tt-weight") val weight: Float,
-    @Json(name = "tt-row-id") val rowID: String
+    @Json(name = "tt-row-id") val rowID: String,
+    @Json(name = "tt-by-weight") val isItemByWeight: Boolean,
+    @Json(name = "tt-by-lot") val isItemByLot: Boolean,
+    @Json(name = "tt-item-barcode") val itemBarcode:String?
     )
 
 

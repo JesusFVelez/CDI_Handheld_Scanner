@@ -120,6 +120,14 @@ class BinMovementFragment : Fragment() {
         viewModel.listOfBinsInWarehouse.observe(viewLifecycleOwner){
         }
 
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
+            if(!wasLastAPICallSuccessful){
+                //viewModel.resetHasAPIBeenCalled()
+                progressDialog.dismiss()
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
+            }
+        }
+
         viewModel.listOfAllItemsInAllBins.observe(viewLifecycleOwner){newListOfItemsInBin ->
             progressDialog.dismiss()
             val fromBinNumber = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.fromBinNumber)
@@ -171,16 +179,19 @@ class BinMovementFragment : Fragment() {
 
         val addButton = popupContentView.findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener {
-            val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
-            val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
-            val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
-            val quantityToMove = amountToMoveEditText.text.toString().toInt()
+
+            val quantityToMove = amountToMoveEditText.text.toString()
             val fromBin = fromBinAutoCompleteTextView.text.toString()
+            val itemNumber = itemNumberSpinner.text.toString()
+
+
             val toBin = toBinAutoCompleteTextView.text.toString()
-            val isAtLeastOneEditTextEmpty = verifyIfAtLeastOneEditTextIsEmpty(fromBin, toBin, quantityToMove.toString(), itemNumber)
+            val isAtLeastOneEditTextEmpty = verifyIfAtLeastOneEditTextIsEmpty(fromBin, toBin, quantityToMove, itemNumber)
             if(isAtLeastOneEditTextEmpty)
                 AlerterUtils.startErrorAlerter(requireActivity(), "All fields must be filled")
             else {
+                val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
+                val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
                 val quantityToBePicked =
                     viewModel.currentlyChosenItemToMove.value!!.quantityInPicking.toInt()
                 val quantityOnHand =
@@ -188,14 +199,14 @@ class BinMovementFragment : Fragment() {
                 val quantityAvailable = quantityOnHand - quantityToBePicked
 
 
-                if (quantityToMove > (quantityOnHand - quantityToBePicked)) {
+                if (quantityToMove.toInt() > (quantityOnHand - quantityToBePicked)) {
                     AlerterUtils.startErrorAlerter(
                         requireActivity(),
                         "Cannot move ${quantityToMove} units because there is only ${quantityAvailable} units available."
                     )
                 } else {
                     val newItemToAdd =
-                        BinMovementDataClass(itemName, itemNumber, rowIDOfItem ,quantityToMove, fromBin, toBin)
+                        BinMovementDataClass(itemName, itemNumber, rowIDOfItem ,quantityToMove.toInt(), fromBin, toBin)
                     adapter.addItem(newItemToAdd)
                     clearAllBinMovementEditTextFromPopup()
                     addBinMovementToListPopupWindow.dismiss()
@@ -218,8 +229,21 @@ class BinMovementFragment : Fragment() {
 
         continueButton = binding.continueButton
         continueButton.setOnClickListener {
-            progressDialog.show()
-            viewModel.moveItemsBetweenBins(adapter.data)
+            val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to commit the movements?", "Move Items?")
+            questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
+                progressDialog.show()
+                questionPopup.dismiss()
+                viewModel.moveItemsBetweenBins(adapter.data)
+
+            }
+
+            questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
+                questionPopup.dismiss()
+            }
+
+            questionPopup.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+
+
         }
         adapter = BinMovementAdapter { hasItems ->
             continueButton.isEnabled = hasItems
@@ -244,13 +268,17 @@ class BinMovementFragment : Fragment() {
 
     class CustomItemDropDownAdapter(context: Context, private var suggestions: List<itemsInBin>): ArrayAdapter<itemsInBin>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.bin_movement_items_in_bin_suggestion_view, parent, false)
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.view_bin_movement_items_in_bin_suggestion, parent, false)
             val itemDescriptionTextView = view.findViewById<TextView>(R.id.itemDescriptionTextView)
             val itemNumberTextView = view.findViewById<TextView>(R.id.itemNumberTextView)
             val binLocationTextView = view.findViewById<TextView>(R.id.binLocationValueTextView)
             val quantityOnHandTextView = view.findViewById<TextView>(R.id.QuantityInHandValueTextView)
             val quantityInPickingTextView = view.findViewById<TextView>(R.id.QuantityInPickingValueTextView)
             val quantityAvailableToMoveTextView = view.findViewById<TextView>(R.id.QuantityAvailableValueTextView)
+            val barcodeTextView = view.findViewById<TextView>(R.id.BarcodeValueTextView)
+            val weightTextView = view.findViewById<TextView>(R.id.WeightValueTextView)
+            val expirationDateTextView = view.findViewById<TextView>(R.id.ExpirationDateValueTextView)
+            val lotNumberTextView = view.findViewById<TextView>(R.id.LotNumberValueTextView)
 
             val item = suggestions[position]
             itemDescriptionTextView.text = item.itemName
@@ -259,6 +287,19 @@ class BinMovementFragment : Fragment() {
             quantityOnHandTextView.text = item.quantityOnHand.toString()
             quantityInPickingTextView.text = item.quantityInPicking.toString()
             quantityAvailableToMoveTextView.text = (item.quantityOnHand - item.quantityInPicking).toString()
+            barcodeTextView.text = item.itemBarcode
+            if(item.isItemByWeight && !item.isItemByLot)
+                weightTextView.text = item.weight.toString() + " lb"
+            else
+                weightTextView.text = "N/A"
+
+            if(item.isItemByLot && !item.isItemByWeight)
+                lotNumberTextView.text = item.lotNumber
+            else
+                lotNumberTextView.text = "N/A"
+
+            expirationDateTextView.text = item.expireDate
+
 
 
             return view

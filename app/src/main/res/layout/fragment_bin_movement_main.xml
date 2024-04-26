@@ -3,11 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" >
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MovingProductsBetweenBins.BinMovementFragment"
+        android:minHeight="?attr/actionBarSize"
         tools:ignore="ExtraText">
         <TextView
             android:id="@+id/toBinLabel"
@@ -24,15 +30,15 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/itemsBeingMovedRecyclerView"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-
+            android:layout_marginBottom="10dp"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/continueButton"
+            app:layout_constraintBottom_toTopOf="@+id/addButton"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toBinLabel">
 
@@ -41,25 +47,26 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/itemsBeingMovedRecyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
+            android:layout_marginBottom="20dp"
             android:backgroundTint="@color/CDI_Blue"
-            android:tint="@color/white"
             android:src="@drawable/add_sign"
-            app:fabSize="normal" />
+            android:tint="@color/white"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toTopOf="@+id/continueButton"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/continueButton"
-            android:enabled="false"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/menu_option_button"
-            android:text="Continue"
+            android:enabled="false"
+            android:text="Finish"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -67,5 +74,6 @@
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
 
 </layout>

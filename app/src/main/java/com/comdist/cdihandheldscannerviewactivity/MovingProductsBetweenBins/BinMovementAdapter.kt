@@ -3,11 +3,9 @@ package com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
@@ -22,7 +20,7 @@ class BinMovementAdapter (private val onDataSetChanged: (Boolean) -> Unit) : Rec
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BinMovementViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.item_to_move_view, parent, false)
+        val view = layoutInflater.inflate(R.layout.view_bin_movement_item_to_move, parent, false)
         return BinMovementViewHolder(view)
     }
 
@@ -88,8 +86,8 @@ class BinMovementViewHolder(itemToMoveView: View): RecyclerView.ViewHolder(itemT
             // Create popup window to ask whether user wants to delete item or not
             val popupWindow = PopupWindowUtils.createQuestionPopup(it.context, "Are you sure you want to delete item from the list?", "Delete Item")
             popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
-                onRemoveOfItem(adapterPosition)
                 popupWindow.dismiss()
+                onRemoveOfItem(adapterPosition)
             }
             popupWindow.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
                 popupWindow.dismiss()
