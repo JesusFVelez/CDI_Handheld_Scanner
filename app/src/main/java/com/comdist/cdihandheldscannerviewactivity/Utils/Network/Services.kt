@@ -8,7 +8,6 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DisplayInfoResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinForSuggestionResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemConfirmationResponseWrapper
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
@@ -117,7 +116,7 @@ interface AssignExpirationDateResources {
     suspend fun getSuggestionsForItemOrBin(): GetAllItemsInBinForSuggestionResponseWrapper
 
     @PUT("assignExpireDate")
-    suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String, @Query("pLotNumber") pLotNumber:String): AssignExpDateResponseWrapper
+    suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String, @Query("pLotNumber") pLotNumber:String, @Query("pWarehouseNo") warehouseNumber: Int): AssignExpDateResponseWrapper
 
     @GET("getItemInformation")
     suspend fun getItemInformation(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber") pLotNumber: String): DisplayInfoResponseWrapper

@@ -46,7 +46,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
         get() = _currentlyChosenItemForSearch
     init{}
 
-    fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String, pLotNumber: String) {
+    fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String, pLotNumber: String, pWarehouseNo: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             Log.i("Assign Expire Date " , "Error -> ${exception.message}")
@@ -54,7 +54,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber)
+                val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber, pWarehouseNo)
                 _wasLastAPICallSuccessful.value = true
                 //_opMessage.value = response.response.opMessage
                 //_opSuccess.value = response.response.opSuccess

@@ -56,6 +56,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
     }
     override fun onPause() {
         super.onPause()
+
     }
     private fun setupUI() {
         // Initialize your adapter with the item click lambda
