@@ -189,9 +189,9 @@ class ReceivingProductsMainFragment : Fragment(){
         }
 
 
-        recyclerViewAdapter = itemsInDoorBinAdapter(listener, { hasItem ->
+        recyclerViewAdapter = itemsInDoorBinAdapter(listener, { hasItems ->
 
-            finishButton.isEnabled = hasItem
+            finishButton.isEnabled = hasItems
 
         },{ item: itemsInDoorBinAdapter.ItemInDoorBinDataClass ->
 
@@ -260,11 +260,9 @@ class ReceivingProductsMainFragment : Fragment(){
         viewModel.doorBins.observe(viewLifecycleOwner){doorBinsList ->
             progressDialog.dismiss()
             viewModel.resetHasAPIBeenCalled()
-            if(doorBinsList.isNotEmpty()) {
-                finishButton.isEnabled = true
+            if(doorBinsList.isNotEmpty())
                 initBinNumberAutoCompleteTextView(doorBinsList)
-            }else
-                finishButton.isEnabled = false
+
         }
 
         viewModel.wasItemFound.observe(viewLifecycleOwner){wasItemFound ->
