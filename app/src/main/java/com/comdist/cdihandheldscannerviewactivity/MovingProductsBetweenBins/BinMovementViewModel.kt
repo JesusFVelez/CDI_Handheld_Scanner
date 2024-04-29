@@ -58,6 +58,10 @@ class BinMovementViewModel: ViewModel() {
     val allItemsMoved: LiveData<Boolean>
         get() = _allItemsMoved
 
+    private val _newItemToBeMoved = MutableLiveData<BinMovementDataClass>()
+    val newItemToBeMoved: LiveData<BinMovementDataClass>
+        get() = _newItemToBeMoved
+
 
 
 
@@ -68,6 +72,14 @@ class BinMovementViewModel: ViewModel() {
             "isQuantityValid" to "",
             "moveItemBetweenBins" to ""
         )
+    }
+
+    fun setNewItemToBeMoved(newItemToMove: BinMovementDataClass){
+        _newItemToBeMoved.value = newItemToMove
+    }
+
+    fun resetNewItemToBeMoved(){
+        _newItemToBeMoved.value = BinMovementDataClass("", "", "", 0, "", "")
     }
 
     private val _hasAPIBeenCalled = MutableLiveData<Boolean>()
@@ -140,6 +152,7 @@ class BinMovementViewModel: ViewModel() {
             }
         }
 
+
     fun resetAllItemsMovedFlag() {
         _allItemsMoved.value = false
     }
@@ -178,6 +191,32 @@ class BinMovementViewModel: ViewModel() {
         }
     }
 
+    fun confirmIfBinExistsInDB(binLocation: String){
+        // Exception handler for API call
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i(
+                "Confirm Bin - Bin Movement (exceptionHandler) ",
+                "Error -> ${exception.message}"
+            )
+        }
+
+        // API call to get the products in order
+        try {
+            viewModelScope.launch(exceptionHandler) {
+                _hasAPIBeenCalled.value = true
+                val response =
+                    ScannerAPI.getMovingItemsBetweenBinsService().confirmBin(binLocation, _companyID.value!!,_warehouseNumber.value!!)
+                _errorMessage.value!!["confirmBin"] = response.response.errorMessage
+                _wasBinConfirmed.value = response.response.wasBinConfirmed
+                _wasLastAPICallSuccessful.value = true
+            }
+
+        } catch (e: Exception) {
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Confirm Bin - Bin Movement (e) ", "Error -> ${e.message}")
+        }
+    }
 
     fun moveItemBetweenBins(itemToMove: BinMovementDataClass){
         // Exception handler for API call

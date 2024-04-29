@@ -106,6 +106,20 @@ class BinMovementFragment : Fragment() {
 
         }
 
+        viewModel.wasBinConfirmed.observe(viewLifecycleOwner){ wasBinConfirmed ->
+            if(!wasBinConfirmed && viewModel.hasAPIBeenCalled.value!!)
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["confirmBin"]!!
+                )
+            else{
+                adapter.addItem(viewModel.newItemToBeMoved.value!!)
+                clearAllBinMovementEditTextFromPopup()
+                addBinMovementToListPopupWindow.dismiss()
+            }
+            viewModel.resetNewItemToBeMoved()
+        }
+
         viewModel.wasItemMovedSuccessfully.observe(viewLifecycleOwner){wasItemMoved ->
             if (!wasItemMoved) {
                 AlerterUtils.startErrorAlerter(
@@ -190,8 +204,7 @@ class BinMovementFragment : Fragment() {
             if(isAtLeastOneEditTextEmpty)
                 AlerterUtils.startErrorAlerter(requireActivity(), "All fields must be filled")
             else {
-                val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
-                val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
+
                 val quantityToBePicked =
                     viewModel.currentlyChosenItemToMove.value!!.quantityInPicking.toInt()
                 val quantityOnHand =
@@ -205,11 +218,13 @@ class BinMovementFragment : Fragment() {
                         "Cannot move ${quantityToMove} units because there is only ${quantityAvailable} units available."
                     )
                 } else {
+                    val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
+                    val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
                     val newItemToAdd =
                         BinMovementDataClass(itemName, itemNumber, rowIDOfItem ,quantityToMove.toInt(), fromBin, toBin)
-                    adapter.addItem(newItemToAdd)
-                    clearAllBinMovementEditTextFromPopup()
-                    addBinMovementToListPopupWindow.dismiss()
+                    viewModel.setNewItemToBeMoved(newItemToAdd)
+                    viewModel.confirmIfBinExistsInDB(toBin)
+
                 }
             }
         }
