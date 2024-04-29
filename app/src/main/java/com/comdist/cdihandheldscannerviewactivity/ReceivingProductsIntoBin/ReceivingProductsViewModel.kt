@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DoorBin
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInBinList
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.PreReceivingInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ReceivingItemInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
@@ -225,7 +224,7 @@ class ReceivingProductsViewModel: ViewModel() {
                     val outputFormat = SimpleDateFormat("MM-dd-yyyy")
                     val newlyParsedExpDateString = outputFormat.format(newlyParsedDate)
 
-                    val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.qtyOnHand.toInt() * -1)
+                    val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.qtyOnHand.toInt() * -1, item.rowID)
                     _listOfItemsToMoveInPreReceiving.value!!.add(itemToMove)
                 }
                 _isDoorBinEmpty.value = response.response.isBinEmpty
@@ -291,18 +290,18 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(itemToAddToDoor.binToBeMovedTo, itemToAddToDoor.itemNumber, itemToAddToDoor.doorBin, itemToAddToDoor.quantityOfItemsAddedToDoorBin, itemToAddToDoor.lotNumber, itemToAddToDoor.expirationDate, _warehouseNumber.value!!, _companyID.value!!)
+                val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(itemToAddToDoor.itemNumber, itemToAddToDoor.doorBin, itemToAddToDoor.quantityOfItemsAddedToDoorBin, itemToAddToDoor.lotNumber, itemToAddToDoor.expirationDate, _warehouseNumber.value!!, _companyID.value!!)
                 _errorMessage.value!!["wasItemMovedToDoorError"] = response.response.errorMessage
                 _wasItemMovedToDoor.value = response.response.wasItemMovedToDoor
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = false
-                Log.i("get set the move item to door for Receiving API Call Exception Handler", "Error -> ${e.message}")
+                Log.i("set the move item to door for Receiving API Call Exception Handler (e)", "Error -> ${e.message}")
             }
         }
     }
 
-    fun moveItemToBin(designatedBin: String, itemNumber: String, lotNumber: String, expirationDate: String, quantity: Int, warehouseNumber: Int, companyID: String){
+    fun moveItemToBin(rowIDForDoorBin: String, quantity: Int){
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasItemMovedToBin.value = false
@@ -311,7 +310,7 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(itemNumber, lotNumber, expirationDate, quantity, warehouseNumber, companyID)
+                val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(rowIDForDoorBin, quantity)
                 _wasItemMovedToBin.value = response.response.wasItemMoved
                 _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
                 _wasLasAPICallSuccessful.value = true
@@ -321,11 +320,13 @@ class ReceivingProductsViewModel: ViewModel() {
             }
         }
     }
+
+
     fun resetAllItemsMovedFlag() {
         _allItemsMoved.value = false
     }
 
-    fun moveItemsToRespectiveBins(){
+    fun moveItemsToFloorBin(){
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasItemMovedToBin.value = false
@@ -337,7 +338,7 @@ class ReceivingProductsViewModel: ViewModel() {
                 launch{
                     try{
                         _hasAPIBeenCalled.value = true
-                        val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(itemToMove.itemNumber, itemToMove.lotNumber, itemToMove.expirationDate, itemToMove.quantityOfItemsAddedToDoorBin, _warehouseNumber.value!!, _companyID.value!!)
+                        val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(itemToMove.rowIDForDoorBin, itemToMove.quantityOfItemsAddedToDoorBin)
                         _wasItemMovedToBin.value = response.response.wasItemMoved
                         _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
                         _wasLasAPICallSuccessful.value = true
@@ -354,14 +355,14 @@ class ReceivingProductsViewModel: ViewModel() {
         }
     }
 
-    fun deleteItemFromDoorBin(doorBinNumber: String, itemNumber: String, lotNumber: String) {
+    fun deleteItemFromDoorBin(rowIDForDoorBin: String) {
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("set delete item from door bin API Call Exception Handler", "Error -> ${exception.message}")
         }
         viewModelScope.launch(exceptionHandler){
             try{
-                val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(doorBinNumber, itemNumber, lotNumber, _warehouseNumber.value!!, _companyID.value!!)
+                val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(rowIDForDoorBin)
                 _wasLasAPICallSuccessful.value = true
             } catch(e: Exception) {
                 _wasLasAPICallSuccessful.value = false

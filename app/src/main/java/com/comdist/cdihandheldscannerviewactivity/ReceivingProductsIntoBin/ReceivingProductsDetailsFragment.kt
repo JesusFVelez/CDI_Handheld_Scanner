@@ -189,7 +189,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                         val itemNumber = itemNumberTextView.text.toString()
                         val itemName = itemNameTextView.text.toString()
                         val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
-                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "9970F", doorBin , itemNumber, newLotNumber, quantityToAddToDoor)
+                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "9970F", doorBin , itemNumber, newLotNumber, quantityToAddToDoor, "N/A")
                         progressDialog.show()
                         viewModel.moveItemToDoor(itemToAdd)
                     } else {

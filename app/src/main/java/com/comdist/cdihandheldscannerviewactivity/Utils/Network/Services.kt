@@ -45,6 +45,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -233,13 +234,13 @@ interface ReceivingProductsServices {
     suspend fun wasBinFound(@Query("binNumber") bunNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseConfirmBin
 
     @PUT("addItemToDoorBin")
-    suspend fun addItemToDoorBin(@Query("designatedBin") designatedBin:String, @Query("itemNumber") itemNumber: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
+    suspend fun addItemToDoorBin(@Query("itemNumber") itemNumber: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
 
     @PUT("moveItemFromDoor")
-    suspend fun moveItemFromDoorBin(@Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("expirationDate") expirationDate: String, @Query("quantity") quantity: Int, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemFromDoorBin
+    suspend fun moveItemFromDoorBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String, @Query("quantity") quantity: Int): ResponseMoveItemFromDoorBin
 
-    @PUT("deleteItemFromDoorBin")
-    suspend fun deleteItemFromDoorInBin(@Query("doorBinNumber") doorBinNumber: String, @Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseDeleteItemFromDoorBin
+    @DELETE("deleteItemFromDoorBin")
+    suspend fun deleteItemFromDoorInBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String): ResponseDeleteItemFromDoorBin
 
 
 }

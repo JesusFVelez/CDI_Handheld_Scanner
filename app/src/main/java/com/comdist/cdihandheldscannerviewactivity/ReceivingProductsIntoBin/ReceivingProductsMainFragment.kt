@@ -4,10 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.Button
 import android.content.Context
-import android.location.GnssAntennaInfo.Listener
-import android.util.Log
 import android.view.Gravity
-import android.view.KeyEvent
 import android.widget.Filter
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,29 +14,17 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.AdapterView
 import android.widget.EditText
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.ui.node.getOrAddAdapter
-import androidx.compose.ui.text.toUpperCase
 import androidx.navigation.fragment.findNavController
-import com.comdist.cdihandheldscannerviewactivity.ItemPicking.itemInOrderClickListener
-import com.comdist.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ordersThatAreInPickingClass
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DoorBin
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingItemsMainBinding
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.google.android.material.animation.AnimatableView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.Locale
 
 class ReceivingProductsMainFragment : Fragment(){
 
@@ -159,7 +144,7 @@ class ReceivingProductsMainFragment : Fragment(){
             questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
                 progressDialog.show()
                 questionPopup.dismiss()
-                viewModel.moveItemsToRespectiveBins()
+                viewModel.moveItemsToFloorBin()
             }
 
             questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
@@ -195,7 +180,7 @@ class ReceivingProductsMainFragment : Fragment(){
 
         },{ item: itemsInDoorBinAdapter.ItemInDoorBinDataClass ->
 
-            viewModel.deleteItemFromDoorBin(item.doorBin, item.itemNumber, item.lotNumber)
+            viewModel.deleteItemFromDoorBin(item.rowIDForDoorBin)
 
         })
 
@@ -235,7 +220,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 AlerterUtils.startSuccessAlert(
                     requireActivity(),
                     "Success",
-                    "Successfully Moved items to respective bins"
+                    "Successfully Moved items to floor bin (9970F)"
                 )
                 viewModel.resetAllItemsMovedFlag()
                 clearAllItemsFromRecyclerView()

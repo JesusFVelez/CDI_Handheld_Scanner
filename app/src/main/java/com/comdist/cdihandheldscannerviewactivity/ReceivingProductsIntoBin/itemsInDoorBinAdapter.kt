@@ -28,7 +28,8 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
         val doorBin: String,
         val itemNumber:String,
         val lotNumber:String,
-        val quantityOfItemsAddedToDoorBin:Int)
+        val quantityOfItemsAddedToDoorBin:Int,
+        val rowIDForDoorBin: String)
 
     // Data source for the adapter
     var data = mutableListOf<ItemInDoorBinDataClass>()
