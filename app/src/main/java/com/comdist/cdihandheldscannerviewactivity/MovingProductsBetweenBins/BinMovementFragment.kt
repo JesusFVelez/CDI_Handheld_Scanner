@@ -86,23 +86,20 @@ class BinMovementFragment : Fragment() {
         return binding.root
     }
 
-    private fun clearAllItemsFromRecyclerView(){
-        adapter.clearAllItems()
-        adapter.notifyDataSetChanged()
-    }
 
     private fun initObservers(){
 
         viewModel.allItemsMoved.observe(viewLifecycleOwner) { allMoved ->
             progressDialog.dismiss()
-            if (allMoved) {
+            if (allMoved && viewModel.hasAPIBeenCalled.value!!) {
                 // Reset the flag or handle as needed
-                AlerterUtils.startSuccessAlert(requireActivity(), "Success","Successfully Moved items to respective bins")
+                AlerterUtils.startSuccessAlert(requireActivity(), "Success","Items have been successfully moved.")
                 viewModel.resetAllItemsMovedFlag()
-                clearAllItemsFromRecyclerView()
+                adapter.clearAllItems()
                 progressDialog.show()
                 viewModel.getAllItemsInAllBinsFromBackend()
             }
+            viewModel.resetHasAPIBeenCalled()
 
         }
 
@@ -112,16 +109,17 @@ class BinMovementFragment : Fragment() {
                     requireActivity(),
                     viewModel.errorMessage.value!!["confirmBin"]!!
                 )
-            else{
+            else if(viewModel.hasAPIBeenCalled.value!!){
                 adapter.addItem(viewModel.newItemToBeMoved.value!!)
                 clearAllBinMovementEditTextFromPopup()
                 addBinMovementToListPopupWindow.dismiss()
             }
+            viewModel.resetHasAPIBeenCalled()
             viewModel.resetNewItemToBeMoved()
         }
 
         viewModel.wasItemMovedSuccessfully.observe(viewLifecycleOwner){wasItemMoved ->
-            if (!wasItemMoved) {
+            if (!wasItemMoved && viewModel.hasAPIBeenCalled.value!!) {
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["moveItemBetweenBins"]!!
@@ -135,8 +133,8 @@ class BinMovementFragment : Fragment() {
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
-            if(!wasLastAPICallSuccessful){
-                //viewModel.resetHasAPIBeenCalled()
+            if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
+                viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }

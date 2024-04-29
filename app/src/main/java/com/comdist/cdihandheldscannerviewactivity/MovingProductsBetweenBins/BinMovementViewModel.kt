@@ -58,8 +58,8 @@ class BinMovementViewModel: ViewModel() {
     val allItemsMoved: LiveData<Boolean>
         get() = _allItemsMoved
 
-    private val _newItemToBeMoved = MutableLiveData<BinMovementDataClass>()
-    val newItemToBeMoved: LiveData<BinMovementDataClass>
+    private val _newItemToBeMoved = MutableLiveData<BinMovementDataClass?>()
+    val newItemToBeMoved: LiveData<BinMovementDataClass?>
         get() = _newItemToBeMoved
 
 
@@ -79,7 +79,7 @@ class BinMovementViewModel: ViewModel() {
     }
 
     fun resetNewItemToBeMoved(){
-        _newItemToBeMoved.value = BinMovementDataClass("", "", "", 0, "", "")
+        _newItemToBeMoved.value = null
     }
 
     private val _hasAPIBeenCalled = MutableLiveData<Boolean>()
@@ -114,7 +114,9 @@ class BinMovementViewModel: ViewModel() {
 
             // API call to get the products in order
             try {
+
                 viewModelScope.launch(exceptionHandler) {
+                    _hasAPIBeenCalled.value = true
                     val response =
                         ScannerAPI.getMovingItemsBetweenBinsService().getAllBins(_companyID.value!!,_warehouseNumber.value!!)
                     _wasLastAPICallSuccessful.value = true
@@ -139,7 +141,9 @@ class BinMovementViewModel: ViewModel() {
 
             // API call to get the products in order
             try {
+
                 viewModelScope.launch(exceptionHandler) {
+                    _hasAPIBeenCalled.value = true
                     val response =
                         ScannerAPI.getMovingItemsBetweenBinsService().getAllItemsInAllBin(_companyID.value!!, _warehouseNumber.value!!)
                     _wasLastAPICallSuccessful.value = true
@@ -172,11 +176,13 @@ class BinMovementViewModel: ViewModel() {
             val jobs = itemsToMove.map { itemToMove ->
                 launch {
                     try {
+                        _hasAPIBeenCalled.value = true
                         val response = ScannerAPI.getMovingItemsBetweenBinsService()
                             .moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
                         _wasLastAPICallSuccessful.value = true
-                        _wasItemMovedSuccessfully.value = response.response.wasItemMoved
                         _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
+                        _wasItemMovedSuccessfully.value = response.response.wasItemMoved
+
                     } catch (e: Exception) {
                         _wasLastAPICallSuccessful.value = false
                         Log.i("API Error", "Error -> ${e.message}")
@@ -231,6 +237,7 @@ class BinMovementViewModel: ViewModel() {
         // API call to get the products in order
         try {
             viewModelScope.launch(exceptionHandler) {
+                _hasAPIBeenCalled.value = true
                 val response =
                     ScannerAPI.getMovingItemsBetweenBinsService().moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
                 _wasLastAPICallSuccessful.value = true
