@@ -29,6 +29,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
         val itemNumber:String,
         val lotNumber:String,
         val quantityOfItemsAddedToDoorBin:Int,
+        val canEditLotNumber: Boolean,
         val rowIDForDoorBin: String)
 
     // Data source for the adapter

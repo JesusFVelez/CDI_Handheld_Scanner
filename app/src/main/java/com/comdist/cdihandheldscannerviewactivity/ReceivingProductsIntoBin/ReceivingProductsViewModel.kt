@@ -224,7 +224,7 @@ class ReceivingProductsViewModel: ViewModel() {
                     val outputFormat = SimpleDateFormat("MM-dd-yyyy")
                     val newlyParsedExpDateString = outputFormat.format(newlyParsedDate)
 
-                    val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.qtyOnHand.toInt() * -1, item.rowID)
+                    val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.qtyOnHand.toInt() * -1, item.doesItemHaveLotNumber, item.rowID)
                     _listOfItemsToMoveInPreReceiving.value!!.add(itemToMove)
                 }
                 _isDoorBinEmpty.value = response.response.isBinEmpty

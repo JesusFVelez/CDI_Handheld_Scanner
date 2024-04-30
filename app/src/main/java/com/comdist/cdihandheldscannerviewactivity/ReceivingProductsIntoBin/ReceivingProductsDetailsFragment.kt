@@ -119,7 +119,10 @@ class ReceivingProductsDetailsFragment : Fragment() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
 
-        // Add this line in your setupUI function
+        // Validates whether item uses lot number or not
+        val canEditLotNumber = viewModel.itemInfo.value!!.doesItemUseLotNumber
+        newLotAutoCompleteTextView.isEnabled = canEditLotNumber
+
         newExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
         newExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
@@ -189,7 +192,8 @@ class ReceivingProductsDetailsFragment : Fragment() {
                         val itemNumber = itemNumberTextView.text.toString()
                         val itemName = itemNameTextView.text.toString()
                         val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
-                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "9970F", doorBin , itemNumber, newLotNumber, quantityToAddToDoor, "N/A")
+                        val doesItemUseLotNumber = viewModel.itemInfo.value!!.doesItemUseLotNumber
+                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "9970F", doorBin , itemNumber, newLotNumber, quantityToAddToDoor, doesItemUseLotNumber ,"N/A")
                         progressDialog.show()
                         viewModel.moveItemToDoor(itemToAdd)
                     } else {
