@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.navigation.fragment.findNavController
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
@@ -172,18 +173,11 @@ class ReceivingProductsMainFragment : Fragment(){
                 progressDialog.show()
             }
         }
-
-
         recyclerViewAdapter = itemsInDoorBinAdapter(listener, { hasItems ->
-
             finishButton.isEnabled = hasItems
-
         },{ item: itemsInDoorBinAdapter.ItemInDoorBinDataClass ->
-
             viewModel.deleteItemFromDoorBin(item.rowIDForDoorBin)
-
         })
-
         recyclerViewAdapter.addItems(viewModel.listOfItemsToMoveInPreReceiving.value!!)
         binding.totalPickingItemsList.adapter = recyclerViewAdapter
     }
@@ -195,8 +189,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 newDoorBinsThatHavePreReceiving
             )
         binNumberAutoCompleteTextView.setAdapter(arrayAdapterForAutoCompleteTextView)
-        binNumberAutoCompleteTextView.threshold = 1
-        binNumberAutoCompleteTextView.requestFocus()
+        binNumberAutoCompleteTextView.width = ViewGroup.LayoutParams.MATCH_PARENT
         binNumberAutoCompleteTextView.setOnItemClickListener{parent, view, position, id ->
             val selectedItem = binNumberAutoCompleteTextView.adapter.getItem(position) as DoorBin
             viewModel.setCurrentlyChosenDoorBin(selectedItem)
@@ -307,7 +300,6 @@ class ReceivingProductsMainFragment : Fragment(){
             val item = suggestions[position]
             doorBinTextView.text = item.bin_number.uppercase()
             preReceivingTextView.text = item.bin_receiving.uppercase()
-
 
             return view
         }
