@@ -19,10 +19,10 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 
 class AssignExpirationDateAndLotNumberFragment : Fragment() {
@@ -163,10 +163,12 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
         binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
+            private var lastCursorPosition: Int = 0
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Store the text before any change is applied.
+                // Store the text before any change is applied and the cursor position.
                 previousText = s.toString()
+                lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -177,35 +179,31 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
                 // Enforce a strict limit of 10 characters for the entire input, including dashes.
                 if (currentText.length > 10) {
-                    // If the user attempts to input more than 10 characters, revert to the previous valid input.
                     binding.NewExpirationDateEditText.setText(previousText)
+                    binding.NewExpirationDateEditText.setSelection(lastCursorPosition)
                     return
                 }
 
                 if (!deleting) {
-                    // Logic to automatically insert dashes as the user types, ensuring the format MM-DD-YYYY.
+                    // Automatically insert dashes as the user types.
                     when (currentText.length) {
-                        2 -> {
-                            if (!previousText.endsWith("-")) {
-                                // Add a dash after the month part automatically if the user hasn't typed it.
-                                binding.NewExpirationDateEditText.setText("$currentText-")
-                                binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
-                            }
-                        }
-                        5 -> {
-                            if (!previousText.endsWith("-")) {
-                                // Add a dash after the day part automatically.
-                                binding.NewExpirationDateEditText.setText("$currentText-")
-                                binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
-                            }
+                        2, 5 -> if (!previousText.endsWith("-")) {
+                            binding.NewExpirationDateEditText.setText("$currentText-")
+                            binding.NewExpirationDateEditText.setSelection(currentText.length + 1)
                         }
                     }
                 } else {
-                    // Handle the case where a user deletes text, including any dashes.
+                    // Remove the last character if it's a dash, maintaining proper date format as the user deletes characters.
                     if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
-                        // Remove the last character if it's a dash, maintaining proper date format as the user deletes characters.
                         binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
                         binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
+                    }else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
+                        val newPosition = lastCursorPosition - 2  // Position to remove the number before the dash.
+                        val newText = StringBuilder(previousText).apply {
+                            deleteCharAt(newPosition)  // Remove the number before the dash.
+                        }.toString()
+                        binding.NewExpirationDateEditText.setText(newText)
+                        binding.NewExpirationDateEditText.setSelection(newPosition)
                     }
                 }
             }
