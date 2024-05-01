@@ -31,15 +31,10 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
     /*Batch variables*/
     private lateinit var ToggleButton: Button
-
     private var shouldShowMessage = true
-
     private var hasAPIBeenCalled = false
-
     private var isEnterPressed = false
-
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
-
     private lateinit var progressDialog: Dialog
 
     override fun onCreate(saveInstance: Bundle?) {
@@ -117,7 +112,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         }
 
         // Existing setupUI logic for the enter button
-            binding.enterButton.setOnClickListener {
+        binding.enterButton.setOnClickListener {
             isEnterPressed = true
             shouldShowMessage = true //NEW
             val itemNumber = viewModel.currentlyChosenItemForSearch.value!!.itemNumber
@@ -126,14 +121,17 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
             val lotNumber = binding.newLotEditText.text.toString()
             val oldLot = viewModel.currentlyChosenItemForSearch.value!!.lotNumber
 
-            // Step 2: Parse the date input
+            // Step 1: Validate date format
             val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
+            val isValidDateFormat = isValidDate(newExpirationDateStr)
 
+            // Step 2: Check if date format is valid
+            if (isValidDateFormat) {
+                // Proceed if the date format is valid
                 val newExpirationDate = dateFormat.parse(newExpirationDateStr)
 
-                // Step 3: Validate the parsed date
-                if (newExpirationDate != null && isValidDate(newExpirationDateStr)) {
-                    // Proceed if the date is valid
+                // Step 3: Check if parsed date is valid
+                if (newExpirationDate != null) {
                     progressDialog.show()
                     val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                     viewModel.setWarehouseNOFromSharedPref(warehouseNO)
@@ -150,25 +148,32 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                         viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDateStr, lotNumber, warehouseNO)
                         viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
                     }
-                    if (isValidDate(newExpirationDateStr) && lotNumber.isEmpty()) {
+                    if (lotNumber.isEmpty()) {
                         AlerterUtils.startSuccessAlert(requireActivity(), "Success!", "Item information changed.")
                     }
-                }else {
+                } else {
+                    // If the parsed date is null, display an error message
+                    AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
+                }
+            } else {
+                // If the date format is invalid, display an error message
                 AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
             }
 
-        }
+
+
+    }
 
         // Add this line in your setupUI function
         binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
-        binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
+        /*binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
-            private var lastCursorPosition: Int = 0
+            //private var lastCursorPosition: Int = 0
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Store the text before any change is applied and the cursor position.
                 previousText = s.toString()
-                lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
+                //lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -180,7 +185,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                 // Enforce a strict limit of 10 characters for the entire input, including dashes.
                 if (currentText.length > 10) {
                     binding.NewExpirationDateEditText.setText(previousText)
-                    binding.NewExpirationDateEditText.setSelection(lastCursorPosition)
+                    //binding.NewExpirationDateEditText.setSelection(lastCursorPosition)
                     return
                 }
 
@@ -197,18 +202,65 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                     if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
                         binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
                         binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
-                    }else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
+                    }/*else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
                         val newPosition = lastCursorPosition - 2  // Position to remove the number before the dash.
                         val newText = StringBuilder(previousText).apply {
                             deleteCharAt(newPosition)  // Remove the number before the dash.
                         }.toString()
                         binding.NewExpirationDateEditText.setText(newText)
                         binding.NewExpirationDateEditText.setSelection(newPosition)
+                    }*/
+                }
+            }
+        })*/
+
+        binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
+            private var previousText: String = ""
+            //private var lastCursorPosition: Int = 0
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Store the text before any change is applied and the cursor position.
+                previousText = s.toString()
+                //lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val currentText = s.toString()
+                val deleting = currentText.length < previousText.length
+
+                // Enforce a strict limit of 10 characters for the entire input, including dashes.
+                if (currentText.length > 10) {
+                    binding.NewExpirationDateEditText.setText(previousText)
+                    //binding.NewExpirationDateEditText.setSelection(lastCursorPosition)
+                    return
+                }
+
+                if (!deleting) {
+                    // Automatically insert dashes as the user types.
+                    when (currentText.length) {
+                        2, 5 -> if (!previousText.endsWith("-")) {
+                            binding.NewExpirationDateEditText.setText("$currentText-")
+                            binding.NewExpirationDateEditText.setSelection(currentText.length + 1)
+                        }
                     }
+                } else {
+                    // Remove the last character if it's a dash, maintaining proper date format as the user deletes characters.
+                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
+                        binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
+                        binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
+                    }/*else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
+                        val newPosition = lastCursorPosition - 2  // Position to remove the number before the dash.
+                        val newText = StringBuilder(previousText).apply {
+                            deleteCharAt(newPosition)  // Remove the number before the dash.
+                        }.toString()
+                        binding.NewExpirationDateEditText.setText(newText)
+                        binding.NewExpirationDateEditText.setSelection(newPosition)
+                    }*/
                 }
             }
         })
-
     }
 
     // Function to validate the date
