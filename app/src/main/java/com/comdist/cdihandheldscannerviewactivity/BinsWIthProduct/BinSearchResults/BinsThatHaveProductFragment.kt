@@ -38,7 +38,7 @@ class BinsThatHaveProductFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bins_that_have_product, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.bins_with_product_list_of_bins_fragment, container, false)
         initUIElements()
         initAdapter()
         fillItemDetailsWithViewModelInfo()

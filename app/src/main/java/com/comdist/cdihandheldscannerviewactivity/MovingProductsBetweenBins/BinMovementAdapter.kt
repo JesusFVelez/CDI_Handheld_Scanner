@@ -20,7 +20,7 @@ class BinMovementAdapter (private val onDataSetChanged: (Boolean) -> Unit) : Rec
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BinMovementViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.view_bin_movement_item_to_move, parent, false)
+        val view = layoutInflater.inflate(R.layout.bin_movement_item_to_move_view, parent, false)
         return BinMovementViewHolder(view)
     }
 

@@ -41,7 +41,7 @@ class AssignBarcodeToProductFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_assign_barcode_to_product, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.assign_barcode_main_fragment, container, false)
 
         initUIElements()
         initObservers()

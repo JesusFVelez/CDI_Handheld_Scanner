@@ -16,7 +16,6 @@ import androidx.fragment.app.activityViewModels
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.navigation.fragment.findNavController
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
@@ -56,7 +55,7 @@ class ReceivingProductsMainFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receiving_items_main, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.receiving_items_main_fragment, container, false)
 
         // Retrieve company ID from shared preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
@@ -292,7 +291,7 @@ class ReceivingProductsMainFragment : Fragment(){
 
     class CustomDoorBinSuggestionAdapter(context: Context, private var suggestions: List<DoorBin>): ArrayAdapter<DoorBin>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.suggestion_receiving_door_bin_view, parent, false)
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.receiving_door_bins_suggestion_view, parent, false)
             val doorBinTextView = view.findViewById<TextView>(R.id.doorBinValueTextView)
             val preReceivingTextView = view.findViewById<TextView>(R.id.preReceivingValueTextView)
 

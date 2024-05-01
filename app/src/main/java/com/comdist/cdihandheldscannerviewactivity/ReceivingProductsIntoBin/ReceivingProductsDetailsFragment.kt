@@ -18,12 +18,10 @@ import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
-import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingItemsDetailsBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.system.exitProcess
 
 class ReceivingProductsDetailsFragment : Fragment() {
 
@@ -58,7 +56,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receiving_items_details, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.receiving_items_details_fragment, container, false)
 
         initUIElements()
         initObservers()

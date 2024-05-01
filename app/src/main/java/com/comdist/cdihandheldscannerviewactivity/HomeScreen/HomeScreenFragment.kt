@@ -201,7 +201,7 @@ class HomeScreenFragment : Fragment() {
     ): View? {
 
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home_screen, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.home_screen_fragment, container, false)
 
 
 

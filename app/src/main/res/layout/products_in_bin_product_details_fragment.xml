@@ -138,7 +138,7 @@
 
             <include
                 android:id="@+id/qtyOnHandAndInPickingView"
-                layout="@layout/product_in_bin_detail_view_two_things" />
+                layout="@layout/products_in_bin_detail_two_things_view" />
 
             <!--                <include-->
             <!--                    android:id="@+id/qtyInPicking"-->
@@ -151,11 +151,11 @@
 
             <include
                 android:id="@+id/UOMAndUOMQtyView"
-                layout="@layout/product_in_bin_detail_view_two_things" />
+                layout="@layout/products_in_bin_detail_two_things_view" />
 
             <include
                 android:id="@+id/expDateView"
-                layout="@layout/product_in_bin_detail_view" />
+                layout="@layout/products_in_bin_detail_view" />
 
             <!--                <include-->
             <!--                    android:id="@+id/qtyInUOM"-->

@@ -44,7 +44,7 @@ class SearchBinsWithProductFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_for_bins_with_product, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.bins_with_product_main_fragment, container, false)
 
         // Gets the company id from the Shared Preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())

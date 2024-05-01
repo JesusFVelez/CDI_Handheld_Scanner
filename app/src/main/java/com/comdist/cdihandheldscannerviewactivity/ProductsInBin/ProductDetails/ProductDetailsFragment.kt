@@ -39,7 +39,7 @@ class ProductDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_details, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.products_in_bin_product_details_fragment, container, false)
 
         // Initialize UI elements
         initUIElements()

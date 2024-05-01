@@ -5,19 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
-import com.comdist.cdihandheldscannerviewactivity.ItemPicking.ItemPickingViewHolder
-import com.comdist.cdihandheldscannerviewactivity.ItemPicking.itemInOrderClickListener
-import com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementDataClass
 import com.comdist.cdihandheldscannerviewactivity.R
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInOrderInfo
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.confirmBinResponse
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, val onDataSetChanged: (Boolean) -> Unit, val removeItemFromDoorBinInBackend: (ItemInDoorBinDataClass) -> Unit) : RecyclerView.Adapter<ItemsInDoorBinViewHolder>(){
 
@@ -41,7 +33,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsInDoorBinViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.view_receiving_product_in_door_bin, parent, false)
+        val view = layoutInflater.inflate(R.layout.receiving_product_in_door_bin_list_view, parent, false)
         return ItemsInDoorBinViewHolder(view, listener)
     }
 
