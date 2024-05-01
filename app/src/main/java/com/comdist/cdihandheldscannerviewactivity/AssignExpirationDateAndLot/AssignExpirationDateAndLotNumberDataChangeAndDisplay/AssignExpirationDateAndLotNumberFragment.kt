@@ -166,62 +166,14 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
         // Add this line in your setupUI function
         binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
-        /*binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
-            private var previousText: String = ""
-            //private var lastCursorPosition: Int = 0
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Store the text before any change is applied and the cursor position.
-                previousText = s.toString()
-                //lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                val currentText = s.toString()
-                val deleting = currentText.length < previousText.length
-
-                // Enforce a strict limit of 10 characters for the entire input, including dashes.
-                if (currentText.length > 10) {
-                    binding.NewExpirationDateEditText.setText(previousText)
-                    //binding.NewExpirationDateEditText.setSelection(lastCursorPosition)
-                    return
-                }
-
-                if (!deleting) {
-                    // Automatically insert dashes as the user types.
-                    when (currentText.length) {
-                        2, 5 -> if (!previousText.endsWith("-")) {
-                            binding.NewExpirationDateEditText.setText("$currentText-")
-                            binding.NewExpirationDateEditText.setSelection(currentText.length + 1)
-                        }
-                    }
-                } else {
-                    // Remove the last character if it's a dash, maintaining proper date format as the user deletes characters.
-                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
-                        binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
-                        binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
-                    }/*else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
-                        val newPosition = lastCursorPosition - 2  // Position to remove the number before the dash.
-                        val newText = StringBuilder(previousText).apply {
-                            deleteCharAt(newPosition)  // Remove the number before the dash.
-                        }.toString()
-                        binding.NewExpirationDateEditText.setText(newText)
-                        binding.NewExpirationDateEditText.setSelection(newPosition)
-                    }*/
-                }
-            }
-        })*/
-
         binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
-            //private var lastCursorPosition: Int = 0
+            private var lastCursorPosition: Int = 0
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Store the text before any change is applied and the cursor position.
                 previousText = s.toString()
-                //lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
+                lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -230,10 +182,12 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                 val currentText = s.toString()
                 val deleting = currentText.length < previousText.length
 
-                // Enforce a strict limit of 10 characters for the entire input, including dashes.
+                // Strict limit of 10 characters for input, including dashes.
                 if (currentText.length > 10) {
-                    binding.NewExpirationDateEditText.setText(previousText)
-                    //binding.NewExpirationDateEditText.setSelection(lastCursorPosition)
+                    // Truncate the input to 10 characters
+                    val truncatedText = currentText.substring(0, 10)
+                    binding.NewExpirationDateEditText.setText(truncatedText)
+                    binding.NewExpirationDateEditText.setSelection(truncatedText.length)
                     return
                 }
 
@@ -250,16 +204,17 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                     if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
                         binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
                         binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
-                    }/*else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
+                    } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
                         val newPosition = lastCursorPosition - 2  // Position to remove the number before the dash.
                         val newText = StringBuilder(previousText).apply {
                             deleteCharAt(newPosition)  // Remove the number before the dash.
                         }.toString()
                         binding.NewExpirationDateEditText.setText(newText)
                         binding.NewExpirationDateEditText.setSelection(newPosition)
-                    }*/
+                    }
                 }
             }
+
         })
     }
 
