@@ -20,7 +20,7 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPickingViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.item_in_order_view, parent, false)
+        val view = layoutInflater.inflate(R.layout.item_picking_item_in_order_list_view, parent, false)
         return ItemPickingViewHolder(view, listener)
     }
 

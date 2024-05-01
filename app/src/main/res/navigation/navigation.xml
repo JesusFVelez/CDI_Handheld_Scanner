@@ -8,7 +8,7 @@
         android:id="@+id/homeScreenFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.HomeScreen.HomeScreenFragment"
         android:label="Home Screen"
-        tools:layout="@layout/fragment_home_screen" >
+        tools:layout="@layout/home_screen_fragment" >
         <action
             android:id="@+id/action_homeScreenFragment_to_productToBinFragment"
             app:destination="@id/productToBinFragment"
@@ -48,7 +48,7 @@
         android:id="@+id/productToBinFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.ProductsInBin.ProductInBinFragment"
         android:label="fragment_product_to_bin"
-        tools:layout="@layout/fragment_product_in_bin" >
+        tools:layout="@layout/products_in_bin_fragment" >
         <action
             android:id="@+id/action_productToBinFragment_to_productDetailsFragment"
             app:destination="@id/productDetailsFragment"
@@ -63,7 +63,7 @@
         android:id="@+id/searchBinsWithProductFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.BinsWIthProduct.SearchBinsWithProductFragment"
         android:label="fragment_search_for_bins_with_product"
-        tools:layout="@layout/fragment_search_for_bins_with_product" >
+        tools:layout="@layout/bins_with_product_main_fragment" >
         <action
             android:id="@+id/action_searchBinsWithProductFragment_to_binsThatHaveProductFragment"
             app:destination="@id/binsThatHaveProductFragment"
@@ -74,7 +74,7 @@
         android:id="@+id/binsThatHaveProductFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"
         android:label="fragment_bins_that_have_product"
-        tools:layout="@layout/fragment_bins_that_have_product" />
+        tools:layout="@layout/bins_with_product_list_of_bins_fragment" />
     <fragment
         android:id="@+id/orderPickingMainFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.ItemPicking.orderPickingMainFragment"

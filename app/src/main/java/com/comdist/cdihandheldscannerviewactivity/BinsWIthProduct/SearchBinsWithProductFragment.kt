@@ -19,14 +19,14 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentSearchForBinsWithProductBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.BinsWithProductMainFragmentBinding
 
 
 class SearchBinsWithProductFragment : Fragment() {
 
     private lateinit var itemNumberEditText: EditText
     private lateinit var searcItemInBinButton: Button
-    private lateinit var binding: FragmentSearchForBinsWithProductBinding
+    private lateinit var binding: BinsWithProductMainFragmentBinding
     private val viewModel: BinsWithProductViewModel by activityViewModels()
     private lateinit var progressDialog: Dialog
 
@@ -44,7 +44,7 @@ class SearchBinsWithProductFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_for_bins_with_product, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.bins_with_product_main_fragment, container, false)
 
         // Gets the company id from the Shared Preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())

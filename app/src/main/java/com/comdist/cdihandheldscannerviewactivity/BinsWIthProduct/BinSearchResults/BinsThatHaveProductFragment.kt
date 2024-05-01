@@ -13,7 +13,7 @@ import com.comdist.cdihandheldscannerviewactivity.BinsWIthProduct.BinsWithProduc
 import com.comdist.cdihandheldscannerviewactivity.BinsWIthProduct.BinsWithProductViewModel
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinsThatHaveProductBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.BinsWithProductListOfBinsFragmentBinding
 
 
 class BinsThatHaveProductFragment : Fragment() {
@@ -27,7 +27,7 @@ class BinsThatHaveProductFragment : Fragment() {
     private lateinit var itemNameTextView: TextView
     private lateinit var inventoryTypeTextView: TextView
     private lateinit var vendorItemNumberTextView: TextView
-    private lateinit var binding: FragmentBinsThatHaveProductBinding
+    private lateinit var binding: BinsWithProductListOfBinsFragmentBinding
     private lateinit var adapter : BinsWithProductAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +38,7 @@ class BinsThatHaveProductFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bins_that_have_product, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.bins_with_product_list_of_bins_fragment, container, false)
         initUIElements()
         initAdapter()
         fillItemDetailsWithViewModelInfo()

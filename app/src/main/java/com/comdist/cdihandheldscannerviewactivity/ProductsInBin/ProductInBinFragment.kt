@@ -18,16 +18,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentProductInBinBinding
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.comdist.cdihandheldscannerviewactivity.databinding.ProductsInBinFragmentBinding
 
 
 //TODO - Figure out if there is a way to blur the background behind the Popup window so that it does not look as bad
 class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
 
     // Declare UI elements and ViewModel
-    private lateinit var binding: FragmentProductInBinBinding
+    private lateinit var binding: ProductsInBinFragmentBinding
     private lateinit var binNumberEditText: EditText
     private lateinit var searchButton: Button
     private lateinit var numberOfItemsTextView: TextView
@@ -49,7 +49,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         // Initialize data binding and inflate the layout
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_in_bin, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.products_in_bin_fragment, container, false)
 //        viewModel = ViewModelProvider(this)[ProductsInBinViewModel::class.java]
         // Using the LiveData with the UI is not working so I commented it
 //        binding.productsInBinViewModel = viewModel

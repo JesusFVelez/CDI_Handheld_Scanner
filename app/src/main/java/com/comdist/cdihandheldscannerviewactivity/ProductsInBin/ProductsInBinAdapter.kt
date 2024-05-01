@@ -22,7 +22,7 @@ class ProductsInBinAdapter(private val listener: ProductsInBinItemOnClickListene
     // Create new ViewHolder instances
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): productInBinViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.product_in_bin_view, parent, false)
+        val view = layoutInflater.inflate(R.layout.products_in_bin_product_view, parent, false)
         return productInBinViewHolder(view, listener)
     }
 

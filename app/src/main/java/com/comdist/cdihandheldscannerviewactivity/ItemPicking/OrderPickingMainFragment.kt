@@ -27,12 +27,12 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentOrderPickingMainBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.ItemPickingMainFragmentBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
-    private lateinit var binding: FragmentOrderPickingMainBinding
+    private lateinit var binding: ItemPickingMainFragmentBinding
     private lateinit var orderNumberEditText: AutoCompleteTextView
     private lateinit var searchOrderButton: Button
     private lateinit var fabScrollDown: FloatingActionButton
@@ -58,7 +58,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_picking_main, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.item_picking_main_fragment, container, false)
 
         // Retrieve company ID from shared preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
@@ -274,7 +274,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
     class CustomOrderSuggestionAdapter(context: Context, private var suggestions: List<ordersThatAreInPickingClass>): ArrayAdapter<ordersThatAreInPickingClass>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.order_picking_suggestion_view, parent, false)
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_picking_orders_suggestion_view, parent, false)
             val orderNumberTextView = view.findViewById<TextView>(R.id.orderNumberTextView)
             val customerTextView = view.findViewById<TextView>(R.id.customerNameTextView)
             val orderDateTextView = view.findViewById<TextView>(R.id.orderDateValueTextView)

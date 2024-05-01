@@ -24,13 +24,13 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinMovementMainBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.BinMovementMainFragmentBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class BinMovementFragment : Fragment() {
 
-    private lateinit var binding: FragmentBinMovementMainBinding
+    private lateinit var binding: BinMovementMainFragmentBinding
 
     private lateinit var addButton: FloatingActionButton
     private lateinit var itemsBeingMovedRecyclerView:RecyclerView
@@ -65,7 +65,7 @@ class BinMovementFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bin_movement_main, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.bin_movement_main_fragment, container, false)
 
         initUIElements()
         initObservers()
@@ -156,7 +156,7 @@ class BinMovementFragment : Fragment() {
 
 
     private fun initAddItemToListPopup(){
-        addBinMovementToListPopupWindow = PopupWindowUtils.getCustomPopup(requireContext(),R.layout.popup_bin_movement_add_new_item,)
+        addBinMovementToListPopupWindow = PopupWindowUtils.getCustomPopup(requireContext(),R.layout.bin_movement_add_new_item_popup,)
         val popupContentView = addBinMovementToListPopupWindow.contentView
 
         val itemNumberSpinner = popupContentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
@@ -281,7 +281,7 @@ class BinMovementFragment : Fragment() {
 
     class CustomItemDropDownAdapter(context: Context, private var suggestions: List<itemsInBin>): ArrayAdapter<itemsInBin>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.view_bin_movement_items_in_bin_suggestion, parent, false)
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.bin_movement_items_in_bin_suggestion_view, parent, false)
             val itemDescriptionTextView = view.findViewById<TextView>(R.id.itemDescriptionTextView)
             val itemNumberTextView = view.findViewById<TextView>(R.id.itemNumberTextView)
             val binLocationTextView = view.findViewById<TextView>(R.id.binLocationValueTextView)

@@ -18,16 +18,14 @@ import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
-import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingItemsDetailsBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.ReceivingDetailsFragmentBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.system.exitProcess
 
 class ReceivingProductsDetailsFragment : Fragment() {
 
-    private lateinit var binding: FragmentReceivingItemsDetailsBinding
+    private lateinit var binding: ReceivingDetailsFragmentBinding
 
     private val viewModel: ReceivingProductsViewModel by activityViewModels()
 
@@ -58,7 +56,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receiving_items_details, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.receiving_details_fragment, container, false)
 
         initUIElements()
         initObservers()
@@ -119,7 +117,10 @@ class ReceivingProductsDetailsFragment : Fragment() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
 
-        // Add this line in your setupUI function
+        // Validates whether item uses lot number or not
+        val canEditLotNumber = viewModel.itemInfo.value!!.doesItemUseLotNumber
+        newLotAutoCompleteTextView.isEnabled = canEditLotNumber
+
         newExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
         newExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
@@ -189,7 +190,8 @@ class ReceivingProductsDetailsFragment : Fragment() {
                         val itemNumber = itemNumberTextView.text.toString()
                         val itemName = itemNameTextView.text.toString()
                         val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
-                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "9970F", doorBin , itemNumber, newLotNumber, quantityToAddToDoor, "N/A")
+                        val doesItemUseLotNumber = viewModel.itemInfo.value!!.doesItemUseLotNumber
+                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "9970F", doorBin , itemNumber, newLotNumber, quantityToAddToDoor, doesItemUseLotNumber ,"N/A")
                         progressDialog.show()
                         viewModel.moveItemToDoor(itemToAdd)
                     } else {

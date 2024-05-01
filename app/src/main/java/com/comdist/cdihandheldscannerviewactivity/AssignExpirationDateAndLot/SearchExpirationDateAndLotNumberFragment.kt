@@ -20,12 +20,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentSearchExpirationDateAndLotNumberBinding
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.comdist.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
 
 
 class SearchExpirationDateAndLotNumberFragment : Fragment() {
-    private lateinit var binding: FragmentSearchExpirationDateAndLotNumberBinding
+    private lateinit var binding: EditItemMainFragmentBinding
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
     private lateinit var itemSuggestionAdapter: ItemSuggestionRecyclerViewAdapter
 
@@ -37,7 +37,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_search_expiration_date_and_lot_number, container, false
+            inflater, R.layout.edit_item_main_fragment, container, false
         )
 
         setupUI()
@@ -166,7 +166,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(context).inflate(R.layout.suggestion_item_expiration_date_and_lot_number_view, parent, false)
+            val view = LayoutInflater.from(context).inflate(R.layout.edit_item_item_list_view, parent, false)
             return ViewHolder(view)
         }
 

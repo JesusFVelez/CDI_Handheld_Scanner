@@ -10,14 +10,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import com.comdist.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel
 import com.comdist.cdihandheldscannerviewactivity.R
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentProductDetailsBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.ProductsInBinProductDetailsFragmentBinding
 
 // Define the ProductDetailsFragment class, which is a subclass of Fragment
 class ProductDetailsFragment : Fragment() {
 
     // Declare ViewModel and UI elements
     private val viewModel: ProductsInBinViewModel by activityViewModels()
-    private lateinit var binding: FragmentProductDetailsBinding
+    private lateinit var binding: ProductsInBinProductDetailsFragmentBinding
     private lateinit var binLocationTextView: TextView
     private lateinit var QtyonHandValueTextView: TextView
     private lateinit var QtyInPickingValueTextView: TextView
@@ -39,7 +39,7 @@ class ProductDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_details, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.products_in_bin_product_details_fragment, container, false)
 
         // Initialize UI elements
         initUIElements()

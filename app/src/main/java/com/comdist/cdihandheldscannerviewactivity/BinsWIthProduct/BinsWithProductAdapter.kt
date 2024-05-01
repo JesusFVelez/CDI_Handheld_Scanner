@@ -18,7 +18,7 @@ class BinsWithProductAdapter (): RecyclerView.Adapter<BinWithProductViewHolder>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BinWithProductViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.bins_that_have_product_view, parent, false)
+        val view = layoutInflater.inflate(R.layout.bins_with_product_bin_list_view, parent, false)
         return BinWithProductViewHolder(view)
     }
 

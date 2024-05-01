@@ -18,15 +18,15 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.EditItemEditItemDetailsFragmentBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 
-
 class AssignExpirationDateAndLotNumberFragment : Fragment() {
-    private lateinit var binding: FragmentAssignExpirationDateAndLotNumberBinding
+    private lateinit var binding: EditItemEditItemDetailsFragmentBinding
 
 
     /*Batch variables*/
@@ -49,7 +49,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_assign_expiration_date_and_lot_number,
+            R.layout.edit_item_edit_item_details_fragment,
             container,
             false
         )
@@ -160,9 +160,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
             }
 
-
-
-    }
+        }
 
         // Add this line in your setupUI function
         binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
@@ -214,8 +212,8 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
                     }
                 }
             }
-
         })
+
     }
 
     // Function to validate the date

@@ -43,7 +43,8 @@ data class ResponseItemInfoList(
 data class ReceivingItemInfo(
     @Json(name="itemNumber") val itemNumber: String,
     @Json(name="itemDescription") val itemDescription: String,
-    @Json(name="itemBarcode") val itemBarcode: String
+    @Json(name="itemBarcode") val itemBarcode: String?,
+    @Json(name = "doesItemUseLotNumber") val doesItemUseLotNumber: Boolean
 )
 
 // Request Pre-Receiving on Bin if Any
@@ -126,6 +127,7 @@ data class ItemsInBinList(
     @Json(name="tt-weight") val weight: Float,
     @Json(name="tt-row-id") val rowID: String,
     @Json(name="tt-item-name") val itemName: String,
+    @Json(name="tt-has-lot-number") val doesItemHaveLotNumber: Boolean
 
 )
 

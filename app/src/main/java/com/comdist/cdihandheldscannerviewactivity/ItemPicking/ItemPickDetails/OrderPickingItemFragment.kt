@@ -15,10 +15,10 @@ import androidx.navigation.fragment.findNavController
 import com.comdist.cdihandheldscannerviewactivity.ItemPicking.ItemPickingViewModel
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentOrderPickingItemBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.ItemPickingItemDetailsFragmentBinding
 
 class OrderPickingItemFragment :Fragment(){
-    private lateinit var binding: FragmentOrderPickingItemBinding
+    private lateinit var binding: ItemPickingItemDetailsFragmentBinding
     private val viewModel: ItemPickingViewModel by activityViewModels()
 
     // View Variable declarations
@@ -39,7 +39,7 @@ class OrderPickingItemFragment :Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_picking_item,container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.item_picking_item_details_fragment,container, false)
         initUIElements()
         setUIValues()
         initObservers()

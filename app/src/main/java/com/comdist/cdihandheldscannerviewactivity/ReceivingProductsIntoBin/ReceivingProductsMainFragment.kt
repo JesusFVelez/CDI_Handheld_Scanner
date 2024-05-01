@@ -22,8 +22,8 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DoorBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingItemsMainBinding
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
+import com.comdist.cdihandheldscannerviewactivity.databinding.ReceivingMainFragmentBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ReceivingProductsMainFragment : Fragment(){
@@ -42,7 +42,7 @@ class ReceivingProductsMainFragment : Fragment(){
     private lateinit var progressDialog: Dialog
 
     private val viewModel: ReceivingProductsViewModel by activityViewModels()
-    private lateinit var binding: FragmentReceivingItemsMainBinding
+    private lateinit var binding: ReceivingMainFragmentBinding
 
     private var wasSearchStarted: Boolean = false
 
@@ -55,7 +55,7 @@ class ReceivingProductsMainFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receiving_items_main, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.receiving_main_fragment, container, false)
 
         // Retrieve company ID from shared preferences
         val companyID:String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
@@ -172,18 +172,11 @@ class ReceivingProductsMainFragment : Fragment(){
                 progressDialog.show()
             }
         }
-
-
         recyclerViewAdapter = itemsInDoorBinAdapter(listener, { hasItems ->
-
             finishButton.isEnabled = hasItems
-
         },{ item: itemsInDoorBinAdapter.ItemInDoorBinDataClass ->
-
             viewModel.deleteItemFromDoorBin(item.rowIDForDoorBin)
-
         })
-
         recyclerViewAdapter.addItems(viewModel.listOfItemsToMoveInPreReceiving.value!!)
         binding.totalPickingItemsList.adapter = recyclerViewAdapter
     }
@@ -195,8 +188,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 newDoorBinsThatHavePreReceiving
             )
         binNumberAutoCompleteTextView.setAdapter(arrayAdapterForAutoCompleteTextView)
-        binNumberAutoCompleteTextView.threshold = 1
-        binNumberAutoCompleteTextView.requestFocus()
+        binNumberAutoCompleteTextView.width = ViewGroup.LayoutParams.MATCH_PARENT
         binNumberAutoCompleteTextView.setOnItemClickListener{parent, view, position, id ->
             val selectedItem = binNumberAutoCompleteTextView.adapter.getItem(position) as DoorBin
             viewModel.setCurrentlyChosenDoorBin(selectedItem)
@@ -299,7 +291,7 @@ class ReceivingProductsMainFragment : Fragment(){
 
     class CustomDoorBinSuggestionAdapter(context: Context, private var suggestions: List<DoorBin>): ArrayAdapter<DoorBin>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.suggestion_receiving_door_bin_view, parent, false)
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.receiving_door_bins_suggestion_view, parent, false)
             val doorBinTextView = view.findViewById<TextView>(R.id.doorBinValueTextView)
             val preReceivingTextView = view.findViewById<TextView>(R.id.preReceivingValueTextView)
 
@@ -307,7 +299,6 @@ class ReceivingProductsMainFragment : Fragment(){
             val item = suggestions[position]
             doorBinTextView.text = item.bin_number.uppercase()
             preReceivingTextView.text = item.bin_receiving.uppercase()
-
 
             return view
         }
