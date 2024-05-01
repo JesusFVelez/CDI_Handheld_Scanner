@@ -18,14 +18,15 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignExpirationDateAndLotNumberBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.EditItemEditItemDetailsFragmentBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 
 class AssignExpirationDateAndLotNumberFragment : Fragment() {
-    private lateinit var binding: FragmentAssignExpirationDateAndLotNumberBinding
+    private lateinit var binding: EditItemEditItemDetailsFragmentBinding
 
 
     /*Batch variables*/

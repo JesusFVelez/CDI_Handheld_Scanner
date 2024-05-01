@@ -19,14 +19,14 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentHomeScreenBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.HomeScreenFragmentBinding
 import com.comdist.cdihandheldscannerviewactivity.login.LoginActivity
 
 // Home screen fragment class
 class HomeScreenFragment : Fragment() {
 
     // Variables for binding and buttons
-    private lateinit var binding: FragmentHomeScreenBinding
+    private lateinit var binding: HomeScreenFragmentBinding
     private lateinit var logOutButton: Button
     private lateinit var productToBinButton: Button
     private lateinit var binsWithProductButton: Button

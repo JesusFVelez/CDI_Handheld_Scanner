@@ -20,12 +20,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentSearchExpirationDateAndLotNumberBinding
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.comdist.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
 
 
 class SearchExpirationDateAndLotNumberFragment : Fragment() {
-    private lateinit var binding: FragmentSearchExpirationDateAndLotNumberBinding
+    private lateinit var binding: EditItemMainFragmentBinding
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
     private lateinit var itemSuggestionAdapter: ItemSuggestionRecyclerViewAdapter
 

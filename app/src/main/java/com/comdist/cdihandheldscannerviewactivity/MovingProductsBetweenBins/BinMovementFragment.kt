@@ -24,13 +24,13 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentBinMovementMainBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.BinMovementMainFragmentBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class BinMovementFragment : Fragment() {
 
-    private lateinit var binding: FragmentBinMovementMainBinding
+    private lateinit var binding: BinMovementMainFragmentBinding
 
     private lateinit var addButton: FloatingActionButton
     private lateinit var itemsBeingMovedRecyclerView:RecyclerView

@@ -15,7 +15,7 @@ import androidx.fragment.app.activityViewModels
 import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentAssignBarcodeToProductBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.AssignBarcodeMainFragmentBinding
 
 class AssignBarcodeToProductFragment: Fragment() {
 
@@ -26,7 +26,7 @@ class AssignBarcodeToProductFragment: Fragment() {
     private lateinit var itemBarcodeTextView: TextView
     private lateinit var searchProductButton: Button
     private lateinit var addButton: Button
-    private lateinit var binding: FragmentAssignBarcodeToProductBinding
+    private lateinit var binding: AssignBarcodeMainFragmentBinding
 
     private val viewModel: AssignBarcodeViewModel by activityViewModels()
 

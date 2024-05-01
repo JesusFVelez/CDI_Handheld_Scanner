@@ -18,14 +18,14 @@ import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentReceivingItemsDetailsBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.ReceivingDetailsFragmentBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class ReceivingProductsDetailsFragment : Fragment() {
 
-    private lateinit var binding: FragmentReceivingItemsDetailsBinding
+    private lateinit var binding: ReceivingDetailsFragmentBinding
 
     private val viewModel: ReceivingProductsViewModel by activityViewModels()
 
@@ -56,7 +56,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.receiving_items_details_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.receiving_details_fragment, container, false)
 
         initUIElements()
         initObservers()

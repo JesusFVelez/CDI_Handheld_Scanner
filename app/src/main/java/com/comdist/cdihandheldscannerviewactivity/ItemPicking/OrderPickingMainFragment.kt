@@ -27,12 +27,12 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentOrderPickingMainBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.ItemPickingMainFragmentBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
-    private lateinit var binding: FragmentOrderPickingMainBinding
+    private lateinit var binding: ItemPickingMainFragmentBinding
     private lateinit var orderNumberEditText: AutoCompleteTextView
     private lateinit var searchOrderButton: Button
     private lateinit var fabScrollDown: FloatingActionButton

@@ -19,14 +19,14 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
-import com.comdist.cdihandheldscannerviewactivity.databinding.FragmentSearchForBinsWithProductBinding
+import com.comdist.cdihandheldscannerviewactivity.databinding.BinsWithProductMainFragmentBinding
 
 
 class SearchBinsWithProductFragment : Fragment() {
 
     private lateinit var itemNumberEditText: EditText
     private lateinit var searcItemInBinButton: Button
-    private lateinit var binding: FragmentSearchForBinsWithProductBinding
+    private lateinit var binding: BinsWithProductMainFragmentBinding
     private val viewModel: BinsWithProductViewModel by activityViewModels()
     private lateinit var progressDialog: Dialog
 
