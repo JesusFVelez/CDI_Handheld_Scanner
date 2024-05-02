@@ -84,6 +84,10 @@ class ReceivingProductsViewModel: ViewModel() {
     private val _wasItemMovedToBin = MutableLiveData<Boolean>()
     val wasItemMovedFromBin: LiveData<Boolean>
         get() = _wasItemMovedToBin
+
+    private val _isLotNumberValid = MutableLiveData<Boolean>()
+    val isLotNumberValid: LiveData<Boolean>
+        get() = _isLotNumberValid
     
     // Other Values
     private val _preReceivingNumber = MutableLiveData<String>()
@@ -102,6 +106,7 @@ class ReceivingProductsViewModel: ViewModel() {
     val allItemsMoved: LiveData<Boolean>
         get() = _allItemsMoved
 
+
     init {
         _errorMessage.value = mutableMapOf(
             "wasItemFoundError" to "",
@@ -109,7 +114,8 @@ class ReceivingProductsViewModel: ViewModel() {
             "wasBinFoundError" to "",
             "wasItemMovedToDoorError" to "",
             "wasItemMovedToBinError" to "",
-            "getItemsInBin" to ""
+            "getItemsInBin" to "",
+            "validateLotNumber" to ""
         )
         _listOfItemsToMoveInPreReceiving.value = mutableListOf()
         willNotEditCurrentValues()
@@ -367,6 +373,25 @@ class ReceivingProductsViewModel: ViewModel() {
             } catch(e: Exception) {
                 _wasLasAPICallSuccessful.value = false
                 Log.i("get delete item from door bin API Call Exception Handler", "Error -> ${e.message}")
+            }
+        }
+    }
+
+    fun validateLotNumber(lotNumber: String, itemNumber:String) {
+        val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
+            _wasLasAPICallSuccessful.value = false
+            Log.i("Validate Lot Number", "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler){
+            try{
+                _hasAPIBeenCalled.value = true
+                val response = ScannerAPI.getReceivingProductService().validateWhetherLotIsInIVLOT(itemNumber, lotNumber, _warehouseNumber.value!!)
+                _errorMessage.value!!["validateLotNumber"] = response.response.errorMessage
+                _isLotNumberValid.value = response.response.isLotNumberValid
+                _wasLasAPICallSuccessful.value = true
+            } catch(e: Exception) {
+                _wasLasAPICallSuccessful.value = false
+                Log.i("Validate Lot Number (e)", "Error -> ${e.message}")
             }
         }
     }
