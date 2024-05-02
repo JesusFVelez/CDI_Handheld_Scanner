@@ -12,19 +12,19 @@
         android:layout_height="match_parent"
         >
 
+
         <EditText
             android:id="@+id/binNumberSearchEditText"
             style="@style/CustomScannerInput"
             android:layout_width="201dp"
             android:layout_height="54dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:dropDownHeight="wrap_content"
             android:gravity="center"
             android:hint="Search for Bin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/binSearchList"

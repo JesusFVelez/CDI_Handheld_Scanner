@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/listitembackgroundview"
+    >
+
+    <TextView
+        android:id="@+id/ItemNumberTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="1dp"
+        android:text="S32567"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="1dp"
+        android:text="Santa Monica Auto Parts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ItemNumberTextView" />
+
+    <ImageView
+        android:id="@+id/barcodeIcon"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginEnd="3dp"
+        android:src="@drawable/date_time"
+        app:layout_constraintBottom_toBottomOf="@+id/expirationDateLabelTextView"
+        app:layout_constraintEnd_toStartOf="@+id/expirationDateLabelTextView"
+        app:layout_constraintTop_toTopOf="@+id/expirationDateLabelTextView" />
+
+    <TextView
+        android:id="@+id/expirationDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Exp Date:"
+        app:layout_constraintStart_toStartOf="@id/descriptionTextView"
+        app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+
+    <ImageView
+        android:id="@+id/binIcon"
+        android:layout_width="15dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="3dp"
+        android:src="@drawable/bindetailpage"
+        app:layout_constraintBottom_toBottomOf="@+id/binLocationlableTextView"
+        app:layout_constraintEnd_toStartOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintStart_toStartOf="@+id/lotIcon"
+        app:layout_constraintTop_toBottomOf="@+id/lotIcon"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/binLocationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="01001"
+        app:layout_constraintStart_toEndOf="@+id/binLocationlableTextView"
+        app:layout_constraintTop_toBottomOf="@+id/dateWantedValueTextView" />
+
+    <TextView
+        android:id="@+id/binLocationlableTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bin Location:"
+        app:layout_constraintBottom_toBottomOf="@+id/binLocationTextView"
+        app:layout_constraintStart_toStartOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintTop_toBottomOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/orderDateValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="01/01/2023"
+        app:layout_constraintStart_toEndOf="@+id/expirationDateLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+
+
+    <ImageView
+        android:id="@+id/lotIcon"
+        android:layout_width="15dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="3dp"
+        android:src="@drawable/batch_or_lote_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintEnd_toStartOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintTop_toTopOf="@+id/lotNumberLabelTextView" />
+
+    <TextView
+        android:id="@+id/lotNumberLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lot Number:"
+        app:layout_constraintStart_toStartOf="@+id/expirationDateLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/expirationDateLabelTextView" />
+
+    <TextView
+        android:id="@+id/dateWantedValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="ggez"
+        app:layout_constraintStart_toEndOf="@+id/lotNumberLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/orderDateValueTextView" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
