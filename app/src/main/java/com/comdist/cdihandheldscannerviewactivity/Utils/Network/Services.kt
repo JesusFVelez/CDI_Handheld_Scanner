@@ -39,6 +39,7 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.isQuantityValidResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.listOfItemsInBinResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.moveItemBetweenBinsResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateLotNumberWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
@@ -241,6 +242,9 @@ interface ReceivingProductsServices {
 
     @DELETE("deleteItemFromDoorBin")
     suspend fun deleteItemFromDoorInBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String): ResponseDeleteItemFromDoorBin
+
+    @GET("validateWhetherLotIsInIVLOT")
+    suspend fun validateWhetherLotIsInIVLOT(@Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("warehouseNumber") warehouseNumber: Int):ResponseValidateLotNumberWrapper
 
 
 }

@@ -163,3 +163,16 @@ data class DeleteItemsFromDoorBin(
     @Json(name="wasItemDeleted") val wesItemDeleted: Boolean,
     @Json(name="errorMessage") val errorMessage: String
 )
+
+
+// Data classes for validating whether a lot number exists in the DB
+@JsonClass(generateAdapter = true)
+data class ResponseValidateLotNumberWrapper(
+    val response: ResponseValidateLotNumber
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseValidateLotNumber(
+    @Json(name = "isLotNumberValid") val isLotNumberValid: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)
