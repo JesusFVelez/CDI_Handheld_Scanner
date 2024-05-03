@@ -8,10 +8,12 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +21,7 @@ import com.comdist.cdihandheldscannerviewactivity.MainActivity
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.Company
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.NetworkUtils
 import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.SetNetworkDetails.NetworkDetailsActivity
 import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.WarehouseInfo
 import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
@@ -36,6 +39,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var viewModel: LoginViewModel
     // Button for login
     private lateinit var loginButton: Button
+    // Button for Network Settings
+    private lateinit var networkSettingsButton: ImageButton
+
     // EditTexts for username and password inputs
     private lateinit var userNameEditTex: TextInputEditText
     private lateinit var passwordEditText: TextInputEditText
@@ -129,6 +135,25 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener{
             loginButtonClickEvent(it)
         }
+
+        networkSettingsButton = binding.networkSettingsIcon
+        networkSettingsButton.setOnClickListener{
+            val popup = PopupWindowUtils.createQuestionPopup(this, "Are you sure you want to go back to set IP and Port?", "Change IP and Port number")
+            popup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
+                popup.dismiss()
+                // This sets the network details in Shared Preferences to N/A so that when we enter the NetworkDetailsActivity it does not jump directly to the login screen
+                SharedPreferencesUtils.storeIPAndPortInSharedPref("N/A", "N/A", this@LoginActivity)
+                val intent = Intent(this@LoginActivity, NetworkDetailsActivity::class.java)
+                startActivity(intent)
+            }
+
+            popup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
+                popup.dismiss()
+            }
+            popup.showAtLocation(rootView, Gravity.CENTER, 0, 0)
+
+        }
+
         userNameEditTex = binding.usernameText
         passwordEditText = binding.passwordText
         // Init Company Spinner
