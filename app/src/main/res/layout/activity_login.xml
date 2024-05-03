@@ -126,20 +126,46 @@
 
 
 
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/loginButton"
-                            android:layout_width="wrap_content"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="horizontal"
                             android:layout_marginTop="30dp"
-                            android:background="@drawable/login_rectangle"
-                            android:backgroundTint="@color/CDI_Blue"
-                            android:text="@string/login"
-                            android:textAllCaps="false"
-                            android:textColor="@color/CDI_Gray"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            >
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/loginButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/login_rectangle"
+                                android:backgroundTint="@color/CDI_Blue"
+                                android:text="@string/login"
+                                android:textAllCaps="false"
+                                android:textColor="@color/CDI_Gray"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageButton
+                                    android:id="@+id/networkSettingsIcon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:contentDescription="Network Settings Icon"
+                                    android:src="@drawable/network_settings_icon"
+                                    android:background="@android:color/transparent"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_gravity="center_vertical"
+                                    app:layout_constraintStart_toEndOf="@id/loginButton"
+                                    app:layout_constraintTop_toTopOf="@id/loginButton"
+                                    app:layout_constraintBottom_toBottomOf="@id/loginButton"
+                                    />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 
         </LinearLayout>
