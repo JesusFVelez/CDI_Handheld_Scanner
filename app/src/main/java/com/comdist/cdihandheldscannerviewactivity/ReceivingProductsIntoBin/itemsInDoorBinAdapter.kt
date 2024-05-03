@@ -53,7 +53,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
     fun addItems(items: MutableList<ItemInDoorBinDataClass>?) {
         data = items!!
         notifyItemInserted(data.size)
-        onDataSetChanged(true)
+        onDataSetChanged(data.isNotEmpty())
     }
 
     fun clearAllItems(){
