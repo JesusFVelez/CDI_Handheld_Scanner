@@ -192,6 +192,7 @@ class BinMovementFragment : Fragment() {
                 val filteredList = filterItemsByBinLocation(s.toString())
                 fillItemNumberSpinnerWithItems(filteredList)
                 itemNumberSpinner.text.clear()
+                viewModel.resetNewItemToBeMoved()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -203,16 +204,14 @@ class BinMovementFragment : Fragment() {
 
         val amountToMoveEditText = popupContentView.findViewById<EditText>(R.id.itemAmountEditText)
 
-        val addButton = popupContentView.findViewById<Button>(R.id.addButton)
-        addButton.setOnClickListener {
+        val addButtonPopup = popupContentView.findViewById<Button>(R.id.addButton)
+        addButtonPopup.setOnClickListener {
 
             val quantityToMove = amountToMoveEditText.text.toString()
             val fromBin = fromBinAutoCompleteTextView.text.toString()
-            val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
-
-
             val toBin = toBinAutoCompleteTextView.text.toString()
-            val isAtLeastOneEditTextEmpty = verifyIfAtLeastOneEditTextIsEmpty(fromBin, quantityToMove, itemNumber)
+
+            val isAtLeastOneEditTextEmpty = verifyIfAtLeastOneEditTextIsEmpty(fromBin, quantityToMove, itemNumberSpinner.text.toString())
             if(isAtLeastOneEditTextEmpty)
                 AlerterUtils.startErrorAlerter(requireActivity(), "From Bin, Item Amount and Item Number cannot be empty.")
             else {
@@ -232,6 +231,7 @@ class BinMovementFragment : Fragment() {
                 } else {
                     val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
                     val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
+                    val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
                     val newItemToAdd =
                         BinMovementDataClass(itemName, itemNumber, rowIDOfItem ,quantityToMove.toInt(), fromBin, toBin)
                     viewModel.setNewItemToBeMoved(newItemToAdd)
@@ -310,8 +310,8 @@ class BinMovementFragment : Fragment() {
                 viewModel.setPositionOfItemToMove(position)
                 viewModel.setWillUpdateItemToMove(true)
 
-                val addButton = addBinMovementToListPopupWindow.contentView.findViewById<Button>(R.id.addButton)
-                addButton.text = "Update"
+                val addButtonPopup = addBinMovementToListPopupWindow.contentView.findViewById<Button>(R.id.addButton)
+                addButtonPopup.text = "Update"
             }
         }
         adapter = BinMovementAdapter ({ hasItems ->
