@@ -149,20 +149,15 @@ class BinMovementFragment : Fragment() {
 
     private fun finishAddingItemToList() {
         val newItemToAdd = viewModel.newItemToBeMoved.value!!
-        var doesItemAlreadyExists = false
-        var oldItem: BinMovementDataClass? = null
-        adapter.data.map {item ->
-            if(item.itemNumber == newItemToAdd.itemNumber && item.fromBinNumber == newItemToAdd.fromBinNumber) {
-                oldItem = item
-                doesItemAlreadyExists = true
-            }
-        }
-        if(!doesItemAlreadyExists) {
+        val positionOfItemToMove = viewModel.positionOfItemToMove.value!!
+        if(positionOfItemToMove == -1 && !viewModel.willUpdateItemToMove.value!!) {
             adapter.addItem(newItemToAdd)
             resetBinMovementPopUp()
             addBinMovementToListPopupWindow.dismiss()
-        }else{
-            adapter.updateItem(oldItem ,newItemToAdd)
+        }else if(viewModel.willUpdateItemToMove.value!!){
+            viewModel.resetWillUpdateItemToMove()
+            adapter.updateItem(viewModel.positionOfItemToMove.value!! ,newItemToAdd)
+            viewModel.resetPositionOfItemToMove()
             resetBinMovementPopUp()
             addBinMovementToListPopupWindow.dismiss()
         }
@@ -213,7 +208,7 @@ class BinMovementFragment : Fragment() {
 
             val quantityToMove = amountToMoveEditText.text.toString()
             val fromBin = fromBinAutoCompleteTextView.text.toString()
-            val itemNumber = itemNumberSpinner.text.toString()
+            val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
 
 
             val toBin = toBinAutoCompleteTextView.text.toString()
@@ -232,7 +227,7 @@ class BinMovementFragment : Fragment() {
                 if (quantityToMove.toInt() > (quantityOnHand - quantityToBePicked)) {
                     AlerterUtils.startErrorAlerter(
                         requireActivity(),
-                        "Cannot move ${quantityToMove} units because there is only ${quantityAvailable} units available."
+                        "Cannot move ${quantityToMove} units because there are only ${quantityAvailable} units available."
                     )
                 } else {
                     val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
@@ -260,6 +255,7 @@ class BinMovementFragment : Fragment() {
         initAddItemToListPopup()
         addButton = binding.addButton
         addButton.setOnClickListener{
+            resetBinMovementPopUp()
             addBinMovementToListPopupWindow.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
         }
 
@@ -277,8 +273,12 @@ class BinMovementFragment : Fragment() {
                 if(isAtLeastOneToBinNotChosen){
                     progressDialog.dismiss()
                     AlerterUtils.startErrorAlerter(requireActivity(), "Please make sure all items have a destination bin before finishing.")
-                }else
+                }else {
+                    adapter.data.map {itemToMove ->
+
+                    }
                     viewModel.moveItemsBetweenBins(adapter.data)
+                }
 
 
             }
@@ -303,7 +303,12 @@ class BinMovementFragment : Fragment() {
                 fromBinNumberEditText.setText(item.fromBinNumber)
                 toBinNumberEditText.setText(item.toBinNumber)
                 itemAmountEditText.setText(item.qtyToMoveFromBinToBin.toString())
-                itemNumberSpinner.setText(item.itemNumber)
+                itemNumberSpinner.setText(item.itemName)
+                val filteredList = filterItemsByBinLocation(fromBinNumberEditText.text.toString())
+                fillItemNumberSpinnerWithItems(filteredList)
+
+                viewModel.setPositionOfItemToMove(position)
+                viewModel.setWillUpdateItemToMove(true)
 
                 val addButton = addBinMovementToListPopupWindow.contentView.findViewById<Button>(R.id.addButton)
                 addButton.text = "Update"

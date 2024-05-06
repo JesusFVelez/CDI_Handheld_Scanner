@@ -46,6 +46,10 @@ class BinMovementViewModel: ViewModel() {
     val currentlyChosenItemToMove: LiveData<itemsInBin>
         get() = _currentlyChosenItemToMove
 
+    private val _positionOfItemToMove = MutableLiveData<Int>()
+    val positionOfItemToMove: MutableLiveData<Int>
+        get() = _positionOfItemToMove
+
     private val _wasBinConfirmed = MutableLiveData<Boolean>()
     val wasBinConfirmed: LiveData<Boolean>
         get() = _wasBinConfirmed
@@ -62,10 +66,30 @@ class BinMovementViewModel: ViewModel() {
     val newItemToBeMoved: LiveData<BinMovementDataClass?>
         get() = _newItemToBeMoved
 
+    private val _willUpdateItemToMove = MutableLiveData<Boolean>()
+    val willUpdateItemToMove: LiveData<Boolean>
+        get() = _willUpdateItemToMove
+
+    fun setWillUpdateItemToMove(willUpdate: Boolean){
+        _willUpdateItemToMove.value = willUpdate
+    }
+
+    fun resetWillUpdateItemToMove(){
+        _willUpdateItemToMove.value = false
+    }
 
 
+    fun setPositionOfItemToMove(position: Int){
+        _positionOfItemToMove.value = position
+    }
+
+    fun resetPositionOfItemToMove(){
+        _positionOfItemToMove.value = -1
+    }
 
     init {
+        _willUpdateItemToMove.value = false
+        _positionOfItemToMove.value = -1
         _errorMessage.value = mutableMapOf(
             "confirmBin" to "",
             "confirmItem" to "",
