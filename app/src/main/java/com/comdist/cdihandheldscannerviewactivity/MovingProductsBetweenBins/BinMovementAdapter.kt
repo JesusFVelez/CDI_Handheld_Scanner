@@ -31,11 +31,14 @@ class BinMovementAdapter (private val onDataSetChanged: (Boolean) -> Unit, priva
         onDataSetChanged(true)
     }
 
-    fun updateItem(itemToReplace: BinMovementDataClass?,item: BinMovementDataClass?){
-        data.remove(itemToReplace)
-        data.add(item!!)
-        notifyItemChanged(data.indexOf(item))
-        onDataSetChanged(true)
+    fun updateItem(itemPosition:Int ,item: BinMovementDataClass?){
+        if(itemPosition >= 0 && itemPosition < data.size) {
+            data.removeAt(itemPosition)
+            data.add(item!!)
+            notifyDataSetChanged()
+            onDataSetChanged(true)
+        }else
+            addItem(item)
     }
 
     fun clearAllItems(){
