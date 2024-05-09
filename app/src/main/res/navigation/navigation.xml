@@ -96,17 +96,7 @@
     <fragment
         android:id="@+id/binMovementFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementFragment"
-        android:label="BinMovementFragment" >
-        <action
-            android:id="@+id/action_binMovementFragment_to_binMovementCheckListFragment"
-            app:destination="@id/binMovementCheckListFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
-    <fragment
-        android:id="@+id/binMovementCheckListFragment"
-        android:name="com.comdist.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementCheckList.BinMovementCheckListFragment"
-        android:label="BinMovementCheckListFragment" />
+        android:label="BinMovementFragment" />
     <fragment
         android:id="@+id/SearchExpirationDateAndLotNumberFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.SearchExpirationDateAndLotNumberFragment"
