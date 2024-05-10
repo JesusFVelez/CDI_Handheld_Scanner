@@ -212,7 +212,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 AlerterUtils.startSuccessAlert(
                     requireActivity(),
                     "Success",
-                    "Successfully Moved items to floor bin (9970F)"
+                    "Successfully Moved items to floor bin (00P111)"
                 )
                 viewModel.resetAllItemsMovedFlag()
                 clearAllItemsFromRecyclerView()
