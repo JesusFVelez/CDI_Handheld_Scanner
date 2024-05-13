@@ -51,7 +51,7 @@ class BinMovementAdapter (private val onDataSetChanged: (Boolean) -> Unit, priva
     //Method to remove an item
     fun removeItem(item: BinMovementDataClass?){
         data.remove(item)
-        notifyItemRemoved(data.indexOf(item))
+        notifyDataSetChanged()
         onDataSetChanged(data.isNotEmpty())
     }
 
