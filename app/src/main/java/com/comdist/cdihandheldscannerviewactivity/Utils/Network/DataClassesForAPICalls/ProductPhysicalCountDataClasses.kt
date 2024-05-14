@@ -1,0 +1,2 @@
+package com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
+
