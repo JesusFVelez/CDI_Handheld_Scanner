@@ -83,6 +83,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 // Handle the Enter key press here
                 progressDialog.show()
+                hasSearchButtonBeenPressed = true
                 viewModel.getProductInfoFromBackend(binNumberEditText.text.toString())
                 true
             } else {
