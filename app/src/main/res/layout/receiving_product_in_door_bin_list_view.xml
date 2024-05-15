@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="110dp"
     android:background="@drawable/listitembackgroundview"
     >
 
@@ -34,17 +34,25 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
         android:gravity="center"
         android:orientation="vertical"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         app:layout_constraintBottom_toTopOf="@+id/lotInfoLayout"
         app:layout_constraintEnd_toStartOf="@+id/addedText"
-        app:layout_constraintStart_toEndOf="@+id/expDateHeaderText"
+        app:layout_constraintStart_toEndOf="@+id/expDateInfoText"
         app:layout_constraintTop_toBottomOf="@id/BinInfoLinearLayout">
 
         <TextView
             android:id="@+id/productNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:maxLines="3"
             android:text="Habichuelas Goya"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -68,9 +76,9 @@
         android:id="@+id/trashcanIconButton"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/icon_red_trash_can"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -78,11 +86,10 @@
         android:id="@+id/addedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:text="Added: 5"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@id/trashcanIconButton"
         app:layout_constraintEnd_toEndOf="@id/trashcanIconButton"
+        app:layout_constraintStart_toStartOf="@id/trashcanIconButton"
         app:layout_constraintTop_toBottomOf="@+id/trashcanIconButton" />
 
     <LinearLayout
@@ -114,9 +121,10 @@
         android:id="@+id/lotInfoLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/lotNumberHeaderText"

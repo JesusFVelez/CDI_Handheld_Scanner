@@ -226,9 +226,12 @@ class ReceivingProductsViewModel: ViewModel() {
                 _listOfItemsToMoveInPreReceiving.value!!.clear()
                 for(item in itemsInDoorBin){
                     val inputFormat = SimpleDateFormat("yyyy-MM-dd")
-                    val newlyParsedDate = inputFormat.parse(item.expirationDate)
-                    val outputFormat = SimpleDateFormat("MM-dd-yyyy")
-                    val newlyParsedExpDateString = outputFormat.format(newlyParsedDate)
+                    var newlyParsedExpDateString = ""
+                    if(item.expirationDate != null) {
+                        val newlyParsedDate = inputFormat.parse(item.expirationDate)
+                        val outputFormat = SimpleDateFormat("MM-dd-yyyy")
+                        newlyParsedExpDateString = outputFormat.format(newlyParsedDate)
+                    }
 
                     val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.qtyOnHand.toInt() * -1, item.doesItemHaveLotNumber, item.rowID)
                     _listOfItemsToMoveInPreReceiving.value!!.add(itemToMove)

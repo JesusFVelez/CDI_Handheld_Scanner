@@ -30,8 +30,6 @@ class ReceivingProductsMainFragment : Fragment(){
 
     // Main Fragment Variables
     private lateinit var binNumberAutoCompleteTextView: AutoCompleteTextView
-    private lateinit var doorBinNumberTextView: TextView
-    private lateinit var preReceivingTextView: TextView
     private lateinit var purchaseOrderNumberTextView: TextView
     private lateinit var searchButton: Button
     private lateinit var finishButton: Button
@@ -68,8 +66,12 @@ class ReceivingProductsMainFragment : Fragment(){
         initUIElements()
         initObservers()
 
+        val bundle = arguments
+        val lastFragmentName : String = BundleUtils.getPastFragmentNameFromBundle(bundle)
+
         progressDialog.show()
-        viewModel.getDoorBins()
+        if(lastFragmentName != "null")
+            viewModel.getDoorBins()
 
         return binding.root
     }
@@ -83,7 +85,7 @@ class ReceivingProductsMainFragment : Fragment(){
             viewModel.clearDoorBinText()
             finishButton.isEnabled = false
             addButton.isEnabled = false
-            clearMiddleDiv()
+            purchaseOrderNumberTextView.text = ""
             bundle?.clear()
         }
         // For whenever the fragment comes back from the item details fragment screen
@@ -109,8 +111,6 @@ class ReceivingProductsMainFragment : Fragment(){
 
     private fun initUIElements(){
         binNumberAutoCompleteTextView = binding.DoorBinAutoTextView
-        doorBinNumberTextView = binding.DoorBinTextView
-        preReceivingTextView = binding.PreReceivingTextView
         purchaseOrderNumberTextView = binding.PONumberTextView
         searchButton = binding.SearchBinButton
         searchButton.isEnabled = false
@@ -125,6 +125,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 viewModel.getPreReceivingInfo()
                 searchButton.isEnabled = false
                 binNumberAutoCompleteTextView.isEnabled = false
+                binNumberAutoCompleteTextView.setAdapter(null)
             }else
                 AlerterUtils.startErrorAlerter(requireActivity(), "Please choose a door bin number from the drop down.")
         }
@@ -140,7 +141,7 @@ class ReceivingProductsMainFragment : Fragment(){
         }
 
         finishButton.setOnClickListener {
-            val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to finish moving items from door bin to floor bin (9970F)?", "Move Items?")
+            val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to finish moving items from door bin to floor bin (00P111)?", "Move Items?")
             questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
                 progressDialog.show()
                 questionPopup.dismiss()
@@ -216,7 +217,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 )
                 viewModel.resetAllItemsMovedFlag()
                 clearAllItemsFromRecyclerView()
-                clearMiddleDiv()
+                purchaseOrderNumberTextView.text = ""
                 searchButton.isEnabled = true
                 binNumberAutoCompleteTextView.isEnabled = true
                 finishButton.isEnabled = false
@@ -236,9 +237,10 @@ class ReceivingProductsMainFragment : Fragment(){
 
         viewModel.doorBins.observe(viewLifecycleOwner){doorBinsList ->
             progressDialog.dismiss()
-            viewModel.resetHasAPIBeenCalled()
-            if(doorBinsList.isNotEmpty())
+            if(doorBinsList.isNotEmpty() && viewModel.hasAPIBeenCalled.value!!) {
                 initBinNumberAutoCompleteTextView(doorBinsList)
+                viewModel.resetHasAPIBeenCalled()
+            }
 
         }
 
@@ -274,19 +276,12 @@ class ReceivingProductsMainFragment : Fragment(){
 
         viewModel.preReceivingInfo.observe(viewLifecycleOwner){newPreReceivingInfo ->
                 viewModel.resetHasAPIBeenCalled()
-                binding.middleDiv.visibility = View.VISIBLE
-                doorBinNumberTextView.text =
-                    binNumberAutoCompleteTextView.text.toString().uppercase()
-                preReceivingTextView.text = newPreReceivingInfo.tt_pre_receiving_number.uppercase()
                 purchaseOrderNumberTextView.text = newPreReceivingInfo.tt_purchase_order.uppercase()
                 addButton.isEnabled = true
                 viewModel.getItemsInDoor()
         }
     }
 
-    private fun clearMiddleDiv() {
-        binding.middleDiv.visibility = View.GONE
-    }
 
 
     class CustomDoorBinSuggestionAdapter(context: Context, private var suggestions: List<DoorBin>): ArrayAdapter<DoorBin>(context, 0, suggestions){
@@ -339,7 +334,7 @@ class ReceivingProductsMainFragment : Fragment(){
             }
 
             override fun convertResultToString(resultValue: Any?): CharSequence {
-                return (resultValue as DoorBin).bin_number
+                return (resultValue as DoorBin).bin_number + " - " + resultValue.bin_receiving
             }
         }
         override fun getFilter(): Filter {

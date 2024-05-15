@@ -45,14 +45,14 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
     fun removeItem(item: ItemInDoorBinDataClass?){
         data.remove(item)
         removeItemFromDoorBinInBackend(item!!)
-        notifyItemRemoved(data.indexOf(item))
+        notifyDataSetChanged()
         onDataSetChanged(data.isNotEmpty())
     }
 
     // Method to add an item
     fun addItems(items: MutableList<ItemInDoorBinDataClass>?) {
         data = items!!
-        notifyItemInserted(data.size)
+        notifyDataSetChanged()
         onDataSetChanged(data.isNotEmpty())
     }
 
