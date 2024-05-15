@@ -1,4 +1,4 @@
 package com.comdist.cdihandheldscannerviewactivity.ProductPhysicalCount
 
-class EditAndSearchItemProductPhysicalCount {
+class EditAndSearchItemProductPhysicalCountFragment {
 }

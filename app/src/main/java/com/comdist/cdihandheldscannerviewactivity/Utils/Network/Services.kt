@@ -6,7 +6,9 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConfirmOrderResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConnectionTestingWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DisplayInfoResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllBinNumbersResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinForSuggestionResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemConfirmationResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemPickingResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
@@ -40,6 +42,7 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.listOfItemsInBinResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.moveItemBetweenBinsResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateLotNumberWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.UpdateCountResponseWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
@@ -67,6 +70,7 @@ class ServicePaths{
         const val MoveItemsBetweenBins:String = "/MoveItemsBetweenBinsService/"
         const val AssignExpirationDateService: String = "/AssignExpirationDateService/"
         const val AssignLotNumberService: String = "/AssignLotNumberService/"
+        const val InventoryCountService: String = "/InventoryCountService/"
     }
 }
 
@@ -254,6 +258,32 @@ interface ViewProductsInBinServices{
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
 }
 
+interface InventoryCountServices {
+
+    @PUT("updateCount")
+    suspend fun updateCount(
+        @Query("pItemNumber") pItemNumber: String,
+        @Query("pWarehouseNo") pWarehouseNo: Int,
+        @Query("pBinLocation") pBinLocation: String,
+        @Query("pQtyCounted") pQtyCounted: Double,
+        @Query("pCompanyID") pCompanyID: String
+    ): UpdateCountResponseWrapper
+
+    @GET("getAllItemsInBinForSuggestion")
+    suspend fun getAllItemsInBinForSuggestion(
+        @Query("pBinLocation") pBinLocation: String,
+        @Query("pWarehouse") pWarehouse: Int,
+        @Query("pCompanyID") pCompanyID: String
+    ): GetAllItemsInBinResponseWrapper  // Changed to return the correct response wrapper
+
+    @GET("getAllBinNumbers")
+    suspend fun getAllBinNumbers(
+        @Query("pCompanyID") pCompanyID: String,
+        @Query("pWarehouseNo") pWarehouseNo: Int
+    ): GetAllBinNumbersResponseWrapper
+}
+
+
 interface GeneralServices{
 
 }
@@ -327,6 +357,11 @@ object ScannerAPI {
     fun getAssignLotNumberService(): AssignLotNumberResources {
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignLotNumberService)
         return retrofit.create(AssignLotNumberResources::class.java)
+    }
+
+    fun getInventoryCountService(): InventoryCountServices {
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.InventoryCountService)
+        return retrofit.create(InventoryCountServices::class.java)
     }
 
 }
