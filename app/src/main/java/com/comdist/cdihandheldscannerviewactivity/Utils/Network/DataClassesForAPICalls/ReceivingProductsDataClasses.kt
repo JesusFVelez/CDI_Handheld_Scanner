@@ -123,7 +123,7 @@ data class ItemsInBinList(
     @Json(name="tt-qty-picked") val qtyPicked: Float,
     @Json(name="tt-picked-qty") val pickedQty: Float,
     @Json(name="tt-lot-number") val lotNumber: String,
-    @Json(name="tt-expire-date") val expirationDate: String,
+    @Json(name="tt-expire-date") val expirationDate: String?,
     @Json(name="tt-weight") val weight: Float,
     @Json(name="tt-row-id") val rowID: String,
     @Json(name="tt-item-name") val itemName: String,
