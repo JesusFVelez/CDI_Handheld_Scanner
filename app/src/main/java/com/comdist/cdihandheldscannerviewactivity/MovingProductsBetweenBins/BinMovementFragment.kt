@@ -123,7 +123,6 @@ class BinMovementFragment : Fragment() {
                     viewModel.errorMessage.value!!["moveItemBetweenBins"]!!
                 )
             }
-
         }
 
 
@@ -176,7 +175,7 @@ class BinMovementFragment : Fragment() {
         val itemNumberSpinner = popupContentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
         itemNumberSpinner.setOnItemClickListener{ parent, view, position, id ->
             val selectedItem = itemNumberDropdownAdapter.getItem(position) as itemsInBin
-            viewModel.setCurrentlyChosenItemToMove(selectedItem)
+            viewModel.setCurrentlyChosenItemToMoveFromSpinner(selectedItem)
             itemNumberSpinner.setText(selectedItem.itemName,false)
         }
 
@@ -232,8 +231,7 @@ class BinMovementFragment : Fragment() {
                     val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
                     val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
                     val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
-                    val newItemToAdd =
-                        BinMovementDataClass(itemName, itemNumber, rowIDOfItem ,quantityToMove.toInt(), fromBin, toBin)
+                    val newItemToAdd = BinMovementDataClass(itemName, itemNumber, rowIDOfItem ,quantityToMove.toInt(), fromBin, toBin)
                     viewModel.setNewItemToBeMoved(newItemToAdd)
                     if(toBin.isNotEmpty())
                         viewModel.confirmIfBinExistsInDB(toBin)
@@ -310,6 +308,13 @@ class BinMovementFragment : Fragment() {
                 viewModel.setPositionOfItemToMove(position)
                 viewModel.setWillUpdateItemToMove(true)
 
+                val itemFromDropDown = itemNumberDropdownAdapter.getItemByRowID(item.rowIDOfItemInFromBin)
+                if(itemFromDropDown != null)
+                    viewModel.setCurrentlyChosenItemToMoveFromSpinner(itemFromDropDown)
+                else
+                    AlerterUtils.startErrorAlerter(requireActivity(), "There has been an error. Please contact CDI for further assistance.")
+
+
                 val addButtonPopup = addBinMovementToListPopupWindow.contentView.findViewById<Button>(R.id.addButton)
                 addButtonPopup.text = "Update"
             }
@@ -374,6 +379,14 @@ class BinMovementFragment : Fragment() {
 
 
             return view
+        }
+
+        fun getItemByRowID(rowID:String):itemsInBin?{
+            for(item in suggestions){
+                if(item.rowID == rowID)
+                    return item
+            }
+            return null
         }
     }
 

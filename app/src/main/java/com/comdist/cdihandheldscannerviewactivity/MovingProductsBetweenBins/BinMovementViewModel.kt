@@ -42,9 +42,9 @@ class BinMovementViewModel: ViewModel() {
     val warehouseNumber: LiveData<Int>
         get() = _warehouseNumber
 
-    private val _currentlyChosenItemToMove = MutableLiveData<itemsInBin>()
+    private val _currentlyChosenItemToMoveFromSpinner = MutableLiveData<itemsInBin>()
     val currentlyChosenItemToMove: LiveData<itemsInBin>
-        get() = _currentlyChosenItemToMove
+        get() = _currentlyChosenItemToMoveFromSpinner
 
     private val _positionOfItemToMove = MutableLiveData<Int>()
     val positionOfItemToMove: MutableLiveData<Int>
@@ -110,8 +110,8 @@ class BinMovementViewModel: ViewModel() {
     val hasAPIBeenCalled:LiveData<Boolean>
         get() = _hasAPIBeenCalled
 
-    fun setCurrentlyChosenItemToMove(itemToMove: itemsInBin){
-        _currentlyChosenItemToMove.value = itemToMove
+    fun setCurrentlyChosenItemToMoveFromSpinner(itemToMove: itemsInBin){
+        _currentlyChosenItemToMoveFromSpinner.value = itemToMove
     }
 
     fun setCompanyIDFromSharedPref(companyID: String){
