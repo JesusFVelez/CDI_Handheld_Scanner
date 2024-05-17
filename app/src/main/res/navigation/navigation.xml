@@ -5,6 +5,18 @@
     android:id="@+id/navigation"
     app:startDestination="@id/homeScreenFragment">
     <fragment
+        android:id="@+id/searchAndEditBinProductPhysicalCountFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.SearchExpirationDateAndLotNumberFragment"
+        android:label="fragment_search_expiration_date_and_lot_number"/>
+    <fragment
+        android:id="@+id/action_homeScreenFragment_to_searchBinProductPhysicalCountFragment"
+        android:name="com.comdist.cdihandheldscannerviewactivity.ProductPhysicalCount.SearchBinProductPhysicalCountFragment"
+        android:label="fragment_search_expiration_date_and_lot_number">
+        <action
+            android:id="@+id/action_searchBinProductPhysicalCountFragment_to_searchAndEditBinProductPhysicalCountFragment"
+            app:destination="@id/searchAndEditBinProductPhysicalCountFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/homeScreenFragment"
         android:name="com.comdist.cdihandheldscannerviewactivity.HomeScreen.HomeScreenFragment"
         android:label="Home Screen"
@@ -43,6 +55,9 @@
             app:destination="@id/receivingProductsMainFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeScreenFragment_to_searchBinProductPhysicalCountFragment2"
+            app:destination="@id/action_homeScreenFragment_to_searchBinProductPhysicalCountFragment" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"

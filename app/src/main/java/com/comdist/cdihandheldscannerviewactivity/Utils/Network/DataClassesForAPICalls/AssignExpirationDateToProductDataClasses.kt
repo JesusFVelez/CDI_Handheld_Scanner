@@ -15,6 +15,7 @@ data class AssignLotNumberResponse(
     @Json(name = "opMessage") val opMessage: String
 )
 
+
 /*Assigns Expirationdate to item in bin*/
 @JsonClass(generateAdapter = true)
 data class AssignExpDateResponseWrapper(

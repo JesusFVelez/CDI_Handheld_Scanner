@@ -137,6 +137,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/BinToBinMovementButton" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/PhysicalCountButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/menu_option_button"
+                android:text="Physical Count"
+                android:textAllCaps="false"
+                android:textColor="@color/CDI_Gray"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/BinToBinMovementButton" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/logOutButton"

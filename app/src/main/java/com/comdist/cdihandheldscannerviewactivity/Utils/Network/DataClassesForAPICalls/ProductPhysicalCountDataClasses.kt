@@ -34,6 +34,16 @@ data class TtItemInfo(
 /* Get All Bin Numbers Response Wrapper */
 @JsonClass(generateAdapter = true)
 data class GetAllBinNumbersResponseWrapper(
+    @Json(name = "response") val response: BinNumberResponse
+)
+
+@JsonClass(generateAdapter = true)
+data class BinNumberResponse(
+    @Json(name = "ttBinInfo") val ttBinInfoWrapper: TtBinInfoWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class TtBinInfoWrapper(
     @Json(name = "ttBinInfo") val ttBinInfo: List<TtBinInfo>
 )
 
@@ -41,4 +51,6 @@ data class GetAllBinNumbersResponseWrapper(
 data class TtBinInfo(
     @Json(name = "binLocation") val binLocation: String
 )
+
+
 
