@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.comdist.cdihandheldscannerviewactivity'
+    namespace 'com.scannerapp.cdihandheldscannerviewactivity'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.comdist.cdihandheldscannerviewactivity"
+        applicationId "com.scannerapp.cdihandheldscannerviewactivity"
         minSdk 27
         targetSdk 34
         versionCode 2

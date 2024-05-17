@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.comdist.cdihandheldscannerviewactivity.login.loginActivity"  >
+    tools:context="com.scannerapp.cdihandheldscannerviewactivity.login.loginActivity"  >
 
     <data>
         <variable
             name="loginViewModel"
-            type="com.comdist.cdihandheldscannerviewactivity.login.LoginViewModel" />
-
+            type="com.scannerapp.cdihandheldscannerviewactivity.login.LoginViewModel" />
     </data>
+
     <LinearLayout
         android:id="@+id/login_page"
         android:layout_width="match_parent"
