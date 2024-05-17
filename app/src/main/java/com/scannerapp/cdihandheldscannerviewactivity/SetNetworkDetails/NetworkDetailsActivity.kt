@@ -20,6 +20,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.login.LoginActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.regex.Pattern
 
 class NetworkDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNetworkDetailsBinding
@@ -66,17 +67,48 @@ class NetworkDetailsActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun isValidIpAddress(ip: String): Boolean {
+        val ipv4Pattern = Pattern.compile(
+            "^(([0-9]{1,3})\\.){3}([0-9]{1,3})$"
+        )
+        val ipv6Pattern = Pattern.compile(
+            "^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$"
+        )
+
+        if (ipv4Pattern.matcher(ip).matches()) {
+            val parts = ip.split(".")
+            return parts.all { it.toInt() in 0..255 }
+        }
+
+        if (ipv6Pattern.matcher(ip).matches()) {
+            return true
+        }
+
+        return false
+    }
+
+    private fun removeWhitespace(input: String): String {
+        return input.replace("\\s".toRegex(), "")
+    }
+
+
     private fun initUIElements(){
         ipAddressEditText = binding.ipAddressText
         portNumberEditText = binding.portNumberText
         testConnectionButton = binding.testConnectionButton
         testConnectionButton.setOnClickListener{
-                val ipAddress = ipAddressEditText.text.toString()
-                val portNumber = portNumberEditText.text.toString()
+
+                val ipAddress = removeWhitespace(ipAddressEditText.text.toString())
+                val portNumber = removeWhitespace(portNumberEditText.text.toString())
+                val isIPAddressValid = isValidIpAddress(ipAddress)
                 if(ipAddress != "" && portNumber != "") {
-                    hasConnectionBeenTested = true
-                    progressDialog.show()
-                    verifyBackendConnection(ipAddress, portNumber)
+                    if (!isIPAddressValid) {
+                        AlerterUtils.startErrorAlerter(this, "Invalid IP Address")
+                    }else {
+                        hasConnectionBeenTested = true
+                        progressDialog.show()
+                        verifyBackendConnection(ipAddress, portNumber)
+                    }
                 }
                 else
                     AlerterUtils.startErrorAlerter(this,"IP Address or Port Number was left empty.")
