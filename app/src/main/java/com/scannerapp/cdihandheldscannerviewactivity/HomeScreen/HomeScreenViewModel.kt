@@ -24,7 +24,7 @@ class HomeScreenViewModel : ViewModel(){
                 val BinToBinMovementOption = MenuOptionDataClass("Bin to Bin Movement", R.id.action_homeScreenFragment_to_binMovementFragment, "RfBtnWHRFMOV")
                 val EditItemMenuOption = MenuOptionDataClass("Assign Expiration", R.id.action_homeScreenFragment_to_assignExpirationDateFragment, "RfBtnAssignExpirationDate")
                 val ReceivingMenuOption = MenuOptionDataClass("Receiving", R.id.action_homeScreenFragment_to_receivingProductsMainFragment, "RfBtnWHRFMOV")
-                val PhysicalCountMenuOption = MenuOptionDataClass("Physical Count", R.id.action_homeScreenFragment_to_searchBinProductPhysicalCountFragment, "RfBtnSearchBinProductPhysicalCountFragment")
+                val PhysicalCountMenuOption = MenuOptionDataClass("Physical Count", R.id.searchBinProductPhysicalCountFragment, "RfBtnSearchBinProductPhysicalCountFragment")
         }
     }
     data class MenuOptionDataClass(

@@ -5,16 +5,18 @@
     android:id="@+id/navigation"
     app:startDestination="@id/homeScreenFragment">
     <fragment
-        android:id="@+id/searchAndEditBinProductPhysicalCountFragment"
-        android:name="com.comdist.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.SearchExpirationDateAndLotNumberFragment"
-        android:label="fragment_search_expiration_date_and_lot_number"/>
+        android:id="@+id/EditAndSearchItemProductPhysicalCountFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount.EditAndSearchItemProductPhysicalCountFragment"
+        android:label="fragment_search_expiration_date_and_lot_number" />
     <fragment
-        android:id="@+id/action_homeScreenFragment_to_searchBinProductPhysicalCountFragment"
+        android:id="@+id/searchBinProductPhysicalCountFragment"
         android:name="com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount.SearchBinProductPhysicalCountFragment"
         android:label="fragment_search_expiration_date_and_lot_number">
         <action
-            android:id="@+id/action_searchBinProductPhysicalCountFragment_to_searchAndEditBinProductPhysicalCountFragment"
-            app:destination="@id/searchAndEditBinProductPhysicalCountFragment" />
+            android:id="@+id/action_searchBinProductPhysicalCountFragment_to_EditAndSearchItemProductPhysicalCountFragment"
+            app:destination="@id/EditAndSearchItemProductPhysicalCountFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/homeScreenFragment"
@@ -57,7 +59,9 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_homeScreenFragment_to_searchBinProductPhysicalCountFragment2"
-            app:destination="@id/action_homeScreenFragment_to_searchBinProductPhysicalCountFragment" />
+            app:destination="@id/searchBinProductPhysicalCountFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/productToBinFragment"

@@ -13,6 +13,7 @@ import android.widget.AutoCompleteTextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountViewModel
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtBinInfo
 import com.comdist.cdihandheldscannerviewactivity.adapters.BinItemAdapter
@@ -63,7 +64,8 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         binItemAdapter = BinItemAdapter(requireContext()) { selectedBin ->
-            // Handle bin item click takes you places
+            // Navigate to the next fragment when a bin is selected
+            navigateToEditAndSearchItemFragment(selectedBin)
         }
         binding.binSearchList.adapter = binItemAdapter
 
@@ -102,7 +104,9 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
             onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
                 val selectedBinLocation = parent.getItemAtPosition(position) as String
-                binItemAdapter.updateData(listOf(newBinSuggestion.first { it.binLocation == selectedBinLocation }))
+                val selectedBin = newBinSuggestion.first { it.binLocation == selectedBinLocation }
+                binItemAdapter.updateData(listOf(selectedBin))
+                navigateToEditAndSearchItemFragment(selectedBin)
             }
         }
 
@@ -124,4 +128,10 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
+
+    private fun navigateToEditAndSearchItemFragment(selectedBin: TtBinInfo) {
+        viewModel.setCurrentlySelectedBin(selectedBin) // Assuming this method exists in your ViewModel
+        view?.findNavController()?.navigate(R.id.EditAndSearchItemProductPhysicalCountFragment)
+    }
 }
+

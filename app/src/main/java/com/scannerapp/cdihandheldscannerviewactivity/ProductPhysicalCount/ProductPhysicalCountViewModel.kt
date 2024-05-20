@@ -41,6 +41,10 @@ class InventoryCountViewModel: ViewModel() {
     val warehouseNumberOfUser: LiveData<Int>
         get() = _warehouseNO
 
+    private val _currentlyChosenItemForSearch = MutableLiveData<TtBinInfo>()
+    val setCurrentlySelectedBin: LiveData<TtBinInfo>
+        get() = _currentlyChosenItemForSearch
+
     // Function to set the company ID from shared preferences
     fun setCompanyIDFromSharedPref(companyID: String){
         _companyIDOfUser.value = companyID
@@ -49,7 +53,9 @@ class InventoryCountViewModel: ViewModel() {
     fun setWarehouseNumberFromSharedPref(warehouseNumber: Int){
         _warehouseNO.value = warehouseNumber
     }
-
+    fun setCurrentlySelectedBin(selectedBin: TtBinInfo) {
+        _currentlyChosenItemForSearch.value = selectedBin
+    }
     fun getAllBinNumbers(pCompanyID: String, pWarehouse: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false

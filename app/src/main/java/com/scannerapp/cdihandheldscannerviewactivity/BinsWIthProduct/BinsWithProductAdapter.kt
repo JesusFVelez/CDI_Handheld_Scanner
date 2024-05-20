@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinInfo
 import com.scannerapp.cdihandheldscannerviewactivity.R
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinInfo
 
 class BinsWithProductAdapter (): RecyclerView.Adapter<BinWithProductViewHolder>()  {
 
