@@ -19,8 +19,8 @@ import com.comdist.cdihandheldscannerviewactivity.adapters.BinItemAdapter
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountBinListFragmentBinding
-
 
 class SearchBinProductPhysicalCountFragment : Fragment() {
     private lateinit var binding: ProductPhysicalCountBinListFragmentBinding
@@ -36,6 +36,15 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         )
         setupUI()
         initObservers()
+
+        // Retrieve company ID and warehouse number from shared preferences
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+
+        // Set these values in the ViewModel
+        viewModel.setCompanyIDFromSharedPref(companyID)
+        viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
+
         return binding.root
     }
 
@@ -45,6 +54,12 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     }
 
     private fun setupUI() {
+        val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+        viewModel.setWarehouseNumberFromSharedPref(warehouseNO)
+
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        viewModel.setCompanyIDFromSharedPref(companyID)
+
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         binItemAdapter = BinItemAdapter(requireContext()) { selectedBin ->
@@ -53,7 +68,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         binding.binSearchList.adapter = binItemAdapter
 
         progressDialog.show()
-        viewModel.getAllBinNumbers()
+        viewModel.getAllBinNumbers(companyID, warehouseNO)
     }
 
     private fun initObservers() {
@@ -69,6 +84,14 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
+    }
+
+    private fun retrieveUserDetailsFromSharedPrefs() {
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+
+        viewModel.setCompanyIDFromSharedPref(companyID)
+        viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
     }
 
     private fun initBinAutoCompleteTextView(newBinSuggestion: List<TtBinInfo>) {
@@ -101,5 +124,4 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
-
 }
