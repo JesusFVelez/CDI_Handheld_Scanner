@@ -17,11 +17,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.scannerapp.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.R
+import com.comdist.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
-import com.scannerapp.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
 
 
 class SearchExpirationDateAndLotNumberFragment : Fragment() {

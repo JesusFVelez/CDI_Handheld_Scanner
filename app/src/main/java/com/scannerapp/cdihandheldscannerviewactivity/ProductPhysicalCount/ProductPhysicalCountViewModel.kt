@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.*
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtBinInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInfo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -32,6 +33,22 @@ class InventoryCountViewModel: ViewModel() {
     val wasLastAPICallSuccessful: LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
 
+    private val _companyIDOfUser = MutableLiveData<String>()
+    val companyIDOfUser : LiveData<String>
+        get() = _companyIDOfUser
+
+    private val _warehouseNumberOfUser = MutableLiveData<Int>()
+    val warehouseNumberOfUser: LiveData<Int>
+        get() = _warehouseNumberOfUser
+
+    // Function to set the company ID from shared preferences
+    fun setCompanyIDFromSharedPref(companyID: String){
+        _companyIDOfUser.value = companyID
+    }
+
+    fun setWarehouseNumberFromSharedPref(warehouseNumber: Int){
+        _warehouseNumberOfUser.value = warehouseNumber
+    }
     fun updateCount(pItemNumber: String, pWarehouseNo: Int, pBinLocation: String, pQtyCounted: Double, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
@@ -70,7 +87,7 @@ class InventoryCountViewModel: ViewModel() {
         }
     }
 
-    fun getAllBinNumbers(pCompanyID: String, pWarehouseNo: Int) {
+    fun getAllBinNumbers() {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             Log.e("Get Bin Numbers", "Failed to fetch bin numbers: ${exception.localizedMessage}")
@@ -78,7 +95,7 @@ class InventoryCountViewModel: ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getInventoryCountService().getAllBinNumbers(pCompanyID, pWarehouseNo)
+                val response = ScannerAPI.getInventoryCountService().getAllBinNumbers(_companyIDOfUser.value!!, _warehouseNumberOfUser.value!!)
                 _binInfo.value = response.response.ttBinInfo.ttBinInfo
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {

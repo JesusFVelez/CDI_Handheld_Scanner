@@ -53,9 +53,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         binding.binSearchList.adapter = binItemAdapter
 
         progressDialog.show()
-        viewModel.getAllBinNumbers("F", 1)
-
-
+        viewModel.getAllBinNumbers()
     }
 
     private fun initObservers() {
