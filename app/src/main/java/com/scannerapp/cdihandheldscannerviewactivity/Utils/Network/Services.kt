@@ -21,6 +21,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseMoveItemFromDoorBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseMoveItemToDoorBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponsePreReceiving
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateLotNumberWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperBinsWithProduct
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperDoorBinListWrapper
@@ -42,7 +43,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.isQuantityValidResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.listOfItemsInBinResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.moveItemBetweenBinsResponseWrapper
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateLotNumberWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
@@ -260,7 +260,7 @@ interface ViewProductsInBinServices{
 
 interface InventoryCountServices {
 
-    @PUT("updateCount")
+    @PUT("UpdateCount")
     suspend fun updateCount(
         @Query("pItemNumber") pItemNumber: String,
         @Query("pWarehouseNo") pWarehouseNo: Int,
