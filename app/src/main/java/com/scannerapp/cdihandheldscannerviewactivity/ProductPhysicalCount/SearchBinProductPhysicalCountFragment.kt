@@ -1,4 +1,4 @@
-package com.comdist.cdihandheldscannerviewactivity.ProductPhysicalCount
+package com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount
 
 import android.app.Dialog
 import android.os.Bundle
@@ -16,11 +16,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountViewModel
 import com.comdist.cdihandheldscannerviewactivity.R
-import com.comdist.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtBinInfo
-import com.comdist.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.comdist.cdihandheldscannerviewactivity.adapters.BinItemAdapter
 import com.comdist.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountBinListFragmentBinding
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+
 
 class SearchBinProductPhysicalCountFragment : Fragment() {
     private lateinit var binding: ProductPhysicalCountBinListFragmentBinding
@@ -104,4 +105,5 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
+
 }

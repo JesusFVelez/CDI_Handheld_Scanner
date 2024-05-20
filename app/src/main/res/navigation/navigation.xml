@@ -10,7 +10,7 @@
         android:label="fragment_search_expiration_date_and_lot_number"/>
     <fragment
         android:id="@+id/action_homeScreenFragment_to_searchBinProductPhysicalCountFragment"
-        android:name="com.comdist.cdihandheldscannerviewactivity.ProductPhysicalCount.SearchBinProductPhysicalCountFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount.SearchBinProductPhysicalCountFragment"
         android:label="fragment_search_expiration_date_and_lot_number">
         <action
             android:id="@+id/action_searchBinProductPhysicalCountFragment_to_searchAndEditBinProductPhysicalCountFragment"

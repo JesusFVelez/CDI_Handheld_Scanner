@@ -1,0 +1,4 @@
+package com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount
+
+class EditAndSearchItemProductPhysicalCountFragment {
+}

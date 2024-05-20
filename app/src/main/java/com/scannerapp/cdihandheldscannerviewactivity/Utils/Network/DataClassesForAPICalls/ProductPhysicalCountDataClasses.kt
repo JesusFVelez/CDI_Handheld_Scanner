@@ -39,7 +39,7 @@ data class GetAllBinNumbersResponseWrapper(
 
 @JsonClass(generateAdapter = true)
 data class BinNumberResponse(
-    @Json(name = "ttBinInfo") val ttBinInfoWrapper: TtBinInfoWrapper
+    @Json(name = "ttBinInfoWrapper") val ttBinInfoWrapper: TtBinInfoWrapper
 )
 
 @JsonClass(generateAdapter = true)
