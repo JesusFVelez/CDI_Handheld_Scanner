@@ -3,6 +3,11 @@
 <!--    <style name="CDI_Yellow" parent="Base.Theme.CDIHandheldScannerViewActivity">-->
 <!--        <item name="android:back">@color/CDI_Yellow</item>-->
 <!--    </style>-->
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        
+    </style>
+
     <style name="BoldItalicText">
         <item name="android:textStyle">bold|italic</item>
     </style>
