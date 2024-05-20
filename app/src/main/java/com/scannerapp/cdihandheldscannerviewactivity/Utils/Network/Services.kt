@@ -276,7 +276,7 @@ interface InventoryCountServices {
         @Query("pCompanyID") pCompanyID: String
     ): GetAllItemsInBinResponseWrapper  // Changed to return the correct response wrapper
 
-    @GET("getAllBinNumbers")
+    @GET("GetAllBinNumbers")
     suspend fun getAllBinNumbers(
         @Query("pCompanyID") pCompanyID: String,
         @Query("pWarehouseNo") pWarehouseNo: Int
