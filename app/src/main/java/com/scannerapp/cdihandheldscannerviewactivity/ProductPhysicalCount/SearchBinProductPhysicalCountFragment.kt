@@ -14,12 +14,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountViewModel
-import com.comdist.cdihandheldscannerviewactivity.R
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtBinInfo
 import com.comdist.cdihandheldscannerviewactivity.adapters.BinItemAdapter
-import com.comdist.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountBinListFragmentBinding
+import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountBinListFragmentBinding
 
 
 class SearchBinProductPhysicalCountFragment : Fragment() {
