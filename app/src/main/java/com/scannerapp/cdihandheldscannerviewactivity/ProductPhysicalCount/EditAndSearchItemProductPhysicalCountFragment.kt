@@ -159,6 +159,13 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         )
         setupUI()
         initObservers()
+        // Retrieve company ID and warehouse number from shared preferences
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+
+        // Set these values in the ViewModel
+        viewModel.setCompanyIDFromSharedPref(companyID)
+        viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
         return binding.root
     }
 
