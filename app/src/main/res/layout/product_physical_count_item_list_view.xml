@@ -14,7 +14,7 @@
         android:layout_marginStart="25dp"
         android:padding="1dp"
         android:text="S32567"
-        android:textSize="25sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
