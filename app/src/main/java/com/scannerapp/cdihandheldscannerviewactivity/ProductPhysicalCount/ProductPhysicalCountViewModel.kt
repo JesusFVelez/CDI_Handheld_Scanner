@@ -103,7 +103,7 @@ class InventoryCountViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler) {
             try {
                 val response = ScannerAPI.getInventoryCountService().getAllItemsInBinForSuggestion(pBinLocation, pWarehouse, pCompanyID)
-                _itemInfo.value = response.ttItemInfo
+                _itemInfo.value = response.response.ttItemInfo.ttItemInfo
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false

@@ -149,7 +149,7 @@
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/BinToBinMovementButton" />
+                app:layout_constraintTop_toBottomOf="@id/ReceivingButton" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/logOutButton"
@@ -165,7 +165,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ReceivingButton" />
+                app:layout_constraintTop_toBottomOf="@+id/PhysicalCountButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

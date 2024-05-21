@@ -18,6 +18,16 @@ data class UpdateCountResponse(
 /* Get All Items In Bin For Suggestion Response Wrapper */
 @JsonClass(generateAdapter = true)
 data class GetAllItemsInBinResponseWrapper(
+    @Json(name = "response") val response: Response
+)
+
+@JsonClass(generateAdapter = true)
+data class Response(
+    @Json(name = "ttItemInfo") val ttItemInfo: TtItemInfoWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class TtItemInfoWrapper(
     @Json(name = "ttItemInfo") val ttItemInfo: List<TtItemInfo>
 )
 

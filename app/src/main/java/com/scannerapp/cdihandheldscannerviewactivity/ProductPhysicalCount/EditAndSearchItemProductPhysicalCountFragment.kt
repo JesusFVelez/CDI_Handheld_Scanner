@@ -1,28 +1,23 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount
-
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberViewModel
+import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountViewModel
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
-class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
+
+/*class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     private lateinit var binding: ProductPhysicalCountItemListFragmentBinding
     private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
     private lateinit var itemAdapter: ItemAdapter
@@ -145,11 +140,11 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             notifyDataSetChanged()
         }
     }
-}
+}*/
 
 
 
-/*class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
+class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     private lateinit var binding: ProductPhysicalCountItemListFragmentBinding
     private val viewModel: InventoryCountViewModel by activityViewModels()
     private lateinit var itemAdapter: ItemAdapter
@@ -247,4 +242,4 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             notifyDataSetChanged()
         }
     }
-}*/
+}
