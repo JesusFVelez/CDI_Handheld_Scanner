@@ -217,7 +217,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                 findNavController().navigateUp()
             }else if(viewModel.hasAPIBeenCalled.value!!){
                 viewModel.resetHasAPIBeenCalled()
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemMovedToBinError"]!!)
+                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemMovedToDoorError"]!!)
             }
             viewModel.resetHasAPIBeenCalled()
         }
