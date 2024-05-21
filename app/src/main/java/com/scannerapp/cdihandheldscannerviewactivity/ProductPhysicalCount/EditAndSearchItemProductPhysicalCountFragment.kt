@@ -15,6 +15,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
 
 /*class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
@@ -179,13 +180,14 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
     private fun fetchItemsInBin() {
         val selectedBin = viewModel.setCurrentlySelectedBin.value
+        val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+        viewModel.setWarehouseNumberFromSharedPref(warehouseNO)
+
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        viewModel.setCompanyIDFromSharedPref(companyID)
         if (selectedBin != null) {
             progressDialog.show()
-            viewModel.getAllItemsInBinForSuggestion(
-                pBinLocation = selectedBin.binLocation,
-                pWarehouse = viewModel.warehouseNumberOfUser.value ?: 0,
-                pCompanyID = viewModel.companyIDOfUser.value ?: ""
-            )
+            viewModel.getAllItemsInBinForSuggestion(pBinLocation = selectedBin.binLocation, warehouseNO,companyID)
         }
     }
 
