@@ -56,6 +56,7 @@ class InventoryCountViewModel: ViewModel() {
     fun setCurrentlySelectedBin(selectedBin: TtBinInfo) {
         _currentlyChosenItemForSearch.value = selectedBin
     }
+
     fun getAllBinNumbers(pCompanyID: String, pWarehouse: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
