@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,132 +19,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
-
-/*class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
-    private lateinit var binding: ProductPhysicalCountItemListFragmentBinding
-    private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
-    private lateinit var itemAdapter: ItemAdapter
-    private lateinit var progressDialog: Dialog
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        binding = DataBindingUtil.inflate(
-            inflater, R.layout.product_physical_count_item_list_fragment, container, false
-        )
-        setupUI()
-        initObservers()
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        binding.itemSearchEditText.text.clear()
-    }
-
-    private fun setupUI() {
-        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
-
-        itemAdapter = ItemAdapter(requireContext()) { selectedItem ->
-            viewModel.setCurrentlyChosenItemForSearch(selectedItem)
-            // Handle item click if needed
-        }
-        binding.itemSearchList.adapter = itemAdapter
-
-        progressDialog.show()
-        viewModel.fetchItemSuggestions() //just to see if it works
-    }
-
-    private fun initObservers() {
-        viewModel.suggestions.observe(viewLifecycleOwner) { newSuggestions ->
-            progressDialog.dismiss()
-            initItemNumberAutoCompleteTextView(newSuggestions)
-            itemAdapter.updateData(newSuggestions)
-        }
-
-        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
-            if (!wasLastAPICallSuccessful) {
-                progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity())
-            }
-        }
-    }
-
-    private fun initItemNumberAutoCompleteTextView(newItemSuggestion: List<ItemData>) {
-        val autoCompleteAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, newItemSuggestion.map { it.itemNumber })
-        (binding.itemSearchEditText as? AutoCompleteTextView)?.apply {
-            setAdapter(autoCompleteAdapter)
-            threshold = 1
-
-            onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-                val selectedItemNumber = parent.getItemAtPosition(position) as String
-                val selectedItem = newItemSuggestion.first { it.itemNumber == selectedItemNumber }
-                itemAdapter.updateData(listOf(selectedItem))
-                viewModel.setCurrentlyChosenItemForSearch(selectedItem)
-            }
-        }
-
-        binding.itemSearchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val trimmedText = s.toString().trim()
-                if (trimmedText.isEmpty()) {
-                    itemAdapter.updateData(newItemSuggestion)
-                } else {
-                    val filteredList = newItemSuggestion.filter {
-                        it.itemNumber.contains(trimmedText, ignoreCase = true) ||
-                                (it.barCode ?: "").contains(trimmedText, ignoreCase = true)
-                    }
-                    itemAdapter.updateData(filteredList)
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-    }
-
-    class ItemAdapter(
-        private val context: Context,
-        private val onItemClick: (ItemData) -> Unit
-    ) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
-        var items: MutableList<ItemData> = mutableListOf()
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val itemNumberTextView: TextView = view.findViewById(R.id.ItemNumberTextView)
-            val descriptionTextView: TextView = view.findViewById(R.id.descriptionTextView)
-            val expirationDateTextView: TextView = view.findViewById(R.id.orderDateValueTextView)
-            val binLocationTextView: TextView = view.findViewById(R.id.binLocationTextView)
-            val lotNumberTextView: TextView = view.findViewById(R.id.dateWantedValueTextView)
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(context).inflate(R.layout.product_physical_count_item_list_view, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = items[position]
-            holder.itemNumberTextView.text = item.itemNumber
-            holder.descriptionTextView.text = item.itemDescription
-            holder.expirationDateTextView.text = item.expireDate ?: "N/A"
-            holder.binLocationTextView.text = item.binLocation
-            holder.lotNumberTextView.text = item.lotNumber ?: "N/A"
-            holder.itemView.setOnClickListener {
-                onItemClick(item)
-            }
-        }
-
-        override fun getItemCount() = items.size
-
-        fun updateData(newData: List<ItemData>) {
-            items.clear()
-            items.addAll(newData)
-            notifyDataSetChanged()
-        }
-    }
-}*/
-
 
 
 class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
@@ -158,6 +34,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             inflater, R.layout.product_physical_count_item_list_fragment, container, false
         )
         setupUI()
+        setupUI()
         initObservers()
         return binding.root
     }
@@ -172,7 +49,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         itemAdapter = ItemAdapter(requireContext()) { selectedItem ->
-
+            // Handle item click if needed
         }
         binding.itemSearchList.adapter = itemAdapter
     }
@@ -207,6 +84,8 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             }
         }
     }
+}
+
 
     class ItemAdapter(
         private val context: Context,
@@ -235,6 +114,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             holder.binLocationTextView.text = item.binLocation
             holder.lotNumberTextView.text = item.lotNumber ?: "N/A"
             holder.itemView.setOnClickListener {
+                showPopupDialog(item)
                 onItemClick(item)
             }
         }
@@ -246,5 +126,39 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             items.addAll(newData)
             notifyDataSetChanged()
         }
+
+        private fun showPopupDialog(item: TtItemInfo) {
+            val dialogView = LayoutInflater.from(context).inflate(R.layout.product_physical_count_item_quantity_count_popup, null)
+            val dialog = Dialog(context)
+            dialog.setContentView(dialogView)
+
+            val selectedItemView = dialogView.findViewById<View>(R.id.selectedItem)
+            val itemNumberTextView = selectedItemView.findViewById<TextView>(R.id.ItemNumberTextView)
+            val descriptionTextView = selectedItemView.findViewById<TextView>(R.id.descriptionTextView)
+            val expirationDateTextView = selectedItemView.findViewById<TextView>(R.id.orderDateValueTextView)
+            val binLocationTextView = selectedItemView.findViewById<TextView>(R.id.binLocationTextView)
+            val lotNumberTextView = selectedItemView.findViewById<TextView>(R.id.dateWantedValueTextView)
+
+            itemNumberTextView.text = item.itemNumber
+            descriptionTextView.text = item.itemDescription
+            expirationDateTextView.text = item.expireDate ?: "N/A"
+            binLocationTextView.text = item.binLocation
+            lotNumberTextView.text = item.lotNumber ?: "N/A"
+
+            /*In line error handling for quantity input FU Jsus*/
+            dialogView.findViewById<AppCompatButton>(R.id.addButton).setOnClickListener {
+                val itemAmountEditText = dialogView.findViewById<EditText>(R.id.itemAmountEditText)
+                val quantity = itemAmountEditText.text.toString().toIntOrNull()
+                if (quantity != null) {
+                    // Handle the quantity input
+                    dialog.dismiss()
+                } else {
+                    itemAmountEditText.error = "Please enter a valid number"
+                }
+            }
+
+            dialog.show()
+        }
     }
-}
+
+
