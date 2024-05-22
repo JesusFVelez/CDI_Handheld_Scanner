@@ -35,7 +35,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
 
     //EditText declarations
-    private lateinit var newLotAutoCompleteTextView: EditText
+    private lateinit var newLotEditText: EditText
     private lateinit var quantityEditText: EditText
     private lateinit var newExpirationDateEditText: EditText
 
@@ -106,7 +106,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         populateUpperDivUiElements()
 
         // edit text initializations
-        newLotAutoCompleteTextView = binding.newLotAutoCompleteTextView
+        newLotEditText = binding.newLotAutoCompleteTextView
         quantityEditText = binding.QuantityEditText
         newExpirationDateEditText = binding.NewExpirationDateEditText
 
@@ -119,7 +119,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
         // Validates whether item uses lot number or not
         val canEditLotNumber = viewModel.itemInfo.value!!.doesItemUseLotNumber
-        newLotAutoCompleteTextView.isEnabled = canEditLotNumber
+        newLotEditText.isEnabled = canEditLotNumber
 
         newExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
         newExpirationDateEditText.addTextChangedListener(object : TextWatcher {
@@ -185,7 +185,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                     // Step 3: Validate the parsed date
                     if (newExpirationDate != null && isValidDate(expirationDate)) {
                         val expirationDate = newExpirationDateEditText.text.toString()
-                        val newLotNumber = newLotAutoCompleteTextView.text.toString()
+                        val newLotNumber = newLotEditText.text.toString()
                         val quantityToAddToDoor = quantityEditText.text.toString().toInt()
                         val itemNumber = itemNumberTextView.text.toString()
                         val itemName = itemNameTextView.text.toString()
@@ -240,7 +240,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         val quantityBeingMoved = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].quantityOfItemsAddedToDoorBin.toString()
 
         newExpirationDateEditText.setText(expirationDate)
-        newLotAutoCompleteTextView.setText(lotNumber)
+        newLotEditText.setText(lotNumber)
         quantityEditText.setText(quantityBeingMoved)
     }
     private fun populateUpperDivUiElements(){
