@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
         android:text="Exp Date:"
+        app:layout_constraintBottom_toBottomOf="@+id/barcodeIcon"
         app:layout_constraintStart_toEndOf="@+id/barcodeIcon"
         app:layout_constraintTop_toTopOf="@+id/barcodeIcon" />
 
@@ -81,6 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:text="01/01/2023"
+        app:layout_constraintBottom_toBottomOf="@+id/expirationDateLabelTextView"
         app:layout_constraintStart_toEndOf="@+id/expirationDateLabelTextView"
         app:layout_constraintTop_toTopOf="@+id/expirationDateLabelTextView" />
 
@@ -110,6 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:text="ggez"
+        app:layout_constraintBottom_toBottomOf="@+id/lotNumberLabelTextView"
         app:layout_constraintStart_toEndOf="@+id/lotNumberLabelTextView"
         app:layout_constraintTop_toTopOf="@+id/lotNumberLabelTextView" />
 

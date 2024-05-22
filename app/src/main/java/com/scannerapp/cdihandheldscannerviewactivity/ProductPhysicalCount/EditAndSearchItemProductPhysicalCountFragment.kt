@@ -1,4 +1,5 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount
+
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -20,7 +21,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
 
-
 class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     private lateinit var binding: ProductPhysicalCountItemListFragmentBinding
     private val viewModel: InventoryCountViewModel by activityViewModels()
@@ -33,7 +33,6 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.product_physical_count_item_list_fragment, container, false
         )
-        setupUI()
         setupUI()
         initObservers()
         return binding.root
@@ -48,8 +47,8 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     private fun setupUI() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
-        itemAdapter = ItemAdapter(requireContext()) { selectedItem ->
-            // Handle item click if needed
+        itemAdapter = ItemAdapter(requireContext(), viewModel) { selectedItem ->
+            // Handles item click if needed for future use
         }
         binding.itemSearchList.adapter = itemAdapter
     }
@@ -84,11 +83,10 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             }
         }
     }
-}
-
 
     class ItemAdapter(
         private val context: Context,
+        private val viewModel: InventoryCountViewModel,
         private val onItemClick: (TtItemInfo) -> Unit
     ) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
         var items: MutableList<TtItemInfo> = mutableListOf()
@@ -149,8 +147,16 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             dialogView.findViewById<AppCompatButton>(R.id.addButton).setOnClickListener {
                 val itemAmountEditText = dialogView.findViewById<EditText>(R.id.itemAmountEditText)
                 val quantity = itemAmountEditText.text.toString().toIntOrNull()
-                if (quantity != null) {
-                    // Handle the quantity input
+                if (quantity != null && quantity >= 0) {
+                    val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(context)
+                    val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(context)
+                    viewModel.updateCount(
+                        pItemNumber = item.itemNumber,
+                        pWarehouseNo = warehouseNO,
+                        pBinLocation = item.binLocation,
+                        pQtyCounted = quantity.toDouble(),
+                        pCompanyID = companyID
+                    )
                     dialog.dismiss()
                 } else {
                     itemAmountEditText.error = "Please enter a valid number"
@@ -160,5 +166,4 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             dialog.show()
         }
     }
-
-
+}
