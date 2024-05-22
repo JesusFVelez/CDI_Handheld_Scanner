@@ -80,14 +80,13 @@
                 app:layout_constraintVertical_bias="0.0">
 
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/newLotAutoCompleteTextView"
-                    android:layout_width="201dp"
-                    android:layout_height="54dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/rectangle_text_box"
-                    android:dropDownHeight="wrap_content"
                     android:gravity="center"
                     android:hint="New Lot"
                     app:layout_constraintBottom_toTopOf="@+id/QuantityEditText"
@@ -97,8 +96,8 @@
 
                 <EditText
                     android:id="@+id/QuantityEditText"
-                    android:layout_width="201dp"
-                    android:layout_height="54dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/rectangle_text_box"
                     android:dropDownHeight="wrap_content"
@@ -110,11 +109,24 @@
                     app:layout_constraintHorizontal_bias="0.142"
                     app:layout_constraintStart_toStartOf="@+id/newLotAutoCompleteTextView" />
 
+                <EditText
+                    android:id="@+id/NewExpirationDateEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/rectangle_text_box"
+                    android:dropDownHeight="wrap_content"
+                    android:gravity="center"
+                    android:hint="Expiration Date"
+                    app:layout_constraintBottom_toTopOf="@+id/addButton"
+                    app:layout_constraintEnd_toEndOf="@+id/addButton"
+                    app:layout_constraintStart_toStartOf="@+id/addButton" />
 
                 <Button
                     android:id="@+id/addButton"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/menu_option_button"
                     android:text="Add"
@@ -125,19 +137,7 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
 
-                <AutoCompleteTextView
-                    android:id="@+id/NewExpirationDateEditText"
-                    android:layout_width="201dp"
-                    android:layout_height="54dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/rectangle_text_box"
-                    android:dropDownHeight="wrap_content"
-                    android:gravity="center"
-                    android:hint="Expiration Date"
-                    app:layout_constraintBottom_toTopOf="@+id/addButton"
-                    app:layout_constraintEnd_toEndOf="@+id/addButton"
-                    app:layout_constraintStart_toStartOf="@+id/addButton" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
