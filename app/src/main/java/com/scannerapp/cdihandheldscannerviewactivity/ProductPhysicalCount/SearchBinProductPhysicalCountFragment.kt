@@ -88,14 +88,6 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         }
     }
 
-    private fun retrieveUserDetailsFromSharedPrefs() {
-        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-        val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
-
-        viewModel.setCompanyIDFromSharedPref(companyID)
-        viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
-    }
-
     private fun initBinAutoCompleteTextView(newBinSuggestion: List<TtBinInfo>) {
         val autoCompleteAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, newBinSuggestion.map { it.binLocation })
         (binding.binNumberSearchEditText as? AutoCompleteTextView)?.apply {
