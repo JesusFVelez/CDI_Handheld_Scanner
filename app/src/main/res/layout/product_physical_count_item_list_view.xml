@@ -30,6 +30,7 @@
         android:textColor="#4CAF50"
         android:textSize="15sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/ItemNumberTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

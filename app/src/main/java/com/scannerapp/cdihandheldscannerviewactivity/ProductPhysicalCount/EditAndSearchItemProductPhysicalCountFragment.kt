@@ -3,6 +3,8 @@ package com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,6 +53,17 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             // Handles item click if needed for future use
         }
         binding.itemSearchList.adapter = itemAdapter
+
+        binding.itemSearchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val trimmedText = s.toString().trim()
+                filterItemList(trimmedText)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     private fun fetchItemsInBin() {
@@ -84,6 +97,14 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         }
     }
 
+    private fun filterItemList(query: String) {
+        val filteredList = viewModel.itemInfo.value?.filter { item ->
+            item.itemNumber.contains(query, ignoreCase = true) ||
+                    item.barCode?.contains(query, ignoreCase = true) == true
+        }
+        itemAdapter.updateData(filteredList ?: listOf())
+    }
+
     class ItemAdapter(
         private val context: Context,
         private val viewModel: InventoryCountViewModel,
@@ -97,6 +118,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             val expirationDateTextView: TextView = view.findViewById(R.id.orderDateValueTextView)
             val binLocationTextView: TextView = view.findViewById(R.id.binLocationTextView)
             val lotNumberTextView: TextView = view.findViewById(R.id.dateWantedValueTextView)
+            val countedTextView: TextView = view.findViewById(R.id.CountedTextView)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -111,6 +133,13 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             holder.expirationDateTextView.text = item.expireDate ?: "N/A"
             holder.binLocationTextView.text = item.binLocation
             holder.lotNumberTextView.text = item.lotNumber ?: "N/A"
+
+            if (item.inCount) {
+                holder.countedTextView.visibility = View.VISIBLE
+            } else {
+                holder.countedTextView.visibility = View.GONE
+            }
+
             holder.itemView.setOnClickListener {
                 showPopupDialog(item)
                 onItemClick(item)
@@ -143,9 +172,12 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             binLocationTextView.text = item.binLocation
             lotNumberTextView.text = item.lotNumber ?: "N/A"
 
-            /*In line error handling for quantity input FU Jsus*/
+            val itemAmountEditText = dialogView.findViewById<EditText>(R.id.itemAmountEditText)
+            if (item.inCount) {
+                itemAmountEditText.setText(item.qtyCounted?.toString() ?: "0")
+            }
+
             dialogView.findViewById<AppCompatButton>(R.id.addButton).setOnClickListener {
-                val itemAmountEditText = dialogView.findViewById<EditText>(R.id.itemAmountEditText)
                 val quantity = itemAmountEditText.text.toString().toIntOrNull()
                 if (quantity != null && quantity >= 0) {
                     val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(context)
@@ -158,6 +190,12 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                         pCompanyID = companyID
                     )
                     dialog.dismiss()
+                    // Refresh the list after updating the count
+                    viewModel.getAllItemsInBinForSuggestion(
+                        pBinLocation = item.binLocation,
+                        pWarehouse = warehouseNO,
+                        pCompanyID = companyID
+                    )
                 } else {
                     itemAmountEditText.error = "Please enter a valid number"
                 }
@@ -167,3 +205,4 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         }
     }
 }
+
