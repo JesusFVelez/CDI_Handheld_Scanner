@@ -28,6 +28,7 @@ class ItemAdapter(
         val binLocationTextView: TextView = view.findViewById(R.id.binLocationTextView)
         val lotNumberTextView: TextView = view.findViewById(R.id.dateWantedValueTextView)
         val countedTextView: TextView = view.findViewById(R.id.CountedTextView)
+        val qtyCountedTextView: TextView = view.findViewById(R.id.CountedTextView) // New TextView for QtyCounted
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -45,8 +46,11 @@ class ItemAdapter(
 
         if (item.inCount) {
             holder.countedTextView.visibility = View.VISIBLE
+            holder.qtyCountedTextView.visibility = View.VISIBLE
+            holder.qtyCountedTextView.text = "Counted: ${item.qtyCounted}" // Set the qtyCounted text
         } else {
             holder.countedTextView.visibility = View.GONE
+            holder.qtyCountedTextView.visibility = View.GONE
         }
 
         holder.itemView.setOnClickListener {
@@ -113,3 +117,4 @@ class ItemAdapter(
         dialog.show()
     }
 }
+
