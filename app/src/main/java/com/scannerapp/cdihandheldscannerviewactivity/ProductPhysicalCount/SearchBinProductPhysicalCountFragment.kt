@@ -53,8 +53,8 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.binNumberSearchEditText.text.clear()
         restoreFilterStates()
+        binding.binNumberSearchEditText.text.clear()
     }
 
     private fun setupUI() {
@@ -75,54 +75,27 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         }
 
         binding.classCodeFilterButton.setOnClickListener {
-            val classCode = binding.binNumberSearchEditText.text.toString().trim()
-            if (viewModel.enteredClassCode.value?.isNotEmpty() == true && classCode.isEmpty()) {
-                viewModel.enteredClassCode.value = ""
-                binding.classCodeFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-                viewModel.getAllBinNumbers(companyID, warehouseNumber)
-            } else {
-                viewModel.enteredClassCode.value = classCode
-                if (classCode.isNotEmpty()) {
-                    binding.binNumberSearchEditText.text.clear()
-                    progressDialog.show()
-                    viewModel.getBinsByClassCode(classCode, companyID, warehouseNumber)
-                    binding.classCodeFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-                }
-            }
+            handleFilterButton(
+                binding.classCodeFilterButton,
+                viewModel.enteredClassCode,
+                { classCode -> viewModel.getBinsByClassCode(classCode, companyID, warehouseNumber) }
+            )
         }
 
         binding.VendorFilterButton.setOnClickListener {
-            val vendor = binding.binNumberSearchEditText.text.toString().trim()
-            if (viewModel.enteredVendor.value?.isNotEmpty() == true && vendor.isEmpty()) {
-                viewModel.enteredVendor.value = ""
-                binding.VendorFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-                viewModel.getAllBinNumbers(companyID, warehouseNumber)
-            } else {
-                viewModel.enteredVendor.value = vendor
-                if (vendor.isNotEmpty()) {
-                    binding.binNumberSearchEditText.text.clear()
-                    progressDialog.show()
-                    viewModel.getBinsByVendor(vendor, companyID, warehouseNumber)
-                    binding.VendorFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-                }
-            }
+            handleFilterButton(
+                binding.VendorFilterButton,
+                viewModel.enteredVendor,
+                { vendor -> viewModel.getBinsByVendor(vendor, companyID, warehouseNumber) }
+            )
         }
 
         binding.ItemNumberFilterButton.setOnClickListener {
-            val itemNumber = binding.binNumberSearchEditText.text.toString().trim()
-            if (viewModel.enteredItemNumber.value?.isNotEmpty() == true && itemNumber.isEmpty()) {
-                viewModel.enteredItemNumber.value = ""
-                binding.ItemNumberFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-                viewModel.getAllBinNumbers(companyID, warehouseNumber)
-            } else {
-                viewModel.enteredItemNumber.value = itemNumber
-                if (itemNumber.isNotEmpty()) {
-                    binding.binNumberSearchEditText.text.clear()
-                    progressDialog.show()
-                    viewModel.getBinsByItemNumber(itemNumber, companyID, warehouseNumber)
-                    binding.ItemNumberFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-                }
-            }
+            handleFilterButton(
+                binding.ItemNumberFilterButton,
+                viewModel.enteredItemNumber,
+                { itemNumber -> viewModel.getBinsByItemNumber(itemNumber, companyID, warehouseNumber) }
+            )
         }
 
         binding.binNumberSearchEditText.addTextChangedListener(object : TextWatcher {
@@ -132,9 +105,6 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                 val trimmedText = s.toString().trim()
                 if (trimmedText.isEmpty()) {
                     applyFilters()
-                    binding.classCodeFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray) // Reset to default color
-                    binding.VendorFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray) // Reset to default color
-                    binding.ItemNumberFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray) // Reset to default color
                 } else {
                     val filteredList = filteredBinInfoByLane().filter { binInfo: BinInfo ->
                         binInfo.binLocation.contains(trimmedText, ignoreCase = true)
@@ -145,6 +115,25 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    private fun handleFilterButton(button: View, filter: MutableLiveData<String>, action: (String) -> Unit) {
+        val filterValue = binding.binNumberSearchEditText.text.toString().trim()
+        if (filter.value?.isNotEmpty() == true && filterValue.isEmpty()) {
+            filter.value = ""
+            button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+            val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+            val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+            viewModel.getAllBinNumbers(companyID, warehouseNumber)
+        } else {
+            filter.value = filterValue
+            if (filterValue.isNotEmpty()) {
+                binding.binNumberSearchEditText.text.clear()
+                progressDialog.show()
+                action(filterValue)
+                button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+            }
+        }
     }
 
     private fun initObservers() {
@@ -235,12 +224,6 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     }
 
     private fun restoreFilterStates() {
-        binding.binNumberSearchEditText.setText(viewModel.enteredItemNumber.value)
-        viewModel.selectedLane.value?.let { selectedLane ->
-            if (selectedLane != "ALL") {
-                showLaneSelectionDialog()
-            }
-        }
         viewModel.enteredClassCode.value?.let { classCode ->
             if (classCode.isNotEmpty()) {
                 binding.binNumberSearchEditText.setText(classCode)
@@ -257,6 +240,11 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             if (itemNumber.isNotEmpty()) {
                 binding.binNumberSearchEditText.setText(itemNumber)
                 binding.ItemNumberFilterButton.performClick()
+            }
+        }
+        viewModel.selectedLane.value?.let { selectedLane ->
+            if (selectedLane != "ALL") {
+                showLaneSelectionDialog()
             }
         }
     }
