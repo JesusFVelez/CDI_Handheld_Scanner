@@ -217,7 +217,10 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
         val filteredList = allBinInfo.filter { binInfo ->
             val matchesLane = (viewModel.selectedLane.value == "ALL" || binInfo.binLocation.startsWith(viewModel.selectedLane.value ?: "ALL", ignoreCase = true))
-            matchesLane
+            val matchesClassCode = viewModel.enteredClassCode.value?.let { it.isEmpty() || binInfo.classCode == it } ?: true
+            val matchesVendor = viewModel.enteredVendor.value?.let { it.isEmpty() || binInfo.vendor == it } ?: true
+            val matchesItemNumber = viewModel.enteredItemNumber.value?.let { it.isEmpty() || binInfo.itemNumber == it } ?: true
+            matchesLane && matchesClassCode && matchesVendor && matchesItemNumber
         }
 
         Log.d("SearchBinFragment", "Filtered List: $filteredList")
