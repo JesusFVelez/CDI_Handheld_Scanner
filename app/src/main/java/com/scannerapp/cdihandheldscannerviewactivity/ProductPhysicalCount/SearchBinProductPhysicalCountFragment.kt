@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountViewModel
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinInfo
