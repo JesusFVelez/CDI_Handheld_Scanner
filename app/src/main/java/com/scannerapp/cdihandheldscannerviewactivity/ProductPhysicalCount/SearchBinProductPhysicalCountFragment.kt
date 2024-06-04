@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountViewModel
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinInfo
@@ -32,7 +33,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     private val viewModel: InventoryCountViewModel by activityViewModels()
     private lateinit var binItemAdapter: BinItemAdapter
     private lateinit var progressDialog: Dialog
-    private var allBinInfo: List<BinInfo> = listOf() // Initialize with empty list
+    private var allBinInfo: List<BinInfo> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -120,38 +121,36 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
     private fun handleFilterButton(button: View, filter: MutableLiveData<String>, action: (String) -> Unit) {
         val filterValue = binding.binNumberSearchEditText.text.toString().trim()
-        if (filter.value?.isNotEmpty() == true && filterValue.isEmpty()) {
+        if (filterValue.isNotEmpty()) {
+            filter.value = filterValue
+            progressDialog.show()
+            action(filterValue)
+            button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+            binding.binNumberSearchEditText.text.clear() // Clear the text only after filtering
+        } else {
             filter.value = ""
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
             val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
             val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
             viewModel.getAllBinNumbers(companyID, warehouseNumber)
-        } else {
-            filter.value = filterValue
-            if (filterValue.isNotEmpty()) {
-                binding.binNumberSearchEditText.text.clear()
-                progressDialog.show()
-                action(filterValue)
-                button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-            }
         }
     }
 
     private fun initObservers() {
-        viewModel.binInfo.observe(viewLifecycleOwner) { newBinInfo: List<BinInfo> ->
+        viewModel.binInfo.observe(viewLifecycleOwner, Observer { newBinInfo: List<BinInfo> ->
             progressDialog.dismiss()
             Log.d("SearchBinFragment", "New Bin Info: $newBinInfo")
             allBinInfo = newBinInfo
             applyFilters()
             initBinAutoCompleteTextView(newBinInfo)
-        }
+        })
 
-        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful: Boolean ->
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner, Observer { wasLastAPICallSuccessful: Boolean ->
             if (!wasLastAPICallSuccessful) {
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
-        }
+        })
     }
 
     private fun initBinAutoCompleteTextView(newBinSuggestion: List<BinInfo>) {
@@ -215,7 +214,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     private fun applyFilters() {
         Log.d("SearchBinFragment", "Applying Filters: selectedLane=${viewModel.selectedLane.value}, enteredClassCode=${viewModel.enteredClassCode.value}, enteredVendor=${viewModel.enteredVendor.value}, enteredItemNumber=${viewModel.enteredItemNumber.value}")
 
-        val filteredList = allBinInfo.filter { binInfo ->
+        val filteredList = filteredBinInfoByLane().filter { binInfo ->
             val matchesLane = (viewModel.selectedLane.value == "ALL" || binInfo.binLocation.startsWith(viewModel.selectedLane.value ?: "ALL", ignoreCase = true))
             matchesLane
         }
