@@ -243,8 +243,8 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             }
         }
         viewModel.selectedLane.value?.let { selectedLane ->
-            if (selectedLane != "ALL") {
-                showLaneSelectionDialog()
+            if (selectedLane.isNotEmpty()) {
+                applyFilters()
             }
         }
     }
