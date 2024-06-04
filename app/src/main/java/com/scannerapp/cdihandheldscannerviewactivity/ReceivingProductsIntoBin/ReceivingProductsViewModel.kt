@@ -34,6 +34,14 @@ class ReceivingProductsViewModel: ViewModel() {
     val listOfItemsToMoveInPreReceiving: LiveData<MutableList<itemsInDoorBinAdapter.ItemInDoorBinDataClass>>
         get() = _listOfItemsToMoveInPreReceiving
 
+    private val _wasItemConfirmed = MutableLiveData<Boolean>()
+    val wasItemConfirmed: LiveData<Boolean>
+        get() = _wasItemConfirmed
+
+    private val _UOMQtyInBarcode = MutableLiveData<Float>()
+    val UOMQtyInBarcode: LiveData<Float>
+        get() = _UOMQtyInBarcode
+
     private val _willEditCurrentValues = MutableLiveData<Boolean>()
     val willEditCurrentValues: LiveData<Boolean>
         get() = _willEditCurrentValues
@@ -115,11 +123,13 @@ class ReceivingProductsViewModel: ViewModel() {
             "wasItemMovedToDoorError" to "",
             "wasItemMovedToBinError" to "",
             "getItemsInBin" to "",
-            "validateLotNumber" to ""
+            "validateLotNumber" to "",
+            "confirmItem" to ""
         )
         _listOfItemsToMoveInPreReceiving.value = mutableListOf()
         willNotEditCurrentValues()
         _allItemsMoved.value = false
+        _UOMQtyInBarcode.value = 0f
     }
     fun setCurrentlyChosenDoorBin(chosenDoorBin:DoorBin){
         _currentlyChosenDoorBin.value = chosenDoorBin
@@ -233,7 +243,7 @@ class ReceivingProductsViewModel: ViewModel() {
                         newlyParsedExpDateString = outputFormat.format(newlyParsedDate)
                     }
 
-                    val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.qtyOnHand.toInt() * -1, item.doesItemHaveLotNumber, item.rowID)
+                    val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.weight, item.qtyOnHand.toInt() * -1, item.doesItemHaveLotNumber, item.rowID)
                     _listOfItemsToMoveInPreReceiving.value!!.add(itemToMove)
                 }
                 _isDoorBinEmpty.value = response.response.isBinEmpty
@@ -299,7 +309,7 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(itemToAddToDoor.itemNumber, itemToAddToDoor.doorBin, itemToAddToDoor.quantityOfItemsAddedToDoorBin, itemToAddToDoor.lotNumber, itemToAddToDoor.expirationDate, _warehouseNumber.value!!, _companyID.value!!)
+                val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(itemToAddToDoor.itemNumber, itemToAddToDoor.doorBin, itemToAddToDoor.quantityOfItemsAddedToDoorBin, itemToAddToDoor.lotNumber, itemToAddToDoor.weight, itemToAddToDoor.expirationDate, _warehouseNumber.value!!, _companyID.value!!)
                 _errorMessage.value!!["wasItemMovedToDoorError"] = response.response.errorMessage
                 _wasItemMovedToDoor.value = response.response.wasItemMovedToDoor
                 _wasLasAPICallSuccessful.value = true
@@ -364,6 +374,29 @@ class ReceivingProductsViewModel: ViewModel() {
         }
     }
 
+
+
+    fun confirmItem(scannedCode:String){
+        val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
+            _wasLasAPICallSuccessful.value = false
+            Log.i("Confirm Item API Call Exception Handler", "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler){
+            try{
+                val response = ScannerAPI.getReceivingProductService().confirmItem(scannedCode, _preReceivingNumber.value!!, itemInfo.value!!.itemNumber, _companyID.value!!, _warehouseNumber.value!! )
+                _wasLasAPICallSuccessful.value = true
+                _hasAPIBeenCalled.value = true
+                _UOMQtyInBarcode.value = response.response.UOMQtyInBarcode
+                _errorMessage.value!!["confirmItem"] = response.response.errorMessage
+                _wasItemConfirmed.value = response.response.wasItemConfirmed
+            } catch(e: Exception) {
+                _wasLasAPICallSuccessful.value = false
+                Log.i("Confirm Item API Call Exception Handler", "Error -> ${e.message}")
+            }
+        }
+
+    }
+
     fun deleteItemFromDoorBin(rowIDForDoorBin: String) {
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
@@ -371,6 +404,7 @@ class ReceivingProductsViewModel: ViewModel() {
         }
         viewModelScope.launch(exceptionHandler){
             try{
+                _hasAPIBeenCalled.value = true
                 val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(rowIDForDoorBin)
                 _wasLasAPICallSuccessful.value = true
             } catch(e: Exception) {

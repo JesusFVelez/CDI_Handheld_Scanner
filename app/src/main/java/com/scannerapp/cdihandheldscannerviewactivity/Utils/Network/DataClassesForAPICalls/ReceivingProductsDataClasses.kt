@@ -44,7 +44,8 @@ data class ReceivingItemInfo(
     @Json(name="itemNumber") val itemNumber: String,
     @Json(name="itemDescription") val itemDescription: String,
     @Json(name="itemBarcode") val itemBarcode: String?,
-    @Json(name = "doesItemUseLotNumber") val doesItemUseLotNumber: Boolean
+    @Json(name = "doesItemUseLotNumber") val doesItemUseLotNumber: Boolean,
+    @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean
 )
 
 // Request Pre-Receiving on Bin if Any
@@ -176,3 +177,16 @@ data class ResponseValidateLotNumber(
     @Json(name = "isLotNumberValid") val isLotNumberValid: Boolean,
     @Json(name = "errorMessage") val errorMessage: String
 )
+
+
+// Data classes for confirming an item
+@JsonClass(generateAdapter = true)
+data class ResponseConfirmItemWrapper(
+    val response: ResponseConfirmItem
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseConfirmItem(
+    @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String,
+    @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode: Float )

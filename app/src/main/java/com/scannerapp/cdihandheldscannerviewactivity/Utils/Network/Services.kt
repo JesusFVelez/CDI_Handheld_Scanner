@@ -15,6 +15,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmBin
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmItemWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseDeleteItemFromDoorBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseGetPreReceiving
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseItemsInBinWrapper
@@ -239,13 +240,16 @@ interface ReceivingProductsServices {
     suspend fun wasBinFound(@Query("binNumber") bunNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseConfirmBin
 
     @PUT("addItemToDoorBin")
-    suspend fun addItemToDoorBin(@Query("itemNumber") itemNumber: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
+    suspend fun addItemToDoorBin(@Query("itemNumber") itemNumber: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("weight") weight: Float, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
 
     @PUT("moveItemFromDoor")
     suspend fun moveItemFromDoorBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String, @Query("quantity") quantity: Int): ResponseMoveItemFromDoorBin
 
     @DELETE("deleteItemFromDoorBin")
     suspend fun deleteItemFromDoorInBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String): ResponseDeleteItemFromDoorBin
+
+    @GET("confirmItem")
+    suspend fun confirmItem(@Query("scannedCode") scannedCode: String,@Query("receivingNumber") receivingNumber: String, @Query("actualItemNumber") actualItemNumber: String, @Query("companyID") companyID: String, @Query("warehouseNumber") warehouseNumber: Int ) : ResponseConfirmItemWrapper
 
     @GET("validateWhetherLotIsInIVLOT")
     suspend fun validateWhetherLotIsInIVLOT(@Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("warehouseNumber") warehouseNumber: Int):ResponseValidateLotNumberWrapper
