@@ -1,30 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--    tools:context=".BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment"-->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
-
-
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".BinsWIthProduct.BinSearchResults.BinsThatHaveProductFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-
+        android:layout_height="match_parent">
 
         <EditText
             android:id="@+id/binNumberSearchEditText"
             style="@style/CustomScannerInput"
             android:layout_width="201dp"
             android:layout_height="54dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:dropDownHeight="wrap_content"
             android:gravity="center"
             android:hint="Search for Bin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/binNumberSearchEditText">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/laneFilterButton"
+                style="@style/PopupButtons"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#DADBDD"
+                android:text="Lane" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/classCodeFilterButton"
+                style="@style/PopupButtons"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/CDI_Gray"
+                android:text="Class Code" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/VendorFilterButton"
+                style="@style/PopupButtons"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#DADBDD"
+                android:text="Vendor" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/ItemNumberFilterButton"
+                style="@style/PopupButtons"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#DADBDD"
+                android:text="Item Number" />
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/binSearchList"
@@ -36,14 +79,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/binNumberSearchEditText"
-            app:layout_constraintVertical_bias="1.0">
-
-        </androidx.recyclerview.widget.RecyclerView>
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
 </layout>
-
-

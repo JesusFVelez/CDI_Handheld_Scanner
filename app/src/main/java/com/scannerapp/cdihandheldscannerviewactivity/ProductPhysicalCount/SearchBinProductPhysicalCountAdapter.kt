@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtBinInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinInfo
 import com.scannerapp.cdihandheldscannerviewactivity.R
 
 class BinItemAdapter(
     private val context: Context,
-    private val onItemClick: (TtBinInfo) -> Unit
+    private val onItemClick: (BinInfo) -> Unit
 ) : RecyclerView.Adapter<BinItemAdapter.ViewHolder>() {
-    private var items: MutableList<TtBinInfo> = mutableListOf()
+    private var items: MutableList<BinInfo> = mutableListOf()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binLocationTextView: TextView = view.findViewById(R.id.binLocationTextView)
@@ -25,18 +25,22 @@ class BinItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item: BinInfo = items[position]
         holder.binLocationTextView.text = item.binLocation
         holder.itemView.setOnClickListener {
             onItemClick(item)
         }
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = items.size
 
-    fun updateData(newData: List<TtBinInfo>) {
+    fun updateData(newData: List<BinInfo>) {
         items.clear()
         items.addAll(newData)
         notifyDataSetChanged()
+    }
+
+    fun getData(): List<BinInfo> {
+        return items
     }
 }
