@@ -64,6 +64,11 @@ class InventoryCountViewModel : ViewModel() {
         _currentlyChosenItemForSearch.value = selectedBin
     }
 
+    fun isBinFullyCounted(binLocation: String): Boolean {
+        val itemsInBin = itemInfo.value?.filter { it.binLocation == binLocation }
+        return itemsInBin?.all { it.inCount } == true
+    }
+
     fun getAllBinNumbers(pCompanyID: String, pWarehouse: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false

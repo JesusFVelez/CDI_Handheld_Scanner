@@ -56,7 +56,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         restoreFilterStates()
-        binding.binNumberSearchEditText.text.clear()
+        applyFilters()
     }
 
     private fun setupUI() {
@@ -77,26 +77,29 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         }
 
         binding.classCodeFilterButton.setOnClickListener {
-            handleFilterButton(
+            handleSingleFilterButton(
                 binding.classCodeFilterButton,
                 viewModel.enteredClassCode,
-                { classCode -> viewModel.getBinsByClassCode(classCode, companyID, warehouseNumber) }
+                { classCode -> viewModel.getBinsByClassCode(classCode, companyID, warehouseNumber) },
+                "classCode"
             )
         }
 
         binding.VendorFilterButton.setOnClickListener {
-            handleFilterButton(
+            handleSingleFilterButton(
                 binding.VendorFilterButton,
                 viewModel.enteredVendor,
-                { vendor -> viewModel.getBinsByVendor(vendor, companyID, warehouseNumber) }
+                { vendor -> viewModel.getBinsByVendor(vendor, companyID, warehouseNumber) },
+                "vendor"
             )
         }
 
         binding.ItemNumberFilterButton.setOnClickListener {
-            handleFilterButton(
+            handleSingleFilterButton(
                 binding.ItemNumberFilterButton,
                 viewModel.enteredItemNumber,
-                { itemNumber -> viewModel.getBinsByItemNumber(itemNumber, companyID, warehouseNumber) }
+                { itemNumber -> viewModel.getBinsByItemNumber(itemNumber, companyID, warehouseNumber) },
+                "itemNumber"
             )
         }
 
@@ -119,20 +122,48 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         })
     }
 
-    private fun handleFilterButton(button: View, filter: MutableLiveData<String>, action: (String) -> Unit) {
+    private fun handleSingleFilterButton(
+        button: View,
+        filter: MutableLiveData<String>,
+        action: (String) -> Unit,
+        filterType: String
+    ) {
         val filterValue = binding.binNumberSearchEditText.text.toString().trim()
+
+        // Comprobar si el botón ya está gris y el texto de edición está vacío, no hacer nada
+        if (button.backgroundTintList == ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray) && filterValue.isEmpty()) {
+            return
+        }
+
         if (filterValue.isNotEmpty()) {
+            clearOtherFilters(filterType)
             filter.value = filterValue
             progressDialog.show()
             action(filterValue)
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-            binding.binNumberSearchEditText.text.clear() // Clear the text only after filtering
+            binding.binNumberSearchEditText.text.clear() // Limpiar el texto solo después de filtrar
         } else {
             filter.value = ""
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
             val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
             val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
             viewModel.getAllBinNumbers(companyID, warehouseNumber)
+        }
+    }
+
+
+    private fun clearOtherFilters(activeFilterType: String) {
+        if (activeFilterType != "classCode") {
+            viewModel.enteredClassCode.value = ""
+            binding.classCodeFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+        }
+        if (activeFilterType != "vendor") {
+            viewModel.enteredVendor.value = ""
+            binding.VendorFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+        }
+        if (activeFilterType != "itemNumber") {
+            viewModel.enteredItemNumber.value = ""
+            binding.ItemNumberFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
         }
     }
 
@@ -197,6 +228,11 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             setTitle("Select Lane")
             setItems(lanes) { _, which ->
                 viewModel.selectedLane.value = lanes[which]
+                if (viewModel.selectedLane.value != "ALL") {
+                    binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+                } else {
+                    binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+                }
                 applyFilters()
             }
             show()
@@ -224,28 +260,44 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     }
 
     private fun restoreFilterStates() {
-        viewModel.enteredClassCode.value?.let { classCode ->
-            if (classCode.isNotEmpty()) {
-                binding.binNumberSearchEditText.setText(classCode)
-                binding.classCodeFilterButton.performClick()
-            }
+        // Restaurar binNumberSearchEditText con el último texto ingresado
+        val lastEnteredClassCode = viewModel.enteredClassCode.value ?: ""
+        val lastEnteredVendor = viewModel.enteredVendor.value ?: ""
+        val lastEnteredItemNumber = viewModel.enteredItemNumber.value ?: ""
+
+        // Determinar qué texto restaurar basado en el último filtro activo
+        val lastEnteredText = when {
+            lastEnteredClassCode.isNotEmpty() -> lastEnteredClassCode
+            lastEnteredVendor.isNotEmpty() -> lastEnteredVendor
+            lastEnteredItemNumber.isNotEmpty() -> lastEnteredItemNumber
+            else -> ""
         }
-        viewModel.enteredVendor.value?.let { vendor ->
-            if (vendor.isNotEmpty()) {
-                binding.binNumberSearchEditText.setText(vendor)
-                binding.VendorFilterButton.performClick()
-            }
-        }
-        viewModel.enteredItemNumber.value?.let { itemNumber ->
-            if (itemNumber.isNotEmpty()) {
-                binding.binNumberSearchEditText.setText(itemNumber)
-                binding.ItemNumberFilterButton.performClick()
-            }
-        }
+        binding.binNumberSearchEditText.setText(lastEnteredText)
+
+        // Restaurar estado del botón de filtro de class code a gris
+        binding.classCodeFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+
+        // Restaurar estado del botón de filtro de vendor a gris
+        binding.VendorFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+
+        // Restaurar estado del botón de filtro de item number a gris
+        binding.ItemNumberFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+
+        // Aplicar filtros con el nuevo estado
+        applyFilters()
+
+        // Restaurar estado del botón de filtro de lane
         viewModel.selectedLane.value?.let { selectedLane ->
             if (selectedLane.isNotEmpty()) {
+                if (selectedLane != "ALL") {
+                    binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+                } else {
+                    binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+                }
                 applyFilters()
             }
         }
     }
+
+
 }
