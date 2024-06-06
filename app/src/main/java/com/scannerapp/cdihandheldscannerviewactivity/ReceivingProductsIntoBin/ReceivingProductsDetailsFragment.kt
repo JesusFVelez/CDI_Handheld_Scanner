@@ -118,6 +118,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         scanItemEditText.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 // Handle the Enter key press here
+                progressDialog.show()
                 viewModel.confirmItem(scanItemEditText.text.toString())
                 true
             } else {
@@ -218,7 +219,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                         if(weightEditText.text.isNotEmpty())
                             weight = weightEditText.text.toString().toFloat()
 
-                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "00P111", doorBin , itemNumber, newLotNumber, weight,quantityToAddToDoor, doesItemUseLotNumber ,"N/A")
+                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "00P111", doorBin , itemNumber, newLotNumber, weight, quantityToAddToDoor, doesItemUseLotNumber ,"N/A")
                         progressDialog.show()
                         viewModel.moveItemToDoor(itemToAdd)
                     } else {
@@ -239,18 +240,33 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner){wasItemConfirmed ->
             if(wasItemConfirmed && viewModel.hasAPIBeenCalled.value!!){
+                progressDialog.dismiss()
+
                 val quantity = viewModel.UOMQtyInBarcode.value!!
-                val decimalQuantityInEditText = quantityEditText.text.toString().toDouble()
+                var decimalQuantityInEditText = 0f
+                if(quantityEditText.text.isNotEmpty())
+                    decimalQuantityInEditText = quantityEditText.text.toString().toFloat()
+
                 if(quantity > 0)
                     quantityEditText.setText((decimalQuantityInEditText + quantity).toString())
                 else
                     quantityEditText.setText((decimalQuantityInEditText + 1).toString())
-                TODO("Falta añadirle que se sume el peso cada vez que hagas picking al item que tenga peso")
+
+                val weight = viewModel.weightFromBarcode.value!!
+                var currentWeight = 0f
+                if(weightEditText.text.isNotEmpty())
+                    currentWeight = weightEditText.text.toString().toFloat()
+                if(weight > 0)
+                    weightEditText.setText((currentWeight + weight).toString())
+
+                //TODO("Falta añadirle que se sume el peso cada vez que hagas picking al item que tenga peso")
                 viewModel.resetHasAPIBeenCalled()
             }else if(viewModel.hasAPIBeenCalled.value!!){
+                progressDialog.dismiss()
                 viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemConfirmedError"]!!)
             }
+            scanItemEditText.setText("")
         }
 
         viewModel.wasItemMovedToDoor.observe(viewLifecycleOwner){wasItemMovedToDoor ->
@@ -282,10 +298,12 @@ class ReceivingProductsDetailsFragment : Fragment() {
         val expirationDate = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].expirationDate
         val lotNumber = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].lotNumber
         val quantityBeingMoved = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].quantityOfItemsAddedToDoorBin.toString()
+        val weight = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].weight
 
         newExpirationDateEditText.setText(expirationDate)
         newLotEditText.setText(lotNumber)
         quantityEditText.setText(quantityBeingMoved)
+        weightEditText.setText(weight.toString())
     }
     private fun populateUpperDivUiElements(){
         itemNameTextView.text = viewModel.itemInfo.value!!.itemDescription
@@ -293,7 +311,8 @@ class ReceivingProductsDetailsFragment : Fragment() {
     }
 
     private fun verifyIfAllNecessaryFieldsAreFilled():Boolean{
-        return quantityEditText.text.isNotEmpty() && newExpirationDateEditText.text.isNotEmpty()
+        val doesItemHaveWeight = viewModel.itemInfo.value!!.doesItemHaveWeight
+        return quantityEditText.text.isNotEmpty() && newExpirationDateEditText.text.isNotEmpty() && ((doesItemHaveWeight && weightEditText.text.isNotEmpty()) || !doesItemHaveWeight)
     }
 
 }

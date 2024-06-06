@@ -42,7 +42,6 @@ class ReceivingProductsMainFragment : Fragment(){
     private val viewModel: ReceivingProductsViewModel by activityViewModels()
     private lateinit var binding: ReceivingMainFragmentBinding
 
-    private var wasSearchStarted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +72,7 @@ class ReceivingProductsMainFragment : Fragment(){
         if(lastFragmentName != "null")
             viewModel.getDoorBins()
 
+
         return binding.root
     }
 
@@ -100,13 +100,15 @@ class ReceivingProductsMainFragment : Fragment(){
     // Handles onPause lifecycle event
     override fun onPause(){
         super.onPause()
-
         viewModel.resetHasAPIBeenCalled()
-        wasSearchStarted = false
     }
 
     override fun onStop() {
         super.onStop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 
     private fun initUIElements(){
@@ -228,16 +230,18 @@ class ReceivingProductsMainFragment : Fragment(){
             progressDialog.dismiss()
             if(isDoorBinEmpty && viewModel.hasAPIBeenCalled.value!!){
                 AlerterUtils.startWarningAlerter(requireActivity(), "Selected door bin does not have any items")
+                viewModel.resetHasAPIBeenCalled()
             }else if(viewModel.hasAPIBeenCalled.value!!){
                 initRecyclerViewAdapter()
+                viewModel.resetHasAPIBeenCalled()
             }
-            viewModel.resetHasAPIBeenCalled()
+
 
         }
 
         viewModel.doorBins.observe(viewLifecycleOwner){doorBinsList ->
             progressDialog.dismiss()
-            if(doorBinsList.isNotEmpty() && viewModel.hasAPIBeenCalled.value!!) {
+            if(doorBinsList.isNotEmpty()) {
                 initBinNumberAutoCompleteTextView(doorBinsList)
                 viewModel.resetHasAPIBeenCalled()
             }
@@ -248,11 +252,13 @@ class ReceivingProductsMainFragment : Fragment(){
             progressDialog.dismiss()
             if(!wasItemFound && viewModel.hasAPIBeenCalled.value!!){
                 AlerterUtils.startErrorAlerter(requireActivity(),viewModel.errorMessage.value!!["wasItemFoundError"]!!)
+                viewModel.resetHasAPIBeenCalled()
             }else if(viewModel.hasAPIBeenCalled.value!!){
                 val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("ReceivingProductsMainFragment")
                 findNavController().navigate(R.id.action_receivingProductsMainFragment_to_receivingProductsDetailsFragment, bundle)
+                viewModel.resetHasAPIBeenCalled()
             }
-            viewModel.resetHasAPIBeenCalled()
+
         }
 
         viewModel.wasLasAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
@@ -275,10 +281,12 @@ class ReceivingProductsMainFragment : Fragment(){
         }
 
         viewModel.preReceivingInfo.observe(viewLifecycleOwner){newPreReceivingInfo ->
+            if(newPreReceivingInfo != null && viewModel.hasAPIBeenCalled.value!!) {
                 viewModel.resetHasAPIBeenCalled()
                 purchaseOrderNumberTextView.text = newPreReceivingInfo.tt_purchase_order.uppercase()
                 addButton.isEnabled = true
                 viewModel.getItemsInDoor()
+            }
         }
     }
 

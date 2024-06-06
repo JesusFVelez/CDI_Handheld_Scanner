@@ -45,7 +45,8 @@ data class ReceivingItemInfo(
     @Json(name="itemDescription") val itemDescription: String,
     @Json(name="itemBarcode") val itemBarcode: String?,
     @Json(name = "doesItemUseLotNumber") val doesItemUseLotNumber: Boolean,
-    @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean
+    @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
+    @Json(name= "weight") val weight: Float
 )
 
 // Request Pre-Receiving on Bin if Any
@@ -189,4 +190,5 @@ data class ResponseConfirmItemWrapper(
 data class ResponseConfirmItem(
     @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
     @Json(name = "errorMessage") val errorMessage: String,
-    @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode: Float )
+    @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode: Float ,
+    @Json(name = "weightInBarcode") val weightInBarcode:Float)

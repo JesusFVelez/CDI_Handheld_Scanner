@@ -90,7 +90,6 @@
                     android:layout_marginTop="30dp"
                     android:dropDownHeight="wrap_content"
                     android:gravity="center"
-                    android:inputType="number"
                     android:hint="Scan Item"
                     app:layout_constraintHorizontal_bias="0.142"/>
                 <TextView
@@ -121,7 +120,7 @@
                     android:layout_marginTop="15dp"
                     android:dropDownHeight="wrap_content"
                     android:gravity="center"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:hint="Weight"
                     app:layout_constraintHorizontal_bias="0.142"/>
 
