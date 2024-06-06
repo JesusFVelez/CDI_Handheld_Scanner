@@ -65,4 +65,79 @@ data class TtBinInfo(
 )
 
 
+/*---------------------------------------------------------------*/
+/* Get Bins By ClassCode,Vendor and ItemNumber Response Wrappers */
+/*---------------------------------------------------------------*/
+
+/* Get All Bin Numbers with ClassCode Response Wrapper */
+@JsonClass(generateAdapter = true)
+data class GetBinsByClassCodeResponseWrapper(
+    @Json(name = "response") val response: GetBinsByClassCodeResponse
+)
+
+@JsonClass(generateAdapter = true)
+data class GetBinsByClassCodeResponse(
+    @Json(name = "ttBinInfo") val ttBinInfo: TtBinInfoWithClassCodeWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class TtBinInfoWithClassCodeWrapper(
+    @Json(name = "ttBinInfo") val ttBinInfo: List<BinInfo>
+)
+
+@JsonClass(generateAdapter = true)
+data class BinInfo(
+    @Json(name = "binLocation") val binLocation: String,
+    @Json(name = "classCode") val classCode: String?,
+    @Json(name = "vendor") val vendor: String?,
+    @Json(name = "itemNumber") val itemNumber: String
+)
+
+/* Get Bins By Vendor Response Wrapper */
+@JsonClass(generateAdapter = true)
+data class GetBinsByVendorResponseWrapper(
+    @Json(name = "response") val response: GetBinsByVendorResponse
+)
+
+@JsonClass(generateAdapter = true)
+data class GetBinsByVendorResponse(
+    @Json(name = "ttBinInfo") val ttBinInfo: TtBinInfoWithVendorWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class TtBinInfoWithVendorWrapper(
+    @Json(name = "ttBinInfo") val ttBinInfo: List<VendorBinInfo>
+)
+
+@JsonClass(generateAdapter = true)
+data class VendorBinInfo(
+    @Json(name = "binLocation") val binLocation: String,
+    @Json(name = "classCode") val classCode: String?,
+    @Json(name = "vendor") val vendor: String?,
+    @Json(name = "itemNumber") val itemNumber: String
+)
+
+/* Get Bins By Item Number Response Wrapper */
+@JsonClass(generateAdapter = true)
+data class GetBinsByItemNumberResponseWrapper(
+    @Json(name = "response") val response: GetBinsByItemNumberResponse
+)
+
+@JsonClass(generateAdapter = true)
+data class GetBinsByItemNumberResponse(
+    @Json(name = "ttBinInfo") val ttBinInfo: TtBinInfoWithItemNumberWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class TtBinInfoWithItemNumberWrapper(
+    @Json(name = "ttBinInfo") val ttBinInfo: List<ItemNumberBinInfo>
+)
+
+@JsonClass(generateAdapter = true)
+data class ItemNumberBinInfo(
+    @Json(name = "binLocation") val binLocation: String,
+    @Json(name = "classCode") val classCode: String?,
+    @Json(name = "vendor") val vendor: String?,
+    @Json(name = "itemNumber") val itemNumber: String
+)
 

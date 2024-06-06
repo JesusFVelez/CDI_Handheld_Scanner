@@ -2,6 +2,9 @@ package com.scannerapp.cdihandheldscannerviewactivity.Utils.Network
 
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllBinNumbersResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByItemNumberResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByVendorResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.UpdateCountResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignExpDateResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignLotNumberResponseWrapper
@@ -60,7 +63,6 @@ import retrofit2.http.Query
 class ServicePaths{
     companion object {
         const val ViewBinsThatHaveItem:String = "/ViewBinsThatHaveItemService/"
-        const val CountAllItemsInWarehouse:String = "/CountAllItemsInWarehouseService/"
         const val login:String = "/loginService/"
         const val GeneralServices:String = "/generalServices/"
         const val ViewProductsInBin:String = "/ViewProductsInBinService/"
@@ -285,6 +287,27 @@ interface InventoryCountServices {
         @Query("pCompanyID") pCompanyID: String,
         @Query("pWarehouseNo") pWarehouseNo: Int
     ): GetAllBinNumbersResponseWrapper
+
+    @GET("GetBinsByClassCode")
+    suspend fun getBinsByClassCode(
+        @Query("pClassCode") pClassCode: String,
+        @Query("pCompanyID") pCompanyID: String,
+        @Query("pWarehouseNo") pWarehouseNo: Int
+    ): GetBinsByClassCodeResponseWrapper
+
+    @GET("GetBinsByVendor")
+    suspend fun getBinsByVendor(
+        @Query("pVendor") pVendor: String,
+        @Query("pCompanyID") pCompanyID: String,
+        @Query("pWarehouseNo") pWarehouseNo: Int
+    ): GetBinsByVendorResponseWrapper
+
+    @GET("GetBinsByItemNumber")
+    suspend fun getBinsByItemNumber(
+        @Query("pItemNumber") pItemNumber: String,
+        @Query("pCompanyID") pCompanyID: String,
+        @Query("pWarehouseNo") pWarehouseNo: Int
+    ): GetBinsByItemNumberResponseWrapper
 }
 
 
