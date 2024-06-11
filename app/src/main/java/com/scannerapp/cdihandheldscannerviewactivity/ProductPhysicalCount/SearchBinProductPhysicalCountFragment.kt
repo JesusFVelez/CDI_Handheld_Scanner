@@ -114,9 +114,11 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                     val filteredList = filteredBinInfoByLane().filter { binInfo: BinInfo ->
                         binInfo.binLocation.contains(trimmedText, ignoreCase = true)
                     }
-                    binItemAdapter.updateData(filteredList)
+                    val uniqueBins = filteredList.distinctBy { it.binLocation }
+                    binItemAdapter.updateData(uniqueBins)
                 }
             }
+
 
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -209,7 +211,8 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                     val filteredList = filteredBinInfoByLane().filter { binInfo: BinInfo ->
                         binInfo.binLocation.contains(trimmedText, ignoreCase = true)
                     }
-                    binItemAdapter.updateData(filteredList)
+                    val uniqueBins = filteredList.distinctBy { it.binLocation }
+                    binItemAdapter.updateData(uniqueBins)
                 }
             }
 
@@ -255,9 +258,13 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             matchesLane
         }
 
-        Log.d("SearchBinFragment", "Filtered List: $filteredList")
-        binItemAdapter.updateData(filteredList)
+        // Ensure no bin is displayed more than once
+        val uniqueBins = filteredList.distinctBy { it.binLocation }
+
+        Log.d("SearchBinFragment", "Filtered List: $uniqueBins")
+        binItemAdapter.updateData(uniqueBins)
     }
+
 
     private fun restoreFilterStates() {
         // Restaurar binNumberSearchEditText con el último texto ingresado
