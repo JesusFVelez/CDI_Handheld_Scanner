@@ -162,6 +162,7 @@ class ReceivingProductsViewModel: ViewModel() {
 
     // API call functions
     fun getDoorBins(){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("get door bins API call", "Error -> ${exception.message}")
@@ -203,6 +204,7 @@ class ReceivingProductsViewModel: ViewModel() {
 //    }
 
     fun getPreReceivingInfo(){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("set pre-receiving info for Receiving API Call Exception Handler", "Error -> ${exception.message}")
@@ -224,6 +226,7 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun getItemsInDoor(){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("getItemsInDoor api call", "Error -> ${exception.message}")
@@ -257,6 +260,7 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun getItemInfo(scannedCode: String){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasItemFound.value = false
@@ -301,6 +305,7 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun moveItemToDoor( itemToAddToDoor: itemsInDoorBinAdapter.ItemInDoorBinDataClass){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasItemMovedToDoor.value = false
@@ -346,6 +351,7 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun moveItemsToFloorBin(){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasItemMovedToBin.value = false
@@ -377,6 +383,7 @@ class ReceivingProductsViewModel: ViewModel() {
 
 
     fun confirmItem(scannedCode:String){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("Confirm Item API Call Exception Handler", "Error -> ${exception.message}")
@@ -399,13 +406,14 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun deleteItemFromDoorBin(rowIDForDoorBin: String) {
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("set delete item from door bin API Call Exception Handler", "Error -> ${exception.message}")
         }
         viewModelScope.launch(exceptionHandler){
             try{
-                _hasAPIBeenCalled.value = true
+
                 val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(rowIDForDoorBin)
                 _wasLasAPICallSuccessful.value = true
             } catch(e: Exception) {
@@ -416,13 +424,14 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun validateLotNumber(lotNumber: String, itemNumber:String) {
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("Validate Lot Number", "Error -> ${exception.message}")
         }
         viewModelScope.launch(exceptionHandler){
             try{
-                _hasAPIBeenCalled.value = true
+
                 val response = ScannerAPI.getReceivingProductService().validateWhetherLotIsInIVLOT(itemNumber, lotNumber, _warehouseNumber.value!!)
                 _errorMessage.value!!["validateLotNumber"] = response.response.errorMessage
                 _isLotNumberValid.value = response.response.isLotNumberValid

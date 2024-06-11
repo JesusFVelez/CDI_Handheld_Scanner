@@ -237,7 +237,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
     }
 
     private fun initObservers(){
-
+        // This is what scanning the barcode in the image gets you 01908829248514173201000120110807032134796105
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner){wasItemConfirmed ->
             if(wasItemConfirmed && viewModel.hasAPIBeenCalled.value!!){
                 progressDialog.dismiss()
@@ -259,12 +259,11 @@ class ReceivingProductsDetailsFragment : Fragment() {
                 if(weight > 0)
                     weightEditText.setText((currentWeight + weight).toString())
 
-                //TODO("Falta añadirle que se sume el peso cada vez que hagas picking al item que tenga peso")
                 viewModel.resetHasAPIBeenCalled()
             }else if(viewModel.hasAPIBeenCalled.value!!){
                 progressDialog.dismiss()
                 viewModel.resetHasAPIBeenCalled()
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemConfirmedError"]!!)
+                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmItem"]!!)
             }
             scanItemEditText.setText("")
         }
@@ -283,7 +282,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         }
 
         viewModel.wasLasAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
-            if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
+            if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!! ){
                 viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
