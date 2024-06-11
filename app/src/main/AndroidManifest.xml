@@ -29,7 +29,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".login.loginActivity"
+            android:name=".login.LoginActivity"
             android:exported="false" />
     </application>
 

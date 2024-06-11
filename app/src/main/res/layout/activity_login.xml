@@ -3,17 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.cdihandheldscannerviewactivity.login.loginActivity"  >
+    tools:context="com.scannerapp.cdihandheldscannerviewactivity.login.loginActivity"  >
 
     <data>
         <variable
             name="loginViewModel"
-            type="com.example.cdihandheldscannerviewactivity.login.LoginViewModel" />
+            type="com.scannerapp.cdihandheldscannerviewactivity.login.LoginViewModel" />
     </data>
 
 
 
         <LinearLayout
+            android:gravity="center"
             android:orientation="vertical"
             android:id="@+id/login_page"
             android:layout_width="match_parent"
@@ -28,19 +29,16 @@
                         android:layout_height="0dp"
                         android:contentDescription="@string/cdi_image_description"
                         android:src="@drawable/cdi_logo___without_technologies_1"
-                        app:layout_constraintDimensionRatio="H,16:12"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintDimensionRatio="H,16:12" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/CDILogoImage">
+<!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/CDILogoImage">-->
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputLayoutUserName"
@@ -49,16 +47,14 @@
                             android:background="@drawable/rectangle_text_box"
                             android:padding="5dp"
                             app:hintAnimationEnabled="false"
-                            app:hintEnabled="true"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
+                            app:hintEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/usernameText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
+
                                 android:hint="@string/user_name"
                                 android:inputType="text" />
 
@@ -73,9 +69,6 @@
                             android:padding="5dp"
                             app:hintAnimationEnabled="false"
                             app:hintEnabled="true"
-                            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutUserName"
-                            app:layout_constraintStart_toStartOf="@+id/textInputLayoutUserName"
-                            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUserName"
                             app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -89,34 +82,91 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-
                         <!--         TODO make this work at some point -> android:entries="@{loginViewModel.listOfCompanies}"-->
-                        <Spinner
-                            android:id="@+id/companySpinner"
-                            style="@style/DropDownStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingEnd="50dp"
-                            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
-                            app:layout_constraintHorizontal_bias="0.497"
-                            app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
-                            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/loginButton"
-                            android:layout_width="wrap_content"
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/companySpinnerTextInputLayout"
+                            android:layout_width="235dp"
                             android:layout_height="wrap_content"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            app:hintEnabled="true"
+                            android:background="@drawable/rectangle_text_box"
+                            app:hintAnimationEnabled="false"
+                            >
+
+                            <AutoCompleteTextView
+                                android:id="@+id/companySpinner"
+                                style="@style/DropDownsStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:hint="@string/companySpinnerHint"
+                                />
+
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/warehouseSpinnerTextInputLayout"
+                            android:layout_width="235dp"
+                            android:layout_height="wrap_content"
+                            app:hintAnimationEnabled="false"
+                            app:hintEnabled="true"
+                            android:background="@drawable/rectangle_text_box"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                            <AutoCompleteTextView
+                                android:id="@+id/warehouseSpinner"
+                                style="@style/DropDownsStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:hint="@string/warehouseSpinnerHint"
+                                />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
                             android:layout_marginTop="30dp"
-                            android:background="@drawable/login_rectangle"
-                            android:backgroundTint="@color/CDI_Blue"
-                            android:text="@string/login"
-                            android:textAllCaps="false"
-                            android:textColor="@color/CDI_Gray"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="@+id/companySpinner"
-                            app:layout_constraintStart_toStartOf="@+id/companySpinner"
-                            app:layout_constraintTop_toBottomOf="@+id/companySpinner" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                            >
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/loginButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/login_rectangle"
+                                android:backgroundTint="@color/CDI_Blue"
+                                android:text="@string/login"
+                                android:textAllCaps="false"
+                                android:textColor="@color/CDI_Gray"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageButton
+                                    android:id="@+id/networkSettingsIcon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:contentDescription="Network Settings Icon"
+                                    android:src="@drawable/network_settings_icon"
+                                    android:background="@android:color/transparent"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_gravity="center_vertical"
+                                    app:layout_constraintStart_toEndOf="@id/loginButton"
+                                    app:layout_constraintTop_toTopOf="@id/loginButton"
+                                    app:layout_constraintBottom_toBottomOf="@id/loginButton"
+                                    />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 
         </LinearLayout>

@@ -7,7 +7,7 @@
     <string name="bin_number">Bin Number</string>
     <string name="boxes">Boxes</string>
     <string name="cdi_image_description">An Image of the CDI Logo</string>
-    <string name="company_not_chosen">Company not chosen</string>
+    <string name="incomplete_login">Please fill all the fields to sign in.</string>
     <string name="companyText">Company</string>
     <string name="error_message">An error has occurred!</string>
     <string name="finish">Finish</string>
@@ -37,11 +37,21 @@
     <string name="search_item">Search Item</string>
     <string name="search_order">Search Picking</string>
     <string name="serial_number">Serial Number</string>
-    <string name="succesfull_login">You have been logged in successfully!</string>
+    <string name="successful_login">You have been logged in successfully!</string>
     <string name="units">Units</string>
     <string name="user_name">User Name</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="port_number">Port Number</string>
     <string name="IP_address_hint">IP Address</string>
+    <string name="warehouseSpinnerHint">Warehouse</string>
+    <string name="companySpinnerHint">Company</string>
+    <string name="added">Added</string>
 
+    <string name="binLocationLabelBinMovement">Bin Location:</string>
+    <string name="QuantityOnHandBinLabelMovement">On Hand:</string>
+    <string name="QuantityInPickingLabelBinMovement">In Picking:</string>
+    <string name="amount_to_move">Amount to move</string>
+    <string name="to_bin">To Bin</string>
+    <string name="add_button">Add</string>
+    <string name="clear_button">Clear</string>
 </resources>

@@ -3,6 +3,11 @@
 <!--    <style name="CDI_Yellow" parent="Base.Theme.CDIHandheldScannerViewActivity">-->
 <!--        <item name="android:back">@color/CDI_Yellow</item>-->
 <!--    </style>-->
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        
+    </style>
+
     <style name="BoldItalicText">
         <item name="android:textStyle">bold|italic</item>
     </style>
@@ -43,10 +48,20 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="DropDownStyle">
-        <item name="android:background">@drawable/white_drop_down</item>
+    <style name="DropDownsStyle">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:dropDownHeight">wrap_content</item>
+        <item name="android:inputType">none</item>
+    </style>
+
+    <style name="regularButton">
         <item name="android:gravity">center</item>
-        <item name="android:minHeight">48dp</item>
+        <item name="android:background">@drawable/menu_option_button</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">200dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="PopupMessageSmallText">
@@ -61,5 +76,20 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="lot_edit_text_box">lot_edit_text_box
+    <item name="android:background" >@drawable/lot_edit_text_box</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">60dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="item_date_text_box">item_date_text_box
+        <item name="android:background" >@drawable/item_date_text_box</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">60dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
 
 </resources>
