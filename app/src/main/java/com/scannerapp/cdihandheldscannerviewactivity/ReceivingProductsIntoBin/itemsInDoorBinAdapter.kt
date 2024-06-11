@@ -20,6 +20,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
         val doorBin: String,
         val itemNumber:String,
         val lotNumber:String,
+        val weight: Float,
         val quantityOfItemsAddedToDoorBin:Int,
         val canEditLotNumber: Boolean,
         val rowIDForDoorBin: String)
