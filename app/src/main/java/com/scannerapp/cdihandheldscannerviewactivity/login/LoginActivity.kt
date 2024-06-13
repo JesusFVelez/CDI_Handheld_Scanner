@@ -134,9 +134,6 @@ class LoginActivity : AppCompatActivity() {
         loginButton = binding.loginButton
         loginButton.setOnClickListener{
             loginButtonClickEvent(it)
-            val selectedCompanyID = getSelectedCompanyIDFromCompanyName()
-            viewModel.setUserValues(userNameEditTex.text.toString(), passwordEditText.text.toString(), selectedCompanyID)
-            viewModel.verifyIfTooManyUsersConnected()
         }
 
         networkSettingsButton = binding.networkSettingsIcon
@@ -185,6 +182,17 @@ class LoginActivity : AppCompatActivity() {
         progressDialog.show()
     }
 
+    private fun startUserCountVerification() {
+        val selectedCompanyID = viewModel.currentlyChosenCompany.value!!.companyID
+        val selectedWarehouseID = viewModel.currentlyChosenWarehouse.value!!.warehouseNumber
+        viewModel.setUserValues(
+            userNameEditTex.text.toString(),
+            passwordEditText.text.toString(),
+            selectedCompanyID,
+            selectedWarehouseID
+        )
+        viewModel.verifyIfTooManyUsersConnected()
+    }
 
 
     // This method initializes the observers for the ViewModel. It observes changes in the list of companies and the success status of the last API call.
@@ -210,22 +218,13 @@ class LoginActivity : AppCompatActivity() {
 
         viewModel.hasTooManyUsersConnected.observe(this){hasTooManyUsersConnected ->
             if(!hasTooManyUsersConnected)
-                login()
-            else
-                AlerterUtils.startErrorAlerter(this@loginActivity, "Too many users connected to app")
-        }
-
-        viewModel.canUserLogin.observe(this){ canUserLogin ->
-            if(canUserLogin){
+                viewModel.logUserIn(userNameEditTex.text.toString(), passwordEditText.text.toString())
+            else {
+                AlerterUtils.startErrorAlerter(
+                    this@LoginActivity,
+                    "Too many users connected to app"
+                )
                 progressDialog.dismiss()
-                SharedPreferencesUtils.storeLoginInfoInSharedPref(viewModel.user.value!!.userName, viewModel.user.value!!.company, this@loginActivity)
-                // This jumps from one Activity to another
-                val intent = Intent(this@loginActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }else{
-                progressDialog.dismiss()
-                AlerterUtils.startAlertWithColor(this@loginActivity,getString(R.string.login_declined), "Incorrect Credentials", R.drawable.circle_error_icon, android.R.color.holo_red_dark )
             }
         }
 
@@ -290,11 +289,10 @@ class LoginActivity : AppCompatActivity() {
                 val selectedWarehouseInSpinner: String = warehouseSpinner.text.toString()
                 viewModel.setWarehouse(selectedWarehouseInSpinner)
                 viewModel.setCompanyID(selectedCompanyInSpinner)
-                viewModel.logUserIn(userNameEditTex.text.toString(), passwordEditText.text.toString())
-
+                startUserCountVerification()
             } else {
                 progressDialog.dismiss()
-                AlerterUtils.startErrorAlerter(this, getString(R.string.incomplete_login))
+                AlerterUtils.startErrorAlerter(this@LoginActivity, "Please fill in all fields to sign in.")
             }
 
         }

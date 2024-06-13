@@ -16,11 +16,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.HomeScreenFragmentBinding
 import com.scannerapp.cdihandheldscannerviewactivity.login.LoginActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // Home screen fragment class
 class HomeScreenFragment : Fragment() {
@@ -154,13 +158,14 @@ class HomeScreenFragment : Fragment() {
                     startActivity(intent)
                     this.activity?.finish()
                     val companyID: String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-                    ScannerAPI.getLoginService().logoutUser(companyID).enqueue(object: Callback<Void> {
+                    ScannerAPI.getLoginService().logoutUser(companyID).enqueue(object:
+                        Callback<Void> {
                         override fun onResponse(
                             call: Call<Void>,
                             response: Response<Void>
                         ) {
                             // Log out and navigate to the login activity
-                            val intent = Intent(requireActivity(), loginActivity::class.java)
+                            val intent = Intent(requireActivity(), LoginActivity::class.java)
                             startActivity(intent)
                             requireActivity().finish()
                         }

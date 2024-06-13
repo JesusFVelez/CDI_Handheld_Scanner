@@ -6,6 +6,7 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByItemNumberResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByVendorResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.UpdateCountResponseWrapper
+import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkDetailsResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignExpDateResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignLotNumberResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinConfirmationResponseWrapper
@@ -157,6 +158,14 @@ interface LoginServices{
     // Endpoint for getting available warehouses
     @GET("getWarehouses")
     suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
+
+    @POST("logout")
+    fun logoutUser(@Query("companyID") companyID: String):Call<Void>
+
+    @GET("verifyIfNumberOfUsersHasExceeded")
+    suspend fun verifyIfNumberOfUsersHasExceeded(@Query("companyID") companyID: String): NetworkDetailsResponseWrapper
+
+
 }
 
 interface RPMAccessServices{

@@ -6,17 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.Company
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.WarehouseInfo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.RequestUser
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.User
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.WarehouseInfo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.Exception
 
 class LoginViewModel:ViewModel() {
-
-
 
     // These are LiveData objects that hold the list of companies and the status of the last API call
     // LiveData allows data to be observed for changes, which is useful for updating the UI in response to changes
@@ -40,11 +41,16 @@ class LoginViewModel:ViewModel() {
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
 
+    private val _hasTooManyUsersConnected = MutableLiveData<Boolean>()
+    val hasTooManyUsersConnected: LiveData<Boolean>
+        get() = _hasTooManyUsersConnected
+
     private val _isUserLoggedIn = MutableLiveData<Boolean>()
     val isUserLoggedIn: LiveData<Boolean>
         get() = _isUserLoggedIn
-
-
+    private val _user = MutableLiveData<User>()
+    val user: LiveData<User>
+        get() = _user
 
 
     // This initializer block is executed when the ViewModel is created. It calls the method to fetch companies from the backend
@@ -56,12 +62,42 @@ class LoginViewModel:ViewModel() {
     }
 
 
+    fun setUserValues(userName: String, password:String, companyID:String, warehouseNumber:Int){
+        _user.value = User(
+            userName,
+            password,
+            companyID,
+            warehouseNumber
+
+        )
+    }
+
+    fun verifyIfTooManyUsersConnected(){
+
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Verify User Count" , "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler) {
+            try{
+                val response = ScannerAPI.getLoginService().verifyIfNumberOfUsersHasExceeded(_user.value!!.company)
+                _hasTooManyUsersConnected.value = response.response.hasTooManyConnections
+                _wasLastAPICallSuccessful.value = true
+
+            }catch (e: Exception){
+                Log.i("Verify User Count", "Error -> ${e.message}")
+                _wasLastAPICallSuccessful.value = false
+            }
+        }
+    }
+
+
 
     // This method fetches the list of companies from the backend using a coroutine. If an error occurs during the API call, it logs the error and updates the LiveData object to indicate that the API call was unsuccessful
     fun getCompaniesFromBackendForSpinner() {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
-            Log.i("get Warehouses API Call" , "Error -> ${exception.message}")
+            Log.i("get Companies API Call" , "Error -> ${exception.message}")
         }
         viewModelScope.launch(exceptionHandler) {
             try{
@@ -140,9 +176,6 @@ class LoginViewModel:ViewModel() {
         }
     }
 }
-
-
-
 
 
 //              How to call an API without a ViewModel

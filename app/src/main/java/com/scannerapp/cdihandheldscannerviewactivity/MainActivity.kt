@@ -16,8 +16,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
 import com.scannerapp.cdihandheldscannerviewactivity.login.LoginActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // Main activity class
 class MainActivity : AppCompatActivity() {
@@ -33,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     private var isAppInForeGround: Boolean = false
 
     // Timeout after 15 minutes of inactivity
-    val TIMEOUT_DURATION = 15 * 60 * 1000 // 15 minutes in milliseconds
+    val TIMEOUT_DURATION = 15 * 60 * 1000 // 1 minutes in milliseconds
     private var lastInteractionTime: Long = 0
     private val timeoutHandler = Handler(Looper.getMainLooper())
     private val timeoutRunnable = Runnable {
@@ -80,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 response: Response<Void>
             ) {
                 // Log out and navigate to the login activity
-                val intent = Intent(this@MainActivity, loginActivity::class.java)
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
                 startActivity(intent)
                 this@MainActivity.finish()
             }
