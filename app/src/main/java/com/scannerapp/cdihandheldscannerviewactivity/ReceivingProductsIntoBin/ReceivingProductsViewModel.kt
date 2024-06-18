@@ -34,6 +34,14 @@ class ReceivingProductsViewModel: ViewModel() {
     val listOfItemsToMoveInPreReceiving: LiveData<MutableList<itemsInDoorBinAdapter.ItemInDoorBinDataClass>>
         get() = _listOfItemsToMoveInPreReceiving
 
+    private val _wasItemConfirmed = MutableLiveData<Boolean>()
+    val wasItemConfirmed: LiveData<Boolean>
+        get() = _wasItemConfirmed
+
+    private val _UOMQtyInBarcode = MutableLiveData<Float>()
+    val UOMQtyInBarcode: LiveData<Float>
+        get() = _UOMQtyInBarcode
+
     private val _willEditCurrentValues = MutableLiveData<Boolean>()
     val willEditCurrentValues: LiveData<Boolean>
         get() = _willEditCurrentValues
@@ -88,11 +96,7 @@ class ReceivingProductsViewModel: ViewModel() {
     private val _isLotNumberValid = MutableLiveData<Boolean>()
     val isLotNumberValid: LiveData<Boolean>
         get() = _isLotNumberValid
-    
-    // Other Values
-    private val _preReceivingNumber = MutableLiveData<String>()
-    val preReceivingNumber: LiveData<String>
-        get() = _preReceivingNumber
+
 
     private val _hasAPIBeenCalled = MutableLiveData<Boolean>()
     val hasAPIBeenCalled:LiveData<Boolean>
@@ -106,6 +110,10 @@ class ReceivingProductsViewModel: ViewModel() {
     val allItemsMoved: LiveData<Boolean>
         get() = _allItemsMoved
 
+    private val _weightFromBarcode = MutableLiveData<Float> ()
+    val weightFromBarcode: LiveData<Float>
+        get() = _weightFromBarcode
+
 
     init {
         _errorMessage.value = mutableMapOf(
@@ -115,11 +123,13 @@ class ReceivingProductsViewModel: ViewModel() {
             "wasItemMovedToDoorError" to "",
             "wasItemMovedToBinError" to "",
             "getItemsInBin" to "",
-            "validateLotNumber" to ""
+            "validateLotNumber" to "",
+            "confirmItem" to ""
         )
         _listOfItemsToMoveInPreReceiving.value = mutableListOf()
         willNotEditCurrentValues()
         _allItemsMoved.value = false
+        _UOMQtyInBarcode.value = 0f
     }
     fun setCurrentlyChosenDoorBin(chosenDoorBin:DoorBin){
         _currentlyChosenDoorBin.value = chosenDoorBin
@@ -152,6 +162,7 @@ class ReceivingProductsViewModel: ViewModel() {
 
     // API call functions
     fun getDoorBins(){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("get door bins API call", "Error -> ${exception.message}")
@@ -170,29 +181,30 @@ class ReceivingProductsViewModel: ViewModel() {
         }
     }
 
-    fun getPreReceiving(binNumber: String, warehouseNumber: Int, companyID: String) {
-       val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
-           _wasLasAPICallSuccessful.value = false
-           _wasPreReceivingFound.value = false
-           Log.i("set pre-receiving for Receiving API Call Exception Handler", "Error -> ${exception.message}")
-       }
-        viewModelScope.launch(exceptionHandler){
-            try{
-                _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().getPreReceiving(binNumber, warehouseNumber, companyID)
-                _preReceivingNumber.value = response.response.preReceivingNumber
-                _wasPreReceivingFound.value = response.response.wasPreReceivingFound
-                _errorMessage.value!!["wasPreReceivingFoundError"] = response.response.errorMessage
-                _wasLasAPICallSuccessful.value = true
-                
-            }catch(e: Exception){
-                _wasLasAPICallSuccessful.value = false
-                Log.i("get set the pre-receiving for Receiving API Call Exception Handler", "Error -> ${e.message}")
-            }
-        }
-    }
+//    fun getPreReceiving(binNumber: String, warehouseNumber: Int, companyID: String) {
+//       val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
+//           _wasLasAPICallSuccessful.value = false
+//           _wasPreReceivingFound.value = false
+//           Log.i("set pre-receiving for Receiving API Call Exception Handler", "Error -> ${exception.message}")
+//       }
+//        viewModelScope.launch(exceptionHandler){
+//            try{
+//                _hasAPIBeenCalled.value = true
+//                val response = ScannerAPI.getReceivingProductService().getPreReceiving(binNumber, warehouseNumber, companyID)
+//                _preReceivingNumber.value = response.response.preReceivingNumber
+//                _wasPreReceivingFound.value = response.response.wasPreReceivingFound
+//                _errorMessage.value!!["wasPreReceivingFoundError"] = response.response.errorMessage
+//                _wasLasAPICallSuccessful.value = true
+//
+//            }catch(e: Exception){
+//                _wasLasAPICallSuccessful.value = false
+//                Log.i("get set the pre-receiving for Receiving API Call Exception Handler", "Error -> ${e.message}")
+//            }
+//        }
+//    }
 
     fun getPreReceivingInfo(){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("set pre-receiving info for Receiving API Call Exception Handler", "Error -> ${exception.message}")
@@ -214,6 +226,7 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun getItemsInDoor(){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("getItemsInDoor api call", "Error -> ${exception.message}")
@@ -233,11 +246,11 @@ class ReceivingProductsViewModel: ViewModel() {
                         newlyParsedExpDateString = outputFormat.format(newlyParsedDate)
                     }
 
-                    val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.qtyOnHand.toInt() * -1, item.doesItemHaveLotNumber, item.rowID)
+                    val itemToMove = itemsInDoorBinAdapter.ItemInDoorBinDataClass(newlyParsedExpDateString, item.itemName, item.typeData, _currentlyChosenDoorBin.value!!.bin_number, item.itemNumber,item.lotNumber, item.weight * -1, item.qtyOnHand.toInt() * -1, item.doesItemHaveLotNumber, item.rowID)
                     _listOfItemsToMoveInPreReceiving.value!!.add(itemToMove)
                 }
-                _isDoorBinEmpty.value = response.response.isBinEmpty
                 _errorMessage.value!!["getItemsInBin"] = response.response.errorMessage
+                _isDoorBinEmpty.value = response.response.isBinEmpty
                 _wasLasAPICallSuccessful.value = true
             }catch(e: Exception){
                 _wasLasAPICallSuccessful.value = false
@@ -247,6 +260,7 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun getItemInfo(scannedCode: String){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasItemFound.value = false
@@ -291,6 +305,7 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun moveItemToDoor( itemToAddToDoor: itemsInDoorBinAdapter.ItemInDoorBinDataClass){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasItemMovedToDoor.value = false
@@ -299,7 +314,7 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(itemToAddToDoor.itemNumber, itemToAddToDoor.doorBin, itemToAddToDoor.quantityOfItemsAddedToDoorBin, itemToAddToDoor.lotNumber, itemToAddToDoor.expirationDate, _warehouseNumber.value!!, _companyID.value!!)
+                val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(itemToAddToDoor.itemNumber, itemToAddToDoor.doorBin, itemToAddToDoor.quantityOfItemsAddedToDoorBin, itemToAddToDoor.lotNumber, itemToAddToDoor.weight, itemToAddToDoor.expirationDate, _warehouseNumber.value!!, _companyID.value!!)
                 _errorMessage.value!!["wasItemMovedToDoorError"] = response.response.errorMessage
                 _wasItemMovedToDoor.value = response.response.wasItemMovedToDoor
                 _wasLasAPICallSuccessful.value = true
@@ -336,6 +351,7 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun moveItemsToFloorBin(){
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             _wasItemMovedToBin.value = false
@@ -364,13 +380,40 @@ class ReceivingProductsViewModel: ViewModel() {
         }
     }
 
+
+
+    fun confirmItem(scannedCode:String){
+        _hasAPIBeenCalled.value = true
+        val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
+            _wasLasAPICallSuccessful.value = false
+            Log.i("Confirm Item API Call Exception Handler", "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler){
+            try{
+                _hasAPIBeenCalled.value = true
+                val response = ScannerAPI.getReceivingProductService().confirmItem(scannedCode, _currentlyChosenDoorBin.value!!.bin_receiving, itemInfo.value!!.itemNumber, _companyID.value!!, _warehouseNumber.value!! )
+                _wasLasAPICallSuccessful.value = true
+                _UOMQtyInBarcode.value = response.response.UOMQtyInBarcode
+                _weightFromBarcode.value = response.response.weightInBarcode
+                _errorMessage.value!!["confirmItem"] = response.response.errorMessage
+                _wasItemConfirmed.value = response.response.wasItemConfirmed
+            } catch(e: Exception) {
+                _wasLasAPICallSuccessful.value = false
+                Log.i("Confirm Item API Call Exception Handler", "Error -> ${e.message}")
+            }
+        }
+
+    }
+
     fun deleteItemFromDoorBin(rowIDForDoorBin: String) {
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("set delete item from door bin API Call Exception Handler", "Error -> ${exception.message}")
         }
         viewModelScope.launch(exceptionHandler){
             try{
+
                 val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(rowIDForDoorBin)
                 _wasLasAPICallSuccessful.value = true
             } catch(e: Exception) {
@@ -381,13 +424,14 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun validateLotNumber(lotNumber: String, itemNumber:String) {
+        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler{ _, exception ->
             _wasLasAPICallSuccessful.value = false
             Log.i("Validate Lot Number", "Error -> ${exception.message}")
         }
         viewModelScope.launch(exceptionHandler){
             try{
-                _hasAPIBeenCalled.value = true
+
                 val response = ScannerAPI.getReceivingProductService().validateWhetherLotIsInIVLOT(itemNumber, lotNumber, _warehouseNumber.value!!)
                 _errorMessage.value!!["validateLotNumber"] = response.response.errorMessage
                 _isLotNumberValid.value = response.response.isLotNumberValid
@@ -405,7 +449,6 @@ class ReceivingProductsViewModel: ViewModel() {
 
     fun clearDoorBinText() {
         _doorBins.value = listOf()
-        _preReceivingNumber.value = ""
     }
 
 
