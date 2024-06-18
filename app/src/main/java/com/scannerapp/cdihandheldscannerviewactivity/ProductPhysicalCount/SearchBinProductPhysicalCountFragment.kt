@@ -20,7 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountViewModel
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinsByClassCodeByVendorAndByItemNumber
 import com.comdist.cdihandheldscannerviewactivity.adapters.BinItemAdapter
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
@@ -33,7 +33,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     private val viewModel: InventoryCountViewModel by activityViewModels()
     private lateinit var binItemAdapter: BinItemAdapter
     private lateinit var progressDialog: Dialog
-    private var allBinInfo: List<BinInfo> = listOf()
+    private var allBinInfo: List<BinsByClassCodeByVendorAndByItemNumber> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -62,7 +62,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     private fun setupUI() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
-        binItemAdapter = BinItemAdapter(requireContext()) { selectedBin: BinInfo ->
+        binItemAdapter = BinItemAdapter(requireContext()) { selectedBin ->
             navigateToEditAndSearchItemFragment(selectedBin)
         }
         binding.binSearchList.adapter = binItemAdapter
@@ -80,7 +80,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             handleSingleFilterButton(
                 binding.classCodeFilterButton,
                 viewModel.enteredClassCode,
-                { classCode -> viewModel.getBinsByClassCode(classCode, companyID, warehouseNumber) },
+                { classCode -> applyCombinedFilters() },
                 "classCode"
             )
         }
@@ -89,7 +89,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             handleSingleFilterButton(
                 binding.VendorFilterButton,
                 viewModel.enteredVendor,
-                { vendor -> viewModel.getBinsByVendor(vendor, companyID, warehouseNumber) },
+                { vendor -> applyCombinedFilters() },
                 "vendor"
             )
         }
@@ -98,7 +98,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             handleSingleFilterButton(
                 binding.ItemNumberFilterButton,
                 viewModel.enteredItemNumber,
-                { itemNumber -> viewModel.getBinsByItemNumber(itemNumber, companyID, warehouseNumber) },
+                { itemNumber -> applyCombinedFilters() },
                 "itemNumber"
             )
         }
@@ -111,14 +111,13 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                 if (trimmedText.isEmpty()) {
                     applyFilters()
                 } else {
-                    val filteredList = filteredBinInfoByLane().filter { binInfo: BinInfo ->
+                    val filteredList = filteredBinInfoByLane().filter { binInfo ->
                         binInfo.binLocation.contains(trimmedText, ignoreCase = true)
                     }
                     val uniqueBins = filteredList.distinctBy { it.binLocation }
                     binItemAdapter.updateData(uniqueBins)
                 }
             }
-
 
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -132,7 +131,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     ) {
         val filterValue = binding.binNumberSearchEditText.text.toString().trim()
 
-        // Comprobar si el botón ya está gris y el texto de edición está vacío, no hacer nada
+        // Check if the button is already grey and the edit text is empty, do nothing
         if (button.backgroundTintList == ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray) && filterValue.isEmpty()) {
             return
         }
@@ -143,7 +142,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             progressDialog.show()
             action(filterValue)
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-            binding.binNumberSearchEditText.text.clear() // Limpiar el texto solo después de filtrar
+            binding.binNumberSearchEditText.text.clear() // Clear the text only after filtering
         } else {
             filter.value = ""
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
@@ -152,7 +151,6 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             viewModel.getAllBinNumbers(companyID, warehouseNumber)
         }
     }
-
 
     private fun clearOtherFilters(activeFilterType: String) {
         if (activeFilterType != "classCode") {
@@ -170,7 +168,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     }
 
     private fun initObservers() {
-        viewModel.binInfo.observe(viewLifecycleOwner, Observer { newBinInfo: List<BinInfo> ->
+        viewModel.binInfo.observe(viewLifecycleOwner, Observer { newBinInfo: List<BinsByClassCodeByVendorAndByItemNumber> ->
             progressDialog.dismiss()
             Log.d("SearchBinFragment", "New Bin Info: $newBinInfo")
             allBinInfo = newBinInfo
@@ -186,7 +184,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         })
     }
 
-    private fun initBinAutoCompleteTextView(newBinSuggestion: List<BinInfo>) {
+    private fun initBinAutoCompleteTextView(newBinSuggestion: List<BinsByClassCodeByVendorAndByItemNumber>) {
         val autoCompleteAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, newBinSuggestion.map { it.binLocation })
         (binding.binNumberSearchEditText as? AutoCompleteTextView)?.apply {
             setAdapter(autoCompleteAdapter)
@@ -208,7 +206,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                 if (trimmedText.isEmpty()) {
                     applyFilters()
                 } else {
-                    val filteredList = filteredBinInfoByLane().filter { binInfo: BinInfo ->
+                    val filteredList = filteredBinInfoByLane().filter { binInfo ->
                         binInfo.binLocation.contains(trimmedText, ignoreCase = true)
                     }
                     val uniqueBins = filteredList.distinctBy { it.binLocation }
@@ -220,7 +218,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         })
     }
 
-    private fun navigateToEditAndSearchItemFragment(selectedBin: BinInfo) {
+    private fun navigateToEditAndSearchItemFragment(selectedBin: BinsByClassCodeByVendorAndByItemNumber) {
         viewModel.setCurrentlySelectedBin(selectedBin)
         view?.findNavController()?.navigate(R.id.EditAndSearchItemProductPhysicalCountFragment)
     }
@@ -242,12 +240,22 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         }
     }
 
-    private fun filteredBinInfoByLane(): List<BinInfo> {
+    private fun filteredBinInfoByLane(): List<BinsByClassCodeByVendorAndByItemNumber> {
         return if (viewModel.selectedLane.value == "ALL") {
             allBinInfo
         } else {
             allBinInfo.filter { it.binLocation.startsWith(viewModel.selectedLane.value ?: "ALL", ignoreCase = true) }
         }
+    }
+
+    private fun applyCombinedFilters() {
+        val classCode = viewModel.enteredClassCode.value.orEmpty()
+        val vendor = viewModel.enteredVendor.value.orEmpty()
+        val itemNumber = viewModel.enteredItemNumber.value.orEmpty()
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+
+        viewModel.getBinsByClassCodeByVendorAndByItemNumber(classCode, vendor, itemNumber, companyID, warehouseNumber)
     }
 
     private fun applyFilters() {
@@ -265,14 +273,13 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         binItemAdapter.updateData(uniqueBins)
     }
 
-
     private fun restoreFilterStates() {
-        // Restaurar binNumberSearchEditText con el último texto ingresado
+        // Restore binNumberSearchEditText with the last entered text
         val lastEnteredClassCode = viewModel.enteredClassCode.value ?: ""
         val lastEnteredVendor = viewModel.enteredVendor.value ?: ""
         val lastEnteredItemNumber = viewModel.enteredItemNumber.value ?: ""
 
-        // Determinar qué texto restaurar basado en el último filtro activo
+        // Determine which text to restore based on the last active filter
         val lastEnteredText = when {
             lastEnteredClassCode.isNotEmpty() -> lastEnteredClassCode
             lastEnteredVendor.isNotEmpty() -> lastEnteredVendor
@@ -281,19 +288,19 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         }
         binding.binNumberSearchEditText.setText(lastEnteredText)
 
-        // Restaurar estado del botón de filtro de class code a gris
+        // Restore the state of the class code filter button to gray
         binding.classCodeFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
 
-        // Restaurar estado del botón de filtro de vendor a gris
+        // Restore the state of the vendor filter button to gray
         binding.VendorFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
 
-        // Restaurar estado del botón de filtro de item number a gris
+        // Restore the state of the item number filter button to gray
         binding.ItemNumberFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
 
-        // Aplicar filtros con el nuevo estado
+        // Apply filters with the new state
         applyFilters()
 
-        // Restaurar estado del botón de filtro de lane
+        // Restore the state of the lane filter button
         viewModel.selectedLane.value?.let { selectedLane ->
             if (selectedLane.isNotEmpty()) {
                 if (selectedLane != "ALL") {
@@ -305,6 +312,4 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             }
         }
     }
-
-
 }

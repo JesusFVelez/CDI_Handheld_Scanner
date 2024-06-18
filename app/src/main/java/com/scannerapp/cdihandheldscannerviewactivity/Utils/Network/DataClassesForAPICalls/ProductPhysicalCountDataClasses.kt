@@ -3,7 +3,10 @@ package com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForA
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-/* Update Count Response Wrapper */
+/*---------------------------------------------------------------*/
+/* Update Count Response Wrapper                                 */
+/*---------------------------------------------------------------*/
+
 @JsonClass(generateAdapter = true)
 data class UpdateCountResponseWrapper(
     @Json(name = "response") val response: UpdateCountResponse
@@ -15,7 +18,9 @@ data class UpdateCountResponse(
     @Json(name = "opMessage") val opMessage: String
 )
 
-/* Get All Items In Bin For Suggestion Response Wrapper */
+/*---------------------------------------------------------------*/
+/* Get All Items In Bin For Suggestion Response Wrapper          */
+/*---------------------------------------------------------------*/
 @JsonClass(generateAdapter = true)
 data class GetAllItemsInBinResponseWrapper(
     @Json(name = "response") val response: Response
@@ -43,7 +48,9 @@ data class TtItemInfo(
     @Json(name = "inCount") val inCount: Boolean    //Boolean For Counting status
 )
 
-/* Get All Bin Numbers Response Wrapper */
+/*---------------------------------------------------------------*/
+/* Get All Bin Numbers Response Wrapper                          */
+/*---------------------------------------------------------------*/
 @JsonClass(generateAdapter = true)
 data class GetAllBinNumbersResponseWrapper(
     @Json(name = "response") val response: BinNumberResponse
@@ -68,7 +75,34 @@ data class TtBinInfo(
 /*---------------------------------------------------------------*/
 /* Get Bins By ClassCode,Vendor and ItemNumber Response Wrappers */
 /*---------------------------------------------------------------*/
+@JsonClass(generateAdapter = true)
+data class GetBinsByClassCodeByVendorAndByItemNumberResponseWrapper(
+    @Json(name = "response") val response: BinsByClassCodeByVendorAndByItemNumberResponse
+)
 
+@JsonClass(generateAdapter = true)
+data class BinsByClassCodeByVendorAndByItemNumberResponse(
+    @Json(name = "ttBinInfo") val ttBinInfo: BinsByClassCodeByVendorAndByItemNumberWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class BinsByClassCodeByVendorAndByItemNumberWrapper(
+    @Json(name = "ttBinInfo") val ttBinInfo: List<BinsByClassCodeByVendorAndByItemNumber>
+)
+
+@JsonClass(generateAdapter = true)
+data class BinsByClassCodeByVendorAndByItemNumber(
+    @Json(name = "binLocation") val binLocation: String,
+    @Json(name = "classCode") val classCode: String?,
+    @Json(name = "vendor") val vendor: String?,
+    @Json(name = "itemNumber") val itemNumber: String?
+)
+
+
+
+/*---------------------------------------------------------------*/
+/* The following will not be used in the final project           */
+/*---------------------------------------------------------------*/
 /* Get All Bin Numbers with ClassCode Response Wrapper */
 @JsonClass(generateAdapter = true)
 data class GetBinsByClassCodeResponseWrapper(
