@@ -44,8 +44,8 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         setupUI()
         initObservers()
 
-        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-        val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+        val companyID = "" // Obtain this value from your app logic
+        val warehouseNumber = 0 // Obtain this value from your app logic
 
         viewModel.setCompanyIDFromSharedPref(companyID)
         viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
@@ -55,8 +55,14 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        viewModel.loadFilterStates(requireContext()) // Load filter states when the fragment is resumed
         restoreFilterStates()
         applyFilters()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveFilterStates(requireContext()) // Save filter states when the fragment is paused
     }
 
     private fun setupUI() {
@@ -68,9 +74,6 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         binding.binSearchList.adapter = binItemAdapter
 
         progressDialog.show()
-        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-        val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
-        viewModel.getAllBinNumbers(companyID, warehouseNumber)
 
         binding.laneFilterButton.setOnClickListener {
             showLaneSelectionDialog()
@@ -79,27 +82,21 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         binding.classCodeFilterButton.setOnClickListener {
             handleSingleFilterButton(
                 binding.classCodeFilterButton,
-                viewModel.enteredClassCode,
-                { classCode -> applyCombinedFilters() },
-                "classCode"
+                viewModel.enteredClassCode
             )
         }
 
         binding.VendorFilterButton.setOnClickListener {
             handleSingleFilterButton(
                 binding.VendorFilterButton,
-                viewModel.enteredVendor,
-                { vendor -> applyCombinedFilters() },
-                "vendor"
+                viewModel.enteredVendor
             )
         }
 
         binding.ItemNumberFilterButton.setOnClickListener {
             handleSingleFilterButton(
                 binding.ItemNumberFilterButton,
-                viewModel.enteredItemNumber,
-                { itemNumber -> applyCombinedFilters() },
-                "itemNumber"
+                viewModel.enteredItemNumber
             )
         }
 
@@ -125,46 +122,19 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
     private fun handleSingleFilterButton(
         button: View,
-        filter: MutableLiveData<String>,
-        action: (String) -> Unit,
-        filterType: String
+        filter: MutableLiveData<String>
     ) {
         val filterValue = binding.binNumberSearchEditText.text.toString().trim()
 
-        // Check if the button is already grey and the edit text is empty, do nothing
-        if (button.backgroundTintList == ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray) && filterValue.isEmpty()) {
-            return
-        }
-
         if (filterValue.isNotEmpty()) {
-            clearOtherFilters(filterType)
             filter.value = filterValue
-            progressDialog.show()
-            action(filterValue)
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-            binding.binNumberSearchEditText.text.clear() // Clear the text only after filtering
         } else {
             filter.value = ""
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-            val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-            val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
-            viewModel.getAllBinNumbers(companyID, warehouseNumber)
         }
-    }
-
-    private fun clearOtherFilters(activeFilterType: String) {
-        if (activeFilterType != "classCode") {
-            viewModel.enteredClassCode.value = ""
-            binding.classCodeFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-        }
-        if (activeFilterType != "vendor") {
-            viewModel.enteredVendor.value = ""
-            binding.VendorFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-        }
-        if (activeFilterType != "itemNumber") {
-            viewModel.enteredItemNumber.value = ""
-            binding.ItemNumberFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-        }
+        applyCombinedFilters()
+        binding.binNumberSearchEditText.text.clear() // Clear the text after applying filters
     }
 
     private fun initObservers() {
@@ -182,6 +152,11 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         })
+
+        // Add observers for filter states
+        viewModel.enteredClassCode.observe(viewLifecycleOwner, Observer { checkFilters() })
+        viewModel.enteredVendor.observe(viewLifecycleOwner, Observer { checkFilters() })
+        viewModel.enteredItemNumber.observe(viewLifecycleOwner, Observer { checkFilters() })
     }
 
     private fun initBinAutoCompleteTextView(newBinSuggestion: List<BinsByClassCodeByVendorAndByItemNumber>) {
@@ -255,7 +230,11 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
         val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
 
-        viewModel.getBinsByClassCodeByVendorAndByItemNumber(classCode, vendor, itemNumber, companyID, warehouseNumber)
+        if (classCode.isEmpty() && vendor.isEmpty() && itemNumber.isEmpty()) {
+            viewModel.getAllBinNumbers(companyID, warehouseNumber)
+        } else {
+            viewModel.getBinsByClassCodeByVendorAndByItemNumber(classCode, vendor, itemNumber, companyID, warehouseNumber)
+        }
     }
 
     private fun applyFilters() {
@@ -279,37 +258,51 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         val lastEnteredVendor = viewModel.enteredVendor.value ?: ""
         val lastEnteredItemNumber = viewModel.enteredItemNumber.value ?: ""
 
-        // Determine which text to restore based on the last active filter
-        val lastEnteredText = when {
-            lastEnteredClassCode.isNotEmpty() -> lastEnteredClassCode
-            lastEnteredVendor.isNotEmpty() -> lastEnteredVendor
-            lastEnteredItemNumber.isNotEmpty() -> lastEnteredItemNumber
-            else -> ""
+        // Restore the state of the class code filter button
+        binding.classCodeFilterButton.backgroundTintList = if (lastEnteredClassCode.isNotEmpty()) {
+            ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+        } else {
+            ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
         }
-        binding.binNumberSearchEditText.setText(lastEnteredText)
 
-        // Restore the state of the class code filter button to gray
-        binding.classCodeFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+        // Restore the state of the vendor filter button
+        binding.VendorFilterButton.backgroundTintList = if (lastEnteredVendor.isNotEmpty()) {
+            ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+        } else {
+            ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+        }
 
-        // Restore the state of the vendor filter button to gray
-        binding.VendorFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-
-        // Restore the state of the item number filter button to gray
-        binding.ItemNumberFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-
-        // Apply filters with the new state
-        applyFilters()
+        // Restore the state of the item number filter button
+        binding.ItemNumberFilterButton.backgroundTintList = if (lastEnteredItemNumber.isNotEmpty()) {
+            ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+        } else {
+            ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+        }
 
         // Restore the state of the lane filter button
         viewModel.selectedLane.value?.let { selectedLane ->
-            if (selectedLane.isNotEmpty()) {
-                if (selectedLane != "ALL") {
-                    binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-                } else {
-                    binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-                }
-                applyFilters()
+            binding.laneFilterButton.backgroundTintList = if (selectedLane != "ALL") {
+                ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+            } else {
+                ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
             }
+        }
+
+        // Apply the filters after restoring states
+        applyFilters()
+    }
+
+    private fun checkFilters() {
+        val classCode = viewModel.enteredClassCode.value.orEmpty()
+        val vendor = viewModel.enteredVendor.value.orEmpty()
+        val itemNumber = viewModel.enteredItemNumber.value.orEmpty()
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        val warehouseNumber = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+
+        if (classCode.isEmpty() && vendor.isEmpty() && itemNumber.isEmpty()) {
+            viewModel.getAllBinNumbers(companyID, warehouseNumber)
+        } else {
+            viewModel.getBinsByClassCodeByVendorAndByItemNumber(classCode, vendor, itemNumber, companyID, warehouseNumber)
         }
     }
 }

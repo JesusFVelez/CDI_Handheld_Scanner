@@ -1,5 +1,6 @@
 package com.comdist.cdihandheldscannerviewactivity.InventoryCount
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -50,6 +51,12 @@ class InventoryCountViewModel : ViewModel() {
     val enteredVendor = MutableLiveData<String>()
     val enteredClassCode = MutableLiveData<String>()
     val selectedLane = MutableLiveData<String>("ALL")
+
+    // Local variables to hold the filter states
+    private var savedItemNumber: String = ""
+    private var savedVendor: String = ""
+    private var savedClassCode: String = ""
+    private var savedLane: String = "ALL"
 
     // Function to set the company ID from shared preferences
     fun setCompanyIDFromSharedPref(companyID: String) {
@@ -164,5 +171,25 @@ class InventoryCountViewModel : ViewModel() {
                 Log.e("Get Bins By All", "Exception -> ${e.localizedMessage}")
             }
         }
+    }
+
+    fun saveFilterStates(context: Context) {
+        savedClassCode = enteredClassCode.value ?: ""
+        savedVendor = enteredVendor.value ?: ""
+        savedItemNumber = enteredItemNumber.value ?: ""
+        savedLane = selectedLane.value ?: "ALL"
+    }
+
+    fun loadFilterStates(context: Context) {
+        enteredClassCode.value = savedClassCode
+        enteredVendor.value = savedVendor
+        enteredItemNumber.value = savedItemNumber
+        selectedLane.value = savedLane
+
+        // Notify observers to apply filters correctly
+        enteredClassCode.postValue(enteredClassCode.value)
+        enteredVendor.postValue(enteredVendor.value)
+        enteredItemNumber.postValue(enteredItemNumber.value)
+        selectedLane.postValue(selectedLane.value)
     }
 }
