@@ -205,7 +205,7 @@ interface ItemPickingForDispatchServices{
     suspend fun verifyIfClientAccountIsClosed(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID: String) : VerifyClientResponseWrapper
 
     @PUT("finishPickingForSingleItem")
-    suspend fun finishPickingForSingleItem(@Query("pickingROWID")pickingROWID: String, @Query("userNameOfPicker") userNameOfPicker:String, @Query("quantityBeingPicked") quantityBeingPicked:Float): finishPickingForSingleItemResponseWrapper
+    suspend fun finishPickingForSingleItem(@Query("pickingROWID")pickingROWID: String, @Query("userNameOfPicker") userNameOfPicker:String, @Query("quantityBeingPicked") quantityBeingPicked:Float, @Query("weightBeingPicked") weightBeingPicked:Float): finishPickingForSingleItemResponseWrapper
 
     @POST("startPickerTimer")
     suspend fun startPickerTimer(@Body request: RequestTimerParamsWrapper)
