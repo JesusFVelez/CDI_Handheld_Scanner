@@ -2,6 +2,7 @@ package com.scannerapp.cdihandheldscannerviewactivity.Utils.Network
 
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllBinNumbersResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeByVendorAndByItemNumberResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByItemNumberResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByVendorResponseWrapper
@@ -281,6 +282,15 @@ interface InventoryCountServices {
         @Query("pWarehouse") pWarehouse: Int,
         @Query("pCompanyID") pCompanyID: String
     ): GetAllItemsInBinResponseWrapper  // Changed to return the correct response wrapper
+
+    @GET("GetBinsByClassCodeByVendorAndByItemNumber")
+    suspend fun getBinsByClassCodeByVendorAndByItemNumber(
+        @Query("pClassCode") pClassCode: String,
+        @Query("pVendor") pVendor: String,
+        @Query("pItemNumber") pItemNumber: String,
+        @Query("pCompanyID") pCompanyID: String,
+        @Query("pWarehouseNo") pWarehouseNo: Int
+    ): GetBinsByClassCodeByVendorAndByItemNumberResponseWrapper
 
     @GET("GetAllBinNumbers")
     suspend fun getAllBinNumbers(
