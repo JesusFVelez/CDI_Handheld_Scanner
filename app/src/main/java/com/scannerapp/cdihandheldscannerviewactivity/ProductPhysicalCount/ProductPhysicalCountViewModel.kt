@@ -1,11 +1,12 @@
 package com.comdist.cdihandheldscannerviewactivity.InventoryCount
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinInfo
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinsByClassCodeByVendorAndByItemNumber
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInfo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -25,8 +26,8 @@ class InventoryCountViewModel : ViewModel() {
     val itemInfo: LiveData<List<TtItemInfo>>
         get() = _itemInfo
 
-    private val _binInfo = MutableLiveData<List<BinInfo>>()
-    val binInfo: LiveData<List<BinInfo>>
+    private val _binInfo = MutableLiveData<List<BinsByClassCodeByVendorAndByItemNumber>>()
+    val binInfo: LiveData<List<BinsByClassCodeByVendorAndByItemNumber>>
         get() = _binInfo
 
     private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
@@ -41,8 +42,8 @@ class InventoryCountViewModel : ViewModel() {
     val warehouseNumberOfUser: LiveData<Int>
         get() = _warehouseNO
 
-    private val _currentlyChosenItemForSearch = MutableLiveData<BinInfo>()
-    val setCurrentlySelectedBin: LiveData<BinInfo>
+    private val _currentlyChosenItemForSearch = MutableLiveData<BinsByClassCodeByVendorAndByItemNumber>()
+    val setCurrentlySelectedBin: LiveData<BinsByClassCodeByVendorAndByItemNumber>
         get() = _currentlyChosenItemForSearch
 
     // Added for saving filter states
@@ -50,6 +51,12 @@ class InventoryCountViewModel : ViewModel() {
     val enteredVendor = MutableLiveData<String>()
     val enteredClassCode = MutableLiveData<String>()
     val selectedLane = MutableLiveData<String>("ALL")
+
+    // Local variables to hold the filter states
+    private var savedItemNumber: String = ""
+    private var savedVendor: String = ""
+    private var savedClassCode: String = ""
+    private var savedLane: String = "ALL"
 
     // Function to set the company ID from shared preferences
     fun setCompanyIDFromSharedPref(companyID: String) {
@@ -60,7 +67,7 @@ class InventoryCountViewModel : ViewModel() {
         _warehouseNO.value = warehouseNumber
     }
 
-    fun setCurrentlySelectedBin(selectedBin: BinInfo) {
+    fun setCurrentlySelectedBin(selectedBin: BinsByClassCodeByVendorAndByItemNumber) {
         _currentlyChosenItemForSearch.value = selectedBin
     }
 
@@ -80,7 +87,7 @@ class InventoryCountViewModel : ViewModel() {
                 val response = ScannerAPI.getInventoryCountService().getAllBinNumbers(pCompanyID, pWarehouse)
                 Log.d("GetAllBinNumbers", "Response: ${response.response.ttBinInfo.ttBinInfo}")
                 _binInfo.value = response.response.ttBinInfo.ttBinInfo.map { bin ->
-                    BinInfo(
+                    BinsByClassCodeByVendorAndByItemNumber(
                         binLocation = bin.binLocation,
                         classCode = "",  // Set default values or get them from another source if available
                         vendor = "",
@@ -136,93 +143,53 @@ class InventoryCountViewModel : ViewModel() {
         }
     }
 
-    fun getBinsByClassCode(pClassCode: String, pCompanyID: String, pWarehouseNo: Int) {
+    fun getBinsByClassCodeByVendorAndByItemNumber(pClassCode: String, pVendor: String, pItemNumber: String, pCompanyID: String, pWarehouseNo: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
-            Log.e("Get Bins By Class Code", "Failed to fetch bins: ${exception.localizedMessage}")
+            Log.e("Get Bins By All", "Failed to fetch bins: ${exception.localizedMessage}")
         }
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getInventoryCountService().getBinsByClassCode(pClassCode, pCompanyID, pWarehouseNo)
-                Log.d("GetBinsByClassCode", "Response: ${response.response.ttBinInfo.ttBinInfo}")
+                val response = ScannerAPI.getInventoryCountService().getBinsByClassCodeByVendorAndByItemNumber(pClassCode, pVendor, pItemNumber, pCompanyID, pWarehouseNo)
+                Log.d("GetBinsByAll", "Response: ${response.response.ttBinInfo.ttBinInfo}")
 
                 val bins = response.response.ttBinInfo.ttBinInfo.map { bin ->
-                    BinInfo(
+                    BinsByClassCodeByVendorAndByItemNumber(
                         binLocation = bin.binLocation,
                         classCode = bin.classCode ?: "N/A",
                         vendor = bin.vendor ?: "N/A",
-                        itemNumber = bin.itemNumber
+                        itemNumber = bin.itemNumber ?: "N/A"
                     )
                 }
-                Log.d("GetBinsByClassCode", "Parsed Bins: $bins")
+                Log.d("GetBinsByAll", "Parsed Bins: $bins")
 
                 _binInfo.value = bins
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false
-                Log.e("Get Bins By Class Code", "Exception -> ${e.localizedMessage}")
+                Log.e("Get Bins By All", "Exception -> ${e.localizedMessage}")
             }
         }
     }
 
-    fun getBinsByVendor(pVendor: String, pCompanyID: String, pWarehouseNo: Int) {
-        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _wasLastAPICallSuccessful.value = false
-            Log.e("Get Bins By Vendor", "Failed to fetch bins: ${exception.localizedMessage}")
-        }
-
-        viewModelScope.launch(exceptionHandler) {
-            try {
-                val response = ScannerAPI.getInventoryCountService().getBinsByVendor(pVendor, pCompanyID, pWarehouseNo)
-                Log.d("GetBinsByVendor", "Response: ${response.response.ttBinInfo.ttBinInfo}")
-
-                val bins = response.response.ttBinInfo.ttBinInfo.map { bin ->
-                    BinInfo(
-                        binLocation = bin.binLocation,
-                        classCode = bin.classCode ?: "N/A",
-                        vendor = bin.vendor ?: "N/A",
-                        itemNumber = bin.itemNumber
-                    )
-                }
-                Log.d("GetBinsByVendor", "Parsed Bins: $bins")
-
-                _binInfo.value = bins
-                _wasLastAPICallSuccessful.value = true
-            } catch (e: Exception) {
-                _wasLastAPICallSuccessful.value = false
-                Log.e("Get Bins By Vendor", "Exception -> ${e.localizedMessage}")
-            }
-        }
+    fun saveFilterStates(context: Context) {
+        savedClassCode = enteredClassCode.value ?: ""
+        savedVendor = enteredVendor.value ?: ""
+        savedItemNumber = enteredItemNumber.value ?: ""
+        savedLane = selectedLane.value ?: "ALL"
     }
 
-    fun getBinsByItemNumber(pItemNumber: String, pCompanyID: String, pWarehouseNo: Int) {
-        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _wasLastAPICallSuccessful.value = false
-            Log.e("Get Bins By Item Number", "Failed to fetch bins: ${exception.localizedMessage}")
-        }
+    fun loadFilterStates(context: Context) {
+        enteredClassCode.value = savedClassCode
+        enteredVendor.value = savedVendor
+        enteredItemNumber.value = savedItemNumber
+        selectedLane.value = savedLane
 
-        viewModelScope.launch(exceptionHandler) {
-            try {
-                val response = ScannerAPI.getInventoryCountService().getBinsByItemNumber(pItemNumber, pCompanyID, pWarehouseNo)
-                Log.d("GetBinsByItemNumber", "Response: ${response.response.ttBinInfo.ttBinInfo}")
-
-                val bins = response.response.ttBinInfo.ttBinInfo.map { bin ->
-                    BinInfo(
-                        binLocation = bin.binLocation,
-                        classCode = bin.classCode ?: "N/A",
-                        vendor = bin.vendor ?: "N/A",
-                        itemNumber = bin.itemNumber
-                    )
-                }
-                Log.d("GetBinsByItemNumber", "Parsed Bins: $bins")
-
-                _binInfo.value = bins
-                _wasLastAPICallSuccessful.value = true
-            } catch (e: Exception) {
-                _wasLastAPICallSuccessful.value = false
-                Log.e("Get Bins By Item Number", "Exception -> ${e.localizedMessage}")
-            }
-        }
+        // Notify observers to apply filters correctly
+        enteredClassCode.postValue(enteredClassCode.value)
+        enteredVendor.postValue(enteredVendor.value)
+        enteredItemNumber.postValue(enteredItemNumber.value)
+        selectedLane.postValue(selectedLane.value)
     }
 }
