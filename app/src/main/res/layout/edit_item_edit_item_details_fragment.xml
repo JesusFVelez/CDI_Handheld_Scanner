@@ -173,16 +173,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0" />
 
-            <Button
-                android:id="@+id/ToggleButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/toggle_switch_on"
-                app:layout_constraintBottom_toBottomOf="@+id/newLotEditText"
-                app:layout_constraintEnd_toStartOf="@+id/newLotEditText"
-                app:layout_constraintTop_toTopOf="@+id/newLotEditText" />
-
             <AutoCompleteTextView
                 android:id="@+id/newLotEditText"
                 style="@style/lot_edit_text_box"

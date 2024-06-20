@@ -118,7 +118,7 @@
         android:label="BinMovementFragment" />
     <fragment
         android:id="@+id/SearchExpirationDateAndLotNumberFragment"
-        android:name="com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.SearchExpirationDateAndLotNumberFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemMainFragment"
         android:label="fragment_search_expiration_date_and_lot_number">
         <action
             android:id="@+id/action_SearchExpirationDateAndLotNumberFragment_to_AssignExpirationDateAndLotNumberFragment"
@@ -128,7 +128,7 @@
     </fragment>
     <fragment
         android:id="@+id/AssignExpirationDateAndLotNumberFragment"
-        android:name="com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberDataChangeAndDisplay.AssignExpirationDateAndLotNumberFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemInformationPage.EditItemDetailsFragment"
         android:label="fragment_assign_expiration_date_and_lot_number" />
     <fragment
         android:id="@+id/receivingProductsMainFragment"

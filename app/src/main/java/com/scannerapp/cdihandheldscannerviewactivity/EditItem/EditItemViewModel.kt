@@ -1,4 +1,4 @@
-package com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
+package com.scannerapp.cdihandheldscannerviewactivity.EditItem
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -11,7 +11,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
+class EditItemViewModel: ViewModel(){
 
     private val _opSuccess = MutableLiveData<Boolean>()
     val opSuccess : LiveData<Boolean>

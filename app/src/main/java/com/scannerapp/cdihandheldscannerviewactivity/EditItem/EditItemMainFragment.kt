@@ -1,4 +1,4 @@
-package com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
+package com.scannerapp.cdihandheldscannerviewactivity.EditItem
 
 import android.app.Dialog
 import android.content.Context
@@ -24,9 +24,9 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
 
 
-class SearchExpirationDateAndLotNumberFragment : Fragment() {
+class EditItemMainFragment : Fragment() {
     private lateinit var binding: EditItemMainFragmentBinding
-    private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
+    private val viewModel: EditItemViewModel by activityViewModels()
     private lateinit var itemSuggestionAdapter: ItemSuggestionRecyclerViewAdapter
 
     private lateinit var progressDialog: Dialog
