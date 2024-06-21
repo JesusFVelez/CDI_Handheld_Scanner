@@ -41,15 +41,11 @@
         <action
             android:id="@+id/action_homeScreenFragment_to_assignBarcodeToProductFragment"
             app:destination="@id/assignBarcodeToProductFragment"
-            app:enterAnim="@anim/slide_in_left" />
-        <action
-            android:id="@+id/action_homeScreenFragment_to_binMovementFragment"
-            app:destination="@id/binMovementFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_homeScreenFragment_to_assignExpirationDateFragment"
-            app:destination="@id/SearchExpirationDateAndLotNumberFragment"
+            android:id="@+id/action_homeScreenFragment_to_binMovementFragment"
+            app:destination="@id/binMovementFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
@@ -60,6 +56,11 @@
         <action
             android:id="@+id/action_homeScreenFragment_to_searchBinProductPhysicalCountFragment2"
             app:destination="@id/searchBinProductPhysicalCountFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeScreenFragment_to_editItemMainFragment"
+            app:destination="@id/editItemMainFragment"
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
@@ -117,20 +118,6 @@
         android:name="com.scannerapp.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementFragment"
         android:label="BinMovementFragment" />
     <fragment
-        android:id="@+id/SearchExpirationDateAndLotNumberFragment"
-        android:name="com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemMainFragment"
-        android:label="fragment_search_expiration_date_and_lot_number">
-        <action
-            android:id="@+id/action_SearchExpirationDateAndLotNumberFragment_to_AssignExpirationDateAndLotNumberFragment"
-            app:destination="@id/AssignExpirationDateAndLotNumberFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
-    <fragment
-        android:id="@+id/AssignExpirationDateAndLotNumberFragment"
-        android:name="com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemInformationPage.EditItemDetailsFragment"
-        android:label="fragment_assign_expiration_date_and_lot_number" />
-    <fragment
         android:id="@+id/receivingProductsMainFragment"
         android:name="com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.ReceivingProductsMainFragment"
         android:label="ReceivingProductsMainFragment" >
@@ -144,4 +131,29 @@
         android:id="@+id/receivingProductsDetailsFragment"
         android:name="com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.ReceivingProductsDetailsFragment"
         android:label="ReceivingProductsDetailsFragment" />
+    <fragment
+        android:id="@+id/editItemMainFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemMainFragment"
+        android:label="EditItemMainFragment" >
+        <action
+            android:id="@+id/action_editItemMainFragment_to_editItemDetailsFragment"
+            app:destination="@id/editItemDetailsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/editItemDetailsFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemInformationPage.EditItemDetailsFragment"
+        android:label="EditItemDetailsFragment" >
+        <action
+            android:id="@+id/action_editItemDetailsFragment_to_editBarcodeFragment"
+            app:destination="@id/editBarcodeFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/editBarcodeFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.EditBarcodeFragment"
+        android:label="edit_item_edit_barcode_fragment"
+        tools:layout="@layout/edit_item_edit_barcode_fragment" />
 </navigation>

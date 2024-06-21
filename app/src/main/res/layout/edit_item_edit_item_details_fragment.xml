@@ -21,7 +21,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:background="@drawable/productdetailsupperbackground"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -141,44 +140,45 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/itemNumberTextView" />
 
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/LowerDiv"
-            android:layout_width="match_parent"
+
+        <LinearLayout
+            android:id="@+id/lowerDiv"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upperDiv"
-            app:layout_constraintVertical_bias="0.0">
-
+            app:layout_constraintTop_toBottomOf="@id/upperDiv">
 
             <AutoCompleteTextView
                 android:id="@+id/NewExpirationDateEditText"
                 style="@style/item_date_text_box"
-                android:layout_width="201dp"
-                android:layout_height="54dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:dropDownHeight="wrap_content"
                 android:gravity="center"
                 android:hint="Expiration Date"
                 android:inputType="date"
-                app:layout_constraintBottom_toTopOf="@+id/newLotEditText"
                 app:layout_constraintEnd_toEndOf="@+id/enterButton"
                 app:layout_constraintHorizontal_bias="0.509"
                 app:layout_constraintStart_toStartOf="@+id/enterButton"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <AutoCompleteTextView
                 android:id="@+id/newLotEditText"
                 style="@style/lot_edit_text_box"
-                android:layout_width="201dp"
-                android:layout_height="54dp"
-                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:dropDownHeight="wrap_content"
                 android:gravity="center"
                 android:hint="New Lot"
@@ -187,22 +187,36 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
                 app:layout_constraintHorizontal_bias="0.142"
                 app:layout_constraintStart_toStartOf="@+id/NewExpirationDateEditText" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/barcodeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:src="@drawable/barcodeitemdetailswhite"
+                app:backgroundTint="@color/CDI_Blue"
+                app:maxImageSize="30dp"
+                app:tint="@color/white"
+                android:layout_marginBottom="20dp"
+                />
+
             <Button
                 android:id="@+id/enterButton"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@drawable/menu_option_button"
                 android:text="Enter"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="140dp" />
+
+        </LinearLayout>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
 </layout>
 

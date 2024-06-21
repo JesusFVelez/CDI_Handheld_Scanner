@@ -118,6 +118,7 @@
                 android:backgroundTint="@color/CDI_Blue"
                 android:enabled="false"
                 android:src="@drawable/add_sign"
+                app:tint="@color/white"
                 android:textSize="21sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"

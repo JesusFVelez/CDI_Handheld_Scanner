@@ -1,6 +1,9 @@
 package com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemInformationPage
 
 import android.app.Dialog
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -9,12 +12,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.compose.ui.graphics.ColorFilter.Companion.tint
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemViewModel
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.DateUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
@@ -34,6 +41,7 @@ class EditItemDetailsFragment : Fragment() {
     private var isEnterPressed = false
     private val viewModel: EditItemViewModel by activityViewModels()
     private lateinit var progressDialog: Dialog
+    private lateinit var barcodeButton: FloatingActionButton
 
     override fun onCreate(saveInstance: Bundle?) {
         super.onCreate(saveInstance)
@@ -79,6 +87,12 @@ class EditItemDetailsFragment : Fragment() {
     private fun setupUI() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
+        barcodeButton = binding.barcodeButton
+        barcodeButton.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        barcodeButton.setOnClickListener{
+               view?.findNavController()?.navigate(R.id.action_editItemDetailsFragment_to_editBarcodeFragment)
+        }
+
         // Initially disable New Lot EditText since toggle is off
         binding.newLotEditText.isEnabled = false
 
@@ -94,7 +108,7 @@ class EditItemDetailsFragment : Fragment() {
 
             // Step 1: Validate date format
             val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
-            val isValidDateFormat = isValidDate(newExpirationDateStr)
+            val isValidDateFormat = DateUtils.isValidDate(newExpirationDateStr)
 
             // Step 2: Check if date format is valid
             if (isValidDateFormat) {
@@ -187,42 +201,6 @@ class EditItemDetailsFragment : Fragment() {
 
     }
 
-    // Function to validate the date
-    private fun isValidDate(dateStr: String): Boolean {
-        val parts = dateStr.split("-")
-        if (parts.size == 3) {
-                val month = parts[0]
-                val day = parts[1]
-                val year = parts[2]
-
-                // Check if each part of the date is a valid number
-                if (month.length != 2 || !month.all { it.isDigit() } ||
-                    day.length != 2 || !day.all { it.isDigit() } ||
-                    (year.length != 2 && year.length != 4) || !year.all { it.isDigit() }) {
-                    return false
-                }
-
-                val monthInt = month.toInt()
-                val dayInt = day.toInt()
-                val yearInt = year.toInt()
-
-
-                if (monthInt !in 1..12) return false
-
-            val maxDays = when (monthInt) {
-                1, 3, 5, 7, 8, 10, 12 -> 31
-                4, 6, 9, 11 -> 30
-                2 -> if (yearInt % 4 == 0 && (yearInt % 100 != 0 || yearInt % 400 == 0)) 29 else 28
-                else -> return false
-            }
-
-            if (dayInt !in 1..maxDays) return false
-        } else {
-            return false
-        }
-
-        return true
-    }
 
     private fun initObservers() {
 

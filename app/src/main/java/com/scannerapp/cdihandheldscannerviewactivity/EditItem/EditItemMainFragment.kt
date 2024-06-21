@@ -61,7 +61,7 @@ class EditItemMainFragment : Fragment() {
 
         itemSuggestionAdapter = ItemSuggestionRecyclerViewAdapter(requireContext()) { selectedItem ->
             viewModel.setCurrentlyChosenItemForSearch(selectedItem)
-            navigateToAssignExpirationDateAndLotNumberFragment()
+            navigateToEditItemDetailsFragment()
         }
         binding.itemSearchList.adapter = itemSuggestionAdapter
 
@@ -70,8 +70,8 @@ class EditItemMainFragment : Fragment() {
         viewModel.fetchItemSuggestions() // Assuming this will populate `viewModel.suggestions`
     }
 
-    private fun navigateToAssignExpirationDateAndLotNumberFragment() {
-        view?.findNavController()?.navigate(R.id.action_SearchExpirationDateAndLotNumberFragment_to_AssignExpirationDateAndLotNumberFragment)
+    private fun navigateToEditItemDetailsFragment() {
+        view?.findNavController()?.navigate(R.id.action_editItemMainFragment_to_editItemDetailsFragment)
     }
 
     private fun initObservers() {
