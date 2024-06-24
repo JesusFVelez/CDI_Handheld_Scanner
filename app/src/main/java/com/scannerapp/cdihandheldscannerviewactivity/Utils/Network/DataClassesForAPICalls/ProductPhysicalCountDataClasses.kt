@@ -4,6 +4,36 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /*---------------------------------------------------------------*/
+/* Get Item Details For Popup Response Wrapper                   */
+/*---------------------------------------------------------------*/
+@JsonClass(generateAdapter = true)
+data class GetItemDetailsForPopupResponseWrapper(
+    @Json(name = "response") val response: GetItemDetailsForPopupResponse
+)
+
+@JsonClass(generateAdapter = true)
+data class GetItemDetailsForPopupResponse(
+    @Json(name = "ttItemInfo") val ttItemInfo: TtItemInfoWrapp
+)
+
+@JsonClass(generateAdapter = true)
+data class TtItemInfoWrapp(
+    @Json(name = "ttItemInfo") val ttItemInfo: List<TtItemInf>
+)
+
+@JsonClass(generateAdapter = true)
+data class TtItemInf(
+    @Json(name = "itemNumber") val itemNumber: String,
+    @Json(name = "itemDescription") val itemDescription: String,
+    @Json(name = "binLocation") val binLocation: String,
+    @Json(name = "expireDate") val expireDate: String?,
+    @Json(name = "lotNumber") val lotNumber: String,
+    @Json(name = "qtyCounted") val qtyCounted: Double,
+    @Json(name = "inCount") val inCount: Boolean,
+    @Json(name = "barCode") val barCode: String?
+)
+
+/*---------------------------------------------------------------*/
 /* Update Count Response Wrapper                                 */
 /*---------------------------------------------------------------*/
 

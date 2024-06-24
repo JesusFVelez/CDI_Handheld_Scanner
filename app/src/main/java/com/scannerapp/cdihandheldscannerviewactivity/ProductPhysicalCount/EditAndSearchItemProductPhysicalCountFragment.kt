@@ -4,6 +4,8 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,6 +61,31 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        binding.countButton.setOnClickListener {
+            val query = binding.itemSearchEditText.text.toString().trim()
+            if (query.isNotEmpty()) {
+                Log.d("EditAndSearchFragment", "Count button clicked, fetching item details for: $query")
+                fetchItemDetails(query)
+            } else {
+                AlerterUtils.startErrorAlerter(requireActivity(), "Please enter a valid item number or barcode.")
+            }
+        }
+
+        binding.itemSearchEditText.setOnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                val query = binding.itemSearchEditText.text.toString().trim()
+                if (query.isNotEmpty()) {
+                    Log.d("EditAndSearchFragment", "Enter key pressed, fetching item details for: $query")
+                    fetchItemDetails(query)
+                } else {
+                    AlerterUtils.startErrorAlerter(requireActivity(), "Please enter a valid item number or barcode.")
+                }
+                true
+            } else {
+                false
+            }
+        }
     }
 
     private fun fetchItemsInBin() {
@@ -78,10 +105,27 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         }
     }
 
+    private fun fetchItemDetails(query: String) {
+        val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        progressDialog.show()
+        viewModel.getItemDetailsForPopup(pItemNumberOrBarCode = query, pWarehouse = warehouseNO, pCompanyID = companyID)
+    }
+
     private fun initObservers() {
         viewModel.itemInfo.observe(viewLifecycleOwner) { newItemInfo ->
             progressDialog.dismiss()
             itemAdapter.updateData(newItemInfo)
+        }
+
+        viewModel.itemInfoPopUp.observe(viewLifecycleOwner) { itemDetails ->
+            progressDialog.dismiss()
+            Log.d("EditAndSearchFragment", "Item details received for popup: $itemDetails")
+            if (itemDetails.isNotEmpty()) {
+                itemAdapter.showPopupDialogForItemSearch(itemDetails.first())
+            } else {
+                AlerterUtils.startErrorAlerter(requireActivity(), "No item details found.")
+            }
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->

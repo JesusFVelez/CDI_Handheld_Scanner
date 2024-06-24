@@ -7,10 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinsByClassCodeByVendorAndByItemNumber
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetItemDetailsForPopupResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInf
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInfo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class InventoryCountViewModel : ViewModel() {
 
@@ -25,6 +30,10 @@ class InventoryCountViewModel : ViewModel() {
     private val _itemInfo = MutableLiveData<List<TtItemInfo>>()
     val itemInfo: LiveData<List<TtItemInfo>>
         get() = _itemInfo
+
+    private val _itemInfoPopUp = MutableLiveData<List<TtItemInf>>()
+    val itemInfoPopUp: LiveData<List<TtItemInf>>
+        get() = _itemInfoPopUp
 
     private val _binInfo = MutableLiveData<List<BinsByClassCodeByVendorAndByItemNumber>>()
     val binInfo: LiveData<List<BinsByClassCodeByVendorAndByItemNumber>>
@@ -172,6 +181,51 @@ class InventoryCountViewModel : ViewModel() {
             }
         }
     }
+
+    fun getItemDetailsForPopup(pItemNumberOrBarCode: String, pWarehouse: Int, pCompanyID: String) {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.e("ViewModel", "Exception in getItemDetailsForPopup: ${exception.localizedMessage}", exception)
+        }
+
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                Log.d("ViewModel", "Calling getItemDetailsForPopup with item: $pItemNumberOrBarCode, warehouse: $pWarehouse, company: $pCompanyID")
+                val call = ScannerAPI.getInventoryCountService().getItemDetailsForPopup(pItemNumberOrBarCode, pWarehouse, pCompanyID)
+                call.enqueue(object : Callback<GetItemDetailsForPopupResponseWrapper> {
+                    override fun onResponse(
+                        call: Call<GetItemDetailsForPopupResponseWrapper>,
+                        response: Response<GetItemDetailsForPopupResponseWrapper>
+                    ) {
+                        if (response.isSuccessful) {
+                            val itemInfoList = response.body()?.response?.ttItemInfo?.ttItemInfo
+                            val items: List<TtItemInf> = itemInfoList?.map { item ->
+                                item.copy(expireDate = item.expireDate ?: "N/A")
+                            } ?: emptyList()
+
+                            _itemInfoPopUp.postValue(items)
+                            _wasLastAPICallSuccessful.postValue(true)
+                            Log.d("ViewModel", "getItemDetailsForPopup successful: $items")
+                        } else {
+                            _wasLastAPICallSuccessful.postValue(false)
+                            Log.e("ViewModel", "getItemDetailsForPopup response not successful, code: ${response.code()}, message: ${response.message()}")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetItemDetailsForPopupResponseWrapper>, t: Throwable) {
+                        _wasLastAPICallSuccessful.postValue(false)
+                        Log.e("ViewModel", "Exception in getItemDetailsForPopup: ${t.localizedMessage}", t)
+                    }
+                })
+            } catch (e: Exception) {
+                _wasLastAPICallSuccessful.value = false
+                Log.e("ViewModel", "Exception in getItemDetailsForPopup: ${e.localizedMessage}", e)
+            }
+        }
+    }
+
+
+
 
     fun saveFilterStates(context: Context) {
         savedClassCode = enteredClassCode.value ?: ""

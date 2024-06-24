@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
 import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountViewModel
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInf
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInfo
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
@@ -116,5 +117,56 @@ class ItemAdapter(
 
         dialog.show()
     }
-}
 
+    fun showPopupDialogForItemSearch(item: TtItemInf) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.product_physical_count_item_quantity_count_popup, null)
+        val dialog = Dialog(context)
+        dialog.setContentView(dialogView)
+
+        val selectedItemView = dialogView.findViewById<View>(R.id.selectedItem)
+        val itemNumberTextView = selectedItemView.findViewById<TextView>(R.id.ItemNumberTextView)
+        val descriptionTextView = selectedItemView.findViewById<TextView>(R.id.descriptionTextView)
+        val expirationDateTextView = selectedItemView.findViewById<TextView>(R.id.orderDateValueTextView)
+        val binLocationTextView = selectedItemView.findViewById<TextView>(R.id.binLocationTextView)
+        val lotNumberTextView = selectedItemView.findViewById<TextView>(R.id.dateWantedValueTextView)
+
+        itemNumberTextView.text = item.itemNumber
+        descriptionTextView.text = item.itemDescription
+        expirationDateTextView.text = item.expireDate ?: "N/A"
+        binLocationTextView.text = item.binLocation
+        lotNumberTextView.text = item.lotNumber ?: "N/A"
+
+        val itemAmountEditText = dialogView.findViewById<EditText>(R.id.itemAmountEditText)
+        if (item.qtyCounted != null) {
+            itemAmountEditText.setText(item.qtyCounted.toString())
+        }
+
+        dialogView.findViewById<AppCompatButton>(R.id.addButton).setOnClickListener {
+            val quantity = itemAmountEditText.text.toString().toIntOrNull()
+            if (quantity != null && quantity >= 0) {
+                val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(context)
+                val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(context)
+                viewModel.updateCount(
+                    pItemNumber = item.itemNumber,
+                    pWarehouseNo = warehouseNO,
+                    pBinLocation = item.binLocation,
+                    pQtyCounted = quantity.toDouble(),
+                    pCompanyID = companyID
+                )
+                dialog.dismiss()
+                // Refresh the list after updating the count
+                viewModel.getAllItemsInBinForSuggestion(
+                    pBinLocation = item.binLocation,
+                    pWarehouse = warehouseNO,
+                    pCompanyID = companyID
+                )
+            } else {
+                itemAmountEditText.error = "Please enter a valid number"
+            }
+        }
+
+        dialog.show()
+    }
+
+
+}

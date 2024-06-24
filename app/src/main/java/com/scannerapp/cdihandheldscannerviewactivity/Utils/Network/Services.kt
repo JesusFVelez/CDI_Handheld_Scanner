@@ -3,9 +3,7 @@ package com.scannerapp.cdihandheldscannerviewactivity.Utils.Network
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllBinNumbersResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeByVendorAndByItemNumberResponseWrapper
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeResponseWrapper
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByItemNumberResponseWrapper
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByVendorResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetItemDetailsForPopupResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.UpdateCountResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignExpDateResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignLotNumberResponseWrapper
@@ -298,26 +296,12 @@ interface InventoryCountServices {
         @Query("pWarehouseNo") pWarehouseNo: Int
     ): GetAllBinNumbersResponseWrapper
 
-    @GET("GetBinsByClassCode")
-    suspend fun getBinsByClassCode(
-        @Query("pClassCode") pClassCode: String,
-        @Query("pCompanyID") pCompanyID: String,
-        @Query("pWarehouseNo") pWarehouseNo: Int
-    ): GetBinsByClassCodeResponseWrapper
-
-    @GET("GetBinsByVendor")
-    suspend fun getBinsByVendor(
-        @Query("pVendor") pVendor: String,
-        @Query("pCompanyID") pCompanyID: String,
-        @Query("pWarehouseNo") pWarehouseNo: Int
-    ): GetBinsByVendorResponseWrapper
-
-    @GET("GetBinsByItemNumber")
-    suspend fun getBinsByItemNumber(
-        @Query("pItemNumber") pItemNumber: String,
-        @Query("pCompanyID") pCompanyID: String,
-        @Query("pWarehouseNo") pWarehouseNo: Int
-    ): GetBinsByItemNumberResponseWrapper
+    @GET("getItemDetailsForPopup")
+    fun getItemDetailsForPopup(
+        @Query("pItemNumberOrBarCode") itemNumberOrBarCode: String,
+        @Query("pWarehouse") warehouse: Int,
+        @Query("pCompanyID") companyID: String
+    ): Call<GetItemDetailsForPopupResponseWrapper>
 }
 
 
