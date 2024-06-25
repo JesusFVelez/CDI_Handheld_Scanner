@@ -185,7 +185,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                     if (newExpirationDate != null && DateUtils.isValidDate(expirationDate)) {
                         val expirationDate = newExpirationDateEditText.text.toString()
                         val newLotNumber = newLotEditText.text.toString()
-                        val quantityToAddToDoor = quantityEditText.text.toString().toInt()
+                        val quantityToAddToDoor = quantityEditText.text.toString().toFloat().toInt()
                         val itemNumber = itemNumberTextView.text.toString()
                         val itemName = itemNameTextView.text.toString()
                         val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
