@@ -133,7 +133,9 @@ class ItemAdapter(
         itemNumberTextView.text = item.itemNumber
         descriptionTextView.text = item.itemDescription
         expirationDateTextView.text = item.expireDate ?: "N/A"
-        binLocationTextView.text = item.binLocation
+        // Here, instead of using item.binLocation, use the selected bin location
+        val selectedBinLocation = viewModel.setCurrentlySelectedBin.value?.binLocation ?: "Unknown"
+        binLocationTextView.text = selectedBinLocation
         lotNumberTextView.text = item.lotNumber ?: "N/A"
 
         val itemAmountEditText = dialogView.findViewById<EditText>(R.id.itemAmountEditText)
@@ -149,14 +151,14 @@ class ItemAdapter(
                 viewModel.updateCount(
                     pItemNumber = item.itemNumber,
                     pWarehouseNo = warehouseNO,
-                    pBinLocation = item.binLocation,
+                    pBinLocation = selectedBinLocation, // Use the selected bin location here
                     pQtyCounted = quantity.toDouble(),
                     pCompanyID = companyID
                 )
                 dialog.dismiss()
                 // Refresh the list after updating the count
                 viewModel.getAllItemsInBinForSuggestion(
-                    pBinLocation = item.binLocation,
+                    pBinLocation = selectedBinLocation, // Use the selected bin location here
                     pWarehouse = warehouseNO,
                     pCompanyID = companyID
                 )
@@ -167,6 +169,4 @@ class ItemAdapter(
 
         dialog.show()
     }
-
-
 }

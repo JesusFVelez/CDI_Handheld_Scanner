@@ -55,6 +55,10 @@ class InventoryCountViewModel : ViewModel() {
     val setCurrentlySelectedBin: LiveData<BinsByClassCodeByVendorAndByItemNumber>
         get() = _currentlyChosenItemForSearch
 
+    private val _countButtonPressed = MutableLiveData<Boolean>()
+    val countButtonPressed: LiveData<Boolean>
+        get() = _countButtonPressed
+
     // Added for saving filter states
     val enteredItemNumber = MutableLiveData<String>()
     val enteredVendor = MutableLiveData<String>()
@@ -224,9 +228,6 @@ class InventoryCountViewModel : ViewModel() {
         }
     }
 
-
-
-
     fun saveFilterStates(context: Context) {
         savedClassCode = enteredClassCode.value ?: ""
         savedVendor = enteredVendor.value ?: ""
@@ -245,5 +246,13 @@ class InventoryCountViewModel : ViewModel() {
         enteredVendor.postValue(enteredVendor.value)
         enteredItemNumber.postValue(enteredItemNumber.value)
         selectedLane.postValue(selectedLane.value)
+    }
+
+    fun clearItemInfoPopUp() {
+        _itemInfoPopUp.value = emptyList()
+    }
+
+    fun setCountButtonPressed(pressed: Boolean) {
+        _countButtonPressed.value = pressed
     }
 }

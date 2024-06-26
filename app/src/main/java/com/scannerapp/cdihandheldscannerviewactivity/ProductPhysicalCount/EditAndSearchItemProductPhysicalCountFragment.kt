@@ -66,6 +66,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             val query = binding.itemSearchEditText.text.toString().trim()
             if (query.isNotEmpty()) {
                 Log.d("EditAndSearchFragment", "Count button clicked, fetching item details for: $query")
+                viewModel.setCountButtonPressed(true)
                 fetchItemDetails(query)
             } else {
                 AlerterUtils.startErrorAlerter(requireActivity(), "Please enter a valid item number or barcode.")
@@ -77,6 +78,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                 val query = binding.itemSearchEditText.text.toString().trim()
                 if (query.isNotEmpty()) {
                     Log.d("EditAndSearchFragment", "Enter key pressed, fetching item details for: $query")
+                    viewModel.setCountButtonPressed(true)
                     fetchItemDetails(query)
                 } else {
                     AlerterUtils.startErrorAlerter(requireActivity(), "Please enter a valid item number or barcode.")
@@ -121,17 +123,19 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         viewModel.itemInfoPopUp.observe(viewLifecycleOwner) { itemDetails ->
             progressDialog.dismiss()
             Log.d("EditAndSearchFragment", "Item details received for popup: $itemDetails")
-            if (itemDetails.isNotEmpty()) {
+            if (viewModel.countButtonPressed.value == true && itemDetails.isNotEmpty()) {
                 itemAdapter.showPopupDialogForItemSearch(itemDetails.first())
-            } else {
-                AlerterUtils.startErrorAlerter(requireActivity(), "No item details found.")
             }
+            viewModel.setCountButtonPressed(false)
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
             if (!wasLastAPICallSuccessful) {
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity())
+                if (viewModel.countButtonPressed.value == true) {
+                    AlerterUtils.startNetworkErrorAlert(requireActivity())
+                }
+                viewModel.setCountButtonPressed(false)
             }
         }
     }
