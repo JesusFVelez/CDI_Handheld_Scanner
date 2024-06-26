@@ -99,7 +99,7 @@
         android:layout_marginBottom="15dp"
         android:background="@drawable/edit_text_white_backgroung"
         android:gravity="center"
-        android:hint="Item Count"
+        android:hint="Weight"
         android:inputType="number"
         app:layout_constraintBottom_toTopOf="@+id/addButton"
         app:layout_constraintEnd_toEndOf="parent"
