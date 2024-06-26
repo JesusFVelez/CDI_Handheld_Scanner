@@ -46,10 +46,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/itemAmountEditText"
+        app:layout_constraintBottom_toTopOf="@+id/barcodeScannerEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/EnterQuantitytoCount" />
+
+    <EditText
+        android:id="@+id/barcodeScannerEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_white_backgroung"
+        android:gravity="center"
+        android:hint="Scan Barcode"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectedItem" />
+
+    <TextView
+        android:id="@+id/scanToAddCount"
+        style="@style/PopupMessageBigText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:text="Scan to keep adding"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/itemAmountEditText"
+        app:layout_constraintEnd_toEndOf="@+id/icon"
+        app:layout_constraintStart_toStartOf="@+id/icon"
+        app:layout_constraintTop_toBottomOf="@+id/barcodeScannerEditText" />
 
     <EditText
         android:id="@+id/itemAmountEditText"
@@ -61,10 +87,23 @@
         android:gravity="center"
         android:hint="Item Count"
         android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/addButton"
+        app:layout_constraintBottom_toTopOf="@+id/weightEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectedItem" />
+        app:layout_constraintTop_toBottomOf="@+id/barcodeScannerEditText" />
+
+    <EditText
+        android:id="@+id/weightEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/edit_text_white_backgroung"
+        android:gravity="center"
+        android:hint="Item Count"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/addButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addButton"
