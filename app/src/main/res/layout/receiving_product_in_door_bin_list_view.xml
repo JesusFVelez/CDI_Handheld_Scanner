@@ -72,12 +72,14 @@
     </LinearLayout>
 
 
-    <androidx.appcompat.widget.AppCompatButton
+    <ImageButton
         android:id="@+id/trashcanIconButton"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/icon_red_trash_can"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="Trash Can"
+        android:src="@drawable/icon_red_trash_can"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
