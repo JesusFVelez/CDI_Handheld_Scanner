@@ -120,7 +120,6 @@ class ItemAdapter(
         dialog.show()
     }
 
-
     fun showPopupDialogForItemSearch(item: TtItemInf) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.product_physical_count_item_quantity_count_popup, null)
         val dialog = Dialog(context)
@@ -173,3 +172,4 @@ class ItemAdapter(
         dialog.show()
     }
 }
+

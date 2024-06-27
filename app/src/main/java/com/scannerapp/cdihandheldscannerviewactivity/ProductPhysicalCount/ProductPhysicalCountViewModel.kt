@@ -139,12 +139,17 @@ class InventoryCountViewModel : ViewModel() {
                 _opMessage.value = response.response.opMessage
                 _opSuccess.value = response.response.opSuccess
                 _wasLastAPICallSuccessful.value = true
+
+                // Refresh the items in bin to reflect the updated count
+                getAllItemsInBinForSuggestion(pBinLocation, pWarehouseNo, pCompanyID)
+
             } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false
                 Log.e("Update Count", "Exception -> ${e.localizedMessage}")
             }
         }
     }
+
 
 
 
