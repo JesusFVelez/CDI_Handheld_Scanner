@@ -8,12 +8,14 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByVendorResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.UpdateCountResponseWrapper
 import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkDetailsResponseWrapper
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AddBarcodeToItemResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignExpDateResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignLotNumberResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinConfirmationResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConfirmOrderResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConnectionTestingWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DisplayInfoResponseWrapper
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllBarcodesForItemResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinForSuggestionResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemConfirmationResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemPickingResponseWrapper
@@ -76,6 +78,7 @@ class ServicePaths{
         const val AssignExpirationDateService: String = "/AssignExpirationDateService/"
         const val AssignLotNumberService: String = "/AssignLotNumberService/"
         const val InventoryCountService: String = "/InventoryCountService/"
+        const val EditItemService : String = "/EditItemService/"
     }
 }
 
@@ -130,7 +133,7 @@ interface AssignLotNumberResources {
     ): AssignLotNumberResponseWrapper
 }
 
-//Assign Expiration Date inaterface
+//Assign Expiration Date interface
 interface AssignExpirationDateResources {
 
     @GET("getAllItemsInBinForSuggestion")
@@ -329,6 +332,66 @@ interface InventoryCountServices {
     ): GetBinsByItemNumberResponseWrapper
 }
 
+interface EditItemServices{
+
+    val BarcodeService: EditItemServices.AssignBarcode
+    val AssignLotNumberService: EditItemServices.AssignLotNumberResources
+    val AssignExpirationDateService: EditItemServices.AssignExpirationDateResources
+
+    interface AssignBarcode{
+        @GET("barcode")
+        suspend fun getBarcodesForItem(
+            @Query("itemNumber") itemNumber: String,
+            @Query("companyID") companyID: String): GetAllBarcodesForItemResponseWrapper
+
+        @PUT("barcode")
+        suspend fun addBarcodeToItem(
+            @Query("itemNumber") itemNumber: String,
+            @Query("companyID") companyID: String,
+            @Query("barcodeToAdd") barcodeToAdd: String,
+            @Query("isMainBarcode") isMainBarcode: Boolean):AddBarcodeToItemResponseWrapper
+
+    }
+
+    //Assign Expiration Date interface
+    interface AssignExpirationDateResources {
+
+        @GET("getAllItemsInBinForSuggestion")
+        suspend fun getSuggestionsForItemOrBin(): GetAllItemsInBinForSuggestionResponseWrapper
+
+        @PUT("assignExpireDate")
+        suspend fun assignExpireDate(
+            @Query("pItemNumber")pItemNumber:String,
+            @Query("pBinLocation")pBinLocation:String,
+            @Query("pExpireDate")pExpireDate:String,
+            @Query("pLotNumber") pLotNumber:String,
+            @Query("pWarehouseNo") warehouseNumber: Int
+        ): AssignExpDateResponseWrapper
+
+        @GET("getItemInformation")
+        suspend fun getItemInformation(
+            @Query("pItemNumber")pItemNumber:String,
+            @Query("pBinLocation")pBinLocation:String,
+            @Query("pLotNumber") pLotNumber: String
+        ): DisplayInfoResponseWrapper
+    }
+
+    interface AssignLotNumberResources {
+        @PUT("assignLotNumberToBinItem")
+        suspend fun assignLotNumberToBinItem(
+            @Query("pItemNumber") pItemNumber: String,
+            @Query("pCompanyCode") companyID: String,
+            @Query("pBinLocation") pBinLocation: String,
+            @Query("pLotNumber") pLotNumber: String,
+            @Query("pWarehouseNo") warehouseNumber: Int,
+            @Query("pOldLot") pOldLot: String?
+        ): AssignLotNumberResponseWrapper
+    }
+
+
+
+
+}
 
 interface GeneralServices{
 
@@ -405,9 +468,18 @@ object ScannerAPI {
         return retrofit.create(AssignLotNumberResources::class.java)
     }
 
+    fun getEditItemService(): EditItemServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.EditItemService)
+        val editItemServices = object: EditItemServices {
+            override val BarcodeService = retrofit.create(EditItemServices.AssignBarcode::class.java)
+            override val AssignLotNumberService = retrofit.create(EditItemServices.AssignLotNumberResources::class.java)
+            override val AssignExpirationDateService = retrofit.create(EditItemServices.AssignExpirationDateResources::class.java)
+        }
+        return editItemServices
+    }
+
     fun getInventoryCountService(): InventoryCountServices {
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.InventoryCountService)
         return retrofit.create(InventoryCountServices::class.java)
     }
-
 }

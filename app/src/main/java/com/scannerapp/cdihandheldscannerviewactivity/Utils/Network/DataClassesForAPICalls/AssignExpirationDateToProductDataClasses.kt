@@ -1,7 +1,10 @@
 package com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 
 /*Assign Lot number to item*/
@@ -43,6 +46,8 @@ data class DisplayInfoResponse(
 data class ItemInfoWrapper(
     @Json(name = "bin-item-info") val response: List<ItemInfo>,
 )
+
+
 @JsonClass(generateAdapter = true)
 data class ItemInfo(
     @Json(name = "itemNumber") val itemNumber: String,
@@ -68,7 +73,9 @@ data class GetAllItemsInBinForSuggestionWrapper(
 data class GetAllItemsInBinForSuggestion(
     @Json(name = "bin-item-info") val binItemInfo:List<ItemData>
 )
+
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class ItemData(
     @Json(name = "itemNumber") val itemNumber: String,
     @Json(name = "itemDescription") val itemDescription: String,
@@ -76,5 +83,17 @@ data class ItemData(
     @Json(name = "expireDate") val expireDate: String?,
     @Json(name = "lotNumber") val lotNumber: String?,
     @Json(name = "barCode") val barCode: String?
-)
+): Parcelable {
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    override fun writeToParcel(p0: Parcel, p1: Int) {
+        p0.writeString(itemNumber)
+        p0.writeString(itemDescription)
+        p0.writeString(binLocation)
+        p0.writeString(expireDate)
+        p0.writeString(lotNumber)
+    }
+}
 

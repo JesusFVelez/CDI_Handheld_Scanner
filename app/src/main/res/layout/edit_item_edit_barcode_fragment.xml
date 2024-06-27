@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".EditBarcodeFragment"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+<LinearLayout
+        tools:context=".EditItem.EditBarcode.EditBarcodeFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -50,6 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:gravity="center_horizontal|top"
                 android:text="Habichuelas Goya A/S"
                 android:textSize="32sp"
                 android:textStyle="bold"/>
@@ -59,6 +63,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 layout="@layout/edit_item_barcode_to_edit_list_view"
+
                 />
 
             <TextView
@@ -108,3 +113,4 @@
 
 
     </LinearLayout>
+</layout>

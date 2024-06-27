@@ -8,6 +8,7 @@
     android:background="@drawable/listitembackgroundview">
 
         <TextView
+            android:id="@+id/barcodeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Barcode Number"
@@ -18,12 +19,13 @@
             app:layout_constraintEnd_toStartOf="@id/removeItemIcon"
             />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <ImageButton
             android:id="@+id/removeItemIcon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="end|center"
-            android:background="@drawable/icon_red_trash_can"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/icon_red_trash_can"
             android:text=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

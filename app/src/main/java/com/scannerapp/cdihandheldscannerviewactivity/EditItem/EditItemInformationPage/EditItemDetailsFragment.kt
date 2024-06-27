@@ -90,7 +90,9 @@ class EditItemDetailsFragment : Fragment() {
         barcodeButton = binding.barcodeButton
         barcodeButton.imageTintList = ColorStateList.valueOf(Color.WHITE)
         barcodeButton.setOnClickListener{
-               view?.findNavController()?.navigate(R.id.action_editItemDetailsFragment_to_editBarcodeFragment)
+            val itemInfo = viewModel.currentlyChosenItemForSearch.value!!
+            val action = EditItemDetailsFragmentDirections.actionEditItemDetailsFragmentToEditBarcodeFragment(itemInfo)
+               view?.findNavController()?.navigate(action)
         }
 
         // Initially disable New Lot EditText since toggle is off
@@ -226,14 +228,15 @@ class EditItemDetailsFragment : Fragment() {
 
 
         viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
-            itemInfo.firstOrNull()?.let { item ->
+            if(itemInfo != null) {
                 // Update UI
-                binding.itemNumberTextView.text = item.itemNumber
-                binding.itemNameTextView.text = item.itemDescription
-                binding.binLocationTextView.text = item.binLocation
-                binding.expirationDateTextView.text = item.expireDate ?: "N/A"
-                binding.lotTextView.text = item.lotNumber ?: "N/A"
+                binding.itemNumberTextView.text = itemInfo.itemNumber
+                binding.itemNameTextView.text = itemInfo.itemDescription
+                binding.binLocationTextView.text = itemInfo.binLocation
+                binding.expirationDateTextView.text = itemInfo.expireDate ?: "N/A"
+                binding.lotTextView.text = itemInfo.lotNumber ?: "N/A"
             }
+
         }
 
         // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch

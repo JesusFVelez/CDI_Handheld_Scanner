@@ -6,6 +6,33 @@ import com.squareup.moshi.JsonClass
 
 // All the JSON Response Data classes for the BarcodeAssign backend end point
 
+// Gets all barcodes for item
+@JsonClass(generateAdapter = true)
+data class GetAllBarcodesForItemResponseWrapper(
+    val response: GetAllBarcodesForItemResponse
+)
+
+data class GetAllBarcodesForItemResponse(
+    @Json(name = "mainBarcode") val mainBarcode: String,
+    @Json(name = "listOfBarcodes") val listOfBarcodes: List<String>,
+    @Json(name = "wasItemFound") val wasItemFound: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+
+// Add Barcode for an item
+
+data class AddBarcodeToItemResponseWrapper(
+    @Json(name = "response") val response: AddBarcodeToItemResponse
+)
+
+data class AddBarcodeToItemResponse(
+    @Json(name = "couldAddBarcode") val couldAddBarcode: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+
+
 // Validates existence of item in backend
 @JsonClass(generateAdapter = true)
 data class ResponseWrapperWasItemFound(
