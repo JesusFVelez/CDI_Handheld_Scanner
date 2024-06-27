@@ -267,7 +267,7 @@ interface InventoryCountServices {
 
     @PUT("UpdateCount")
     suspend fun updateCount(
-        @Query("pItemNumberOrBarCode") pItemNumber: String,
+        @Query("pItemNumberOrBarCode") pItemNumber: String?,
         @Query("pWarehouseNo") pWarehouseNo: Int,
         @Query("pBinLocation") pBinLocation: String,
         @Query("pQtyCounted") pQtyCounted: Double,

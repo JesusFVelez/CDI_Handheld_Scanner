@@ -124,7 +124,14 @@ class InventoryCountViewModel : ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getInventoryCountService().updateCount(pItemNumberOrBarCode, pWarehouseNo, pBinLocation, pQtyCounted, pCompanyID)
+                val itemNumberOrBarcodeToSend: String? = if (pItemNumberOrBarCode.isEmpty()) null else pItemNumberOrBarCode
+                val response = ScannerAPI.getInventoryCountService().updateCount(
+                    pItemNumber = itemNumberOrBarcodeToSend,
+                    pWarehouseNo = pWarehouseNo,
+                    pBinLocation = pBinLocation,
+                    pQtyCounted = pQtyCounted,
+                    pCompanyID = pCompanyID
+                )
                 _opMessage.value = response.response.opMessage
                 _opSuccess.value = response.response.opSuccess
                 _wasLastAPICallSuccessful.value = true
@@ -134,6 +141,7 @@ class InventoryCountViewModel : ViewModel() {
             }
         }
     }
+
 
     fun getAllItemsInBinForSuggestion(pBinLocation: String, pWarehouse: Int, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
