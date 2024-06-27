@@ -61,14 +61,10 @@
 
         <Button
             android:id="@+id/finishButton"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
+            style="@style/regularButton"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/menu_option_button"
             android:enabled="false"
             android:text="Finish"
-            android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
