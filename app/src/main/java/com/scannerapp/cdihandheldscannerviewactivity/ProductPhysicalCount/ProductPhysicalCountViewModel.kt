@@ -115,7 +115,7 @@ class InventoryCountViewModel : ViewModel() {
         }
     }
 
-    fun updateCount(pItemNumber: String, pWarehouseNo: Int, pBinLocation: String, pQtyCounted: Double, pCompanyID: String) {
+    fun updateCount(pItemNumberOrBarCode: String, pWarehouseNo: Int, pBinLocation: String, pQtyCounted: Double, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
@@ -124,7 +124,7 @@ class InventoryCountViewModel : ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getInventoryCountService().updateCount(pItemNumber, pWarehouseNo, pBinLocation, pQtyCounted, pCompanyID)
+                val response = ScannerAPI.getInventoryCountService().updateCount(pItemNumberOrBarCode, pWarehouseNo, pBinLocation, pQtyCounted, pCompanyID)
                 _opMessage.value = response.response.opMessage
                 _opSuccess.value = response.response.opSuccess
                 _wasLastAPICallSuccessful.value = true

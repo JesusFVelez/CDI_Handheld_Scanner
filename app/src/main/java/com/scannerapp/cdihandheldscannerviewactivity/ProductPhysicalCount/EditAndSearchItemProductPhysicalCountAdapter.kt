@@ -97,7 +97,7 @@ class ItemAdapter(
                 val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(context)
                 val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(context)
                 viewModel.updateCount(
-                    pItemNumber = item.itemNumber,
+                    pItemNumberOrBarCode = item.itemNumber,
                     pWarehouseNo = warehouseNO,
                     pBinLocation = item.binLocation,
                     pQtyCounted = quantity.toDouble(),
@@ -149,7 +149,7 @@ class ItemAdapter(
                 val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(context)
                 val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(context)
                 viewModel.updateCount(
-                    pItemNumber = item.itemNumber,
+                    pItemNumberOrBarCode = item.itemNumber,
                     pWarehouseNo = warehouseNO,
                     pBinLocation = selectedBinLocation, // Use the selected bin location here
                     pQtyCounted = quantity.toDouble(),
