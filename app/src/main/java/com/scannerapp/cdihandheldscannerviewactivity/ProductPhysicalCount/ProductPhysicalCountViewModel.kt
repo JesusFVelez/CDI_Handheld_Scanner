@@ -125,6 +125,8 @@ class InventoryCountViewModel : ViewModel() {
         viewModelScope.launch(exceptionHandler) {
             try {
                 val itemNumberOrBarcodeToSend: String? = if (pItemNumberOrBarCode.isEmpty()) null else pItemNumberOrBarCode
+                Log.d("Update Count", "Calling updateCount with: pItemNumberOrBarCode=$itemNumberOrBarcodeToSend, pWarehouseNo=$pWarehouseNo, pBinLocation=$pBinLocation, pQtyCounted=$pQtyCounted, pCompanyID=$pCompanyID")
+
                 val response = ScannerAPI.getInventoryCountService().updateCount(
                     pItemNumber = itemNumberOrBarcodeToSend,
                     pWarehouseNo = pWarehouseNo,
@@ -132,6 +134,8 @@ class InventoryCountViewModel : ViewModel() {
                     pQtyCounted = pQtyCounted,
                     pCompanyID = pCompanyID
                 )
+
+                Log.d("Update Count", "Response: ${response.response.opMessage}, Success: ${response.response.opSuccess}")
                 _opMessage.value = response.response.opMessage
                 _opSuccess.value = response.response.opSuccess
                 _wasLastAPICallSuccessful.value = true
@@ -141,6 +145,7 @@ class InventoryCountViewModel : ViewModel() {
             }
         }
     }
+
 
 
     fun getAllItemsInBinForSuggestion(pBinLocation: String, pWarehouse: Int, pCompanyID: String) {

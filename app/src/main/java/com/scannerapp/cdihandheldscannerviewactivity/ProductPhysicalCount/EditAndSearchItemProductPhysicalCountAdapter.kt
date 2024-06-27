@@ -2,6 +2,7 @@ package com.scannerapp.cdihandheldscannerviewactivity.Adapter
 
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,6 +97,7 @@ class ItemAdapter(
             if (quantity != null && quantity >= 0) {
                 val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(context)
                 val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(context)
+                Log.d("ItemAdapter", "Updating count for item: ${item.itemNumber}, bin: ${item.binLocation}, qty: $quantity")
                 viewModel.updateCount(
                     pItemNumberOrBarCode = item.itemNumber,
                     pWarehouseNo = warehouseNO,
@@ -117,6 +119,7 @@ class ItemAdapter(
 
         dialog.show()
     }
+
 
     fun showPopupDialogForItemSearch(item: TtItemInf) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.product_physical_count_item_quantity_count_popup, null)
