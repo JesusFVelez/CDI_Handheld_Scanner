@@ -69,7 +69,7 @@
     </style>
 
     <style name="PopupButtons">
-        <item name="android:background">@drawable/popup_button_background</item>
+        <item name="android:background">@drawable/ripple_effect_for_popup_button</item>
     </style>
 
     <style name="WarningText">

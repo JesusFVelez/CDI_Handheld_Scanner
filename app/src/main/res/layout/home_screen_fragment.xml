@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="View Bins with Item"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
@@ -41,7 +41,7 @@
             <!--                android:layout_height="wrap_content"-->
             <!--                android:layout_marginTop="10dp"-->
             <!--                android:layout_marginBottom="10dp"-->
-            <!--                android:background="@drawable/menu_option_button"-->
+            <!--                android:background="@drawable/ripple_effect_for_big_buttons"-->
             <!--                android:text="Count All Items in WH"-->
             <!--                android:textAllCaps="false"-->
             <!--                android:textColor="@color/CDI_Gray"-->
@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="@string/products_in_bin"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
 
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="Item Picking"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="Assign Barcode"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
@@ -100,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="Edit Item"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
@@ -114,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="Bin Movement"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="Receiving"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="Physical Count"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/logout_button"
+                android:background="@drawable/ripple_effect_for_logout_button"
                 android:text="@string/log_out"
                 android:textAllCaps="false"
                 android:textColor="@color/CDI_Gray"
