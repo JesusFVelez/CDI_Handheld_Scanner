@@ -174,11 +174,16 @@ class EditBarcodeFragment : Fragment() {
     private fun startBarcodeAddOrUpdatePopup(isUpdatingBarcode: Boolean = false, barcodeToUpdate: String = "", isMainBarcode: Boolean = false) {
         val listener = object : PopupInputListener {
             override fun onConfirm(input: EditText) {
-                if(isUpdatingBarcode)
-                    viewModel.updateBarcodeToBackend(barcodeToUpdate, input.text.toString(), isMainBarcode)
-                else
-                    viewModel.addBarcodeToBackend(input.text.toString(), isMainBarcode)
-                progressDialog.show()
+                    if (isUpdatingBarcode)
+                        viewModel.updateBarcodeToBackend(
+                            barcodeToUpdate,
+                            input.text.toString(),
+                            isMainBarcode
+                        )
+                    else
+                        viewModel.addBarcodeToBackend(input.text.toString(), isMainBarcode)
+                    progressDialog.show()
+
             }
         }
         val confirmationText = if (isUpdatingBarcode) "Update Barcode" else "Add Barcode"
@@ -187,7 +192,8 @@ class EditBarcodeFragment : Fragment() {
             requireView(),
             confirmationText,
             "Scan Code",
-            listener
+            listener,
+            inlineErrorText = "Barcode cannot be blank"
         )
 
         if(isUpdatingBarcode)

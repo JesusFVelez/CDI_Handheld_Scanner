@@ -114,6 +114,7 @@ class PopupWindowUtils {
             return screenWidth - (screenWidth * 0.05).toInt()
         }
 
+
         fun getCustomPopup(context: Context, customPopupXML: Int): PopupWindow{
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(customPopupXML, null)
@@ -146,7 +147,7 @@ class PopupWindowUtils {
         }
 
 
-        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener):PopupWindow {
+        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener, inlineErrorText: String = "Field left empty, please enter a value"):PopupWindow {
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(R.layout.popup_confirmation, null)
 
@@ -175,9 +176,14 @@ class PopupWindowUtils {
             confirmEditText.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                     // Handle the Enter key press here
-                    listener.onConfirm(confirmEditText)
-                    popupWindow.dismiss()
-                    true
+                    if(confirmEditText.text.toString().isNotEmpty()){
+                        listener.onConfirm(confirmEditText)
+                        popupWindow.dismiss()
+                        true
+                    }else{
+                        confirmEditText.error = inlineErrorText
+                        false
+                    }
                 } else {
                     false
                 }
@@ -186,8 +192,11 @@ class PopupWindowUtils {
             val confirmButton: Button
             confirmButton = popupContentView.findViewById(R.id.confirmButton)
             confirmButton.setOnClickListener{
-                listener.onConfirm(confirmEditText)
-                popupWindow.dismiss()
+                if(confirmEditText.text.toString().isNotEmpty()) {
+                        listener.onConfirm(confirmEditText)
+                        popupWindow.dismiss()
+                }else
+                    confirmEditText.error = inlineErrorText
             }
 
 
