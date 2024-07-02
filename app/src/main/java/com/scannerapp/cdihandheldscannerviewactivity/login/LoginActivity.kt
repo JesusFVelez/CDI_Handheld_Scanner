@@ -145,6 +145,7 @@ class LoginActivity : AppCompatActivity() {
                 SharedPreferencesUtils.storeIPAndPortInSharedPref("N/A", "N/A", this@LoginActivity)
                 val intent = Intent(this@LoginActivity, NetworkDetailsActivity::class.java)
                 startActivity(intent)
+                this@LoginActivity.finish()
             }
 
             popup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
