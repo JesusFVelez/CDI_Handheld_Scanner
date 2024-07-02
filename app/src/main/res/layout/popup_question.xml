@@ -36,8 +36,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Some Question is here"
-        app:layout_constraintEnd_toEndOf="@+id/questionText"
-        app:layout_constraintStart_toStartOf="@+id/questionText"
+        android:gravity="center_horizontal|top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/questionText" />
 
     <LinearLayout

@@ -55,18 +55,19 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal|top"
                 android:text="Habichuelas Goya A/S"
+                android:layout_marginBottom="20dp"
                 android:textSize="32sp"
                 android:textStyle="bold"/>
 
             <include
                 android:id="@+id/mainBarcodeLayout"
                 android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 layout="@layout/edit_item_barcode_to_edit_list_view"
-
                 />
 
             <TextView
+                android:layout_marginBottom="20dp"
                 android:id="@+id/mainBarcodeLabelTextView"
                 android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
@@ -90,12 +91,15 @@
                     android:layout_height="wrap_content"
                     android:textSize="30sp"
                     android:textStyle="bold"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
                     android:text="Additional Barcode"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/additionalBarcodeRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton

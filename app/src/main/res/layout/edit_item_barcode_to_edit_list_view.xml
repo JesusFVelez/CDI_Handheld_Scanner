@@ -16,11 +16,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/removeItemIcon"
+            app:layout_constraintEnd_toStartOf="@id/removeBarcodeIcon"
             />
 
         <ImageButton
-            android:id="@+id/removeItemIcon"
+            android:id="@+id/removeBarcodeIcon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="end|center"

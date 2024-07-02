@@ -36,7 +36,6 @@ class HomeScreenFragment : Fragment() {
     private lateinit var binsWithProductButton: Button
     private lateinit var itemPickingButton: Button
     private lateinit var binMovementButton: Button
-    private lateinit var assignBarcodeButton: Button
     private lateinit var assignExpirationDateButton: Button
     private lateinit var receivingButton: Button
     private lateinit var physicalCountButton: Button
@@ -138,7 +137,6 @@ class HomeScreenFragment : Fragment() {
         productToBinButton = binding.productToBinButton
         binsWithProductButton = binding.BinsWithItemButton
         itemPickingButton = binding.ItemPickingButton
-        assignBarcodeButton = binding.assignBarcodeButton
         binMovementButton = binding.BinToBinMovementButton
         assignExpirationDateButton = binding.assignExpirationDateButton
         receivingButton = binding.ReceivingButton
@@ -192,10 +190,6 @@ class HomeScreenFragment : Fragment() {
 
         itemPickingButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.ItemPickingMenuOption)
-        }
-
-        assignBarcodeButton.setOnClickListener{
-            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.AssignBarcodeMenuOption)
         }
 
         binMovementButton.setOnClickListener {

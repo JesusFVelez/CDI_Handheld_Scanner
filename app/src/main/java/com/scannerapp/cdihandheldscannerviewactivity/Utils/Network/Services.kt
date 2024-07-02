@@ -21,6 +21,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemPickingResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RemoveBarcodeFromItemResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmItemWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseDeleteItemFromDoorBin
@@ -38,6 +39,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperItemDetailsWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperProductsInBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperSetBarcode
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperUpdateBarcode
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperUser
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperValidateBarcode
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperWarehouse
@@ -220,20 +222,6 @@ interface ItemPickingForDispatchServices{
     suspend fun getAllOrdersInPickingForSuggestion(@Query("companyID") companyID: String): getOrdersForSuggestionWrapper
 }
 
-// All services for assign barcode
-interface AssignBarcodeToItemServices {
-    @GET("getItem")
-    suspend fun getItems(@Query("itemNumber") itemNumber: String): ResponseWrapperGetItem
-
-    @GET("wasItemFound")
-    suspend fun wasItemFound(@Query("itemNumber") itemNumber: String): ResponseWrapperWasItemFound
-
-    @GET("validateBarcode")
-    suspend fun validateBarcode(@Query("barCode") barCode: String): ResponseWrapperValidateBarcode
-
-    @PUT("setBarcode")
-    suspend fun setBarcode(@Query("itemNumber") itemNumber: String, @Query("selectedBarcode") selectedBarcode: String): ResponseWrapperSetBarcode
-}
 
 interface ReceivingProductsServices {
     @GET("getDoorBins")
@@ -334,9 +322,9 @@ interface InventoryCountServices {
 
 interface EditItemServices{
 
-    val BarcodeService: EditItemServices.AssignBarcode
-    val AssignLotNumberService: EditItemServices.AssignLotNumberResources
-    val AssignExpirationDateService: EditItemServices.AssignExpirationDateResources
+    val BarcodeService: AssignBarcode
+    val AssignLotNumberService: AssignLotNumberResources
+    val AssignExpirationDateService: AssignExpirationDateResources
 
     interface AssignBarcode{
         @GET("barcode")
@@ -344,12 +332,29 @@ interface EditItemServices{
             @Query("itemNumber") itemNumber: String,
             @Query("companyID") companyID: String): GetAllBarcodesForItemResponseWrapper
 
-        @PUT("barcode")
+        @POST("barcode")
         suspend fun addBarcodeToItem(
             @Query("itemNumber") itemNumber: String,
             @Query("companyID") companyID: String,
             @Query("barcodeToAdd") barcodeToAdd: String,
             @Query("isMainBarcode") isMainBarcode: Boolean):AddBarcodeToItemResponseWrapper
+
+        @PUT("barcode")
+        suspend fun updateBarcodeOfItem(
+            @Query("itemNumber") itemNumber: String,
+            @Query("companyID") companyID: String,
+            @Query("isMainBarcode") isMainBarcode: Boolean,
+            @Query("oldBarcode") oldBarcode: String,
+            @Query("newBarcode") newBarcode: String
+        ):ResponseWrapperUpdateBarcode
+
+        @DELETE("barcode")
+        suspend fun removeBarcodeFromItem(
+            @Query("itemNumber") itemNumber: String,
+            @Query("companyID") companyID: String,
+            @Query("barcodeToRemove") barcodeToRemove: String,
+            @Query("isMainBarcode") isMainBarcode: Boolean): RemoveBarcodeFromItemResponseWrapper
+
 
     }
 
@@ -441,11 +446,6 @@ object ScannerAPI {
     fun getRPMAccessService():RPMAccessServices{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.RPMAccess)
         return retrofit.create(RPMAccessServices::class.java)
-    }
-
-    fun getAssignBarcodeService(): AssignBarcodeToItemServices{
-        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignBarcode)
-        return retrofit.create(AssignBarcodeToItemServices::class.java)
     }
 
     fun getMovingItemsBetweenBinsService():MoveItemsBetweenBinsServices{

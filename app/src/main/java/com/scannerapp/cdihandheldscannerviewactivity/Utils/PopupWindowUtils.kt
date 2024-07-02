@@ -146,7 +146,7 @@ class PopupWindowUtils {
         }
 
 
-        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener){
+        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener):PopupWindow {
             val layoutInflater = LayoutInflater.from(context)
             val popupContentView = layoutInflater.inflate(R.layout.popup_confirmation, null)
 
@@ -199,6 +199,7 @@ class PopupWindowUtils {
                 showAtLocation(anchor, Gravity.CENTER, 0, 0)  // Optionally specify a location for the pop-up window
             }
 
+            return popupWindow
         }
     }
 }

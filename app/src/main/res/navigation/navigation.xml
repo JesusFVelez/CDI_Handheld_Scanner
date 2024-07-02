@@ -39,11 +39,6 @@
             app:enterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_homeScreenFragment_to_assignBarcodeToProductFragment"
-            app:destination="@id/assignBarcodeToProductFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-        <action
             android:id="@+id/action_homeScreenFragment_to_binMovementFragment"
             app:destination="@id/binMovementFragment"
             app:enterAnim="@anim/slide_in_left"
@@ -109,10 +104,6 @@
         android:id="@+id/orderPickingItemFragment"
         android:name="com.scannerapp.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails.OrderPickingItemFragment"
         android:label="OrderPickingItemFragment" />
-    <fragment
-        android:id="@+id/assignBarcodeToProductFragment"
-        android:name="com.scannerapp.cdihandheldscannerviewactivity.BarcodeAssign.AssignBarcodeToProductFragment"
-        android:label="assign_barcode_to_product_fragment" />
     <fragment
         android:id="@+id/binMovementFragment"
         android:name="com.scannerapp.cdihandheldscannerviewactivity.MovingProductsBetweenBins.BinMovementFragment"

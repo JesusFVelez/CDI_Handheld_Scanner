@@ -11,6 +11,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import java.util.Scanner
 
 class EditBarcodeViewModelFactory(private val someParameter: ItemData? = null) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -41,9 +42,18 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
     val warehouseNO: LiveData<String>
         get() = _warehouseNumber
 
-    private val _listOfBarcodesOfItem = MutableLiveData<List<String>>()
-    val listOfBarcodesOfItem: LiveData<List<String>>
+    private val _listOfBarcodesOfItem = MutableLiveData<List<String>?>()
+    val listOfBarcodesOfItem: LiveData<List<String>?>
         get() = _listOfBarcodesOfItem
+
+    private val _couldAddOrRemoveBarcode = MutableLiveData<Boolean>()
+    val couldAddOrRemoveBarcode: LiveData<Boolean>
+        get() = _couldAddOrRemoveBarcode
+
+    // Error Message
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String>
+        get() = _errorMessage
 
     fun setCompanyIDFromSharedPref(companyID: String){
         _companyID.value = companyID
@@ -54,14 +64,13 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
     }
 
     init {
-//        _mainBarcode.value = null
         _itemInfo.value = itemInfo
     }
 
     fun getBarcodesFromBackend(){
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
                 //_wasLastAPICallSuccessful.value = false
-                Log.i("Assign Expire Date " , "Error -> ${exception.message}")
+                Log.i("Get Barcodes" , "Error -> ${exception.message}")
             }
 
             viewModelScope.launch(exceptionHandler) {
@@ -74,10 +83,80 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 } catch (e: Exception) {
                     // Exception handling for network errors or serialization/deserialization issues
 //                    _wasLastAPICallSuccessful.value = false
-                    Log.e("AssignLotNumber", "Exception -> ${e.localizedMessage}")
+                    Log.e("Get Barcodes", "Exception (e) -> ${e.localizedMessage}")
                 }
             }
     }
+
+    fun addBarcodeToBackend(barcodeToAdd: String, isMainBarcode: Boolean){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            //_wasLastAPICallSuccessful.value = false
+            Log.i("Assign Barcode ", "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                val response = ScannerAPI.getEditItemService().BarcodeService.addBarcodeToItem(
+                    _itemInfo.value!!.itemNumber,
+                    _companyID.value!!,
+                    barcodeToAdd,
+                    isMainBarcode
+                )
+                _errorMessage.value = response.response.errorMessage
+                _couldAddOrRemoveBarcode.value = response.response.couldAddBarcode
+
+            }catch (e:Exception){
+                Log.e("Assign Barcode", "Exception (e) -> ${e.localizedMessage}")
+            }
+            }
+    }
+
+    fun updateBarcodeToBackend(oldBarcode:String ,newBarcode: String, isMainBarcode: Boolean){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            //_wasLastAPICallSuccessful.value = false
+            Log.i("Update Barcode ", "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                val response = ScannerAPI.getEditItemService().BarcodeService.updateBarcodeOfItem(
+                    _itemInfo.value!!.itemNumber,
+                    _companyID.value!!,
+                    isMainBarcode,
+                    oldBarcode,
+                    newBarcode
+                )
+                _errorMessage.value = response.response.errorMessage
+                _couldAddOrRemoveBarcode.value = response.response.couldUpdateBarcode
+
+            }catch (e:Exception){
+                Log.e("Update Barcode", "Exception (e) -> ${e.localizedMessage}")
+            }
+        }
+
+    }
+
+    fun removeBarcodeFromBackend(barcodeToRemove: String, isMainBarcode: Boolean){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            //_wasLastAPICallSuccessful.value = false
+            Log.i("Remove Barcode ", "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                val response = ScannerAPI.getEditItemService().BarcodeService.removeBarcodeFromItem(
+                    _itemInfo.value!!.itemNumber,
+                    _companyID.value!!,
+                    barcodeToRemove,
+                    isMainBarcode
+                )
+                _errorMessage.value = response.response.errorMessage
+                _couldAddOrRemoveBarcode.value = response.response.couldRemoveBarcode
+
+            }catch (e:Exception){
+                Log.e("Remove Barcode", "Exception (e) -> ${e.localizedMessage}")
+            }
+        }
+    }
+
+
 
 
 }
