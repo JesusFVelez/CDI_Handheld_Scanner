@@ -1,4 +1,4 @@
-package com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
+package com.scannerapp.cdihandheldscannerviewactivity.EditItem
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -11,7 +11,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
+class EditItemViewModel: ViewModel(){
 
     private val _opSuccess = MutableLiveData<Boolean>()
     val opSuccess : LiveData<Boolean>
@@ -21,8 +21,8 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
     val opMessage : LiveData<String>
         get() = _opMessage
 
-    private val _itemInfo = MutableLiveData<List<ItemInfo>>()
-    val itemInfo : LiveData<List<ItemInfo>>
+    private val _itemInfo = MutableLiveData<ItemInfo>()
+    val itemInfo : LiveData<ItemInfo>
         get() = _itemInfo
 
     private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
@@ -44,6 +44,8 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
     private val _currentlyChosenItemForSearch = MutableLiveData<ItemData>()
     val currentlyChosenItemForSearch: LiveData<ItemData>
         get() = _currentlyChosenItemForSearch
+
+
     init{}
 
     fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String, pLotNumber: String, pWarehouseNo: Int) {
@@ -106,7 +108,7 @@ class AssignExpirationDateAndLotNumberViewModel: ViewModel(){
                 val response = ScannerAPI.getAssignExpirationDateService().getItemInformation(pItemNumber, pBinLocation, pLotNumber)
                 _wasLastAPICallSuccessful.value = true
                 //_opMessage.value = response.response.opMessage
-                _itemInfo.value = response.response.binItemInfo.response
+                _itemInfo.value = response.response.binItemInfo.response!![0]
                 //_opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false

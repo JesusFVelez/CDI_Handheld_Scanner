@@ -145,6 +145,7 @@ class LoginActivity : AppCompatActivity() {
                 SharedPreferencesUtils.storeIPAndPortInSharedPref("N/A", "N/A", this@LoginActivity)
                 val intent = Intent(this@LoginActivity, NetworkDetailsActivity::class.java)
                 startActivity(intent)
+                this@LoginActivity.finish()
             }
 
             popup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
@@ -182,6 +183,17 @@ class LoginActivity : AppCompatActivity() {
         progressDialog.show()
     }
 
+    private fun startUserCountVerification() {
+        val selectedCompanyID = viewModel.currentlyChosenCompany.value!!.companyID
+        val selectedWarehouseID = viewModel.currentlyChosenWarehouse.value!!.warehouseNumber
+        viewModel.setUserValues(
+            userNameEditTex.text.toString(),
+            passwordEditText.text.toString(),
+            selectedCompanyID,
+            selectedWarehouseID
+        )
+        viewModel.verifyIfTooManyUsersConnected()
+    }
 
 
     // This method initializes the observers for the ViewModel. It observes changes in the list of companies and the success status of the last API call.
@@ -201,6 +213,19 @@ class LoginActivity : AppCompatActivity() {
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(this@LoginActivity)
                 Log.i("API Call", "API Call did not work")
+            }
+        }
+
+
+        viewModel.hasTooManyUsersConnected.observe(this){hasTooManyUsersConnected ->
+            if(!hasTooManyUsersConnected)
+                viewModel.logUserIn(userNameEditTex.text.toString(), passwordEditText.text.toString())
+            else {
+                AlerterUtils.startErrorAlerter(
+                    this@LoginActivity,
+                    "Too many users connected to app"
+                )
+                progressDialog.dismiss()
             }
         }
 
@@ -265,11 +290,10 @@ class LoginActivity : AppCompatActivity() {
                 val selectedWarehouseInSpinner: String = warehouseSpinner.text.toString()
                 viewModel.setWarehouse(selectedWarehouseInSpinner)
                 viewModel.setCompanyID(selectedCompanyInSpinner)
-                viewModel.logUserIn(userNameEditTex.text.toString(), passwordEditText.text.toString())
-
+                startUserCountVerification()
             } else {
                 progressDialog.dismiss()
-                AlerterUtils.startErrorAlerter(this, getString(R.string.incomplete_login))
+                AlerterUtils.startErrorAlerter(this@LoginActivity, "Please fill in all fields to sign in.")
             }
 
         }

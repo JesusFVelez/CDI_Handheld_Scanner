@@ -42,7 +42,7 @@
                     android:layout_width="200dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="30dp"
-                    android:background="@drawable/menu_option_button"
+                    android:background="@drawable/ripple_effect_for_rectangle_buttons"
                     android:text="@string/search_bin"
                     android:textSize="20sp"
                     android:textStyle="bold"

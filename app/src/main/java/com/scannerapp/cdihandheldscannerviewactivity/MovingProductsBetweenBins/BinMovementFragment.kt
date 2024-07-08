@@ -2,6 +2,8 @@ package com.scannerapp.cdihandheldscannerviewactivity.MovingProductsBetweenBins
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -252,6 +254,7 @@ class BinMovementFragment : Fragment() {
 
         initAddItemToListPopup()
         addButton = binding.addButton
+        addButton.imageTintList = ColorStateList.valueOf(Color.WHITE)
         addButton.setOnClickListener{
             resetBinMovementPopUp()
             addBinMovementToListPopupWindow.showAtLocation(requireView(), Gravity.CENTER, 0, 0)

@@ -28,6 +28,7 @@ class OrderPickingItemFragment :Fragment(){
     private lateinit var itemNameTextView: TextView
     private lateinit var itemNumberTextView: TextView
     private lateinit var binNumberTextView: TextView
+    private lateinit var weightEditText: EditText
     private lateinit var totalQuantityToBePickedTextView: TextView
 
     private var hasPageJustStarted:Boolean = false
@@ -56,6 +57,11 @@ class OrderPickingItemFragment :Fragment(){
             if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 // Handle the Enter key press here
                 hasPageJustStarted = true
+                if(itemAmountEditText.text.toString().isEmpty())
+                    itemAmountEditText.setText("0.0")
+
+                if(weightEditText.text.toString().isEmpty())
+                    weightEditText.setText("0.0")
                 viewModel.confirmItemInBackend(itemNumberEditText.text.toString())
                 true
             } else {
@@ -66,11 +72,14 @@ class OrderPickingItemFragment :Fragment(){
         pickItemButton.setOnClickListener{
             hasPageJustStarted = true
             val amountToBePickedString = itemAmountEditText.text.toString()
-            if(amountToBePickedString == "")
-                AlerterUtils.startErrorAlerter(requireActivity(),"Quantity to be picked can not be empty!")
+            val weightToBePickedString = weightEditText.text.toString()
+            val doesItemHaveWeight = viewModel.currentlyChosenItem.value!!.doesItemHaveWeight
+            if(amountToBePickedString == "" || (doesItemHaveWeight && weightToBePickedString == ""))
+                AlerterUtils.startErrorAlerter(requireActivity(),"There are missing fields! Please make sure all necessary fields are filled")
             else {
                 val amountToBePicked = amountToBePickedString.toFloat()
-                viewModel.finishPickingForSingleItem(amountToBePicked)
+                val weightToBePicked = weightToBePickedString.toFloat()
+                viewModel.finishPickingForSingleItem(amountToBePicked, weightToBePicked)
                 viewModel.updatePickingTimer("update")
             }
         }
@@ -79,6 +88,10 @@ class OrderPickingItemFragment :Fragment(){
         itemNumberTextView = binding.itemNumberTextView
         binNumberTextView = binding.binLocationText
         totalQuantityToBePickedTextView = binding.totalQuantityOfItemsToBePickedText
+
+        weightEditText = binding.WeightEditText
+        val doesItemHaveWeight = viewModel.currentlyChosenItem.value!!.doesItemHaveWeight
+        weightEditText.isEnabled = doesItemHaveWeight
     }
 
     private fun initObservers(){
@@ -89,18 +102,42 @@ class OrderPickingItemFragment :Fragment(){
                     itemAmountEditText.text.toString().toFloat() + viewModel.currentlyChosenItem.value!!.howManyIndividualQtysPerUOM
                 else
                     itemAmountEditText.text.toString().toFloat() + viewModel.UOMQtyInBarcode.value!!
+
+                // Handles weight
+                val doesItemHaveWeight = viewModel.currentlyChosenItem.value!!.doesItemHaveWeight
+                val weightString = weightEditText.text.toString()
+
+
+                var weightToBeDisplayed: Float = 0.0f
+                if(doesItemHaveWeight){
+                    weightToBeDisplayed = if(viewModel.weightInBarcode.value == 0.0f)
+                        weightString.toFloat() + 0.0f
+                    else
+                        weightString.toFloat() + viewModel.weightInBarcode.value!!
+                }
+
+
+                weightEditText.setText(weightToBeDisplayed.toString())
                 itemAmountEditText.setText(valueToBeDisplayed.toString())
                 itemNumberEditText.setText("")
-            }else if(hasPageJustStarted)
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmItem"]!!)
+            }else if(hasPageJustStarted) {
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["confirmItem"]!!
+                )
+            }
         }
 
         viewModel.wasPickingSuccesfulyFinished.observe(viewLifecycleOwner){wasPickingDoneSuccessfully ->
             if(wasPickingDoneSuccessfully && hasPageJustStarted){
                 AlerterUtils.startSuccessAlert(requireActivity(), "Picking Successful", "Item '" + viewModel.currentlyChosenItem.value!!.itemName + "' was successfully picked")
                 findNavController().navigateUp()
-            }else if(hasPageJustStarted)
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["finishPickingForSingleItem"]!!)
+            }else if(hasPageJustStarted) {
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["finishPickingForSingleItem"]!!
+                )
+            }
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
@@ -119,6 +156,7 @@ class OrderPickingItemFragment :Fragment(){
         itemNumberTextView.text = viewModel.currentlyChosenItem.value!!.itemNumber
         binNumberTextView.text = viewModel.currentlyChosenItem.value!!.binLocation
         itemAmountEditText.setText(viewModel.currentlyChosenItem.value!!.quantityPicked.toInt().toString())
+        weightEditText.setText(viewModel.currentlyChosenItem.value!!.weightPicked.toString())
         totalQuantityToBePickedTextView.text = viewModel.currentlyChosenItem.value!!.totalQuantityToBePicked.toInt().toString()
     }
 

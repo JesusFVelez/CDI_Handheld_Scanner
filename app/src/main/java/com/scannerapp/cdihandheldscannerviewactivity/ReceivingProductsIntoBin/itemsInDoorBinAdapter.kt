@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
@@ -98,7 +99,7 @@ class ItemsInDoorBinViewHolder(itemInDoorBinView: View, private val listener: it
     val lotNumberTextView: TextView = itemInDoorBinView.findViewById(R.id.lotNumberText)
     val expirationDateTextView: TextView = itemInDoorBinView.findViewById(R.id.expDateInfoText)
     val quantityInDoorBinTextView: TextView = itemInDoorBinView.findViewById(R.id.addedText)
-    val removeItemButton: AppCompatButton = itemInDoorBinView.findViewById(R.id.trashcanIconButton)
+    val removeItemButton: ImageButton = itemInDoorBinView.findViewById(R.id.trashcanIconButton)
 
     init{
         itemInDoorBinView.setOnClickListener(this)

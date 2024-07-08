@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.scannerapp.cdihandheldscannerviewactivity.R
@@ -82,7 +83,7 @@ class BinMovementViewHolder(itemToMoveView: View, private val listener: ItemToMo
     val fromBinNumberTextView:TextView = itemToMoveView.findViewById(R.id.fromBinNumber)
     val toBinNumberTextView: TextView = itemToMoveView.findViewById(R.id.toBinNumber)
     val quantityToMoveTextView:TextView = itemToMoveView.findViewById(R.id.quantityToMove)
-    val removeItemIconButton: Button = itemToMoveView.findViewById(R.id.removeItemIcon)
+    val removeItemIconButton: ImageButton = itemToMoveView.findViewById(R.id.removeItemIcon)
 
     init {
         itemToMoveView.setOnClickListener(this)

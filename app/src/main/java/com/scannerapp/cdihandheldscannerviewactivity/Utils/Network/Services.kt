@@ -5,17 +5,21 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeByVendorAndByItemNumberResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetItemDetailsForPopupResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.UpdateCountResponseWrapper
+import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkDetailsResponseWrapper
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AddBarcodeToItemResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignExpDateResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AssignLotNumberResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinConfirmationResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConfirmOrderResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ConnectionTestingWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DisplayInfoResponseWrapper
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllBarcodesForItemResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinForSuggestionResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemConfirmationResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemPickingResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RemoveBarcodeFromItemResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmItemWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseDeleteItemFromDoorBin
@@ -28,15 +32,12 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperBinsWithProduct
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperDoorBinListWrapper
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperGetItem
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperItemDetailsForBinSearch
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperItemDetailsWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperProductsInBin
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperSetBarcode
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperUpdateBarcode
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperUser
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperValidateBarcode
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperWarehouse
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperWasItemFound
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.VerifyClientResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.confirmBinResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.doesUserHaveRPMResponseWrapper
@@ -73,6 +74,7 @@ class ServicePaths{
         const val AssignExpirationDateService: String = "/AssignExpirationDateService/"
         const val AssignLotNumberService: String = "/AssignLotNumberService/"
         const val InventoryCountService: String = "/InventoryCountService/"
+        const val EditItemService : String = "/EditItemService/"
     }
 }
 
@@ -127,7 +129,7 @@ interface AssignLotNumberResources {
     ): AssignLotNumberResponseWrapper
 }
 
-//Assign Expiration Date inaterface
+//Assign Expiration Date interface
 interface AssignExpirationDateResources {
 
     @GET("getAllItemsInBinForSuggestion")
@@ -156,6 +158,14 @@ interface LoginServices{
     // Endpoint for getting available warehouses
     @GET("getWarehouses")
     suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
+
+    @POST("logout")
+    fun logoutUser(@Query("companyID") companyID: String):Call<Void>
+
+    @GET("verifyIfNumberOfUsersHasExceeded")
+    suspend fun verifyIfNumberOfUsersHasExceeded(@Query("companyID") companyID: String): NetworkDetailsResponseWrapper
+
+
 }
 
 interface RPMAccessServices{
@@ -194,7 +204,7 @@ interface ItemPickingForDispatchServices{
     suspend fun verifyIfClientAccountIsClosed(@Query("orderNumber") orderNumber: String, @Query("companyID") companyID: String) : VerifyClientResponseWrapper
 
     @PUT("finishPickingForSingleItem")
-    suspend fun finishPickingForSingleItem(@Query("pickingROWID")pickingROWID: String, @Query("userNameOfPicker") userNameOfPicker:String, @Query("quantityBeingPicked") quantityBeingPicked:Float): finishPickingForSingleItemResponseWrapper
+    suspend fun finishPickingForSingleItem(@Query("pickingROWID")pickingROWID: String, @Query("userNameOfPicker") userNameOfPicker:String, @Query("quantityBeingPicked") quantityBeingPicked:Float, @Query("weightBeingPicked") weightBeingPicked:Float): finishPickingForSingleItemResponseWrapper
 
     @POST("startPickerTimer")
     suspend fun startPickerTimer(@Body request: RequestTimerParamsWrapper)
@@ -206,20 +216,6 @@ interface ItemPickingForDispatchServices{
     suspend fun getAllOrdersInPickingForSuggestion(@Query("companyID") companyID: String): getOrdersForSuggestionWrapper
 }
 
-// All services for assign barcode
-interface AssignBarcodeToItemServices {
-    @GET("getItem")
-    suspend fun getItems(@Query("itemNumber") itemNumber: String): ResponseWrapperGetItem
-
-    @GET("wasItemFound")
-    suspend fun wasItemFound(@Query("itemNumber") itemNumber: String): ResponseWrapperWasItemFound
-
-    @GET("validateBarcode")
-    suspend fun validateBarcode(@Query("barCode") barCode: String): ResponseWrapperValidateBarcode
-
-    @PUT("setBarcode")
-    suspend fun setBarcode(@Query("itemNumber") itemNumber: String, @Query("selectedBarcode") selectedBarcode: String): ResponseWrapperSetBarcode
-}
 
 interface ReceivingProductsServices {
     @GET("getDoorBins")
@@ -304,6 +300,83 @@ interface InventoryCountServices {
     ): Call<GetItemDetailsForPopupResponseWrapper>
 }
 
+interface EditItemServices{
+
+    val BarcodeService: AssignBarcode
+    val AssignLotNumberService: AssignLotNumberResources
+    val AssignExpirationDateService: AssignExpirationDateResources
+
+    interface AssignBarcode{
+        @GET("barcode")
+        suspend fun getBarcodesForItem(
+            @Query("itemNumber") itemNumber: String,
+            @Query("companyID") companyID: String): GetAllBarcodesForItemResponseWrapper
+
+        @POST("barcode")
+        suspend fun addBarcodeToItem(
+            @Query("itemNumber") itemNumber: String,
+            @Query("companyID") companyID: String,
+            @Query("barcodeToAdd") barcodeToAdd: String,
+            @Query("isMainBarcode") isMainBarcode: Boolean):AddBarcodeToItemResponseWrapper
+
+        @PUT("barcode")
+        suspend fun updateBarcodeOfItem(
+            @Query("itemNumber") itemNumber: String,
+            @Query("companyID") companyID: String,
+            @Query("isMainBarcode") isMainBarcode: Boolean,
+            @Query("oldBarcode") oldBarcode: String,
+            @Query("newBarcode") newBarcode: String
+        ):ResponseWrapperUpdateBarcode
+
+        @DELETE("barcode")
+        suspend fun removeBarcodeFromItem(
+            @Query("itemNumber") itemNumber: String,
+            @Query("companyID") companyID: String,
+            @Query("barcodeToRemove") barcodeToRemove: String,
+            @Query("isMainBarcode") isMainBarcode: Boolean): RemoveBarcodeFromItemResponseWrapper
+
+
+    }
+
+    //Assign Expiration Date interface
+    interface AssignExpirationDateResources {
+
+        @GET("getAllItemsInBinForSuggestion")
+        suspend fun getSuggestionsForItemOrBin(): GetAllItemsInBinForSuggestionResponseWrapper
+
+        @PUT("assignExpireDate")
+        suspend fun assignExpireDate(
+            @Query("pItemNumber")pItemNumber:String,
+            @Query("pBinLocation")pBinLocation:String,
+            @Query("pExpireDate")pExpireDate:String,
+            @Query("pLotNumber") pLotNumber:String,
+            @Query("pWarehouseNo") warehouseNumber: Int
+        ): AssignExpDateResponseWrapper
+
+        @GET("getItemInformation")
+        suspend fun getItemInformation(
+            @Query("pItemNumber")pItemNumber:String,
+            @Query("pBinLocation")pBinLocation:String,
+            @Query("pLotNumber") pLotNumber: String
+        ): DisplayInfoResponseWrapper
+    }
+
+    interface AssignLotNumberResources {
+        @PUT("assignLotNumberToBinItem")
+        suspend fun assignLotNumberToBinItem(
+            @Query("pItemNumber") pItemNumber: String,
+            @Query("pCompanyCode") companyID: String,
+            @Query("pBinLocation") pBinLocation: String,
+            @Query("pLotNumber") pLotNumber: String,
+            @Query("pWarehouseNo") warehouseNumber: Int,
+            @Query("pOldLot") pOldLot: String?
+        ): AssignLotNumberResponseWrapper
+    }
+
+
+
+
+}
 
 interface GeneralServices{
 
@@ -355,11 +428,6 @@ object ScannerAPI {
         return retrofit.create(RPMAccessServices::class.java)
     }
 
-    fun getAssignBarcodeService(): AssignBarcodeToItemServices{
-        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.AssignBarcode)
-        return retrofit.create(AssignBarcodeToItemServices::class.java)
-    }
-
     fun getMovingItemsBetweenBinsService():MoveItemsBetweenBinsServices{
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.MoveItemsBetweenBins)
         return retrofit.create(MoveItemsBetweenBinsServices::class.java)
@@ -380,9 +448,18 @@ object ScannerAPI {
         return retrofit.create(AssignLotNumberResources::class.java)
     }
 
+    fun getEditItemService(): EditItemServices{
+        val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.EditItemService)
+        val editItemServices = object: EditItemServices {
+            override val BarcodeService = retrofit.create(EditItemServices.AssignBarcode::class.java)
+            override val AssignLotNumberService = retrofit.create(EditItemServices.AssignLotNumberResources::class.java)
+            override val AssignExpirationDateService = retrofit.create(EditItemServices.AssignExpirationDateResources::class.java)
+        }
+        return editItemServices
+    }
+
     fun getInventoryCountService(): InventoryCountServices {
         val retrofit = createRetrofitInstance(ipAddress, portNumber, ServicePaths.InventoryCountService)
         return retrofit.create(InventoryCountServices::class.java)
     }
-
 }

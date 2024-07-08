@@ -16,11 +16,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.HomeScreenFragmentBinding
 import com.scannerapp.cdihandheldscannerviewactivity.login.LoginActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // Home screen fragment class
 class HomeScreenFragment : Fragment() {
@@ -32,7 +36,6 @@ class HomeScreenFragment : Fragment() {
     private lateinit var binsWithProductButton: Button
     private lateinit var itemPickingButton: Button
     private lateinit var binMovementButton: Button
-    private lateinit var assignBarcodeButton: Button
     private lateinit var assignExpirationDateButton: Button
     private lateinit var receivingButton: Button
     private lateinit var physicalCountButton: Button
@@ -134,7 +137,6 @@ class HomeScreenFragment : Fragment() {
         productToBinButton = binding.productToBinButton
         binsWithProductButton = binding.BinsWithItemButton
         itemPickingButton = binding.ItemPickingButton
-        assignBarcodeButton = binding.assignBarcodeButton
         binMovementButton = binding.BinToBinMovementButton
         assignExpirationDateButton = binding.assignExpirationDateButton
         receivingButton = binding.ReceivingButton
@@ -153,6 +155,25 @@ class HomeScreenFragment : Fragment() {
                     val intent = Intent(this.activity, LoginActivity::class.java)
                     startActivity(intent)
                     this.activity?.finish()
+                    val companyID: String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+                    ScannerAPI.getLoginService().logoutUser(companyID).enqueue(object:
+                        Callback<Void> {
+                        override fun onResponse(
+                            call: Call<Void>,
+                            response: Response<Void>
+                        ) {
+                            // Log out and navigate to the login activity
+                            val intent = Intent(requireActivity(), LoginActivity::class.java)
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+
+                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                            AlerterUtils.startNetworkErrorAlert(requireActivity())
+                        }
+
+                    })
+
                 }
                 .setNegativeButton("No", null)
                 .show()
@@ -169,10 +190,6 @@ class HomeScreenFragment : Fragment() {
 
         itemPickingButton.setOnClickListener{
             menuButtonClickHandler(HomeScreenViewModel.MenuOptions.ItemPickingMenuOption)
-        }
-
-        assignBarcodeButton.setOnClickListener{
-            menuButtonClickHandler(HomeScreenViewModel.MenuOptions.AssignBarcodeMenuOption)
         }
 
         binMovementButton.setOnClickListener {
@@ -216,6 +233,8 @@ class HomeScreenFragment : Fragment() {
         // Return the view for this fragment
         return binding.root
     }
+
+
 
 
 

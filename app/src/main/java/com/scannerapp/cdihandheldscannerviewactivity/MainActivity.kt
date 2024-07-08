@@ -6,15 +6,23 @@ import android.net.Network
 import android.net.NetworkRequest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
 import com.scannerapp.cdihandheldscannerviewactivity.login.LoginActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // Main activity class
 class MainActivity : AppCompatActivity() {
@@ -25,6 +33,77 @@ class MainActivity : AppCompatActivity() {
     lateinit var networkCallback : ConnectivityManager.NetworkCallback
     private var hasPageJustStarted: Boolean = false
 
+
+    private var hasSessionTimedOut: Boolean = false
+    private var isAppInForeGround: Boolean = false
+
+    // Timeout after 15 minutes of inactivity
+    val TIMEOUT_DURATION = 15 * 60 * 1000 // 1 minutes in milliseconds
+    private var lastInteractionTime: Long = 0
+    private val timeoutHandler = Handler(Looper.getMainLooper())
+    private val timeoutRunnable = Runnable {
+        // Handle session timeout here
+        if(isAppInForeGround) {
+           handleSessionTimeout()
+        }
+        else{
+            hasSessionTimedOut = true
+        }
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        resetTimer()
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        isAppInForeGround = false
+    }
+
+    private fun resetTimer() {
+        lastInteractionTime = System.currentTimeMillis()
+        timeoutHandler.removeCallbacks(timeoutRunnable)
+        timeoutHandler.postDelayed(timeoutRunnable, TIMEOUT_DURATION.toLong())
+        hasSessionTimedOut = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isAppInForeGround = true
+        if(hasSessionTimedOut){
+            handleSessionTimeout()
+        }
+    }
+
+    private fun logoutUser() {
+        val companyID: String = SharedPreferencesUtils.getCompanyIDFromSharedPref(this)
+        ScannerAPI.getLoginService().logoutUser(companyID).enqueue(object: Callback<Void> {
+            override fun onResponse(
+                call: Call<Void>,
+                response: Response<Void>
+            ) {
+                // Log out and navigate to the login activity
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                startActivity(intent)
+                this@MainActivity.finish()
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                AlerterUtils.startNetworkErrorAlert(this@MainActivity)
+            }
+
+        })
+    }
+
+
+    private fun handleSessionTimeout(){
+        Toast.makeText(this, "You have been signed out due to inactivity.", Toast.LENGTH_LONG)
+            .show()
+        logoutUser()
+    }
+
     // Method called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         // Set the content view to the main activity layout
         @Suppress("UNUSED_VARIABLE")
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+
+        resetTimer()
 
         // Set the toolbar
         val toolbar = findViewById<Toolbar>(R.id.custom_toolbar)
@@ -86,6 +167,7 @@ class MainActivity : AppCompatActivity() {
 
 @Deprecated("Deprecated in Java")
 override fun onBackPressed() {
+    super.onBackPressed()
     val navController = this.findNavController( R.id.my_nav_host_fragment)
 //    if(navController.currentDestination?.id == R.id.orderPickingMainFragment) {
 //        val currentFragment = navController.currentDestination
@@ -108,15 +190,15 @@ override fun onBackPressed() {
             .setTitle("Log Out")
             .setMessage("Are you sure you want to log out?")
             .setPositiveButton("Yes") { _, _ ->
-
-                val intent = Intent(this@MainActivity, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
+                logoutUser()
             }
             .setNegativeButton("No", null)
             .show()
     }
 }
+
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == android.R.id.home){

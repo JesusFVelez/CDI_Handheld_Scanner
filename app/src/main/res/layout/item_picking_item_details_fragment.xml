@@ -118,22 +118,27 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/lowerDiv"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:background="@drawable/lower_portion_item_picking"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="100dp"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/middleDiv"
             app:layout_constraintVertical_bias="0.0">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:id="@+id/infoDiv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+
                 app:layout_constraintBottom_toTopOf="@+id/pickingButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -183,15 +188,30 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/pickItem2Text"
                     app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/WeightEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/weightHintText"
+                android:enabled="false"
+                android:inputType="numberDecimal"
+                app:layout_constraintTop_toBottomOf="@id/itemAmountEditText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/CustomUserInput"
+                android:imeOptions="actionDone"
+                />
 
             <Button
                 android:id="@+id/pickingButton"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
+                android:layout_marginTop="100dp"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/menu_option_button"
+                android:background="@drawable/ripple_effect_for_rectangle_buttons"
                 android:text="@string/pick_item"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -199,7 +219,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

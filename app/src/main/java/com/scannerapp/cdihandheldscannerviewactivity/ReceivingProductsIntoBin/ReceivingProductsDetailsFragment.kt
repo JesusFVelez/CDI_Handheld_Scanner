@@ -18,6 +18,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.DateUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ReceivingDetailsFragmentBinding
@@ -79,31 +80,6 @@ class ReceivingProductsDetailsFragment : Fragment() {
             addButton.text = "Save"
         }
     }
-    // Function to validate the date
-    private fun isValidDate(dateStr: String): Boolean {
-        val parts = dateStr.split("-")
-        if (parts.size == 3) {
-            val month = parts[0].toInt()
-            val day = parts[1].toInt()
-            val year = parts[2].toInt()
-
-            if (month !in 1..12) return false
-
-            val maxDays = when (month) {
-                1, 3, 5, 7, 8, 10, 12 -> 31
-                4, 6, 9, 11 -> 30
-                2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
-                else -> return false
-            }
-
-            if (day !in 1..maxDays) return false
-        } else {
-            return false
-        }
-
-        return true
-    }
-
     private fun initUIElements(){
         // text view initializations
         itemNumberTextView = binding.itemNumberTextView
@@ -206,10 +182,10 @@ class ReceivingProductsDetailsFragment : Fragment() {
                     val newExpirationDate = dateFormat.parse(expirationDate)
 
                     // Step 3: Validate the parsed date
-                    if (newExpirationDate != null && isValidDate(expirationDate)) {
+                    if (newExpirationDate != null && DateUtils.isValidDate(expirationDate)) {
                         val expirationDate = newExpirationDateEditText.text.toString()
                         val newLotNumber = newLotEditText.text.toString()
-                        val quantityToAddToDoor = quantityEditText.text.toString().toInt()
+                        val quantityToAddToDoor = quantityEditText.text.toString().toFloat().toInt()
                         val itemNumber = itemNumberTextView.text.toString()
                         val itemName = itemNameTextView.text.toString()
                         val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number

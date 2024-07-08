@@ -77,6 +77,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     }
 
 
+
     override fun onResume() {
         super.onResume()
 
@@ -99,7 +100,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     // Handle onPause lifecycle event
     override fun onPause() {
         super.onPause()
-
     }
 
 

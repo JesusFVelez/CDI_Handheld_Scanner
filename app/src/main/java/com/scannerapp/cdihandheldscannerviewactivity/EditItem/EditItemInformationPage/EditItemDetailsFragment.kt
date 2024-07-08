@@ -1,6 +1,9 @@
-package com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberDataChangeAndDisplay
+package com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemInformationPage
 
 import android.app.Dialog
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -9,12 +12,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.compose.ui.graphics.ColorFilter.Companion.tint
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot.AssignExpirationDateAndLotNumberViewModel
+import androidx.navigation.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemViewModel
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.DateUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
@@ -24,17 +31,17 @@ import java.util.Date
 import java.util.Locale
 
 
-class AssignExpirationDateAndLotNumberFragment : Fragment() {
+class EditItemDetailsFragment : Fragment() {
     private lateinit var binding: EditItemEditItemDetailsFragmentBinding
 
 
     /*Batch variables*/
-    private lateinit var ToggleButton: Button
     private var shouldShowMessage = true
     private var hasAPIBeenCalled = false
     private var isEnterPressed = false
-    private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
+    private val viewModel: EditItemViewModel by activityViewModels()
     private lateinit var progressDialog: Dialog
+    private lateinit var barcodeButton: FloatingActionButton
 
     override fun onCreate(saveInstance: Bundle?) {
         super.onCreate(saveInstance)
@@ -80,35 +87,16 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
     private fun setupUI() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
-        ToggleButton = binding.ToggleButton
-        // Set initial toggle button state to "off"
-        ToggleButton = binding.ToggleButton.apply {
-            background = resources.getDrawable(R.drawable.toggle_switch_outline_off, null) // Use app theme's context for compatibility
-            tag = "off" // Use tag to track the state of the toggle button
+        barcodeButton = binding.barcodeButton
+        barcodeButton.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        barcodeButton.setOnClickListener{
+            val itemInfo = viewModel.currentlyChosenItemForSearch.value!!
+            val action = EditItemDetailsFragmentDirections.actionEditItemDetailsFragmentToEditBarcodeFragment(itemInfo)
+               view?.findNavController()?.navigate(action)
         }
 
         // Initially disable New Lot EditText since toggle is off
         binding.newLotEditText.isEnabled = false
-
-        // Toggle Button click listener
-        ToggleButton.setOnClickListener {
-            if (it.tag == "off") {
-                // If the button is currently off, turn it on
-                it.background = resources.getDrawable(R.drawable.toggle_switch_on, null) // Use app theme's context for compatibility
-                it.tag = "on"
-                // Enable the New Lot EditText
-                binding.newLotEditText.isEnabled = true
-            } else {
-                // If the button is currently on, turn it off
-                it.background = resources.getDrawable(R.drawable.toggle_switch_outline_off, null) // Use app theme's context for compatibility
-                it.tag = "off"
-                // Disable the New Lot EditText and clear any text
-                binding.newLotEditText.apply {
-                    isEnabled = false
-                    text.clear()
-                }
-            }
-        }
 
         // Existing setupUI logic for the enter button
         binding.enterButton.setOnClickListener {
@@ -122,7 +110,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
             // Step 1: Validate date format
             val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
-            val isValidDateFormat = isValidDate(newExpirationDateStr)
+            val isValidDateFormat = DateUtils.isValidDate(newExpirationDateStr)
 
             // Step 2: Check if date format is valid
             if (isValidDateFormat) {
@@ -215,42 +203,6 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
     }
 
-    // Function to validate the date
-    private fun isValidDate(dateStr: String): Boolean {
-        val parts = dateStr.split("-")
-        if (parts.size == 3) {
-                val month = parts[0]
-                val day = parts[1]
-                val year = parts[2]
-
-                // Check if each part of the date is a valid number
-                if (month.length != 2 || !month.all { it.isDigit() } ||
-                    day.length != 2 || !day.all { it.isDigit() } ||
-                    (year.length != 2 && year.length != 4) || !year.all { it.isDigit() }) {
-                    return false
-                }
-
-                val monthInt = month.toInt()
-                val dayInt = day.toInt()
-                val yearInt = year.toInt()
-
-
-                if (monthInt !in 1..12) return false
-
-            val maxDays = when (monthInt) {
-                1, 3, 5, 7, 8, 10, 12 -> 31
-                4, 6, 9, 11 -> 30
-                2 -> if (yearInt % 4 == 0 && (yearInt % 100 != 0 || yearInt % 400 == 0)) 29 else 28
-                else -> return false
-            }
-
-            if (dayInt !in 1..maxDays) return false
-        } else {
-            return false
-        }
-
-        return true
-    }
 
     private fun initObservers() {
 
@@ -276,14 +228,15 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
 
         viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
-            itemInfo.firstOrNull()?.let { item ->
+            if(itemInfo != null) {
                 // Update UI
-                binding.itemNumberTextView.text = item.itemNumber
-                binding.itemNameTextView.text = item.itemDescription
-                binding.binLocationTextView.text = item.binLocation
-                binding.expirationDateTextView.text = item.expireDate ?: "N/A"
-                binding.lotTextView.text = item.lotNumber ?: "N/A"
+                binding.itemNumberTextView.text = itemInfo.itemNumber
+                binding.itemNameTextView.text = itemInfo.itemDescription
+                binding.binLocationTextView.text = itemInfo.binLocation
+                binding.expirationDateTextView.text = itemInfo.expireDate ?: "N/A"
+                binding.lotTextView.text = itemInfo.lotNumber ?: "N/A"
             }
+
         }
 
         // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
@@ -299,10 +252,7 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
                     // Parsing and formatting the date
                     val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Adjust this format to match the incoming date format
-                    val outputFormat = SimpleDateFormat("MM-dd-yyyy"
-
-
-                        , Locale.getDefault())
+                    val outputFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
                     val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
                     val formattedDate = if (date != null) outputFormat.format(date) else ""
 
@@ -313,15 +263,6 @@ class AssignExpirationDateAndLotNumberFragment : Fragment() {
 
                     val lotExists = !item.lotNumber.isNullOrEmpty()
                     newLotEditText.isEnabled = lotExists
-                    ToggleButton.apply {
-                        if (lotExists) {
-                            background = resources.getDrawable(R.drawable.toggle_switch_on, null)
-                            tag = "on"
-                        } else {
-                            background = resources.getDrawable(R.drawable.toggle_switch_outline_off, null)
-                            tag = "off"
-                        }
-                    }
                     upperDiv.visibility = View.VISIBLE
                 }
             }

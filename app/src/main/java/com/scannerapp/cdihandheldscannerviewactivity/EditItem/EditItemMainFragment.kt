@@ -1,4 +1,4 @@
-package com.scannerapp.cdihandheldscannerviewactivity.AssignExpirationDateAndLot
+package com.scannerapp.cdihandheldscannerviewactivity.EditItem
 
 import android.app.Dialog
 import android.content.Context
@@ -24,9 +24,9 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
 
 
-class SearchExpirationDateAndLotNumberFragment : Fragment() {
+class EditItemMainFragment : Fragment() {
     private lateinit var binding: EditItemMainFragmentBinding
-    private val viewModel: AssignExpirationDateAndLotNumberViewModel by activityViewModels()
+    private val viewModel: EditItemViewModel by activityViewModels()
     private lateinit var itemSuggestionAdapter: ItemSuggestionRecyclerViewAdapter
 
     private lateinit var progressDialog: Dialog
@@ -61,7 +61,7 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
 
         itemSuggestionAdapter = ItemSuggestionRecyclerViewAdapter(requireContext()) { selectedItem ->
             viewModel.setCurrentlyChosenItemForSearch(selectedItem)
-            navigateToAssignExpirationDateAndLotNumberFragment()
+            navigateToEditItemDetailsFragment()
         }
         binding.itemSearchList.adapter = itemSuggestionAdapter
 
@@ -70,8 +70,8 @@ class SearchExpirationDateAndLotNumberFragment : Fragment() {
         viewModel.fetchItemSuggestions() // Assuming this will populate `viewModel.suggestions`
     }
 
-    private fun navigateToAssignExpirationDateAndLotNumberFragment() {
-        view?.findNavController()?.navigate(R.id.action_SearchExpirationDateAndLotNumberFragment_to_AssignExpirationDateAndLotNumberFragment)
+    private fun navigateToEditItemDetailsFragment() {
+        view?.findNavController()?.navigate(R.id.action_editItemMainFragment_to_editItemDetailsFragment)
     }
 
     private fun initObservers() {

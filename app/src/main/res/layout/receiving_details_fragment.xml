@@ -149,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="30dp"
-                    android:background="@drawable/menu_option_button"
+                    android:background="@drawable/ripple_effect_for_rectangle_buttons"
                     android:text="Add"
                     android:textSize="20sp"
                     android:textStyle="bold"/>

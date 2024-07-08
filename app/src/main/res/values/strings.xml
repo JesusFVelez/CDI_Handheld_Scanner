@@ -54,4 +54,5 @@
     <string name="to_bin">To Bin</string>
     <string name="add_button">Add</string>
     <string name="clear_button">Clear</string>
+    <string name="weightHintText">Weight</string>
 </resources>

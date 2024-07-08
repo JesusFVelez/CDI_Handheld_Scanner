@@ -25,6 +25,7 @@ data class ItemsInOrderInfo(
     @Json(name = "itemDetails") val itemDetails: String,
     @Json(name = "itemPickingStatus") val itemPickingStatus: String,
     @Json(name = "quantityPicked") val quantityPicked: Float,
+    @Json(name = "weightPicked") val weightPicked: Float,
     @Json(name = "totalQuantityToBePicked") val totalQuantityToBePicked: Float,
     @Json(name = "pendingPickQtyInCases") val pendingPickQtyInCases: Float,
     @Json(name = "pendingPickQtyInIndividualUnits") val pendingPickQtyInIndividualUnits: Float,
@@ -34,6 +35,7 @@ data class ItemsInOrderInfo(
     @Json(name = "doesItemHaveSizes") val doesItemHaveSizes: Boolean,
     @Json(name = "doesItemHaveSerialNumber") val doesItemHaveSerialNumber: Boolean,
     @Json(name = "doesItemHaveEachesInOrder") val doesItemHaveEachesInOrder: Boolean,
+    @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
     @Json(name = "itemSize") val itemSize: String,
     @Json(name = "itemStyleColor") val itemStyleColor: String,
     @Json(name = "howManyIndividualQtysPerUOM") val howManyIndividualQtysPerUOM: Float,
@@ -68,7 +70,8 @@ data class ItemConfirmationResponseWrapper(
 data class responseItemConfirmation(
     @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
     @Json(name = "errorMessage") val errorMessage: String,
-    @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode:Float
+    @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode:Float,
+    @Json(name = "weightInBarcode") val weightInBarcode:Float
 )
 
 
