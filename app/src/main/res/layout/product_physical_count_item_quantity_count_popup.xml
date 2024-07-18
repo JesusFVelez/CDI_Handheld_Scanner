@@ -1,121 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/regular_popup_background"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/icon"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/information_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/regular_popup_background"
+        >
 
-    <TextView
-        android:id="@+id/enterItemQuantityText"
-        style="@style/PopupMessageBigText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Item Count"
-        app:layout_constraintEnd_toEndOf="@+id/icon"
-        app:layout_constraintStart_toStartOf="@+id/icon"
-        app:layout_constraintTop_toBottomOf="@+id/icon" />
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/information_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/EnterQuantitytoCount"
-        style="@style/PopupMessageBigText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter Quantity Counted"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/icon"
-        app:layout_constraintStart_toStartOf="@+id/icon"
-        app:layout_constraintTop_toBottomOf="@+id/enterItemQuantityText" />
+        <TextView
+            android:id="@+id/enterItemQuantityText"
+            style="@style/PopupMessageBigText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Item Count"
+            app:layout_constraintEnd_toEndOf="@+id/icon"
+            app:layout_constraintStart_toStartOf="@+id/icon"
+            app:layout_constraintTop_toBottomOf="@+id/icon" />
 
-    <include
-        android:id="@+id/selectedItem"
-        layout="@layout/product_physical_count_item_list_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/barcodeScannerEditText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/EnterQuantitytoCount" />
+        <TextView
+            android:id="@+id/EnterQuantitytoCount"
+            style="@style/PopupMessageBigText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Quantity Counted"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/icon"
+            app:layout_constraintStart_toStartOf="@+id/icon"
+            app:layout_constraintTop_toBottomOf="@+id/enterItemQuantityText" />
 
-    <EditText
-        android:id="@+id/barcodeScannerEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/edit_text_white_backgroung"
-        android:gravity="center"
-        android:hint="Scan Barcode"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectedItem" />
+        <include
+            android:id="@+id/selectedItem"
+            layout="@layout/product_physical_count_item_list_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/barcodeScannerEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/EnterQuantitytoCount" />
 
-    <TextView
-        android:id="@+id/scanToAddCount"
-        style="@style/PopupMessageBigText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:text="Scan to keep adding"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toTopOf="@+id/itemAmountEditText"
-        app:layout_constraintEnd_toEndOf="@+id/icon"
-        app:layout_constraintStart_toStartOf="@+id/icon"
-        app:layout_constraintTop_toBottomOf="@+id/barcodeScannerEditText" />
+        <EditText
+            android:id="@+id/barcodeScannerEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/edit_text_white_backgroung"
+            android:gravity="center"
+            android:hint="Scan Barcode"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectedItem" />
 
-    <EditText
-        android:id="@+id/itemAmountEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/edit_text_white_backgroung"
-        android:gravity="center"
-        android:hint="Item Count"
-        android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/weightEditText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barcodeScannerEditText" />
+        <TextView
+            android:id="@+id/scanToAddCount"
+            style="@style/PopupMessageBigText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:text="Scan to keep adding"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/itemAmountEditText"
+            app:layout_constraintEnd_toEndOf="@+id/icon"
+            app:layout_constraintStart_toStartOf="@+id/icon"
+            app:layout_constraintTop_toBottomOf="@+id/barcodeScannerEditText" />
 
-    <EditText
-        android:id="@+id/weightEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/edit_text_white_backgroung"
-        android:gravity="center"
-        android:hint="Weight"
-        android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/addButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <EditText
+            android:id="@+id/itemAmountEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/edit_text_white_backgroung"
+            android:gravity="center"
+            android:hint="Item Count"
+            android:inputType="number"
+            app:layout_constraintBottom_toTopOf="@+id/weightEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barcodeScannerEditText" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/addButton"
-        style="@style/PopupButtons"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Update"
-        android:backgroundTint="#DADBDD"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <EditText
+            android:id="@+id/weightEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/edit_text_white_backgroung"
+            android:gravity="center"
+            android:hint="Weight"
+            android:inputType="number"
+            app:layout_constraintBottom_toTopOf="@+id/addButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addButton"
+            style="@style/PopupButtons"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Update"
+            android:backgroundTint="#DADBDD"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

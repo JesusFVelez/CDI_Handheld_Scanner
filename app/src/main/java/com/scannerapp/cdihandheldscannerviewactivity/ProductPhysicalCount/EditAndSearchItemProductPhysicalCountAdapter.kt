@@ -172,5 +172,3 @@ class ItemAdapter(
         dialog.show()
     }
 }
-
-

@@ -85,7 +85,7 @@ class InventoryCountViewModel : ViewModel() {
     }
 
     fun isBinFullyCounted(binLocation: String): Boolean {
-        val itemsInBin = itemInfo.value?.filter { it.binLocation == binLocation }
+        val itemsInBin = itemInfo.value?.filter { it.binLocation.equals(binLocation, ignoreCase = true) }
         return itemsInBin?.all { it.inCount } == true
     }
 
@@ -101,7 +101,7 @@ class InventoryCountViewModel : ViewModel() {
                 Log.d("GetAllBinNumbers", "Response: ${response.response.ttBinInfo.ttBinInfo}")
                 _binInfo.value = response.response.ttBinInfo.ttBinInfo.map { bin ->
                     BinsByClassCodeByVendorAndByItemNumber(
-                        binLocation = bin.binLocation,
+                        binLocation = bin.binLocation.toUpperCase(),
                         classCode = "",  // Set default values or get them from another source if available
                         vendor = "",
                         itemNumber = ""
@@ -130,7 +130,7 @@ class InventoryCountViewModel : ViewModel() {
                 val response = ScannerAPI.getInventoryCountService().updateCount(
                     pItemNumber = itemNumberOrBarcodeToSend,
                     pWarehouseNo = pWarehouseNo,
-                    pBinLocation = pBinLocation,
+                    pBinLocation = pBinLocation.toUpperCase(),
                     pQtyCounted = pQtyCounted,
                     pCompanyID = pCompanyID
                 )
@@ -149,9 +149,6 @@ class InventoryCountViewModel : ViewModel() {
             }
         }
     }
-
-
-
 
     fun getAllItemsInBinForSuggestion(pBinLocation: String, pWarehouse: Int, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -187,7 +184,7 @@ class InventoryCountViewModel : ViewModel() {
 
                 val bins = response.response.ttBinInfo.ttBinInfo.map { bin ->
                     BinsByClassCodeByVendorAndByItemNumber(
-                        binLocation = bin.binLocation,
+                        binLocation = bin.binLocation.toUpperCase(),
                         classCode = bin.classCode ?: "N/A",
                         vendor = bin.vendor ?: "N/A",
                         itemNumber = bin.itemNumber ?: "N/A"
