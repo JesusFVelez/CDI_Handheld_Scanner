@@ -77,7 +77,7 @@ class BinWithProductViewHolder (binView: View): RecyclerView.ViewHolder(binView)
             "X" -> "Bin Type: Virtual Bin"
             else -> "Bin Type: "
         }
-        qtyOnHandAndInPickingTextView.text = "${data.QtyOnHand} / ${data.QtyInPicking}"
+        qtyOnHandAndInPickingTextView.text = "${data.QtyInPicking} / ${data.QtyOnHand}"
     }
 
 
