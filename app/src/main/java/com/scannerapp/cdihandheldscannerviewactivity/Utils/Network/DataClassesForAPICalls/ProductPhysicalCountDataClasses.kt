@@ -4,6 +4,23 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /*---------------------------------------------------------------*/
+/* Confirm Item Response Wrapper                                 */
+/*---------------------------------------------------------------*/
+@JsonClass(generateAdapter = true)
+data class ResponseItemConfirmWrapper(
+    @Json(name = "response") val response: ResponseItemConfirm
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseItemConfirm(
+    @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
+    @Json(name = "actualItemNumber") val actualItemNumber: String,
+    @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode: Double,
+    @Json(name = "weightInBarcode") val weightInBarcode: Double,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+/*---------------------------------------------------------------*/
 /* Get Item Details For Popup Response Wrapper                   */
 /*---------------------------------------------------------------*/
 @JsonClass(generateAdapter = true)
@@ -28,9 +45,10 @@ data class TtItemInf(
     @Json(name = "binLocation") val binLocation: String,
     @Json(name = "expireDate") val expireDate: String?,
     @Json(name = "lotNumber") val lotNumber: String,
-    @Json(name = "qtyCounted") val qtyCounted: Double,
+    @Json(name = "qtyCounted") val qtyCounted: Int,
     @Json(name = "inCount") val inCount: Boolean,
-    @Json(name = "barCode") val barCode: String?
+    @Json(name = "barCode") val barCode: String?,
+    @Json(name = "weight") val weight: Double       // Add weight property
 )
 
 /*---------------------------------------------------------------*/
@@ -75,7 +93,8 @@ data class TtItemInfo(
     @Json(name = "lotNumber") val lotNumber: String,
     @Json(name = "barCode") val barCode: String?,
     @Json(name = "qtyCounted") val qtyCounted: Int?,
-    @Json(name = "inCount") val inCount: Boolean    //Boolean For Counting status
+    @Json(name = "inCount") val inCount: Boolean,    // Boolean For Counting status
+    @Json(name = "weight") val weight: Double       // Add weight property
 )
 
 /*---------------------------------------------------------------*/

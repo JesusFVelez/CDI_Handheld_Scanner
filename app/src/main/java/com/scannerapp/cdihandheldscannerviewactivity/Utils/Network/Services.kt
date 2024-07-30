@@ -4,6 +4,7 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeByVendorAndByItemNumberResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetItemDetailsForPopupResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseItemConfirmWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.UpdateCountResponseWrapper
 import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkDetailsResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AddBarcodeToItemResponseWrapper
@@ -261,12 +262,20 @@ interface ViewProductsInBinServices{
 
 interface InventoryCountServices {
 
+    @GET("confirmItem")
+    suspend fun confirmItem(
+        @Query("scannedCode") scannedCode: String,
+        @Query("companyID") companyID: String,
+        @Query("warehouseNumber") warehouseNumber: Int
+    ): ResponseItemConfirmWrapper
+
     @PUT("UpdateCount")
     suspend fun updateCount(
-        @Query("pItemNumberOrBarCode") pItemNumber: String?,
+        @Query("pItemNumber") pItemNumber: String?,
         @Query("pWarehouseNo") pWarehouseNo: Int,
         @Query("pBinLocation") pBinLocation: String,
-        @Query("pQtyCounted") pQtyCounted: Double,
+        @Query("pQtyCounted") pQtyCounted: Int,
+        @Query("pWeight") pWeight: Double,
         @Query("pCompanyID") pCompanyID: String
     ): UpdateCountResponseWrapper
 

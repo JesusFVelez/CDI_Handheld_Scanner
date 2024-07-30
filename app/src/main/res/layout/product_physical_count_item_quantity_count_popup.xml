@@ -6,13 +6,9 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/regular_popup_background"
-        >
+        android:background="@drawable/regular_popup_background">
 
         <ImageView
             android:id="@+id/icon"
@@ -65,7 +61,7 @@
             android:background="@drawable/edit_text_white_backgroung"
             android:gravity="center"
             android:hint="Scan Barcode"
-            android:inputType="number"
+            android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/selectedItem" />
@@ -96,19 +92,21 @@
             app:layout_constraintBottom_toTopOf="@+id/weightEditText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barcodeScannerEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/barcodeScannerEditText"
+            app:layout_constraintVertical_bias="0.0" />
 
         <EditText
             android:id="@+id/weightEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/edit_text_white_backgroung"
             android:gravity="center"
             android:hint="Weight"
             android:inputType="number"
             app:layout_constraintBottom_toTopOf="@+id/addButton"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.488"
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -122,7 +120,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinsByClassCodeByVendorAndByItemNumber
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetItemDetailsForPopupResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseItemConfirmWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInf
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInfo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
@@ -59,6 +60,14 @@ class InventoryCountViewModel : ViewModel() {
     val countButtonPressed: LiveData<Boolean>
         get() = _countButtonPressed
 
+    private val _confirmItemResult = MutableLiveData<ResponseItemConfirmWrapper?>()
+    val confirmItemResult: LiveData<ResponseItemConfirmWrapper?>
+        get() = _confirmItemResult
+
+    private val _selectedBin = MutableLiveData<BinsByClassCodeByVendorAndByItemNumber?>()
+    val selectedBin: MutableLiveData<BinsByClassCodeByVendorAndByItemNumber?>
+        get() = _selectedBin
+
     // Added for saving filter states
     val enteredItemNumber = MutableLiveData<String>()
     val enteredVendor = MutableLiveData<String>()
@@ -70,6 +79,28 @@ class InventoryCountViewModel : ViewModel() {
     private var savedVendor: String = ""
     private var savedClassCode: String = ""
     private var savedLane: String = "ALL"
+
+    private val _shouldShowPopup = MutableLiveData<Boolean>(false)
+    val shouldShowPopup: LiveData<Boolean> get() = _shouldShowPopup
+
+    private val _shouldShowError = MutableLiveData<Boolean>(false)
+    val shouldShowError: LiveData<Boolean> get() = _shouldShowError
+
+    fun setSelectedBin(bin: BinsByClassCodeByVendorAndByItemNumber) {
+        _selectedBin.value = bin
+    }
+
+    fun clearSelectedBin() {
+        _selectedBin.value = null
+    }
+
+    fun setShouldShowPopup(show: Boolean) {
+        _shouldShowPopup.value = show
+    }
+
+    fun setShouldShowError(show: Boolean) {
+        _shouldShowError.value = show
+    }
 
     // Function to set the company ID from shared preferences
     fun setCompanyIDFromSharedPref(companyID: String) {
@@ -115,7 +146,7 @@ class InventoryCountViewModel : ViewModel() {
         }
     }
 
-    fun updateCount(pItemNumberOrBarCode: String, pWarehouseNo: Int, pBinLocation: String, pQtyCounted: Double, pCompanyID: String) {
+    fun updateCount(pItemNumber: String, pWarehouseNo: Int, pBinLocation: String, pQtyCounted: Double, pWeight: Double, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
@@ -124,14 +155,14 @@ class InventoryCountViewModel : ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val itemNumberOrBarcodeToSend: String? = if (pItemNumberOrBarCode.isEmpty()) null else pItemNumberOrBarCode
-                Log.d("Update Count", "Calling updateCount with: pItemNumberOrBarCode=$itemNumberOrBarcodeToSend, pWarehouseNo=$pWarehouseNo, pBinLocation=$pBinLocation, pQtyCounted=$pQtyCounted, pCompanyID=$pCompanyID")
+                Log.d("Update Count", "Calling updateCount with: pItemNumber=$pItemNumber, pWarehouseNo=$pWarehouseNo, pBinLocation=$pBinLocation, pQtyCounted=$pQtyCounted, pWeight=$pWeight, pCompanyID=$pCompanyID")
 
                 val response = ScannerAPI.getInventoryCountService().updateCount(
-                    pItemNumber = itemNumberOrBarcodeToSend,
+                    pItemNumber = pItemNumber,
                     pWarehouseNo = pWarehouseNo,
                     pBinLocation = pBinLocation.toUpperCase(),
-                    pQtyCounted = pQtyCounted,
+                    pQtyCounted = pQtyCounted.toInt(),
+                    pWeight = pWeight,
                     pCompanyID = pCompanyID
                 )
 
@@ -187,7 +218,7 @@ class InventoryCountViewModel : ViewModel() {
                         binLocation = bin.binLocation.toUpperCase(),
                         classCode = bin.classCode ?: "N/A",
                         vendor = bin.vendor ?: "N/A",
-                        itemNumber = bin.itemNumber ?: "N/A"
+                        itemNumber = bin.itemNumber ?: pItemNumber // Use the item number from the parameter if it's not available
                     )
                 }
                 Log.d("GetBinsByAll", "Parsed Bins: $bins")
@@ -200,6 +231,7 @@ class InventoryCountViewModel : ViewModel() {
             }
         }
     }
+
 
     fun getItemDetailsForPopup(pItemNumberOrBarCode: String, pWarehouse: Int, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -242,6 +274,28 @@ class InventoryCountViewModel : ViewModel() {
             }
         }
     }
+
+    fun confirmItem(scannedCode: String, companyID: String, warehouseNumber: Int) {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
+            Log.e("Confirm Item", "Exception -> ${exception.localizedMessage}")
+        }
+
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                val response = ScannerAPI.getInventoryCountService().confirmItem(scannedCode, companyID, warehouseNumber)
+                _confirmItemResult.value = response
+                _wasLastAPICallSuccessful.value = true
+                Log.d("Confirm Item", "Response: $response")
+            } catch (e: Exception) {
+                _wasLastAPICallSuccessful.value = false
+                _opMessage.value = "Failed to confirm item: ${e.localizedMessage}"
+                Log.e("Confirm Item", "Exception -> ${e.localizedMessage}")
+            }
+        }
+    }
+
 
     fun saveFilterStates(context: Context) {
         savedClassCode = enteredClassCode.value ?: ""
