@@ -41,6 +41,9 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     // Define the type explicitly for barcodeScannerEditText
     private lateinit var barcodeScannerEditText: EditText
 
+    // Flag to track if the request is from the count button
+    private var isFromCountButton: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -64,6 +67,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         itemAdapter = ItemAdapter(requireContext(), viewModel, this) { selectedItem ->
             viewModel.setShouldShowPopup(true)
             viewModel.setShouldShowError(true)
+            isFromCountButton = false // Reset the flag when selecting an item from the list
             fetchItemDetails(selectedItem.itemNumber)
         }
         binding.itemSearchList.adapter = itemAdapter
@@ -85,6 +89,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                 viewModel.setCountButtonPressed(true)
                 viewModel.setShouldShowPopup(true)
                 viewModel.setShouldShowError(true)
+                isFromCountButton = true
                 fetchItemDetails(query)
             } else {
                 viewModel.setShouldShowError(true)
@@ -99,6 +104,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                     viewModel.setCountButtonPressed(true)
                     viewModel.setShouldShowPopup(true)
                     viewModel.setShouldShowError(true)
+                    isFromCountButton = true
                     fetchItemDetails(query)
                 } else {
                     viewModel.setShouldShowError(true)
@@ -112,7 +118,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     }
 
     private fun fetchItemsInBin() {
-        val selectedBin = viewModel.setCurrentlySelectedBin.value
+        val selectedBin = viewModel.selectedBin.value
         val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
         viewModel.setWarehouseNumberFromSharedPref(warehouseNO)
 
@@ -162,6 +168,12 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         viewModel.confirmItemResult.observe(viewLifecycleOwner) { confirmResult ->
             if (confirmResult != null) {
                 handleConfirmItemResult(confirmResult)
+            }
+        }
+
+        viewModel.selectedBin.observe(viewLifecycleOwner) { selectedBin ->
+            if (selectedBin != null) {
+                fetchItemsInBin()
             }
         }
     }
@@ -216,7 +228,6 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         }
     }
 
-
     private fun showPopupDialog(item: TtItemInf) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.product_physical_count_item_quantity_count_popup, null)
         val dialog = Dialog(requireContext())
@@ -232,11 +243,16 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         itemNumberTextView.text = item.itemNumber
         descriptionTextView.text = item.itemDescription
         expirationDateTextView.text = item.expireDate ?: "N/A"
-        binLocationTextView.text = item.binLocation
+        binLocationTextView.text = viewModel.selectedBin.value?.binLocation ?: "N/A"
         lotNumberTextView.text = item.lotNumber ?: "N/A"
 
         val itemAmountEditText = dialogView.findViewById<EditText>(R.id.itemAmountEditText)
-        itemAmountEditText.setText(if (item.qtyCounted != null && item.qtyCounted != 0) item.qtyCounted.toString() else "")
+        if (isFromCountButton) {
+            // Clear the qtyCounted if coming from count button
+            itemAmountEditText.setText("")
+        } else {
+            itemAmountEditText.setText(if (item.qtyCounted != null && item.qtyCounted != 0) item.qtyCounted.toString() else "")
+        }
         itemAmountEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 lastSelectedEditText = itemAmountEditText
@@ -256,7 +272,12 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         currentItemAmountEditText = itemAmountEditText
 
         val weightEditText = dialogView.findViewById<EditText>(R.id.weightEditText)
-        weightEditText.setText(if (item.weight != 0.0) item.weight.toString() else "")
+        if (isFromCountButton) {
+            // Clear the weight if coming from count button
+            weightEditText.setText("")
+        } else {
+            weightEditText.setText(if (item.weight != 0.0) item.weight.toString() else "")
+        }
         weightEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 lastSelectedEditText = weightEditText
@@ -279,17 +300,20 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             if (quantity >= 0 && weight >= 0.0) {
                 val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                 val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+
+                val selectedBinLocation = viewModel.selectedBin.value?.binLocation ?: ""
+
                 viewModel.updateCount(
                     pItemNumber = item.itemNumber,
                     pWarehouseNo = warehouseNO,
-                    pBinLocation = item.binLocation,
+                    pBinLocation = selectedBinLocation,
                     pQtyCounted = quantity.toDouble(),
                     pWeight = weight,
                     pCompanyID = companyID
                 )
                 dialog.dismiss()
                 viewModel.getAllItemsInBinForSuggestion(
-                    pBinLocation = item.binLocation,
+                    pBinLocation = selectedBinLocation,
                     pWarehouse = warehouseNO,
                     pCompanyID = companyID
                 )
@@ -304,7 +328,6 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                 weightEditText.error = "Please enter a valid weight"
             }
         }
-
 
         barcodeScannerEditText = dialogView.findViewById(R.id.barcodeScannerEditText)
         barcodeScannerEditText.addTextChangedListener(object : TextWatcher {
@@ -328,9 +351,6 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             }
         })
 
-
-
-
         dialog.show()
     }
 
@@ -341,6 +361,3 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         }
     }
 }
-
-
-

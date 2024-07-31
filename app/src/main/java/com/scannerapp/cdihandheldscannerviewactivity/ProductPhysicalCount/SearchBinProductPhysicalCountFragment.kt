@@ -70,7 +70,8 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         binItemAdapter = BinItemAdapter(requireContext()) { selectedBin ->
-            navigateToEditAndSearchItemFragment(selectedBin)
+            viewModel.setSelectedBin(selectedBin)
+            navigateToEditAndSearchItemFragment()
         }
         binding.binSearchList.adapter = binItemAdapter
 
@@ -175,8 +176,9 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             onItemClickListener = AdapterView.OnItemClickListener { parent: AdapterView<*>, _, position: Int, _ ->
                 val selectedBinLocation = parent.getItemAtPosition(position) as String
                 val selectedBin = newBinSuggestion.first { it.binLocation.equals(selectedBinLocation, ignoreCase = true) }
+                viewModel.setSelectedBin(selectedBin)
                 binItemAdapter.updateData(listOf(selectedBin))
-                navigateToEditAndSearchItemFragment(selectedBin)
+                navigateToEditAndSearchItemFragment()
             }
         }
 
@@ -200,8 +202,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         })
     }
 
-    private fun navigateToEditAndSearchItemFragment(selectedBin: BinsByClassCodeByVendorAndByItemNumber) {
-        viewModel.setCurrentlySelectedBin(selectedBin)
+    private fun navigateToEditAndSearchItemFragment() {
         view?.findNavController()?.navigate(R.id.EditAndSearchItemProductPhysicalCountFragment)
     }
 

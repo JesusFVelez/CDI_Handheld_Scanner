@@ -64,6 +64,14 @@ class InventoryCountViewModel : ViewModel() {
     val confirmItemResult: LiveData<ResponseItemConfirmWrapper?>
         get() = _confirmItemResult
 
+    private val _shouldShowPopup = MutableLiveData<Boolean>(false)
+    val shouldShowPopup: LiveData<Boolean>
+        get() = _shouldShowPopup
+
+    private val _shouldShowError = MutableLiveData<Boolean>(false)
+    val shouldShowError: LiveData<Boolean>
+        get() = _shouldShowError
+
     private val _selectedBin = MutableLiveData<BinsByClassCodeByVendorAndByItemNumber?>()
     val selectedBin: MutableLiveData<BinsByClassCodeByVendorAndByItemNumber?>
         get() = _selectedBin
@@ -73,6 +81,7 @@ class InventoryCountViewModel : ViewModel() {
     val enteredVendor = MutableLiveData<String>()
     val enteredClassCode = MutableLiveData<String>()
     val selectedLane = MutableLiveData<String>("ALL")
+    val enteredBinNumber = MutableLiveData<String>()
 
     // Local variables to hold the filter states
     private var savedItemNumber: String = ""
@@ -80,11 +89,8 @@ class InventoryCountViewModel : ViewModel() {
     private var savedClassCode: String = ""
     private var savedLane: String = "ALL"
 
-    private val _shouldShowPopup = MutableLiveData<Boolean>(false)
-    val shouldShowPopup: LiveData<Boolean> get() = _shouldShowPopup
 
-    private val _shouldShowError = MutableLiveData<Boolean>(false)
-    val shouldShowError: LiveData<Boolean> get() = _shouldShowError
+
 
     fun setSelectedBin(bin: BinsByClassCodeByVendorAndByItemNumber) {
         _selectedBin.value = bin
@@ -109,10 +115,6 @@ class InventoryCountViewModel : ViewModel() {
 
     fun setWarehouseNumberFromSharedPref(warehouseNumber: Int) {
         _warehouseNO.value = warehouseNumber
-    }
-
-    fun setCurrentlySelectedBin(selectedBin: BinsByClassCodeByVendorAndByItemNumber) {
-        _currentlyChosenItemForSearch.value = selectedBin
     }
 
     fun isBinFullyCounted(binLocation: String): Boolean {
