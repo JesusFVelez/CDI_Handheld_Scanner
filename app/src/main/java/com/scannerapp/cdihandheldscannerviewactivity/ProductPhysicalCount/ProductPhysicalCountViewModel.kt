@@ -117,10 +117,6 @@ class InventoryCountViewModel : ViewModel() {
         _warehouseNO.value = warehouseNumber
     }
 
-    fun isBinFullyCounted(binLocation: String): Boolean {
-        val itemsInBin = itemInfo.value?.filter { it.binLocation.equals(binLocation, ignoreCase = true) }
-        return itemsInBin?.all { it.inCount } == true
-    }
 
     fun getAllBinNumbers(pCompanyID: String, pWarehouse: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->

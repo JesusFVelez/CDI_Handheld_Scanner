@@ -24,6 +24,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.EditItemEditItemDetailsFragmentBinding
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.Date
 import java.util.Locale
 
@@ -131,6 +132,9 @@ class EditItemDetailsFragment : Fragment() {
                         }
                         viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDateStr, lotNumber, warehouseNO)
                         viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
+                    }
+                    else if (newExpirationDateStr <= LocalDateTime.now().toString()){
+                        AlerterUtils.startWarningAlerter(requireActivity(), "Item has bin changes to an expired date!")
                     }
                     if (lotNumber.isEmpty()) {
                         AlerterUtils.startSuccessAlert(requireActivity(), "Success!", "Item information changed.")
