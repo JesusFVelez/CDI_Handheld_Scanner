@@ -144,7 +144,7 @@ class InventoryCountViewModel : ViewModel() {
         }
     }
 
-    fun updateCount(pItemNumber: String, pWarehouseNo: Int, pBinLocation: String, pQtyCounted: Double, pWeight: Double, pCompanyID: String) {
+    fun updateCount(pItemNumber: String, pExpireDate: String, pLotNumber: String, pWarehouseNo: Int, pBinLocation: String, pQtyCounted: Double, pWeight: Double, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
@@ -153,10 +153,15 @@ class InventoryCountViewModel : ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                Log.d("Update Count", "Calling updateCount with: pItemNumber=$pItemNumber, pWarehouseNo=$pWarehouseNo, pBinLocation=$pBinLocation, pQtyCounted=$pQtyCounted, pWeight=$pWeight, pCompanyID=$pCompanyID")
+                Log.d(
+                    "Update Count",
+                    "Calling updateCount with: pItemNumber=$pItemNumber, pWarehouseNo=$pWarehouseNo, pBinLocation=$pBinLocation, pQtyCounted=$pQtyCounted, pWeight=$pWeight, pCompanyID=$pCompanyID, pExpireDate=$pExpireDate, pLotNumber=$pLotNumber"
+                )
 
                 val response = ScannerAPI.getInventoryCountService().updateCount(
                     pItemNumber = pItemNumber,
+                    pExpireDate = pExpireDate,
+                    pLotNumber = pLotNumber,
                     pWarehouseNo = pWarehouseNo,
                     pBinLocation = pBinLocation.toUpperCase(),
                     pQtyCounted = pQtyCounted.toInt(),
@@ -179,6 +184,7 @@ class InventoryCountViewModel : ViewModel() {
         }
     }
 
+
     fun getAllItemsInBinForSuggestion(pBinLocation: String, pWarehouse: Int, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
@@ -187,7 +193,8 @@ class InventoryCountViewModel : ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getInventoryCountService().getAllItemsInBinForSuggestion(pBinLocation, pWarehouse, pCompanyID)
+                val response = ScannerAPI.getInventoryCountService()
+                    .getAllItemsInBinForSuggestion(pBinLocation, pWarehouse, pCompanyID)
                 val items = response.response.ttItemInfo.ttItemInfo.map { item ->
                     item.copy(expireDate = item.expireDate ?: "N/A")
                 }
@@ -239,7 +246,6 @@ class InventoryCountViewModel : ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                Log.d("ViewModel", "Calling getItemDetailsForPopup with item: $pItemNumberOrBarCode, warehouse: $pWarehouse, company: $pCompanyID")
                 val call = ScannerAPI.getInventoryCountService().getItemDetailsForPopup(pItemNumberOrBarCode, pWarehouse, pCompanyID)
                 call.enqueue(object : Callback<GetItemDetailsForPopupResponseWrapper> {
                     override fun onResponse(
@@ -254,7 +260,6 @@ class InventoryCountViewModel : ViewModel() {
 
                             _itemInfoPopUp.postValue(items)
                             _wasLastAPICallSuccessful.postValue(true)
-                            Log.d("ViewModel", "getItemDetailsForPopup successful: $items")
                         } else {
                             _wasLastAPICallSuccessful.postValue(false)
                             Log.e("ViewModel", "getItemDetailsForPopup response not successful, code: ${response.code()}, message: ${response.message()}")
@@ -272,6 +277,7 @@ class InventoryCountViewModel : ViewModel() {
             }
         }
     }
+
 
     fun confirmItem(scannedCode: String, companyID: String, warehouseNumber: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->

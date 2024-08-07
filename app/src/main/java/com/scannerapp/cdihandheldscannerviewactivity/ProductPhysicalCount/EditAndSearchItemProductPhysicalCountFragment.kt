@@ -3,6 +3,7 @@ package com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount
 import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -23,6 +24,8 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     private lateinit var binding: ProductPhysicalCountItemListFragmentBinding
@@ -68,7 +71,21 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             viewModel.setShouldShowPopup(true)
             viewModel.setShouldShowError(true)
             isFromCountButton = false // Reset the flag when selecting an item from the list
-            fetchItemDetails(selectedItem.itemNumber)
+
+            // Convert TtItemInfo to TtItemInf
+            val itemInf = TtItemInf(
+                itemNumber = selectedItem.itemNumber,
+                itemDescription = selectedItem.itemDescription,
+                binLocation = selectedItem.binLocation,
+                expireDate = selectedItem.expireDate,
+                lotNumber = selectedItem.lotNumber ?: "",
+                qtyCounted = selectedItem.qtyCounted ?: 0,
+                inCount = selectedItem.inCount,
+                barCode = selectedItem.barCode,
+                weight = selectedItem.weight ?: 0.0
+            )
+
+            showPopupDialog(itemInf)
         }
         binding.itemSearchList.adapter = itemAdapter
 
@@ -187,18 +204,17 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     }
 
     private fun handleConfirmItemResult(confirmResult: ResponseItemConfirmWrapper) {
-        if (confirmResult.response.wasItemConfirmed == true) {
+        if (confirmResult.response.wasItemConfirmed) {
             val selectedItemNumberTextView = currentItemNumberTextView
-            if (selectedItemNumberTextView != null && !selectedItemNumberTextView.text.isNullOrEmpty() && confirmResult.response.actualItemNumber == selectedItemNumberTextView.text.toString()) {
+            if (selectedItemNumberTextView != null && selectedItemNumberTextView.text.toString() == confirmResult.response.actualItemNumber) {
                 if (currentItemAmountEditText != null && currentWeightEditText != null) {
                     val currentCount = currentItemAmountEditText?.text.toString().toIntOrNull() ?: 0
                     val newCount = currentCount + 1
                     currentItemAmountEditText?.setText(newCount.toString())
 
-                    // After updating the item count, refocus to barcodeScannerEditText
                     barcodeScannerEditText.requestFocus()
                     barcodeScannerEditText.post {
-                        barcodeScannerEditText.text.clear()  // Optionally clear text if needed right away
+                        barcodeScannerEditText.text.clear()
                     }
 
                     if (currentWeightEditText?.text.toString().isEmpty()) {
@@ -242,29 +258,40 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         itemNumberTextView.text = item.itemNumber
         descriptionTextView.text = item.itemDescription
-        expirationDateTextView.text = item.expireDate ?: "N/A"
+
+        // Define date formats
+        val originalFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val targetFormat = SimpleDateFormat("MM-dd-yyyy", Locale.US)
+        originalFormat.isLenient = false
+
+        // Format expiration date for display
+        val expirationDate = item.expireDate?.let {
+            try {
+                originalFormat.parse(it)?.let { date ->
+                    targetFormat.format(date)
+                }
+            } catch (e: Exception) {
+                null
+            }
+        }
+        expirationDateTextView.text = expirationDate ?: "N/A"
+
         binLocationTextView.text = viewModel.selectedBin.value?.binLocation ?: "N/A"
         lotNumberTextView.text = item.lotNumber ?: "N/A"
 
         val itemAmountEditText = dialogView.findViewById<EditText>(R.id.itemAmountEditText)
-        if (isFromCountButton) {
-            // Clear the qtyCounted if coming from count button
-            itemAmountEditText.setText("")
-        } else {
-            itemAmountEditText.setText(if (item.qtyCounted != null && item.qtyCounted != 0) item.qtyCounted.toString() else "")
-        }
+        itemAmountEditText.setText(if (isFromCountButton) "" else (item.qtyCounted?.toString() ?: ""))
         itemAmountEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 lastSelectedEditText = itemAmountEditText
             }
         }
-        itemAmountEditText.setOnKeyListener { v, keyCode, event ->
+        itemAmountEditText.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                // Prevent default enter behavior
                 barcodeScannerEditText.requestFocus()
-                true // Handle the event and stop propagation
+                true
             } else {
-                false // Do not intercept other key events
+                false
             }
         }
 
@@ -272,35 +299,104 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         currentItemAmountEditText = itemAmountEditText
 
         val weightEditText = dialogView.findViewById<EditText>(R.id.weightEditText)
-        if (isFromCountButton) {
-            // Clear the weight if coming from count button
-            weightEditText.setText("")
-        } else {
-            weightEditText.setText(if (item.weight != 0.0) item.weight.toString() else "")
-        }
+        weightEditText.setText(if (isFromCountButton) "" else (item.weight?.toString() ?: ""))
         weightEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 lastSelectedEditText = weightEditText
             }
         }
-        weightEditText.setOnKeyListener { v, keyCode, event ->
+        weightEditText.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                // Prevent default enter behavior
                 barcodeScannerEditText.requestFocus()
-                true // Handle the event and stop propagation
+                true
             } else {
-                false // Do not intercept other key events
+                false
             }
         }
         currentWeightEditText = weightEditText
 
+        val expireDateEditText = dialogView.findViewById<EditText>(R.id.dateEditText)
+        val lotNumberEditText = dialogView.findViewById<EditText>(R.id.lotEditText)
+
+        // Set expiration date for EditText
+        expireDateEditText.setText(
+            if (isFromCountButton) "" else expirationDate ?: ""
+        )
+        lotNumberEditText.setText(if (isFromCountButton) "" else (item.lotNumber ?: ""))
+
+        expireDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        expireDateEditText.addTextChangedListener(object : TextWatcher {
+            private var previousText: String = ""
+            private var lastCursorPosition: Int = 0
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                previousText = s.toString()
+                lastCursorPosition = expireDateEditText.selectionStart
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val currentText = s.toString()
+                val deleting = currentText.length < previousText.length
+
+                if (currentText.length > 10) {
+                    val truncatedText = currentText.substring(0, 10)
+                    expireDateEditText.setText(truncatedText)
+                    expireDateEditText.setSelection(truncatedText.length)
+                    return
+                }
+
+                if (!deleting) {
+                    when (currentText.length) {
+                        2, 5 -> if (!previousText.endsWith("-")) {
+                            expireDateEditText.setText("$currentText-")
+                            expireDateEditText.setSelection(currentText.length + 1)
+                        }
+                    }
+                } else {
+                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
+                        expireDateEditText.setText(currentText.dropLast(1))
+                        expireDateEditText.setSelection(expireDateEditText.text.length)
+                    } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {
+                        val newPosition = lastCursorPosition - 2
+                        val newText = StringBuilder(previousText).apply {
+                            deleteCharAt(newPosition)
+                        }.toString()
+                        expireDateEditText.setText(newText)
+                        expireDateEditText.setSelection(newPosition)
+                    }
+                }
+            }
+        })
+
         dialogView.findViewById<AppCompatButton>(R.id.addButton).setOnClickListener {
             val quantity = itemAmountEditText.text.toString().toIntOrNull() ?: 0
             val weight = weightEditText.text.toString().toDoubleOrNull() ?: 0.0
+
+            // Determine which date to use and format it for the API call
+            val dateInput = if (expireDateEditText.text.isNotEmpty()) {
+                expireDateEditText.text.toString()
+            } else {
+                expirationDateTextView.text.toString()
+            }
+
+            val formattedExpireDate = dateInput.let {
+                try {
+                    targetFormat.parse(it)?.let { date ->
+                        originalFormat.format(date)
+                    }
+                } catch (e: Exception) {
+                    // Handle parsing exceptions (e.g., log the error)
+                    it
+                }
+            } ?: ""
+
+            val lotNumber = lotNumberEditText.text.toString()
+
             if (quantity >= 0 && weight >= 0.0) {
                 val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                 val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-
                 val selectedBinLocation = viewModel.selectedBin.value?.binLocation ?: ""
 
                 viewModel.updateCount(
@@ -309,7 +405,9 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                     pBinLocation = selectedBinLocation,
                     pQtyCounted = quantity.toDouble(),
                     pWeight = weight,
-                    pCompanyID = companyID
+                    pCompanyID = companyID,
+                    pExpireDate = formattedExpireDate,
+                    pLotNumber = lotNumber
                 )
                 dialog.dismiss()
                 viewModel.getAllItemsInBinForSuggestion(
@@ -318,7 +416,6 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                     pCompanyID = companyID
                 )
 
-                // Focus back on barcodeScannerEditText
                 barcodeScannerEditText.post {
                     barcodeScannerEditText.requestFocus()
                     barcodeScannerEditText.text.clear()
@@ -332,9 +429,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         barcodeScannerEditText = dialogView.findViewById(R.id.barcodeScannerEditText)
         barcodeScannerEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
             override fun afterTextChanged(s: Editable?) {
                 val barcode = s.toString().trim()
                 if (barcode.isNotEmpty()) {
@@ -342,7 +437,6 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                     val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
                     viewModel.confirmItem(scannedCode = barcode, companyID = companyID, warehouseNumber = warehouseNO)
 
-                    // Clear the text and refocus on the barcodeScannerEditText
                     barcodeScannerEditText.post {
                         barcodeScannerEditText.requestFocus()
                         barcodeScannerEditText.text.clear()
@@ -354,10 +448,11 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         dialog.show()
     }
 
+
     private fun showError(message: String) {
         if (viewModel.shouldShowError.value == true) {
             AlerterUtils.startErrorAlerter(requireActivity(), message)
             viewModel.setShouldShowError(false)
         }
     }
-}
+} 

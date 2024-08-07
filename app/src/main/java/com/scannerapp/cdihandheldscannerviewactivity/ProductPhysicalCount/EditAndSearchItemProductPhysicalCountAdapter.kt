@@ -10,7 +10,8 @@ import com.comdist.cdihandheldscannerviewactivity.InventoryCount.InventoryCountV
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.TtItemInfo
 import com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount.EditAndSearchItemProductPhysicalCountFragment
 import com.scannerapp.cdihandheldscannerviewactivity.R
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ItemAdapter(
     private val context: Context,
@@ -26,7 +27,6 @@ class ItemAdapter(
         val expirationDateTextView: TextView = view.findViewById(R.id.orderDateValueTextView)
         val binLocationTextView: TextView = view.findViewById(R.id.binLocationTextView)
         val lotNumberTextView: TextView = view.findViewById(R.id.dateWantedValueTextView)
-        val countedTextView: TextView = view.findViewById(R.id.CountedTextView)
         val qtyCountedTextView: TextView = view.findViewById(R.id.CountedTextView)
     }
 
@@ -39,23 +39,30 @@ class ItemAdapter(
         val item = items[position]
         holder.itemNumberTextView.text = item.itemNumber
         holder.descriptionTextView.text = item.itemDescription
-        holder.expirationDateTextView.text = item.expireDate ?: "N/A"
+
+        // Change date format from yyyy-mm-dd to mm-dd-yyyy
+        val originalFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val targetFormat = SimpleDateFormat("MM-dd-yyyy", Locale.US)
+        val date = item.expireDate?.let {
+            try {
+                originalFormat.parse(it)
+            } catch (e: Exception) {
+                null
+            }
+        }
+        holder.expirationDateTextView.text = date?.let { targetFormat.format(it) } ?: "N/A"
+
         holder.binLocationTextView.text = item.binLocation
         holder.lotNumberTextView.text = item.lotNumber ?: "N/A"
 
         if (item.inCount) {
-            holder.countedTextView.visibility = View.VISIBLE
             holder.qtyCountedTextView.visibility = View.VISIBLE
-            holder.qtyCountedTextView.text = "Counted: ${item.qtyCounted}" // Set the qtyCounted text
+            holder.qtyCountedTextView.text = "Counted: ${item.qtyCounted}"
         } else {
-            holder.countedTextView.visibility = View.GONE
             holder.qtyCountedTextView.visibility = View.GONE
         }
 
         holder.itemView.setOnClickListener {
-            val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(context)
-            val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(context)
-            viewModel.getItemDetailsForPopup(item.itemNumber, warehouseNO, companyID)
             onItemClick(item)
         }
     }

@@ -104,6 +104,34 @@
             android:gravity="center"
             android:hint="Weight"
             android:inputType="number"
+            app:layout_constraintBottom_toTopOf="@+id/dateEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.488"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/dateEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edit_text_white_backgroung"
+            android:gravity="center"
+            android:hint="Edit Date"
+            android:inputType="number"
+            app:layout_constraintBottom_toTopOf="@+id/lotEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.488"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/lotEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edit_text_white_backgroung"
+            android:gravity="center"
+            android:hint="Edit Lot"
+            android:inputType="number"
             app:layout_constraintBottom_toTopOf="@+id/addButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.488"

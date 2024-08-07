@@ -276,7 +276,9 @@ interface InventoryCountServices {
         @Query("pBinLocation") pBinLocation: String,
         @Query("pQtyCounted") pQtyCounted: Int,
         @Query("pWeight") pWeight: Double,
-        @Query("pCompanyID") pCompanyID: String
+        @Query("pCompanyID") pCompanyID: String,
+        @Query("pExpireDate") pExpireDate: String,
+        @Query("pLotNumber") pLotNumber: String
     ): UpdateCountResponseWrapper
 
     @GET("getAllItemsInBinForSuggestion")
