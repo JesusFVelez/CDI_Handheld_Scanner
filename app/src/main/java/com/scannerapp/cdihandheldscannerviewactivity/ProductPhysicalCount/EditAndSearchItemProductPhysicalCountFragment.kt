@@ -25,6 +25,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
@@ -420,6 +421,15 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                     barcodeScannerEditText.requestFocus()
                     barcodeScannerEditText.text.clear()
                 }
+
+                // Check if the entered date is in the past
+                val enteredDate = targetFormat.parse(dateInput)
+                if (enteredDate != null && enteredDate.before(Date())) {
+                    AlerterUtils.startWarningAlerter(
+                        requireActivity(),
+                        "You have entered an expired date!"
+                    )
+                }
             } else {
                 itemAmountEditText.error = "Please enter a valid number"
                 weightEditText.error = "Please enter a valid weight"
@@ -447,6 +457,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         dialog.show()
     }
+
 
 
     private fun showError(message: String) {
