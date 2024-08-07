@@ -48,6 +48,9 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     // Flag to track if the request is from the count button
     private var isFromCountButton: Boolean = false
 
+    // Flag to track if the popup should be displayed
+    private var shouldShowPopup: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -62,6 +65,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         binding.itemSearchEditText.text.clear()
+        shouldShowPopup = false // Reset the flag to prevent unintended popup displays
         fetchItemsInBin()
     }
 
@@ -69,6 +73,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         itemAdapter = ItemAdapter(requireContext(), viewModel, this) { selectedItem ->
+            shouldShowPopup = true
             viewModel.setShouldShowPopup(true)
             viewModel.setShouldShowError(true)
             isFromCountButton = false // Reset the flag when selecting an item from the list
@@ -104,6 +109,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         binding.countButton.setOnClickListener {
             val query = binding.itemSearchEditText.text.toString().trim()
             if (query.isNotEmpty()) {
+                shouldShowPopup = true
                 viewModel.setCountButtonPressed(true)
                 viewModel.setShouldShowPopup(true)
                 viewModel.setShouldShowError(true)
@@ -119,6 +125,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 val query = binding.itemSearchEditText.text.toString().trim()
                 if (query.isNotEmpty()) {
+                    shouldShowPopup = true
                     viewModel.setCountButtonPressed(true)
                     viewModel.setShouldShowPopup(true)
                     viewModel.setShouldShowError(true)
@@ -167,9 +174,10 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         viewModel.itemInfoPopUp.observe(viewLifecycleOwner) { itemDetails ->
             progressDialog.dismiss()
-            if (viewModel.shouldShowPopup.value == true && itemDetails.isNotEmpty()) {
+            if (shouldShowPopup && itemDetails.isNotEmpty()) {
                 showPopupDialog(itemDetails.first())
                 viewModel.setShouldShowPopup(false)
+                shouldShowPopup = false
             }
         }
 
@@ -234,11 +242,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                     currentWeightEditText?.setText(newWeight.toString())
 
                     AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item confirmed: ${confirmResult.response.actualItemNumber}")
-                } else {
-                    showError("Item confirmation failed: Item amount or weight EditText is null")
                 }
-            } else {
-                showError("Item confirmation failed: Item numbers do not match or selected item number is empty")
             }
         } else {
             showError("Item confirmation failed: ${confirmResult.response.errorMessage}")
@@ -458,12 +462,10 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         dialog.show()
     }
 
-
-
     private fun showError(message: String) {
         if (viewModel.shouldShowError.value == true) {
             AlerterUtils.startErrorAlerter(requireActivity(), message)
             viewModel.setShouldShowError(false)
         }
     }
-} 
+}
