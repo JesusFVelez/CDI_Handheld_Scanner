@@ -88,7 +88,9 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                 qtyCounted = selectedItem.qtyCounted ?: 0,
                 inCount = selectedItem.inCount,
                 barCode = selectedItem.barCode,
-                weight = selectedItem.weight ?: 0.0
+                weight = selectedItem.weight ?: 0.0,
+                doesItemHaveWeight = selectedItem.doesItemHaveWeight,
+                isItemInIvlot = selectedItem.isItemInIvlot
             )
 
             showPopupDialog(itemInf)
@@ -174,10 +176,14 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         viewModel.itemInfoPopUp.observe(viewLifecycleOwner) { itemDetails ->
             progressDialog.dismiss()
-            if (shouldShowPopup && itemDetails.isNotEmpty()) {
-                showPopupDialog(itemDetails.first())
-                viewModel.setShouldShowPopup(false)
-                shouldShowPopup = false
+            if (shouldShowPopup) {
+                if (itemDetails.isNotEmpty()) {
+                    showPopupDialog(itemDetails.first())
+                    viewModel.setShouldShowPopup(false)
+                    shouldShowPopup = false
+                } else {
+                    showError("No item found for the provided details.")
+                }
             }
         }
 
@@ -203,6 +209,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             }
         }
     }
+
 
     private fun filterItemList(query: String) {
         val filteredList = viewModel.itemInfo.value?.filter { item ->
@@ -305,6 +312,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         val weightEditText = dialogView.findViewById<EditText>(R.id.weightEditText)
         weightEditText.setText(if (isFromCountButton) "" else (item.weight?.toString() ?: ""))
+        weightEditText.isEnabled = item.doesItemHaveWeight // Enable or disable based on doesItemHaveWeight
         weightEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 lastSelectedEditText = weightEditText
@@ -322,6 +330,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         val expireDateEditText = dialogView.findViewById<EditText>(R.id.dateEditText)
         val lotNumberEditText = dialogView.findViewById<EditText>(R.id.lotEditText)
+        lotNumberEditText.isEnabled = item.isItemInIvlot // Enable or disable based on isItemInIvlot
 
         // Set expiration date for EditText
         expireDateEditText.setText(
