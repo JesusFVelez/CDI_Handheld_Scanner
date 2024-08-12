@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -69,7 +70,8 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         binItemAdapter = BinItemAdapter(requireContext()) { selectedBin ->
-            navigateToEditAndSearchItemFragment(selectedBin)
+            viewModel.setSelectedBin(selectedBin)
+            navigateToEditAndSearchItemFragment()
         }
         binding.binSearchList.adapter = binItemAdapter
 
@@ -82,21 +84,24 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         binding.classCodeFilterButton.setOnClickListener {
             handleSingleFilterButton(
                 binding.classCodeFilterButton,
-                viewModel.enteredClassCode
+                viewModel.enteredClassCode,
+                "Class Code"
             )
         }
 
         binding.VendorFilterButton.setOnClickListener {
             handleSingleFilterButton(
                 binding.VendorFilterButton,
-                viewModel.enteredVendor
+                viewModel.enteredVendor,
+                "Vendor"
             )
         }
 
         binding.ItemNumberFilterButton.setOnClickListener {
             handleSingleFilterButton(
                 binding.ItemNumberFilterButton,
-                viewModel.enteredItemNumber
+                viewModel.enteredItemNumber,
+                "Item Number"
             )
         }
 
@@ -104,7 +109,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val trimmedText = s.toString().trim()
+                val trimmedText = s.toString().trim().toUpperCase()
                 if (trimmedText.isEmpty()) {
                     applyFilters()
                 } else {
@@ -122,16 +127,19 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
     private fun handleSingleFilterButton(
         button: View,
-        filter: MutableLiveData<String>
+        filter: MutableLiveData<String>,
+        prefix: String
     ) {
-        val filterValue = binding.binNumberSearchEditText.text.toString().trim()
+        val filterValue = binding.binNumberSearchEditText.text.toString().trim().toUpperCase()
 
         if (filterValue.isNotEmpty()) {
             filter.value = filterValue
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+            (button as? Button)?.text = "$prefix: $filterValue"
         } else {
             filter.value = ""
             button.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+            (button as? Button)?.text = prefix
         }
         applyCombinedFilters()
         binding.binNumberSearchEditText.text.clear() // Clear the text after applying filters
@@ -160,16 +168,17 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     }
 
     private fun initBinAutoCompleteTextView(newBinSuggestion: List<BinsByClassCodeByVendorAndByItemNumber>) {
-        val autoCompleteAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, newBinSuggestion.map { it.binLocation })
+        val autoCompleteAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, newBinSuggestion.map { it.binLocation.toUpperCase() })
         (binding.binNumberSearchEditText as? AutoCompleteTextView)?.apply {
             setAdapter(autoCompleteAdapter)
             threshold = 1
 
             onItemClickListener = AdapterView.OnItemClickListener { parent: AdapterView<*>, _, position: Int, _ ->
                 val selectedBinLocation = parent.getItemAtPosition(position) as String
-                val selectedBin = newBinSuggestion.first { it.binLocation == selectedBinLocation }
+                val selectedBin = newBinSuggestion.first { it.binLocation.equals(selectedBinLocation, ignoreCase = true) }
+                viewModel.setSelectedBin(selectedBin)
                 binItemAdapter.updateData(listOf(selectedBin))
-                navigateToEditAndSearchItemFragment(selectedBin)
+                navigateToEditAndSearchItemFragment()
             }
         }
 
@@ -177,7 +186,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val trimmedText = s.toString().trim()
+                val trimmedText = s.toString().trim().toUpperCase()
                 if (trimmedText.isEmpty()) {
                     applyFilters()
                 } else {
@@ -193,21 +202,22 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         })
     }
 
-    private fun navigateToEditAndSearchItemFragment(selectedBin: BinsByClassCodeByVendorAndByItemNumber) {
-        viewModel.setCurrentlySelectedBin(selectedBin)
+    private fun navigateToEditAndSearchItemFragment() {
         view?.findNavController()?.navigate(R.id.EditAndSearchItemProductPhysicalCountFragment)
     }
 
     private fun showLaneSelectionDialog() {
-        val lanes = allBinInfo.map { it.binLocation.take(2) }.distinct().sorted().toMutableList().apply { add(0, "ALL") }.toTypedArray()
+        val lanes = allBinInfo.map { it.binLocation.take(2).toUpperCase() }.distinct().sorted().toMutableList().apply { add(0, "ALL") }.toTypedArray()
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Select Lane")
             setItems(lanes) { _, which ->
                 viewModel.selectedLane.value = lanes[which]
                 if (viewModel.selectedLane.value != "ALL") {
                     binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+                    binding.laneFilterButton.text = "Lane: ${viewModel.selectedLane.value}"
                 } else {
                     binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+                    binding.laneFilterButton.text = "Lane"
                 }
                 applyFilters()
             }
@@ -260,30 +270,38 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
         // Restore the state of the class code filter button
         binding.classCodeFilterButton.backgroundTintList = if (lastEnteredClassCode.isNotEmpty()) {
+            binding.classCodeFilterButton.text = "Class Code: $lastEnteredClassCode"
             ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
         } else {
+            binding.classCodeFilterButton.text = "Class Code"
             ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
         }
 
         // Restore the state of the vendor filter button
         binding.VendorFilterButton.backgroundTintList = if (lastEnteredVendor.isNotEmpty()) {
+            binding.VendorFilterButton.text = "Vendor: $lastEnteredVendor"
             ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
         } else {
+            binding.VendorFilterButton.text = "Vendor"
             ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
         }
 
         // Restore the state of the item number filter button
         binding.ItemNumberFilterButton.backgroundTintList = if (lastEnteredItemNumber.isNotEmpty()) {
+            binding.ItemNumberFilterButton.text = "Item Number: $lastEnteredItemNumber"
             ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
         } else {
+            binding.ItemNumberFilterButton.text = "Item Number"
             ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
         }
 
         // Restore the state of the lane filter button
         viewModel.selectedLane.value?.let { selectedLane ->
             binding.laneFilterButton.backgroundTintList = if (selectedLane != "ALL") {
+                binding.laneFilterButton.text = "Lane: $selectedLane"
                 ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
             } else {
+                binding.laneFilterButton.text = "Lane"
                 ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
             }
         }

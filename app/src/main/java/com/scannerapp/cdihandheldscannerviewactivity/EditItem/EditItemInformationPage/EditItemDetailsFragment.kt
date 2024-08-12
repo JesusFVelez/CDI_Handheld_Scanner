@@ -3,7 +3,6 @@ package com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemInformati
 import android.app.Dialog
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -11,8 +10,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.compose.ui.graphics.ColorFilter.Companion.tint
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -70,12 +67,12 @@ class EditItemDetailsFragment : Fragment() {
         super.onResume()
         val bundle = arguments
         val lastFragmentName: String = BundleUtils.getPastFragmentNameFromBundle(bundle)
-        if(lastFragmentName == "SearchExpirationDateAndLotNumberFragment") {
+        if (lastFragmentName == "SearchExpirationDateAndLotNumberFragment") {
             binding.upperDiv.visibility = View.GONE
             shouldShowMessage = false
             bundle?.clear()
-        }else{
-           shouldShowMessage = true
+        } else {
+            shouldShowMessage = true
         }
     }
 
@@ -89,10 +86,13 @@ class EditItemDetailsFragment : Fragment() {
 
         barcodeButton = binding.barcodeButton
         barcodeButton.imageTintList = ColorStateList.valueOf(Color.WHITE)
-        barcodeButton.setOnClickListener{
+        barcodeButton.setOnClickListener {
             val itemInfo = viewModel.currentlyChosenItemForSearch.value!!
-            val action = EditItemDetailsFragmentDirections.actionEditItemDetailsFragmentToEditBarcodeFragment(itemInfo)
-               view?.findNavController()?.navigate(action)
+            val action =
+                EditItemDetailsFragmentDirections.actionEditItemDetailsFragmentToEditBarcodeFragment(
+                    itemInfo
+                )
+            view?.findNavController()?.navigate(action)
         }
 
         // Initially disable New Lot EditText since toggle is off
@@ -120,33 +120,64 @@ class EditItemDetailsFragment : Fragment() {
                 // Step 3: Check if parsed date is valid
                 if (newExpirationDate != null) {
                     progressDialog.show()
-                    val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+                    val warehouseNO =
+                        SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                     viewModel.setWarehouseNOFromSharedPref(warehouseNO)
 
-                    val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+                    val companyID =
+                        SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
                     viewModel.setCompanyIDFromSharedPref(companyID)
 
                     if (newExpirationDateStr.isNotEmpty()) {
                         hasAPIBeenCalled = true
-                        if (lotNumber.isNotEmpty()){
-                            viewModel.assignLotNumber(itemNumber, warehouseNO, binNumber, lotNumber, companyID, oldLot)
+                        if (lotNumber.isNotEmpty()) {
+                            viewModel.assignLotNumber(
+                                itemNumber,
+                                warehouseNO,
+                                binNumber,
+                                lotNumber,
+                                companyID,
+                                oldLot
+                            )
                             viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
                         }
-                        viewModel.assignExpirationDate(itemNumber, binNumber, newExpirationDateStr, lotNumber, warehouseNO)
+                        viewModel.assignExpirationDate(
+                            itemNumber,
+                            binNumber,
+                            newExpirationDateStr,
+                            lotNumber,
+                            warehouseNO
+                        )
                         viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
                     }
+                    // Corrected logic to compare date objects
+                    if (newExpirationDate.before(Date())) {
+                        AlerterUtils.startWarningAlerter(
+                            requireActivity(),
+                            "Item has bin changes to an expired date!"
+                        )
+                    }
                     if (lotNumber.isEmpty()) {
-                        AlerterUtils.startSuccessAlert(requireActivity(), "Success!", "Item information changed.")
+                        AlerterUtils.startSuccessAlert(
+                            requireActivity(),
+                            "Success!",
+                            "Item information changed."
+                        )
                     }
                 } else {
                     // If the parsed date is null, display an error message
-                    AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        "Invalid date format. Please use MM-DD-YYYY."
+                    )
                 }
             } else {
                 // If the date format is invalid, display an error message
-                AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    "Invalid date format. Please use MM-DD-YYYY."
+                )
             }
-
         }
 
         // Add this line in your setupUI function
@@ -186,11 +217,15 @@ class EditItemDetailsFragment : Fragment() {
                     }
                 } else {
                     // Remove the last character if it's a dash, maintaining proper date format as the user deletes characters.
-                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
+                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith(
+                            "-"
+                        )
+                    ) {
                         binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
                         binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
                     } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
-                        val newPosition = lastCursorPosition - 2  // Position to remove the number before the dash.
+                        val newPosition =
+                            lastCursorPosition - 2  // Position to remove the number before the dash.
                         val newText = StringBuilder(previousText).apply {
                             deleteCharAt(newPosition)  // Remove the number before the dash.
                         }.toString()
@@ -200,9 +235,7 @@ class EditItemDetailsFragment : Fragment() {
                 }
             }
         })
-
     }
-
 
     private fun initObservers() {
 
@@ -213,9 +246,13 @@ class EditItemDetailsFragment : Fragment() {
             val message = viewModel.opMessage.value ?: "No message available"
 
             if (isEnterPressed && shouldShowMessage) {
-                if (success ) {
+                if (success) {
                     // If the operation was successful, show a success alert
-                    AlerterUtils.startSuccessAlert(requireActivity(), "Success!", "Item information changed.")
+                    AlerterUtils.startSuccessAlert(
+                        requireActivity(),
+                        "Success!",
+                        "Item information changed."
+                    )
                 } else if (!success) {
                     // If the operation failed, show an error alert
                     AlerterUtils.startErrorAlerter(requireActivity(), message)
@@ -226,9 +263,8 @@ class EditItemDetailsFragment : Fragment() {
             }
         }
 
-
         viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
-            if(itemInfo != null) {
+            if (itemInfo != null) {
                 // Update UI
                 binding.itemNumberTextView.text = itemInfo.itemNumber
                 binding.itemNameTextView.text = itemInfo.itemDescription
@@ -236,14 +272,12 @@ class EditItemDetailsFragment : Fragment() {
                 binding.expirationDateTextView.text = itemInfo.expireDate ?: "N/A"
                 binding.lotTextView.text = itemInfo.lotNumber ?: "N/A"
             }
-
         }
 
         // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
         viewModel.currentlyChosenItemForSearch.observe(viewLifecycleOwner) { selectedItem ->
             selectedItem?.let { item ->
                 binding.apply {
-
                     itemNumberTextView.text = item.itemNumber
                     itemNameTextView.text = item.itemDescription
                     binLocationTextView.text = item.binLocation
@@ -251,7 +285,10 @@ class EditItemDetailsFragment : Fragment() {
                     lotTextView.text = item.lotNumber ?: "N/A"
 
                     // Parsing and formatting the date
-                    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Adjust this format to match the incoming date format
+                    val inputFormat = SimpleDateFormat(
+                        "yyyy-MM-dd",
+                        Locale.getDefault()
+                    ) // Adjust this format to match the incoming date format
                     val outputFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
                     val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
                     val formattedDate = if (date != null) outputFormat.format(date) else ""
@@ -268,16 +305,12 @@ class EditItemDetailsFragment : Fragment() {
             }
         }
 
-
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             progressDialog.dismiss()
             if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
-                //AlerterUtils.startErrorAlerter(requireActivity(), "There was an error with last operation. Try again.")
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
     }
-
-
 }
 

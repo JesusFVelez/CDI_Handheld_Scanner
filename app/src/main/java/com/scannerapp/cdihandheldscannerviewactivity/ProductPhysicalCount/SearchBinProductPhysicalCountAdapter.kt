@@ -26,7 +26,7 @@ class BinItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item: BinsByClassCodeByVendorAndByItemNumber = items[position]
-        holder.binLocationTextView.text = item.binLocation
+        holder.binLocationTextView.text = item.binLocation.toUpperCase()
         holder.itemView.setOnClickListener {
             onItemClick(item)
         }

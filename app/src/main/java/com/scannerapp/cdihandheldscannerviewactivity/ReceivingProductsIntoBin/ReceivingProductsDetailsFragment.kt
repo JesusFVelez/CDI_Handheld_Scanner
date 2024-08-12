@@ -1,4 +1,5 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoBin
+
 import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
@@ -24,33 +25,30 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ReceivingDetailsFragmentBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class ReceivingProductsDetailsFragment : Fragment() {
 
     private lateinit var binding: ReceivingDetailsFragmentBinding
-
     private val viewModel: ReceivingProductsViewModel by activityViewModels()
 
     // TextView declarations
     private lateinit var itemNumberTextView: TextView
     private lateinit var itemNameTextView: TextView
 
-
-    //EditText declarations
+    // EditText declarations
     private lateinit var newLotEditText: EditText
     private lateinit var quantityEditText: EditText
     private lateinit var newExpirationDateEditText: EditText
     private lateinit var scanItemEditText: EditText
     private lateinit var weightEditText: EditText
 
-
     // Button declarations
     private lateinit var addButton: Button
 
-    //Loading declaration
+    // Loading declaration
     private lateinit var progressDialog: Dialog
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,21 +70,22 @@ class ReceivingProductsDetailsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         val bundle = arguments
-        val lastFragmentName : String = BundleUtils.getPastFragmentNameFromBundle(bundle)
-        if(lastFragmentName == "ReceivingProductsMainFragment" && viewModel.willEditCurrentValues.value!!){
+        val lastFragmentName: String = BundleUtils.getPastFragmentNameFromBundle(bundle)
+        if (lastFragmentName == "ReceivingProductsMainFragment" && viewModel.willEditCurrentValues.value!!) {
             populateUpperDivUiElements()
             populateEditTextWithViewModelValues()
             viewModel.willNotEditCurrentValues()
             addButton.text = "Save"
         }
     }
-    private fun initUIElements(){
-        // text view initializations
+
+    private fun initUIElements() {
+        // TextView initializations
         itemNumberTextView = binding.itemNumberTextView
         itemNameTextView = binding.itemNameTextView
         populateUpperDivUiElements()
 
-        // edit text initializations
+        // EditText initializations
         newLotEditText = binding.newLotAutoCompleteTextView
         quantityEditText = binding.QuantityEditText
         newExpirationDateEditText = binding.NewExpirationDateEditText
@@ -103,14 +102,11 @@ class ReceivingProductsDetailsFragment : Fragment() {
         }
         weightEditText = binding.WeightEditText
 
-        // button initializations
+        // Button initializations
         addButton = binding.addButton
 
         // Loading initialization
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
-
-
-
 
         // Validates whether item uses lot number or not
         val canEditLotNumber = viewModel.itemInfo.value!!.doesItemUseLotNumber
@@ -139,6 +135,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                 if (currentText.length > 10) {
                     // If the user attempts to input more than 10 characters, revert to the previous valid input.
                     newExpirationDateEditText.setText(previousText)
+                    newExpirationDateEditText.setSelection(newExpirationDateEditText.text.length)
                     return
                 }
 
@@ -174,7 +171,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         // Setting onClickListeners
         addButton.setOnClickListener {
             val areNecessaryFieldsFilled = verifyIfAllNecessaryFieldsAreFilled()
-            if(areNecessaryFieldsFilled){
+            if (areNecessaryFieldsFilled) {
                 val expirationDate = newExpirationDateEditText.text.toString()
 
                 val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
@@ -183,7 +180,6 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
                     // Step 3: Validate the parsed date
                     if (newExpirationDate != null && DateUtils.isValidDate(expirationDate)) {
-                        val expirationDate = newExpirationDateEditText.text.toString()
                         val newLotNumber = newLotEditText.text.toString()
                         val quantityToAddToDoor = quantityEditText.text.toString().toFloat().toInt()
                         val itemNumber = itemNumberTextView.text.toString()
@@ -192,12 +188,17 @@ class ReceivingProductsDetailsFragment : Fragment() {
                         val doesItemUseLotNumber = viewModel.itemInfo.value!!.doesItemUseLotNumber
 
                         var weight = 0f
-                        if(weightEditText.text.isNotEmpty())
+                        if (weightEditText.text.isNotEmpty())
                             weight = weightEditText.text.toString().toFloat()
 
-                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "00P111", doorBin , itemNumber, newLotNumber, weight, quantityToAddToDoor, doesItemUseLotNumber ,"N/A")
+                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "00P111", doorBin, itemNumber, newLotNumber, weight, quantityToAddToDoor, doesItemUseLotNumber, "N/A")
                         progressDialog.show()
                         viewModel.moveItemToDoor(itemToAdd)
+
+                        // Check if the new expiration date is before the current date
+                        if (newExpirationDate.before(Date())) {
+                            AlerterUtils.startWarningAlerter(requireActivity(), "Item has been added with an expired date!")
+                        }
                     } else {
                         // Step 4: Show an error message for invalid date
                         AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date. Please enter a valid date (MM-DD-YYYY).")
@@ -205,38 +206,36 @@ class ReceivingProductsDetailsFragment : Fragment() {
                 } catch (e: ParseException) {
                     AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
                 }
-            }else{
-                AlerterUtils.startErrorAlerter(requireActivity(), "Please fill all required fields, excluding lot number")
+            } else {
+                AlerterUtils.startErrorAlerter(requireActivity(), "Please fill all required fields, excluding lot number.")
             }
         }
-
     }
 
-    private fun initObservers(){
-        // This is what scanning the barcode in the image gets you 01908829248514173201000120110807032134796105
-        viewModel.wasItemConfirmed.observe(viewLifecycleOwner){wasItemConfirmed ->
-            if(wasItemConfirmed && viewModel.hasAPIBeenCalled.value!!){
+    private fun initObservers() {
+        viewModel.wasItemConfirmed.observe(viewLifecycleOwner) { wasItemConfirmed ->
+            if (wasItemConfirmed && viewModel.hasAPIBeenCalled.value!!) {
                 progressDialog.dismiss()
 
                 val quantity = viewModel.UOMQtyInBarcode.value!!
                 var decimalQuantityInEditText = 0f
-                if(quantityEditText.text.isNotEmpty())
+                if (quantityEditText.text.isNotEmpty())
                     decimalQuantityInEditText = quantityEditText.text.toString().toFloat()
 
-                if(quantity > 0)
+                if (quantity > 0)
                     quantityEditText.setText((decimalQuantityInEditText + quantity).toString())
                 else
                     quantityEditText.setText((decimalQuantityInEditText + 1).toString())
 
                 val weight = viewModel.weightFromBarcode.value!!
                 var currentWeight = 0f
-                if(weightEditText.text.isNotEmpty())
+                if (weightEditText.text.isNotEmpty())
                     currentWeight = weightEditText.text.toString().toFloat()
-                if(weight > 0)
+                if (weight > 0)
                     weightEditText.setText((currentWeight + weight).toString())
 
                 viewModel.resetHasAPIBeenCalled()
-            }else if(viewModel.hasAPIBeenCalled.value!!){
+            } else if (viewModel.hasAPIBeenCalled.value!!) {
                 progressDialog.dismiss()
                 viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmItem"]!!)
@@ -244,31 +243,29 @@ class ReceivingProductsDetailsFragment : Fragment() {
             scanItemEditText.setText("")
         }
 
-        viewModel.wasItemMovedToDoor.observe(viewLifecycleOwner){wasItemMovedToDoor ->
+        viewModel.wasItemMovedToDoor.observe(viewLifecycleOwner) { wasItemMovedToDoor ->
             progressDialog.dismiss()
-            if(wasItemMovedToDoor && viewModel.hasAPIBeenCalled.value!!){
+            if (wasItemMovedToDoor && viewModel.hasAPIBeenCalled.value!!) {
                 viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item was added successfully to door bin")
                 findNavController().navigateUp()
-            }else if(viewModel.hasAPIBeenCalled.value!!){
+            } else if (viewModel.hasAPIBeenCalled.value!!) {
                 viewModel.resetHasAPIBeenCalled()
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemMovedToDoorError"]!!)
             }
             viewModel.resetHasAPIBeenCalled()
         }
 
-        viewModel.wasLasAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
-            if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!! ){
+        viewModel.wasLasAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
+            if (!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!) {
                 viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
-
-
     }
 
-    private fun populateEditTextWithViewModelValues(){
+    private fun populateEditTextWithViewModelValues() {
         val adapterPositionInMainFragment = viewModel.currentlyChosenAdapterPosition.value!!
         val expirationDate = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].expirationDate
         val lotNumber = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].lotNumber
@@ -280,14 +277,14 @@ class ReceivingProductsDetailsFragment : Fragment() {
         quantityEditText.setText(quantityBeingMoved)
         weightEditText.setText(weight.toString())
     }
-    private fun populateUpperDivUiElements(){
+
+    private fun populateUpperDivUiElements() {
         itemNameTextView.text = viewModel.itemInfo.value!!.itemDescription
         itemNumberTextView.text = viewModel.itemInfo.value!!.itemNumber
     }
 
-    private fun verifyIfAllNecessaryFieldsAreFilled():Boolean{
+    private fun verifyIfAllNecessaryFieldsAreFilled(): Boolean {
         val doesItemHaveWeight = viewModel.itemInfo.value!!.doesItemHaveWeight
         return quantityEditText.text.isNotEmpty() && newExpirationDateEditText.text.isNotEmpty() && ((doesItemHaveWeight && weightEditText.text.isNotEmpty()) || !doesItemHaveWeight)
     }
-
 }

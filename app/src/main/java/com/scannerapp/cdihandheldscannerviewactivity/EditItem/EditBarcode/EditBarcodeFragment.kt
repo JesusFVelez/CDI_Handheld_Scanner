@@ -23,7 +23,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils.Companion.PopupInputListener
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.EditItemEditBarcodeFragmentBinding
-import com.tapadoo.alerter.Alerter
 
 class EditBarcodeFragment : Fragment() {
 

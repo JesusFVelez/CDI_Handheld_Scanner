@@ -3,9 +3,8 @@ package com.scannerapp.cdihandheldscannerviewactivity.Utils.Network
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllBinNumbersResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinResponseWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeByVendorAndByItemNumberResponseWrapper
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByClassCodeResponseWrapper
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByItemNumberResponseWrapper
-import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetBinsByVendorResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetItemDetailsForPopupResponseWrapper
+import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseItemConfirmWrapper
 import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.UpdateCountResponseWrapper
 import com.example.cdihandheldscannerviewactivity.Utils.Network.NetworkDetailsResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.AddBarcodeToItemResponseWrapper
@@ -263,13 +262,24 @@ interface ViewProductsInBinServices{
 
 interface InventoryCountServices {
 
+    @GET("confirmItem")
+    suspend fun confirmItem(
+        @Query("scannedCode") scannedCode: String,
+        @Query("companyID") companyID: String,
+        @Query("warehouseNumber") warehouseNumber: Int,
+        @Query("actualItemNumber") actualItemNumber: String
+    ): ResponseItemConfirmWrapper
+
     @PUT("UpdateCount")
     suspend fun updateCount(
-        @Query("pItemNumber") pItemNumber: String,
+        @Query("pItemNumber") pItemNumber: String?,
         @Query("pWarehouseNo") pWarehouseNo: Int,
         @Query("pBinLocation") pBinLocation: String,
-        @Query("pQtyCounted") pQtyCounted: Double,
-        @Query("pCompanyID") pCompanyID: String
+        @Query("pQtyCounted") pQtyCounted: Int,
+        @Query("pWeight") pWeight: Double,
+        @Query("pCompanyID") pCompanyID: String,
+        @Query("pExpireDate") pExpireDate: String,
+        @Query("pLotNumber") pLotNumber: String
     ): UpdateCountResponseWrapper
 
     @GET("getAllItemsInBinForSuggestion")
@@ -294,26 +304,12 @@ interface InventoryCountServices {
         @Query("pWarehouseNo") pWarehouseNo: Int
     ): GetAllBinNumbersResponseWrapper
 
-    @GET("GetBinsByClassCode")
-    suspend fun getBinsByClassCode(
-        @Query("pClassCode") pClassCode: String,
-        @Query("pCompanyID") pCompanyID: String,
-        @Query("pWarehouseNo") pWarehouseNo: Int
-    ): GetBinsByClassCodeResponseWrapper
-
-    @GET("GetBinsByVendor")
-    suspend fun getBinsByVendor(
-        @Query("pVendor") pVendor: String,
-        @Query("pCompanyID") pCompanyID: String,
-        @Query("pWarehouseNo") pWarehouseNo: Int
-    ): GetBinsByVendorResponseWrapper
-
-    @GET("GetBinsByItemNumber")
-    suspend fun getBinsByItemNumber(
-        @Query("pItemNumber") pItemNumber: String,
-        @Query("pCompanyID") pCompanyID: String,
-        @Query("pWarehouseNo") pWarehouseNo: Int
-    ): GetBinsByItemNumberResponseWrapper
+    @GET("getItemDetailsForPopup")
+    fun getItemDetailsForPopup(
+        @Query("pItemNumberOrBarCode") itemNumberOrBarCode: String,
+        @Query("pWarehouse") warehouse: Int,
+        @Query("pCompanyID") companyID: String
+    ): Call<GetItemDetailsForPopupResponseWrapper>
 }
 
 interface EditItemServices{

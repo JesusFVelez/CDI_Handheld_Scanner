@@ -25,18 +25,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/countButton"
+            style="@style/PopupButtons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="25dp"
+            android:layout_weight="1"
+            android:backgroundTint="#DADBDD"
+            android:text="Count"
+            app:layout_constraintEnd_toEndOf="@+id/itemSearchEditText"
+            app:layout_constraintStart_toStartOf="@+id/itemSearchEditText"
+            app:layout_constraintTop_toBottomOf="@+id/itemSearchEditText" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/itemSearchList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="5dp"
             android:visibility="visible"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/itemSearchEditText"
-            app:layout_constraintVertical_bias="1.0">
+            app:layout_constraintTop_toBottomOf="@+id/countButton">
 
         </androidx.recyclerview.widget.RecyclerView>
 

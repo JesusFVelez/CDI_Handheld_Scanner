@@ -4,6 +4,55 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /*---------------------------------------------------------------*/
+/* Confirm Item Response Wrapper                                 */
+/*---------------------------------------------------------------*/
+@JsonClass(generateAdapter = true)
+data class ResponseItemConfirmWrapper(
+    @Json(name = "response") val response: ResponseItemConfirm
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseItemConfirm(
+    @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
+    @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode: Double,
+    @Json(name = "weightInBarcode") val weightInBarcode: Double,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+/*---------------------------------------------------------------*/
+/* Get Item Details For Popup Response Wrapper                   */
+/*---------------------------------------------------------------*/
+@JsonClass(generateAdapter = true)
+data class GetItemDetailsForPopupResponseWrapper(
+    @Json(name = "response") val response: GetItemDetailsForPopupResponse
+)
+
+@JsonClass(generateAdapter = true)
+data class GetItemDetailsForPopupResponse(
+    @Json(name = "ttItemInfo") val ttItemInfo: TtItemInfoWrapp
+)
+
+@JsonClass(generateAdapter = true)
+data class TtItemInfoWrapp(
+    @Json(name = "ttItemInfo") val ttItemInfo: List<TtItemInf>
+)
+
+@JsonClass(generateAdapter = true)
+data class TtItemInf(
+    @Json(name = "itemNumber") val itemNumber: String,
+    @Json(name = "itemDescription") val itemDescription: String,
+    @Json(name = "binLocation") val binLocation: String,
+    @Json(name = "expireDate") val expireDate: String?,
+    @Json(name = "lotNumber") val lotNumber: String,
+    @Json(name = "qtyCounted") val qtyCounted: Int,
+    @Json(name = "inCount") val inCount: Boolean,
+    @Json(name = "barCode") val barCode: String?,
+    @Json(name = "weight") val weight: Double,
+    @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
+    @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean
+)
+
+/*---------------------------------------------------------------*/
 /* Update Count Response Wrapper                                 */
 /*---------------------------------------------------------------*/
 
@@ -45,7 +94,10 @@ data class TtItemInfo(
     @Json(name = "lotNumber") val lotNumber: String,
     @Json(name = "barCode") val barCode: String?,
     @Json(name = "qtyCounted") val qtyCounted: Int?,
-    @Json(name = "inCount") val inCount: Boolean    //Boolean For Counting status
+    @Json(name = "inCount") val inCount: Boolean,
+    @Json(name = "weight") val weight: Double,
+    @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
+    @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean
 )
 
 /*---------------------------------------------------------------*/
@@ -96,82 +148,5 @@ data class BinsByClassCodeByVendorAndByItemNumber(
     @Json(name = "classCode") val classCode: String?,
     @Json(name = "vendor") val vendor: String?,
     @Json(name = "itemNumber") val itemNumber: String?
-)
-
-
-
-/*---------------------------------------------------------------*/
-/* The following will not be used in the final project           */
-/*---------------------------------------------------------------*/
-/* Get All Bin Numbers with ClassCode Response Wrapper */
-@JsonClass(generateAdapter = true)
-data class GetBinsByClassCodeResponseWrapper(
-    @Json(name = "response") val response: GetBinsByClassCodeResponse
-)
-
-@JsonClass(generateAdapter = true)
-data class GetBinsByClassCodeResponse(
-    @Json(name = "ttBinInfo") val ttBinInfo: TtBinInfoWithClassCodeWrapper
-)
-
-@JsonClass(generateAdapter = true)
-data class TtBinInfoWithClassCodeWrapper(
-    @Json(name = "ttBinInfo") val ttBinInfo: List<BinInfo>
-)
-
-@JsonClass(generateAdapter = true)
-data class BinInfo(
-    @Json(name = "binLocation") val binLocation: String,
-    @Json(name = "classCode") val classCode: String?,
-    @Json(name = "vendor") val vendor: String?,
-    @Json(name = "itemNumber") val itemNumber: String
-)
-
-/* Get Bins By Vendor Response Wrapper */
-@JsonClass(generateAdapter = true)
-data class GetBinsByVendorResponseWrapper(
-    @Json(name = "response") val response: GetBinsByVendorResponse
-)
-
-@JsonClass(generateAdapter = true)
-data class GetBinsByVendorResponse(
-    @Json(name = "ttBinInfo") val ttBinInfo: TtBinInfoWithVendorWrapper
-)
-
-@JsonClass(generateAdapter = true)
-data class TtBinInfoWithVendorWrapper(
-    @Json(name = "ttBinInfo") val ttBinInfo: List<VendorBinInfo>
-)
-
-@JsonClass(generateAdapter = true)
-data class VendorBinInfo(
-    @Json(name = "binLocation") val binLocation: String,
-    @Json(name = "classCode") val classCode: String?,
-    @Json(name = "vendor") val vendor: String?,
-    @Json(name = "itemNumber") val itemNumber: String
-)
-
-/* Get Bins By Item Number Response Wrapper */
-@JsonClass(generateAdapter = true)
-data class GetBinsByItemNumberResponseWrapper(
-    @Json(name = "response") val response: GetBinsByItemNumberResponse
-)
-
-@JsonClass(generateAdapter = true)
-data class GetBinsByItemNumberResponse(
-    @Json(name = "ttBinInfo") val ttBinInfo: TtBinInfoWithItemNumberWrapper
-)
-
-@JsonClass(generateAdapter = true)
-data class TtBinInfoWithItemNumberWrapper(
-    @Json(name = "ttBinInfo") val ttBinInfo: List<ItemNumberBinInfo>
-)
-
-@JsonClass(generateAdapter = true)
-data class ItemNumberBinInfo(
-    @Json(name = "binLocation") val binLocation: String,
-    @Json(name = "classCode") val classCode: String?,
-    @Json(name = "vendor") val vendor: String?,
-    @Json(name = "itemNumber") val itemNumber: String
 )
 

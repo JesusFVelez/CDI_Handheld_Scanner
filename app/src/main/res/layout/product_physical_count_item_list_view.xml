@@ -11,14 +11,15 @@
         android:id="@+id/ItemNumberTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="24dp"
         android:padding="1dp"
         android:text="S32567"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.491" />
 
     <TextView
         android:id="@+id/CountedTextView"
