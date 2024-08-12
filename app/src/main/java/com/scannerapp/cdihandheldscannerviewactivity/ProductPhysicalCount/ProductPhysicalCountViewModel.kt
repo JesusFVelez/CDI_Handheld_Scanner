@@ -279,7 +279,7 @@ class InventoryCountViewModel : ViewModel() {
     }
 
 
-    fun confirmItem(scannedCode: String, companyID: String, warehouseNumber: Int) {
+    fun confirmItem(scannedCode: String, companyID: String, warehouseNumber: Int, actualItemNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
@@ -288,7 +288,7 @@ class InventoryCountViewModel : ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getInventoryCountService().confirmItem(scannedCode, companyID, warehouseNumber)
+                val response = ScannerAPI.getInventoryCountService().confirmItem(scannedCode, companyID, warehouseNumber, actualItemNumber)
                 _confirmItemResult.value = response
                 _wasLastAPICallSuccessful.value = true
                 Log.d("Confirm Item", "Response: $response")

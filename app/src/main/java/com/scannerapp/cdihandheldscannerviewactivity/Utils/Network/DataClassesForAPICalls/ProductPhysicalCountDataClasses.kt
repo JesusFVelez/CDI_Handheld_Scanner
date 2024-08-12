@@ -14,7 +14,6 @@ data class ResponseItemConfirmWrapper(
 @JsonClass(generateAdapter = true)
 data class ResponseItemConfirm(
     @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
-    @Json(name = "actualItemNumber") val actualItemNumber: String,
     @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode: Double,
     @Json(name = "weightInBarcode") val weightInBarcode: Double,
     @Json(name = "errorMessage") val errorMessage: String
@@ -95,8 +94,8 @@ data class TtItemInfo(
     @Json(name = "lotNumber") val lotNumber: String,
     @Json(name = "barCode") val barCode: String?,
     @Json(name = "qtyCounted") val qtyCounted: Int?,
-    @Json(name = "inCount") val inCount: Boolean,    // Boolean For Counting status
-    @Json(name = "weight") val weight: Double,       // Add weight property
+    @Json(name = "inCount") val inCount: Boolean,
+    @Json(name = "weight") val weight: Double,
     @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
     @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean
 )

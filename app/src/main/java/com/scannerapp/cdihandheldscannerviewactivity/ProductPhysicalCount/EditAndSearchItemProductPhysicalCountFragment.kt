@@ -222,7 +222,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     private fun handleConfirmItemResult(confirmResult: ResponseItemConfirmWrapper) {
         if (confirmResult.response.wasItemConfirmed) {
             val selectedItemNumberTextView = currentItemNumberTextView
-            if (selectedItemNumberTextView != null && selectedItemNumberTextView.text.toString() == confirmResult.response.actualItemNumber) {
+            if (selectedItemNumberTextView != null && viewModel.confirmItemResult.value!!.response.wasItemConfirmed) {
                 if (currentItemAmountEditText != null && currentWeightEditText != null) {
                     val currentCount = currentItemAmountEditText?.text.toString().toIntOrNull() ?: 0
                     val newCount = currentCount + 1
@@ -248,7 +248,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
                     currentWeightEditText?.setText(newWeight.toString())
 
-                    AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item confirmed: ${confirmResult.response.actualItemNumber}")
+                    AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item confirmed")
                 }
             }
         } else {
@@ -311,7 +311,15 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         currentItemAmountEditText = itemAmountEditText
 
         val weightEditText = dialogView.findViewById<EditText>(R.id.weightEditText)
-        weightEditText.setText(if (isFromCountButton) "" else (item.weight?.toString() ?: ""))
+
+        // Set the text or hint based on the weight value
+        if (item.weight == 0.0) {
+            weightEditText.setText("")
+            weightEditText.hint = "Weight"
+        } else {
+            weightEditText.setText(item.weight.toString())
+        }
+
         weightEditText.isEnabled = item.doesItemHaveWeight // Enable or disable based on doesItemHaveWeight
         weightEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -458,7 +466,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                 if (barcode.isNotEmpty()) {
                     val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                     val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-                    viewModel.confirmItem(scannedCode = barcode, companyID = companyID, warehouseNumber = warehouseNO)
+                    viewModel.confirmItem(scannedCode = barcode, companyID = companyID, warehouseNumber = warehouseNO, actualItemNumber = itemNumberTextView.text.toString())
 
                     barcodeScannerEditText.post {
                         barcodeScannerEditText.requestFocus()
@@ -470,6 +478,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         dialog.show()
     }
+
 
     private fun showError(message: String) {
         if (viewModel.shouldShowError.value == true) {

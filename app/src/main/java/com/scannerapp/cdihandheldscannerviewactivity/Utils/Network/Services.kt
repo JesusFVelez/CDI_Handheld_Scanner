@@ -266,7 +266,8 @@ interface InventoryCountServices {
     suspend fun confirmItem(
         @Query("scannedCode") scannedCode: String,
         @Query("companyID") companyID: String,
-        @Query("warehouseNumber") warehouseNumber: Int
+        @Query("warehouseNumber") warehouseNumber: Int,
+        @Query("actualItemNumber") actualItemNumber: String
     ): ResponseItemConfirmWrapper
 
     @PUT("UpdateCount")
