@@ -59,12 +59,27 @@
                 android:textSize="32sp"
                 android:textStyle="bold"/>
 
-            <include
+<!--            <include-->
+<!--                android:id="@+id/mainBarcodeLayout"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                layout="@layout/edit_item_barcode_to_edit_list_view"-->
+<!--                />-->
+            <LinearLayout
                 android:id="@+id/mainBarcodeLayout"
-                android:layout_width="300dp"
                 android:layout_height="60dp"
-                layout="@layout/edit_item_barcode_to_edit_list_view"
-                />
+                android:layout_width="300dp"
+                android:foreground="@drawable/ripple_effect_for_list_views"
+                >
+                    <TextView
+                        android:id="@+id/mainBarcodeTextView"
+                        android:layout_height="60dp"
+                        android:layout_width="300dp"
+                        android:background="@drawable/listitembackgroundview"
+                        android:text="This is the Main Barcode"
+                        android:gravity="center_vertical|center_horizontal"
+                        />
+            </LinearLayout>
 
             <TextView
                 android:layout_marginBottom="20dp"
