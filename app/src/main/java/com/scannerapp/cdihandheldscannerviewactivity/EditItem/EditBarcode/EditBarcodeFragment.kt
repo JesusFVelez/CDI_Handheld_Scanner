@@ -145,28 +145,9 @@ class EditBarcodeFragment : Fragment() {
     }
 
     private fun initMainBarcodeComponents(){
-        mainBarcodeTextView = binding.mainBarcodeLayout.findViewById(R.id.barcodeTextView)
+        mainBarcodeTextView = binding.mainBarcodeTextView
         binding.mainBarcodeLayout.setOnClickListener {
-            startBarcodeAddOrUpdatePopup(isMainBarcode = true, isUpdatingBarcode = true, barcodeToUpdate = mainBarcodeTextView.text.toString())
-        }
-        binding.mainBarcodeLayout.findViewById<ImageButton>(R.id.removeBarcodeIcon).setOnClickListener{
-            // Create popup window to ask whether user wants to delete barcode or not
-            val popupWindow = PopupWindowUtils.createQuestionPopup(
-                it.context,
-                "Are you sure you want to delete this barcode for this item?",
-                "Delete Barcode"
-            )
-            popupWindow.contentView.findViewById<Button>(R.id.YesButton)
-                .setOnClickListener {
-                    popupWindow.dismiss()
-                    progressDialog.show()
-                    viewModel.removeBarcodeFromBackend(mainBarcodeTextView.text.toString(), true)
-                }
-            popupWindow.contentView.findViewById<Button>(R.id.NoButton)
-                .setOnClickListener {
-                    popupWindow.dismiss()
-                }
-            popupWindow.showAtLocation(it.rootView, Gravity.CENTER, 0, 0)
+            startBarcodeAddOrUpdatePopup(isMainBarcode = true, barcodeToUpdate = mainBarcodeTextView.text.toString())
         }
     }
 
