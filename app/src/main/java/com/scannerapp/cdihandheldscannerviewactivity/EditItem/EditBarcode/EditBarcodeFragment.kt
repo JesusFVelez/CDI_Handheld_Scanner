@@ -147,7 +147,7 @@ class EditBarcodeFragment : Fragment() {
     private fun initMainBarcodeComponents(){
         mainBarcodeTextView = binding.mainBarcodeTextView
         binding.mainBarcodeLayout.setOnClickListener {
-            startBarcodeAddOrUpdatePopup(isMainBarcode = true, barcodeToUpdate = mainBarcodeTextView.text.toString())
+            startBarcodeAddOrUpdatePopup(isMainBarcode = true, barcodeToUpdate = mainBarcodeTextView.text.toString(), isUpdatingBarcode = true)
         }
     }
 
