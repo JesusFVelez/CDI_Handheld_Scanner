@@ -4,6 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
 
 <LinearLayout
         tools:context=".EditItem.EditBarcode.EditBarcodeFragment"
@@ -65,17 +69,18 @@
 <!--                android:layout_height="60dp"-->
 <!--                layout="@layout/edit_item_barcode_to_edit_list_view"-->
 <!--                />-->
+
             <LinearLayout
                 android:id="@+id/mainBarcodeLayout"
-                android:layout_height="60dp"
                 android:layout_width="300dp"
-                android:foreground="@drawable/ripple_effect_for_list_views"
+                android:layout_height="60dp"
+                android:background="@drawable/listitembackgroundview"
                 >
                     <TextView
                         android:id="@+id/mainBarcodeTextView"
                         android:layout_height="60dp"
                         android:layout_width="300dp"
-                        android:background="@drawable/listitembackgroundview"
+                        android:background="@drawable/ripple_effect_for_list_views"
                         android:text="This is the Main Barcode"
                         android:gravity="center_vertical|center_horizontal"
                         />
@@ -132,4 +137,5 @@
 
 
     </LinearLayout>
+</androidx.core.widget.NestedScrollView>
 </layout>
