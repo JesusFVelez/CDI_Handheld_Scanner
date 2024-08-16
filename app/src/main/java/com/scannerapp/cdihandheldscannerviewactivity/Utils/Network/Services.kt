@@ -50,6 +50,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.moveItemBetweenBinsResponseWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -59,6 +60,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
 
 class ServicePaths{
@@ -85,9 +87,15 @@ fun createRetrofitInstance(ipAddress: String, portNumber: String, servicePath: S
     val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
+//    val okHttpClient = OkHttpClient.Builder()
+//        .connectTimeout(3, TimeUnit.MINUTES)
+//        .readTimeout(3, TimeUnit.MINUTES)
+//        .writeTimeout(3, TimeUnit.MINUTES)
+//        .build()
     return Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(baseUrl + servicePath)
+//        .client(okHttpClient)
         .build()
 }
 
