@@ -328,8 +328,7 @@ interface EditItemServices{
         suspend fun addBarcodeToItem(
             @Query("itemNumber") itemNumber: String,
             @Query("companyID") companyID: String,
-            @Query("barcodeToAdd") barcodeToAdd: String,
-            @Query("isMainBarcode") isMainBarcode: Boolean):AddBarcodeToItemResponseWrapper
+            @Query("barcodeToAdd") barcodeToAdd: String):AddBarcodeToItemResponseWrapper
 
         @PUT("barcode")
         suspend fun updateBarcodeOfItem(
@@ -344,8 +343,7 @@ interface EditItemServices{
         suspend fun removeBarcodeFromItem(
             @Query("itemNumber") itemNumber: String,
             @Query("companyID") companyID: String,
-            @Query("barcodeToRemove") barcodeToRemove: String,
-            @Query("isMainBarcode") isMainBarcode: Boolean): RemoveBarcodeFromItemResponseWrapper
+            @Query("barcodeToRemove") barcodeToRemove: String): RemoveBarcodeFromItemResponseWrapper
 
 
     }

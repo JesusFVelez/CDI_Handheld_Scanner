@@ -98,8 +98,7 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 val response = ScannerAPI.getEditItemService().BarcodeService.addBarcodeToItem(
                     _itemInfo.value!!.itemNumber,
                     _companyID.value!!,
-                    barcodeToAdd,
-                    isMainBarcode
+                    barcodeToAdd
                 )
                 _errorMessage.value = response.response.errorMessage
                 _couldAddOrRemoveBarcode.value = response.response.couldAddBarcode
@@ -144,8 +143,7 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 val response = ScannerAPI.getEditItemService().BarcodeService.removeBarcodeFromItem(
                     _itemInfo.value!!.itemNumber,
                     _companyID.value!!,
-                    barcodeToRemove,
-                    isMainBarcode
+                    barcodeToRemove
                 )
                 _errorMessage.value = response.response.errorMessage
                 _couldAddOrRemoveBarcode.value = response.response.couldRemoveBarcode
