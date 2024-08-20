@@ -16,6 +16,8 @@ import com.scannerapp.cdihandheldscannerviewactivity.ItemPicking.ItemPickingView
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ItemPickingItemDetailsFragmentBinding
+import com.tapadoo.alerter.Alert
+import com.tapadoo.alerter.Alerter
 
 class OrderPickingItemFragment :Fragment(){
     private lateinit var binding: ItemPickingItemDetailsFragmentBinding
@@ -45,6 +47,11 @@ class OrderPickingItemFragment :Fragment(){
         setUIValues()
         initObservers()
 
+        val doesItemHaveInvalidLineUp = viewModel.currentlyChosenItem.value!!.hasInvalidLineUp
+        if(doesItemHaveInvalidLineUp)
+            AlerterUtils.startErrorAlerter(requireActivity(), "The selected item cannot be processed because it is either not physically present in this warehouse (Line up W) or has been discontinued (Line up D). \n " +
+                                                                            "Please check the item details and choose a different item for picking. ")
+
         val currentlyChosenAdapterPosition = viewModel.currentlyChosenAdapterPosition.value!!
 
 
@@ -69,6 +76,11 @@ class OrderPickingItemFragment :Fragment(){
             }
         }
         pickItemButton = binding.pickingButton
+        val isLineUpInvalid = viewModel.currentlyChosenItem.value!!.hasInvalidLineUp
+        pickItemButton.isEnabled = !isLineUpInvalid
+        if (isLineUpInvalid)
+            pickItemButton.text = "Invalid"
+
         pickItemButton.setOnClickListener{
             hasPageJustStarted = true
             val amountToBePickedString = itemAmountEditText.text.toString()
@@ -151,7 +163,6 @@ class OrderPickingItemFragment :Fragment(){
 
 
     private fun setUIValues(){
-
         itemNameTextView.text = viewModel.currentlyChosenItem.value!!.itemName
         itemNumberTextView.text = viewModel.currentlyChosenItem.value!!.itemNumber
         binNumberTextView.text = viewModel.currentlyChosenItem.value!!.binLocation

@@ -24,6 +24,9 @@ class ItemPickingViewModel: ViewModel() {
     val orderNumber: LiveData<String>
         get() = _orderNumber
 
+    private val _hasLineUpMessageBeenShown = MutableLiveData<Boolean>()
+    val hasLineUpMessageBeenShown: LiveData<Boolean>
+        get() = _hasLineUpMessageBeenShown
 
     // List Of Items
     private val _listOfItemsInOrder = MutableLiveData<List<ItemsInOrderInfo>>() // This string will change to be an object with all the details of an item in an order
@@ -122,11 +125,20 @@ class ItemPickingViewModel: ViewModel() {
         _currentlyChosenItem.value = _listOfItemsInOrder.value!![_currentlyChosenAdapterPosition.value!!]
     }
 
+    fun setHasLineUpMessageBeenShown(){
+        _hasLineUpMessageBeenShown.value = true
+    }
+
+    fun resetHasLineUpMessageBeenShown(){
+        _hasLineUpMessageBeenShown.value = false
+    }
+
 
     init {
         _hasPickingTimerAlreadyStarted.value = false
         _ordersThatHavePicking.value = mutableListOf()
         _currentlyChosenAdapterPosition.value = 0
+        _hasLineUpMessageBeenShown.value = false
         _errorMessage.value = mutableMapOf("confirmBin" to "",
                                     "confirmItem" to "",
                                     "confirmOrder" to "",
