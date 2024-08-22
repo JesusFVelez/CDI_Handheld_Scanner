@@ -1,4 +1,4 @@
-package com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoBin
+package com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoWarehouse
 
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -7,27 +7,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
 import com.scannerapp.cdihandheldscannerviewactivity.R
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInBinList
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 
-class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, val onDataSetChanged: (Boolean) -> Unit, val removeItemFromDoorBinInBackend: (ItemInDoorBinDataClass) -> Unit) : RecyclerView.Adapter<ItemsInDoorBinViewHolder>(){
+class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, val onDataSetChanged: (Boolean) -> Unit, val removeItemFromDoorBinInBackend: (ItemsInBinList) -> Unit) : RecyclerView.Adapter<ItemsInDoorBinViewHolder>(){
 
-    data class ItemInDoorBinDataClass(
-        val expirationDate: String,
-        val itemName: String,
-        val binToBeMovedTo:String,
-        val doorBin: String,
-        val itemNumber:String,
-        val lotNumber:String,
-        val weight: Float,
-        val quantityOfItemsAddedToDoorBin:Int,
-        val canEditLotNumber: Boolean,
-        val rowIDForDoorBin: String)
+
 
     // Data source for the adapter
-    var data = mutableListOf<ItemInDoorBinDataClass>()
+    var data = mutableListOf<ItemsInBinList>()
         set(value) {
             field = value
             notifyDataSetChanged()  // Notify the adapter that the data set has changed
@@ -44,7 +34,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
     }
 
     //Method to remove an item
-    fun removeItem(item: ItemInDoorBinDataClass?){
+    fun removeItem(item: ItemsInBinList?){
         data.remove(item)
         removeItemFromDoorBinInBackend(item!!)
         notifyDataSetChanged()
@@ -52,7 +42,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
     }
 
     // Method to add an item
-    fun addItems(items: MutableList<ItemInDoorBinDataClass>?) {
+    fun addItems(items: MutableList<ItemsInBinList>?) {
         data = items!!
         notifyDataSetChanged()
         onDataSetChanged(data.isNotEmpty())
@@ -69,10 +59,10 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
         val item = data[position]
         holder.itemNumberTextView.text = item.itemNumber
         holder.itemNameTextView.text = item.itemName
-        holder.binToBeMovedTo.text = "Floor"
-        holder.lotNumberTextView.text = item.lotNumber
+        holder.binLocationTextView.text = item.binLocation
+        holder.lotNumberTextView.text = if (item.lotNumber == "") "N/A" else item.lotNumber
         holder.expirationDateTextView.text = item.expirationDate
-        holder.quantityInDoorBinTextView.text = "Added: " + item.quantityOfItemsAddedToDoorBin.toString()
+        holder.quantityInDoorBinTextView.text = "Added: " + item.qtyOnHand.toInt().toString()
         holder.removeItemButton.setOnClickListener{
             // Create popup window to ask whether user wants to delete item or not
             val popupWindow = PopupWindowUtils.createQuestionPopup(it.context, "Are you sure you want to delete item from the list?", "Delete Item")
@@ -95,7 +85,7 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
 class ItemsInDoorBinViewHolder(itemInDoorBinView: View, private val listener: itemInDoorBinClickListener):RecyclerView.ViewHolder(itemInDoorBinView), View.OnClickListener {
     val itemNumberTextView: TextView = itemInDoorBinView.findViewById(R.id.itemNumberText)
     val itemNameTextView: TextView = itemInDoorBinView.findViewById(R.id.productNameText)
-    val binToBeMovedTo: TextView = itemInDoorBinView.findViewById(R.id.binNumberText)
+    val binLocationTextView: TextView = itemInDoorBinView.findViewById(R.id.binNumberText)
     val lotNumberTextView: TextView = itemInDoorBinView.findViewById(R.id.lotNumberText)
     val expirationDateTextView: TextView = itemInDoorBinView.findViewById(R.id.expDateInfoText)
     val quantityInDoorBinTextView: TextView = itemInDoorBinView.findViewById(R.id.addedText)

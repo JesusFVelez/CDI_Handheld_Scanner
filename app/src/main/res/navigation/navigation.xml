@@ -110,7 +110,7 @@
         android:label="BinMovementFragment" />
     <fragment
         android:id="@+id/receivingProductsMainFragment"
-        android:name="com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.ReceivingProductsMainFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoWarehouse.ReceivingProductsMainFragment"
         android:label="ReceivingProductsMainFragment" >
         <action
             android:id="@+id/action_receivingProductsMainFragment_to_receivingProductsDetailsFragment"
@@ -120,7 +120,7 @@
     </fragment>
     <fragment
         android:id="@+id/receivingProductsDetailsFragment"
-        android:name="com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoBin.ReceivingProductsDetailsFragment"
+        android:name="com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoWarehouse.ReceivingProductsDetailsFragment"
         android:label="ReceivingProductsDetailsFragment" />
     <fragment
         android:id="@+id/editItemMainFragment"
