@@ -44,6 +44,10 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
             "Not Picked" -> holder.itemPickingStatusImage.setImageResource(R.drawable.error_icon)
             else -> holder.itemPickingStatusImage.setImageResource(R.drawable.black_warning_icon)
         }
+
+        if(item.hasInvalidLineUp)
+            holder.itemPickingStatusImage.setImageResource(R.drawable.black_warning_icon)
+
     }
 
 

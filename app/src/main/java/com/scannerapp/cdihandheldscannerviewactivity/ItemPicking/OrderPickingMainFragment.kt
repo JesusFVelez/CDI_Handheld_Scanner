@@ -3,6 +3,7 @@ package com.scannerapp.cdihandheldscannerviewactivity.ItemPicking
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -29,6 +30,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ItemPickingMainFragmentBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInOrderInfo
 
 class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
@@ -75,8 +77,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
         return binding.root
     }
-
-
 
     override fun onResume() {
         super.onResume()
@@ -253,8 +253,19 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
                 progressDialog.dismiss()
                 adapter.data = it
             }
-            if(!newListOfItemsInOrder.isEmpty())
+
+
+
+            if(newListOfItemsInOrder.isNotEmpty()) {
                 fabScrollDown.visibility = View.VISIBLE
+                val doesAtLeastOneItemHaveLineUpDorW = verifyIfAtLeastOneItemHasLineUpDorWInOrder(newListOfItemsInOrder)
+                if(doesAtLeastOneItemHaveLineUpDorW && hasOrderBeenSearched) {
+                    AlerterUtils.startWarningAlerter(
+                        requireActivity(),
+                        "At least one item in this order cannot be processed because it is either not physically present in this warehouse (Line Up W) or has been discontinued (Line Up D)."
+                    )
+                }
+            }
             else
                 fabScrollDown.visibility = View.GONE
         }
@@ -270,7 +281,13 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Scan Bin '" + viewModel.listOfItemsInOrder.value!![position].binLocation + "' to continue", "Bin Number", listener)
     }
 
-
+    private fun verifyIfAtLeastOneItemHasLineUpDorWInOrder(listOfItemsInOrder: List<ItemsInOrderInfo>): Boolean{
+        for (item in listOfItemsInOrder) {
+            if(item.hasInvalidLineUp)
+                return true
+        }
+        return false
+    }
 
     class CustomOrderSuggestionAdapter(context: Context, private var suggestions: List<ordersThatAreInPickingClass>): ArrayAdapter<ordersThatAreInPickingClass>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
