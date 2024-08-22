@@ -16,6 +16,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DisplayInfoResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllBarcodesForItemResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetAllItemsInBinForSuggestionResponseWrapper
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.GetItemsInBinFromBarcodeResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemConfirmationResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemPickingResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.OrderHasPickingResponseWrapper
@@ -141,6 +142,11 @@ interface AssignExpirationDateResources {
 
     @GET("getItemInformation")
     suspend fun getItemInformation(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber") pLotNumber: String): DisplayInfoResponseWrapper
+
+    @GET("getItemsInBinFromBarcode")
+    suspend fun getItemsInBinFromBarcode(
+        @Query("pItemNumber") pItemNumber: String
+    ): GetItemsInBinFromBarcodeResponseWrapper
 }
 
 interface LoginServices{

@@ -95,6 +95,15 @@ class EditItemMainFragment : Fragment() {
             itemSuggestionAdapter.updateData(newSuggestions)
         }
 
+        //commented for repetitive reasons but maybe useful in the future
+        viewModel.itemsInBinFromBarcode.observe(viewLifecycleOwner) { itemsInBin ->
+            progressDialog.dismiss()
+            if (itemsInBin.isNotEmpty()) {
+                itemSuggestionAdapter.updateData(itemsInBin)
+            } else {
+                AlerterUtils.startWarningAlerter(requireActivity(), "No items found for the given barcode.")
+            }
+        }
 
     }
 
@@ -118,23 +127,26 @@ class EditItemMainFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val trimmedText = s.toString().trim() // Trim the text to remove leading and trailing spaces
+                val trimmedText = s.toString().trim()
 
-                // This condition checks if the text has been cleared and resets to the full list.
                 if (trimmedText.isEmpty()) {
-                    itemSuggestionAdapter.updateData(newItemSuggestion) // Reset to full list if search is cleared
+                    itemSuggestionAdapter.updateData(newItemSuggestion)
                 } else {
-                    // Filter the current list without making new API calls.
                     val filteredList = newItemSuggestion.filter {
                         it.itemNumber.contains(trimmedText, ignoreCase = true) ||
                                 (it.barCode ?: "").contains(trimmedText, ignoreCase = true)
                     }
-                    itemSuggestionAdapter.updateData(filteredList)
 
-                    // If necessary, fetch new suggestions dynamically as the user types or scans a barcode.
-                    // viewModel.fetchItemSuggestions(trimmedText)
+                    if (filteredList.isEmpty()) {
+                        progressDialog.show()
+                        viewModel.getItemsInBinFromBarcode(trimmedText)
+                    } else {
+                        itemSuggestionAdapter.updateData(filteredList)
+                    }
                 }
             }
+
+
 
             override fun afterTextChanged(s: Editable?) {}
         })

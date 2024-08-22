@@ -1,7 +1,9 @@
 package com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls
 
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.RequiresApi
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
@@ -94,6 +96,60 @@ data class ItemData(
         p0.writeString(binLocation)
         p0.writeString(expireDate)
         p0.writeString(lotNumber)
+    }
+}
+
+
+/*Get data for suggestion list using multibar*/
+@JsonClass(generateAdapter = true)
+data class GetItemsInBinFromBarcodeResponseWrapper(
+    @Json(name = "response") val response: GetItemsInBinFromBarcodeWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class GetItemsInBinFromBarcodeWrapper(
+    @Json(name = "binItemInfo") val binItemInfo: BinItemInfoWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class BinItemInfoWrapper(
+    @Json(name = "bin-item-info") val binItemInfo: List<MultiBarcodeItemData>
+)
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+data class MultiBarcodeItemData(
+    @Json(name = "itemNumber") val itemNumber: String,
+    @Json(name = "itemDescription") val itemDescription: String,
+    @Json(name = "binLocation") val binLocation: String,
+    @Json(name = "expireDate") val expireDate: String?,
+    @Json(name = "lotNumber") val lotNumber: String?,
+    @Json(name = "qtyCounted") val qtyCounted: Double,
+    @Json(name = "inCount") val inCount: Boolean,
+    @Json(name = "barCode") val barCode: String,
+    @Json(name = "weight") val weight: Double,
+    @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
+    @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean,
+    @Json(name = "multibar") val multibar: String?
+) : Parcelable {
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun writeToParcel(p0: Parcel, p1: Int) {
+        p0.writeString(itemNumber)
+        p0.writeString(itemDescription)
+        p0.writeString(binLocation)
+        p0.writeString(expireDate)
+        p0.writeString(lotNumber)
+        p0.writeDouble(qtyCounted)
+        p0.writeBoolean(inCount)
+        p0.writeString(barCode)
+        p0.writeDouble(weight)
+        p0.writeBoolean(doesItemHaveWeight)
+        p0.writeBoolean(isItemInIvlot)
+        p0.writeString(multibar)
     }
 }
 

@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemInfo
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
@@ -45,8 +45,44 @@ class EditItemViewModel: ViewModel(){
     val currentlyChosenItemForSearch: LiveData<ItemData>
         get() = _currentlyChosenItemForSearch
 
+    private val _itemsInBinFromBarcode = MutableLiveData<List<ItemData>>()
+    val itemsInBinFromBarcode: LiveData<List<ItemData>>
+        get() = _itemsInBinFromBarcode
 
-    init{}
+    fun getItemsInBinFromBarcode(pItemNumber: String) {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.e("ViewModel", "Failed to fetch items in bin from barcode: ${exception.localizedMessage}")
+        }
+
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                val response = ScannerAPI.getAssignExpirationDateService()
+                    .getItemsInBinFromBarcode(pItemNumber)
+
+                // Convert MultiBarcodeItemData to ItemData
+                val convertedItems = response.response.binItemInfo.binItemInfo.map {
+                    ItemData(
+                        itemNumber = it.itemNumber,
+                        itemDescription = it.itemDescription,
+                        binLocation = it.binLocation,
+                        expireDate = it.expireDate,
+                        lotNumber = it.lotNumber,
+                        barCode = it.barCode
+                    )
+                }
+
+                _itemsInBinFromBarcode.value = convertedItems
+                _wasLastAPICallSuccessful.value = true
+            } catch (e: Exception) {
+                _wasLastAPICallSuccessful.value = false
+                Log.e("ViewModel", "Exception -> ${e.localizedMessage}")
+            }
+        }
+    }
+
+
+
 
     fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String, pLotNumber: String, pWarehouseNo: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
