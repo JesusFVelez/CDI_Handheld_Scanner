@@ -167,7 +167,6 @@ class MainActivity : AppCompatActivity() {
 
 @Deprecated("Deprecated in Java")
 override fun onBackPressed() {
-    super.onBackPressed()
     val navController = this.findNavController( R.id.my_nav_host_fragment)
 //    if(navController.currentDestination?.id == R.id.orderPickingMainFragment) {
 //        val currentFragment = navController.currentDestination
@@ -191,10 +190,12 @@ override fun onBackPressed() {
             .setMessage("Are you sure you want to log out?")
             .setPositiveButton("Yes") { _, _ ->
                 logoutUser()
+                super.onBackPressed()
             }
             .setNegativeButton("No", null)
             .show()
     }
+
 }
 
 
