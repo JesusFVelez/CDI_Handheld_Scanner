@@ -55,6 +55,12 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
     val errorMessage: LiveData<String>
         get() = _errorMessage
 
+    // API Call Confirmation
+    private val _wasLastAPICallSuccessful = MutableLiveData<Boolean>()
+    val wasLastAPICallSuccessful : LiveData<Boolean>
+        get() = _wasLastAPICallSuccessful
+
+
     fun setCompanyIDFromSharedPref(companyID: String){
         _companyID.value = companyID
     }
@@ -79,10 +85,10 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                     val response = ScannerAPI.getEditItemService().BarcodeService.getBarcodesForItem(_itemInfo.value!!.itemNumber, _companyID.value!!)
                     _mainBarcode.value = response.response.mainBarcode
                     _listOfBarcodesOfItem.value = response.response.listOfBarcodes
-
+                    _wasLastAPICallSuccessful.value = true
                 } catch (e: Exception) {
                     // Exception handling for network errors or serialization/deserialization issues
-//                    _wasLastAPICallSuccessful.value = false
+                    _wasLastAPICallSuccessful.value = false
                     Log.e("Get Barcodes", "Exception (e) -> ${e.localizedMessage}")
                 }
             }
@@ -102,8 +108,10 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 )
                 _errorMessage.value = response.response.errorMessage
                 _couldAddOrRemoveBarcode.value = response.response.couldAddBarcode
+                _wasLastAPICallSuccessful.value = true
 
             }catch (e:Exception){
+                _wasLastAPICallSuccessful.value = false
                 Log.e("Assign Barcode", "Exception (e) -> ${e.localizedMessage}")
             }
             }
@@ -125,8 +133,10 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 )
                 _errorMessage.value = response.response.errorMessage
                 _couldAddOrRemoveBarcode.value = response.response.couldUpdateBarcode
+                _wasLastAPICallSuccessful.value = true
 
             }catch (e:Exception){
+                _wasLastAPICallSuccessful.value = false
                 Log.e("Update Barcode", "Exception (e) -> ${e.localizedMessage}")
             }
         }
@@ -147,8 +157,9 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 )
                 _errorMessage.value = response.response.errorMessage
                 _couldAddOrRemoveBarcode.value = response.response.couldRemoveBarcode
-
+                _wasLastAPICallSuccessful.value = true
             }catch (e:Exception){
+                _wasLastAPICallSuccessful.value = false
                 Log.e("Remove Barcode", "Exception (e) -> ${e.localizedMessage}")
             }
         }

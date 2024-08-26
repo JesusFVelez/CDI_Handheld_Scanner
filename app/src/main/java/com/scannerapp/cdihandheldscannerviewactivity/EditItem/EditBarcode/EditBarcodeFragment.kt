@@ -65,6 +65,13 @@ class EditBarcodeFragment : Fragment() {
 
 
     private fun initObservers() {
+
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastCallSuccessful ->
+            if (!wasLastCallSuccessful) {
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
+                progressDialog.dismiss()
+            }
+        }
         viewModel.mainBarcode.observe(viewLifecycleOwner) { mainBarcode ->
             if (mainBarcode!!.isNotEmpty())
                 mainBarcodeTextView.text = mainBarcode
