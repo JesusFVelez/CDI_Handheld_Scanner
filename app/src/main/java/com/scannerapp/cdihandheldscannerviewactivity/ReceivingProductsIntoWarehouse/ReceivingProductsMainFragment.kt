@@ -1,4 +1,4 @@
-package com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoBin
+package com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoWarehouse
 
 import android.app.Dialog
 import android.os.Bundle
@@ -25,6 +25,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ReceivingMainFragmentBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInBinList
 
 class ReceivingProductsMainFragment : Fragment(){
 
@@ -176,12 +177,25 @@ class ReceivingProductsMainFragment : Fragment(){
             }
         }
         recyclerViewAdapter = itemsInDoorBinAdapter(listener, { hasItems ->
-            finishButton.isEnabled = hasItems
-        },{ item: itemsInDoorBinAdapter.ItemInDoorBinDataClass ->
-            viewModel.deleteItemFromDoorBin(item.rowIDForDoorBin)
+            val noItemsHaveInvalidLineUp = !verifyIfThereIsAtLeastOneItemWithInvalidLineUp(viewModel.listOfItemsToMoveInPreReceiving.value!!)
+            finishButton.isEnabled = hasItems && noItemsHaveInvalidLineUp
+        },{ item: ItemsInBinList ->
+            viewModel.deleteItemFromDoorBin(item.rowID)
         })
+        val doesAtLeastOneItemHaveInvalidLineUp = verifyIfThereIsAtLeastOneItemWithInvalidLineUp(viewModel.listOfItemsToMoveInPreReceiving.value!!)
+        if(doesAtLeastOneItemHaveInvalidLineUp)
+            AlerterUtils.startErrorAlerter(requireActivity(), "At least one item in this order cannot be processed because it is either not physically present in this warehouse (Line Up W), has been discontinued (Line Up D), or it can not be received (Line Up S).")
+
         recyclerViewAdapter.addItems(viewModel.listOfItemsToMoveInPreReceiving.value!!)
         binding.totalPickingItemsList.adapter = recyclerViewAdapter
+    }
+
+    private fun verifyIfThereIsAtLeastOneItemWithInvalidLineUp(listOfItems: List<ItemsInBinList>): Boolean{
+        for(item in listOfItems){
+            if(item.doesItemHaveInvalidLineUp)
+                return true
+        }
+        return false
     }
 
     private fun initBinNumberAutoCompleteTextView(newDoorBinsThatHavePreReceiving: List<DoorBin>){

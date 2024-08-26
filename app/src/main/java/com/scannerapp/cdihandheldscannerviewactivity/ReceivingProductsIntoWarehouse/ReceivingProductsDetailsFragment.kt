@@ -1,4 +1,4 @@
-package com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoBin
+package com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoWarehouse
 
 import android.app.Dialog
 import android.os.Bundle
@@ -78,6 +78,16 @@ class ReceivingProductsDetailsFragment : Fragment() {
             addButton.text = "Save"
         }
     }
+
+    data class ItemToAddToDoorBin(
+        val expirationDate: String,
+        val binToBeMovedTo:String,
+        val doorBin: String,
+        val itemNumber:String,
+        val lotNumber:String,
+        val weight: Float,
+        val quantityOfItemsAddedToDoorBin:Int)
+
 
     private fun initUIElements() {
         // TextView initializations
@@ -191,7 +201,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                         if (weightEditText.text.isNotEmpty())
                             weight = weightEditText.text.toString().toFloat()
 
-                        val itemToAdd = itemsInDoorBinAdapter.ItemInDoorBinDataClass(expirationDate, itemName, "00P111", doorBin, itemNumber, newLotNumber, weight, quantityToAddToDoor, doesItemUseLotNumber, "N/A")
+                        val itemToAdd = ItemToAddToDoorBin(expirationDate, "00P111", doorBin, itemNumber, newLotNumber, weight, quantityToAddToDoor)
                         progressDialog.show()
                         viewModel.moveItemToDoor(itemToAdd)
 
@@ -269,7 +279,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
         val adapterPositionInMainFragment = viewModel.currentlyChosenAdapterPosition.value!!
         val expirationDate = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].expirationDate
         val lotNumber = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].lotNumber
-        val quantityBeingMoved = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].quantityOfItemsAddedToDoorBin.toString()
+        val quantityBeingMoved = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].qtyOnHand.toString()
         val weight = viewModel.listOfItemsToMoveInPreReceiving.value!![adapterPositionInMainFragment].weight
 
         newExpirationDateEditText.setText(expirationDate)

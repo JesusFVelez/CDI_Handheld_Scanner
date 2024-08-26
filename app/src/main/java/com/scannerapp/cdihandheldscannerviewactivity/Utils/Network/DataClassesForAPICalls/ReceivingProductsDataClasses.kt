@@ -111,25 +111,17 @@ data class ItemsInBinListWrapper(
 )
 @JsonClass(generateAdapter = true)
 data class ItemsInBinList(
-    @Json(name="tt-warehouse-no") val warehouseNumber: Int,
     @Json(name="tt-bin-loc") val binLocation: String,
     @Json(name="tt-item-number") val itemNumber: String,
-    @Json(name="tt-type") val type: String,
-    @Json(name="tt-type-data") val typeData: String,
-    @Json(name="tt-style-color") val styleColor: String,
-    @Json(name="tt-qty-on-hand") val qtyOnHand: Float,
-    @Json(name="tt-in-picking") val inPicking: Float,
-    @Json(name="tt-size") val size: String,
-    @Json(name="tt-date-created") val dateCreated: String,
+    @Json(name="tt-qty-on-hand") var qtyOnHand: Float,
     @Json(name="tt-company-code") val companyID: String,
-    @Json(name="tt-qty-picked") val qtyPicked: Float,
-    @Json(name="tt-picked-qty") val pickedQty: Float,
     @Json(name="tt-lot-number") val lotNumber: String,
-    @Json(name="tt-expire-date") val expirationDate: String?,
-    @Json(name="tt-weight") val weight: Float,
+    @Json(name="tt-expire-date") var expirationDate: String?,
+    @Json(name="tt-weight") var weight: Float,
     @Json(name="tt-row-id") val rowID: String,
     @Json(name="tt-item-name") val itemName: String,
-    @Json(name="tt-has-lot-number") val doesItemHaveLotNumber: Boolean
+    @Json(name="tt-has-lot-number") val doesItemHaveLotNumber: Boolean,
+    @Json(name = "tt-has-invalid-line-up") val doesItemHaveInvalidLineUp: Boolean
 
 )
 
