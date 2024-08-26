@@ -267,6 +267,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         val expirationDateTextView = selectedItemView.findViewById<TextView>(R.id.orderDateValueTextView)
         val binLocationTextView = selectedItemView.findViewById<TextView>(R.id.binLocationTextView)
         val lotNumberTextView = selectedItemView.findViewById<TextView>(R.id.dateWantedValueTextView)
+        val expireDateEditText = dialogView.findViewById<EditText>(R.id.dateEditText)
 
         itemNumberTextView.text = item.itemNumber
         descriptionTextView.text = item.itemDescription
@@ -336,7 +337,6 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         }
         currentWeightEditText = weightEditText
 
-        val expireDateEditText = dialogView.findViewById<EditText>(R.id.dateEditText)
         val lotNumberEditText = dialogView.findViewById<EditText>(R.id.lotEditText)
         lotNumberEditText.isEnabled = item.isItemInIvlot // Enable or disable based on isItemInIvlot
 
@@ -393,6 +393,12 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         })
 
         dialogView.findViewById<AppCompatButton>(R.id.addButton).setOnClickListener {
+            // Check if the expiration date is provided
+            if (expirationDateTextView.text == "N/A" && expireDateEditText.text.isNullOrEmpty()) {
+                expireDateEditText.error = "Please add a date."
+                return@setOnClickListener
+            }
+
             val quantity = itemAmountEditText.text.toString().toIntOrNull() ?: 0
             val weight = weightEditText.text.toString().toDoubleOrNull() ?: 0.0
 
@@ -478,6 +484,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         dialog.show()
     }
+
 
 
     private fun showError(message: String) {
