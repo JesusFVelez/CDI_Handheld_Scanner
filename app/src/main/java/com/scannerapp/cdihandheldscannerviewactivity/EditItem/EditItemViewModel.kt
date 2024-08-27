@@ -68,7 +68,8 @@ class EditItemViewModel: ViewModel(){
                         binLocation = it.binLocation,
                         expireDate = it.expireDate,
                         lotNumber = it.lotNumber,
-                        barCode = it.barCode
+                        barCode = it.barCode,
+                        vendorNumber = it.vendorNumber
                     )
                 }
 

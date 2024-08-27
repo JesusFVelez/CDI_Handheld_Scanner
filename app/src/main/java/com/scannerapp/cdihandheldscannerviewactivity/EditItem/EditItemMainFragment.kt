@@ -134,7 +134,8 @@ class EditItemMainFragment : Fragment() {
                 } else {
                     val filteredList = newItemSuggestion.filter {
                         it.itemNumber.contains(trimmedText, ignoreCase = true) ||
-                                (it.barCode ?: "").contains(trimmedText, ignoreCase = true)
+                                (it.barCode ?: "").contains(trimmedText, ignoreCase = true) ||
+                                (it.vendorNumber ?: "").contains(trimmedText, ignoreCase = true) // New condition to filter by vendor number
                     }
 
                     if (filteredList.isEmpty()) {
@@ -146,10 +147,9 @@ class EditItemMainFragment : Fragment() {
                 }
             }
 
-
-
             override fun afterTextChanged(s: Editable?) {}
         })
+
 
     }
 

@@ -51,7 +51,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.moveItemBetweenBinsResponseWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -61,7 +60,6 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
-import java.util.concurrent.TimeUnit
 
 
 class ServicePaths{
@@ -146,10 +144,20 @@ interface AssignExpirationDateResources {
     suspend fun getSuggestionsForItemOrBin(): GetAllItemsInBinForSuggestionResponseWrapper
 
     @PUT("assignExpireDate")
-    suspend fun assignExpireDate(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pExpireDate")pExpireDate:String, @Query("pLotNumber") pLotNumber:String, @Query("pWarehouseNo") warehouseNumber: Int): AssignExpDateResponseWrapper
+    suspend fun assignExpireDate(
+        @Query("pItemNumber") pItemNumber: String,
+        @Query("pBinLocation") pBinLocation: String,
+        @Query("pExpireDate") pExpireDate: String,
+        @Query("pLotNumber") pLotNumber: String,
+        @Query("pWarehouseNo") warehouseNumber: Int
+    ): AssignExpDateResponseWrapper
 
     @GET("getItemInformation")
-    suspend fun getItemInformation(@Query("pItemNumber")pItemNumber:String, @Query("pBinLocation")pBinLocation:String, @Query("pLotNumber") pLotNumber: String): DisplayInfoResponseWrapper
+    suspend fun getItemInformation(
+        @Query("pItemNumber") pItemNumber: String,
+        @Query("pBinLocation") pBinLocation: String,
+        @Query("pLotNumber") pLotNumber: String
+    ): DisplayInfoResponseWrapper
 
     @GET("getItemsInBinFromBarcode")
     suspend fun getItemsInBinFromBarcode(

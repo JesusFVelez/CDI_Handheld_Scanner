@@ -84,7 +84,8 @@ data class ItemData(
     @Json(name = "binLocation") val binLocation: String,
     @Json(name = "expireDate") val expireDate: String?,
     @Json(name = "lotNumber") val lotNumber: String?,
-    @Json(name = "barCode") val barCode: String?
+    @Json(name = "barCode") val barCode: String?,
+    @Json(name = "vendorNumber") val vendorNumber: String?
 ): Parcelable {
     override fun describeContents(): Int {
         return 0
@@ -130,7 +131,8 @@ data class MultiBarcodeItemData(
     @Json(name = "weight") val weight: Double,
     @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
     @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean,
-    @Json(name = "multibar") val multibar: String?
+    @Json(name = "multibar") val multibar: String?,
+    @Json(name = "vendorNumber") val vendorNumber: String?
 ) : Parcelable {
     override fun describeContents(): Int {
         return 0
