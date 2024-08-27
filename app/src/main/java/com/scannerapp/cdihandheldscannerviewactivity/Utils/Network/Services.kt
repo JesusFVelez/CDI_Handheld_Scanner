@@ -183,7 +183,7 @@ interface LoginServices{
     suspend fun getWarehousesAvailable(): ResponseWrapperWarehouse
 
     @POST("logout")
-    fun logoutUser(@Query("companyID") companyID: String):Call<Void>
+    suspend fun logoutUser(@Query("companyID") companyID: String)
 
     @GET("verifyIfNumberOfUsersHasExceeded")
     suspend fun verifyIfNumberOfUsersHasExceeded(@Query("companyID") companyID: String): NetworkDetailsResponseWrapper

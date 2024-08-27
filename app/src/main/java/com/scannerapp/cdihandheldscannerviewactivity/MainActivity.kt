@@ -8,11 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
@@ -20,6 +22,8 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ActivityMainBinding
 import com.scannerapp.cdihandheldscannerviewactivity.login.LoginActivity
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -77,24 +81,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun logoutUser() {
+    private fun logoutUser(): Boolean {
         val companyID: String = SharedPreferencesUtils.getCompanyIDFromSharedPref(this)
-        ScannerAPI.getLoginService().logoutUser(companyID).enqueue(object: Callback<Void> {
-            override fun onResponse(
-                call: Call<Void>,
-                response: Response<Void>
-            ) {
+        var hasUserBeenLoggedOut = false
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            Log.i("Log out user" , "Error -> ${exception.message}")
+            AlerterUtils.startNetworkErrorAlert(this@MainActivity)
+        }
+        lifecycleScope.launch(exceptionHandler) {
+            try {
+                ScannerAPI.getLoginService().logoutUser(companyID)
                 // Log out and navigate to the login activity
                 val intent = Intent(this@MainActivity, LoginActivity::class.java)
-                startActivity(intent)
+                hasUserBeenLoggedOut = true
                 this@MainActivity.finish()
-            }
+                startActivity(intent)
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+
+            }catch (e: Exception){
+                Log.i("Log out user (e)", "Error -> ${e.message}")
                 AlerterUtils.startNetworkErrorAlert(this@MainActivity)
             }
 
-        })
+        }
+        return hasUserBeenLoggedOut
     }
 
 
@@ -167,7 +177,6 @@ class MainActivity : AppCompatActivity() {
 
 @Deprecated("Deprecated in Java")
 override fun onBackPressed() {
-    super.onBackPressed()
     val navController = this.findNavController( R.id.my_nav_host_fragment)
 //    if(navController.currentDestination?.id == R.id.orderPickingMainFragment) {
 //        val currentFragment = navController.currentDestination
@@ -190,11 +199,13 @@ override fun onBackPressed() {
             .setTitle("Log Out")
             .setMessage("Are you sure you want to log out?")
             .setPositiveButton("Yes") { _, _ ->
-                logoutUser()
+                val hasUserBeenLoggedOut = logoutUser()
+                if (hasUserBeenLoggedOut) super.onBackPressed()
             }
             .setNegativeButton("No", null)
             .show()
     }
+
 }
 
 

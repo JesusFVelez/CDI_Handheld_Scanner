@@ -266,7 +266,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
             viewModel.resetHasAPIBeenCalled()
         }
 
-        viewModel.wasLasAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
             if (!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!) {
                 viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()

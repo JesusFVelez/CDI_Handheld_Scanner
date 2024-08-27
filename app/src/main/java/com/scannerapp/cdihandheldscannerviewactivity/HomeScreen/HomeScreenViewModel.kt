@@ -64,6 +64,10 @@ class HomeScreenViewModel : ViewModel(){
     val currentlyChosenMenuOption: LiveData<MenuOptionDataClass>
         get() = _currentlyChosenMenuOption
 
+    private val _didUserLogOutSuccessfully = MutableLiveData<Boolean>()
+    val didUserLogoutSuccessfully: LiveData<Boolean>
+        get() = _didUserLogOutSuccessfully
+
 
 
 
@@ -81,7 +85,26 @@ class HomeScreenViewModel : ViewModel(){
     }
 
     init{
+        _didUserLogOutSuccessfully.value = false
+    }
 
+    fun logUserOut(){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            _didUserLogOutSuccessfully.value = false
+            Log.i("Log out user homescreen viewmodel" , "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler) {
+            try{
+                ScannerAPI.getLoginService().logoutUser(_companyID.value!!)
+                _didUserLogOutSuccessfully.value = true
+                _wasLastAPICallSuccessful.value = true
+            }catch (e: Exception){
+                Log.i("Log out user (e) homescreen viewmodel", "Error -> ${e.message}")
+                _didUserLogOutSuccessfully.value = false
+                _wasLastAPICallSuccessful.value = false
+            }
+        }
     }
 
     fun verifyIfClientUsesRPM(){
