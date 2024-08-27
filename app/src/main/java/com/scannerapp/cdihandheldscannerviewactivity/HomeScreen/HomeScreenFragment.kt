@@ -92,6 +92,7 @@ class HomeScreenFragment : Fragment() {
     private fun initObservers(){
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasLastApiCallSuccessful ->
             if(!wasLastApiCallSuccessful && hasButtonBeenPressed){
+                hasButtonBeenPressed = false
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())
                 Log.i("API Call", "API Call did not work")
@@ -118,8 +119,18 @@ class HomeScreenFragment : Fragment() {
                 hasButtonBeenPressed = false
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessageForUserAccess.value!!)
             }
-
         }
+
+        viewModel.didUserLogoutSuccessfully.observe(viewLifecycleOwner){ didUserLogout ->
+            if(didUserLogout) {
+                // Log out and navigate to the login activity
+                val intent = Intent(requireActivity(), LoginActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            }
+        }
+
+
     }
     private fun initViewModel(){
         // Setting the view model
@@ -150,30 +161,8 @@ class HomeScreenFragment : Fragment() {
                 .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes") { _, _ ->
-
-                    // Log out and navigate to the login activity
-                    val intent = Intent(this.activity, LoginActivity::class.java)
-                    startActivity(intent)
-                    this.activity?.finish()
-                    val companyID: String = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-                    ScannerAPI.getLoginService().logoutUser(companyID).enqueue(object:
-                        Callback<Void> {
-                        override fun onResponse(
-                            call: Call<Void>,
-                            response: Response<Void>
-                        ) {
-                            // Log out and navigate to the login activity
-                            val intent = Intent(requireActivity(), LoginActivity::class.java)
-                            startActivity(intent)
-                            requireActivity().finish()
-                        }
-
-                        override fun onFailure(call: Call<Void>, t: Throwable) {
-                            AlerterUtils.startNetworkErrorAlert(requireActivity())
-                        }
-
-                    })
-
+                    hasButtonBeenPressed = true
+                    viewModel.logUserOut()
                 }
                 .setNegativeButton("No", null)
                 .show()

@@ -225,7 +225,7 @@ class ReceivingProductsMainFragment : Fragment(){
 
         viewModel.allItemsMoved.observe(viewLifecycleOwner){wereAllItemsMoved ->
             progressDialog.dismiss()
-            if(wereAllItemsMoved) {
+            if(wereAllItemsMoved && viewModel.wasLastAPICallSuccessful.value!!) {
                 AlerterUtils.startSuccessAlert(
                     requireActivity(),
                     "Success",
@@ -275,7 +275,7 @@ class ReceivingProductsMainFragment : Fragment(){
 
         }
 
-        viewModel.wasLasAPICallSuccessful.observe(viewLifecycleOwner){wasLastAPICallSuccessful ->
+        viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){ wasLastAPICallSuccessful ->
             if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
                 viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
