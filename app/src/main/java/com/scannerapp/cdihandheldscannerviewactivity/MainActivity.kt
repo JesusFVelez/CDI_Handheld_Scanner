@@ -105,24 +105,6 @@ class MainActivity : AppCompatActivity() {
 
         }
         return hasUserBeenLoggedOut
-
-
-//            .enqueue(object: Callback<Void> {
-//            override fun onResponse(
-//                call: Call<Void>,
-//                response: Response<Void>
-//            ) {
-//                // Log out and navigate to the login activity
-//                val intent = Intent(this@MainActivity, LoginActivity::class.java)
-//                startActivity(intent)
-//                this@MainActivity.finish()
-//            }
-//
-//            override fun onFailure(call: Call<Void>, t: Throwable) {
-//                AlerterUtils.startNetworkErrorAlert(this@MainActivity)
-//            }
-//
-//        })
     }
 
 
