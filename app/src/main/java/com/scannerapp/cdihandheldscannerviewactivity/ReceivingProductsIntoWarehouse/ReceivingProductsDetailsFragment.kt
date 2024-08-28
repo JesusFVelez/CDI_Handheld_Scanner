@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -81,13 +79,13 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
     data class ItemToAddToDoorBin(
         val expirationDate: String,
-        val binToBeMovedTo:String,
+        val binToBeMovedTo: String,
         val doorBin: String,
-        val itemNumber:String,
-        val lotNumber:String,
+        val itemNumber: String,
+        val lotNumber: String,
         val weight: Float,
-        val quantityOfItemsAddedToDoorBin:Int)
-
+        val quantityOfItemsAddedToDoorBin: Int
+    )
 
     private fun initUIElements() {
         // TextView initializations
@@ -100,17 +98,27 @@ class ReceivingProductsDetailsFragment : Fragment() {
         quantityEditText = binding.QuantityEditText
         newExpirationDateEditText = binding.NewExpirationDateEditText
         scanItemEditText = binding.ScanItemEditText
-        scanItemEditText.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
-                // Handle the Enter key press here
-                progressDialog.show()
-                viewModel.confirmItem(scanItemEditText.text.toString())
-                true
-            } else {
-                false
-            }
-        }
         weightEditText = binding.WeightEditText
+
+        // Set up scanItemEditText to handle barcode input
+        scanItemEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val barcode = s.toString().trim()
+                if (barcode.isNotEmpty()) {
+                    progressDialog.show()
+                    viewModel.confirmItem(barcode)
+
+                    // Reset the text field for the next input
+                    scanItemEditText.post {
+                        scanItemEditText.setText("")
+                    }
+                }
+            }
+        })
 
         // Button initializations
         addButton = binding.addButton
@@ -193,81 +201,102 @@ class ReceivingProductsDetailsFragment : Fragment() {
                         val newLotNumber = newLotEditText.text.toString()
                         val quantityToAddToDoor = quantityEditText.text.toString().toFloat().toInt()
                         val itemNumber = itemNumberTextView.text.toString()
-                        val itemName = itemNameTextView.text.toString()
                         val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
-                        val doesItemUseLotNumber = viewModel.itemInfo.value!!.doesItemUseLotNumber
+                        val weight = weightEditText.text.toString().toFloatOrNull() ?: 0f
 
-                        var weight = 0f
-                        if (weightEditText.text.isNotEmpty())
-                            weight = weightEditText.text.toString().toFloat()
+                        val itemToAdd = ItemToAddToDoorBin(
+                            expirationDate,
+                            "00P111",
+                            doorBin,
+                            itemNumber,
+                            newLotNumber,
+                            weight,
+                            quantityToAddToDoor
+                        )
 
-                        val itemToAdd = ItemToAddToDoorBin(expirationDate, "00P111", doorBin, itemNumber, newLotNumber, weight, quantityToAddToDoor)
                         progressDialog.show()
                         viewModel.moveItemToDoor(itemToAdd)
 
                         // Check if the new expiration date is before the current date
                         if (newExpirationDate.before(Date())) {
-                            AlerterUtils.startWarningAlerter(requireActivity(), "Item has been added with an expired date!")
+                            AlerterUtils.startWarningAlerter(
+                                requireActivity(),
+                                "Item has been added with an expired date!"
+                            )
                         }
                     } else {
-                        // Step 4: Show an error message for invalid date
-                        AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date. Please enter a valid date (MM-DD-YYYY).")
+                        // Step 4: Show an error message for an invalid date
+                        AlerterUtils.startErrorAlerter(
+                            requireActivity(),
+                            "Invalid date. Please enter a valid date (MM-DD-YYYY)."
+                        )
                     }
                 } catch (e: ParseException) {
-                    AlerterUtils.startErrorAlerter(requireActivity(), "Invalid date format. Please use MM-DD-YYYY.")
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        "Invalid date format. Please use MM-DD-YYYY."
+                    )
                 }
             } else {
-                AlerterUtils.startErrorAlerter(requireActivity(), "Please fill all required fields, excluding lot number.")
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    "Please fill all required fields, excluding lot number."
+                )
             }
         }
     }
 
     private fun initObservers() {
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner) { wasItemConfirmed ->
-            if (wasItemConfirmed && viewModel.hasAPIBeenCalled.value!!) {
+            if (wasItemConfirmed && viewModel.hasAPIBeenCalled.value == true) {
                 progressDialog.dismiss()
 
-                val quantity = viewModel.UOMQtyInBarcode.value!!
-                var decimalQuantityInEditText = 0f
-                if (quantityEditText.text.isNotEmpty())
-                    decimalQuantityInEditText = quantityEditText.text.toString().toFloat()
+                val quantity: Float = viewModel.UOMQtyInBarcode.value ?: 0f
+                var decimalQuantityInEditText: Float = quantityEditText.text.toString().toFloatOrNull() ?: 0f
 
-                if (quantity > 0)
-                    quantityEditText.setText((decimalQuantityInEditText + quantity).toString())
-                else
-                    quantityEditText.setText((decimalQuantityInEditText + 1).toString())
+                quantityEditText.setText((decimalQuantityInEditText + if (quantity > 0) quantity else 1f).toString())
 
-                val weight = viewModel.weightFromBarcode.value!!
-                var currentWeight = 0f
-                if (weightEditText.text.isNotEmpty())
-                    currentWeight = weightEditText.text.toString().toFloat()
-                if (weight > 0)
+                val weight: Float = viewModel.weightFromBarcode.value ?: 0f
+                var currentWeight: Float = weightEditText.text.toString().toFloatOrNull() ?: 0f
+
+                if (weight > 0) {
                     weightEditText.setText((currentWeight + weight).toString())
+                }
 
                 viewModel.resetHasAPIBeenCalled()
-            } else if (viewModel.hasAPIBeenCalled.value!!) {
+            } else if (viewModel.hasAPIBeenCalled.value == true) {
                 progressDialog.dismiss()
                 viewModel.resetHasAPIBeenCalled()
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["confirmItem"]!!)
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value?.get("confirmItem") ?: "Unknown error"
+                )
             }
             scanItemEditText.setText("")
         }
 
         viewModel.wasItemMovedToDoor.observe(viewLifecycleOwner) { wasItemMovedToDoor ->
             progressDialog.dismiss()
-            if (wasItemMovedToDoor && viewModel.hasAPIBeenCalled.value!!) {
+            if (wasItemMovedToDoor && viewModel.hasAPIBeenCalled.value == true) {
                 viewModel.resetHasAPIBeenCalled()
-                AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item was added successfully to door bin")
+                AlerterUtils.startSuccessAlert(
+                    requireActivity(),
+                    "Success",
+                    "Item was added successfully to door bin"
+                )
                 findNavController().navigateUp()
-            } else if (viewModel.hasAPIBeenCalled.value!!) {
+            } else if (viewModel.hasAPIBeenCalled.value == true) {
                 viewModel.resetHasAPIBeenCalled()
-                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemMovedToDoorError"]!!)
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value?.get("wasItemMovedToDoorError") ?: "Unknown error"
+                )
             }
             viewModel.resetHasAPIBeenCalled()
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
-            if (!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!) {
+            if (wasLastAPICallSuccessful == false && viewModel.hasAPIBeenCalled.value == true) {
                 viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity())

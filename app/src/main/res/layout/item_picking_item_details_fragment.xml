@@ -100,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/CustomScannerInput"
-                android:hint="@string/item_number"
+                android:hint="Scan Barcode"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/middleDiv"
@@ -122,22 +122,22 @@
             android:id="@+id/lowerDiv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
             android:paddingTop="100dp"
-            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/middleDiv"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintVertical_bias="1.0">
 
             <LinearLayout
                 android:id="@+id/infoDiv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center"
+                android:orientation="horizontal"
 
                 app:layout_constraintBottom_toTopOf="@+id/pickingButton"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -192,18 +192,17 @@
 
             <EditText
                 android:id="@+id/WeightEditText"
+                style="@style/CustomUserInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="@string/weightHintText"
                 android:enabled="false"
+                android:hint="@string/weightHintText"
+                android:imeOptions="actionDone"
                 android:inputType="numberDecimal"
-                app:layout_constraintTop_toBottomOf="@id/itemAmountEditText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                style="@style/CustomUserInput"
-                android:imeOptions="actionDone"
-                />
+                app:layout_constraintTop_toBottomOf="@id/itemAmountEditText" />
 
             <Button
                 android:id="@+id/pickingButton"
