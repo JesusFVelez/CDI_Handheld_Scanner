@@ -154,7 +154,7 @@ data class ResponseDeleteItemFromDoorBin(
 )
 @JsonClass(generateAdapter = true)
 data class DeleteItemsFromDoorBin(
-    @Json(name="wasItemDeleted") val wesItemDeleted: Boolean,
+    @Json(name="wasItemDeleted") val wasItemDeleted: Boolean,
     @Json(name="errorMessage") val errorMessage: String
 )
 

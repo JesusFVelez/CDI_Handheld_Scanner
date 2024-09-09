@@ -99,6 +99,10 @@ class ReceivingProductsViewModel: ViewModel() {
     val isLotNumberValid: LiveData<Boolean>
         get() = _isLotNumberValid
 
+    // Picker User name
+    private val _pickerUserName =  MutableLiveData<String>()
+    val pickerUserName: LiveData<String>
+        get() = _pickerUserName
 
     private val _hasAPIBeenCalled = MutableLiveData<Boolean>()
     val hasAPIBeenCalled:LiveData<Boolean>
@@ -117,6 +121,20 @@ class ReceivingProductsViewModel: ViewModel() {
         get() = _weightFromBarcode
 
 
+    private val _wasItemDeleted = MutableLiveData<Boolean>()
+    val wasItemDeleted: LiveData<Boolean>
+        get() = _wasItemDeleted
+
+
+
+
+
+
+    fun setPickerUserName(pickerUserName: String){
+        _pickerUserName.value = pickerUserName
+    }
+
+
     init {
         _errorMessage.value = mutableMapOf(
             "wasItemFoundError" to "",
@@ -126,7 +144,8 @@ class ReceivingProductsViewModel: ViewModel() {
             "wasItemMovedToBinError" to "",
             "getItemsInBin" to "",
             "validateLotNumber" to "",
-            "confirmItem" to ""
+            "confirmItem" to "",
+            "wasItemDeleted" to ""
         )
         _listOfItemsToMoveInPreReceiving.value = mutableListOf()
         willNotEditCurrentValues()
@@ -317,7 +336,15 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(itemToAddToDoor.itemNumber, itemToAddToDoor.doorBin, itemToAddToDoor.quantityOfItemsAddedToDoorBin, itemToAddToDoor.lotNumber, itemToAddToDoor.weight, itemToAddToDoor.expirationDate, _warehouseNumber.value!!, _companyID.value!!)
+                val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(itemNumber = itemToAddToDoor.itemNumber,
+                                                                                        doorBin = itemToAddToDoor.doorBin,
+                                                                                        pickerUserName = _pickerUserName.value!!,
+                                                                                        quantity = itemToAddToDoor.quantityOfItemsAddedToDoorBin,
+                                                                                        lotNumber = itemToAddToDoor.lotNumber,
+                                                                                        weight = itemToAddToDoor.weight,
+                                                                                        expireDate = itemToAddToDoor.expirationDate,
+                                                                                        warehouseNumber = _warehouseNumber.value!!,
+                                                                                        companyID = _companyID.value!!)
                 _errorMessage.value!!["wasItemMovedToDoorError"] = response.response.errorMessage
                 _wasItemMovedToDoor.value = response.response.wasItemMovedToDoor
                 _wasLastAPICallSuccessful.value = true
@@ -337,7 +364,8 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
                 _hasAPIBeenCalled.value = true
-                val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(rowIDForDoorBin, quantity)
+                val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(rowIDForDoorBin = rowIDForDoorBin,
+                                                                                            pickerUserName = _pickerUserName.value!!, quantity)
                 _wasItemMovedToBin.value = response.response.wasItemMoved
                 _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
                 _wasLastAPICallSuccessful.value = true
@@ -366,7 +394,7 @@ class ReceivingProductsViewModel: ViewModel() {
                 launch{
                     try{
                         _hasAPIBeenCalled.value = true
-                        val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(itemToMove.rowID, itemToMove.qtyOnHand.toInt())
+                        val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(itemToMove.rowID, _pickerUserName.value!! ,itemToMove.qtyOnHand.toInt())
                         _wasItemMovedToBin.value = response.response.wasItemMoved
                         _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
                         _wasLastAPICallSuccessful.value = true
@@ -417,7 +445,11 @@ class ReceivingProductsViewModel: ViewModel() {
         viewModelScope.launch(exceptionHandler){
             try{
 
-                val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(rowIDForDoorBin)
+                val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin( rowIDForDoorBin = rowIDForDoorBin,
+                                                                                                pickerUserName = _pickerUserName.value!!)
+
+                _errorMessage.value!!["wasItemDeleted"] = response.response.errorMessage
+                _wasItemDeleted.value = response.response.wasItemDeleted
                 _wasLastAPICallSuccessful.value = true
             } catch(e: Exception) {
                 _wasLastAPICallSuccessful.value = false

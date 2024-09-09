@@ -118,7 +118,7 @@ interface MoveItemsBetweenBinsServices{
 
     //Endpoint for moving items from one bin to another bin
     @PUT("moveItemBetweenBins")
-    suspend fun moveItemBetweenBins(@Query("rowNumber") rowID:String, @Query("newBin") newBin:String, @Query("quantity") quantityToMove: Float): moveItemBetweenBinsResponseWrapper
+    suspend fun moveItemBetweenBins(@Query("rowNumber") rowID:String, @Query("pickerUserName") pickerUserName: String, @Query("newBin") newBin:String, @Query("quantity") quantityToMove: Float): moveItemBetweenBinsResponseWrapper
 
     //Endpoint for removing an item from a bin
     @GET("removeItem")
@@ -260,13 +260,13 @@ interface ReceivingProductsServices {
     suspend fun wasBinFound(@Query("binNumber") bunNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseConfirmBin
 
     @PUT("addItemToDoorBin")
-    suspend fun addItemToDoorBin(@Query("itemNumber") itemNumber: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("weight") weight: Float, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
+    suspend fun addItemToDoorBin(@Query("itemNumber") itemNumber: String, @Query("pickerUserName") pickerUserName: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("weight") weight: Float, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
 
     @PUT("moveItemFromDoor")
-    suspend fun moveItemFromDoorBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String, @Query("quantity") quantity: Int): ResponseMoveItemFromDoorBin
+    suspend fun moveItemFromDoorBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String, @Query("pickerUserName") pickerUserName: String, @Query("quantity") quantity: Int): ResponseMoveItemFromDoorBin
 
     @DELETE("deleteItemFromDoorBin")
-    suspend fun deleteItemFromDoorInBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String): ResponseDeleteItemFromDoorBin
+    suspend fun deleteItemFromDoorInBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String, @Query("pickerUserName") pickerUserName: String): ResponseDeleteItemFromDoorBin
 
     @GET("confirmItem")
     suspend fun confirmItem(@Query("scannedCode") scannedCode: String,@Query("receivingNumber") receivingNumber: String, @Query("actualItemNumber") actualItemNumber: String, @Query("companyID") companyID: String, @Query("warehouseNumber") warehouseNumber: Int ) : ResponseConfirmItemWrapper

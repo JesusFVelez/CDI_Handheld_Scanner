@@ -63,6 +63,10 @@ class ReceivingProductsMainFragment : Fragment(){
         val warehouseNumber: Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
         viewModel.setWarehouseNumberFromSharedPref(warehouseNumber)
 
+        // Gets the username from the Shared Preferences
+        val pickerUserName: String = SharedPreferencesUtils.getUserNameFromSharedPref(requireContext())
+        viewModel.setPickerUserName(pickerUserName)
+
         initUIElements()
         initObservers()
 
@@ -92,7 +96,7 @@ class ReceivingProductsMainFragment : Fragment(){
         // For whenever the fragment comes back from the item details fragment screen
         if(lastFragmentName == "null"){
             progressDialog.show()
-            viewModel.getPreReceivingInfo()
+            viewModel.getItemsInDoor()
             searchButton.isEnabled = false
             binNumberAutoCompleteTextView.isEnabled = false
         }
@@ -180,6 +184,7 @@ class ReceivingProductsMainFragment : Fragment(){
             val noItemsHaveInvalidLineUp = !verifyIfThereIsAtLeastOneItemWithInvalidLineUp(viewModel.listOfItemsToMoveInPreReceiving.value!!)
             finishButton.isEnabled = hasItems && noItemsHaveInvalidLineUp
         },{ item: ItemsInBinList ->
+            progressDialog.show()
             viewModel.deleteItemFromDoorBin(item.rowID)
         })
         val doesAtLeastOneItemHaveInvalidLineUp = verifyIfThereIsAtLeastOneItemWithInvalidLineUp(viewModel.listOfItemsToMoveInPreReceiving.value!!)
@@ -245,7 +250,9 @@ class ReceivingProductsMainFragment : Fragment(){
             if(isDoorBinEmpty && viewModel.hasAPIBeenCalled.value!!){
                 AlerterUtils.startWarningAlerter(requireActivity(), "Selected door bin does not have any items")
                 viewModel.resetHasAPIBeenCalled()
+                addButton.isEnabled = true
             }else if(viewModel.hasAPIBeenCalled.value!!){
+                addButton.isEnabled = true
                 initRecyclerViewAdapter()
                 viewModel.resetHasAPIBeenCalled()
             }
@@ -260,6 +267,18 @@ class ReceivingProductsMainFragment : Fragment(){
                 viewModel.resetHasAPIBeenCalled()
             }
 
+        }
+
+        viewModel.wasItemDeleted.observe(viewLifecycleOwner){wasItemDeleted ->
+            progressDialog.dismiss()
+            if(wasItemDeleted && viewModel.hasAPIBeenCalled.value!!){
+                progressDialog.dismiss()
+                AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Successfully Deleted Item")
+                viewModel.resetHasAPIBeenCalled()
+            }else if(viewModel.hasAPIBeenCalled.value!!){
+                progressDialog.dismiss()
+                AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemDeleted"]!!)
+            }
         }
 
         viewModel.wasItemFound.observe(viewLifecycleOwner){wasItemFound ->
@@ -298,7 +317,7 @@ class ReceivingProductsMainFragment : Fragment(){
             if(newPreReceivingInfo != null && viewModel.hasAPIBeenCalled.value!!) {
                 viewModel.resetHasAPIBeenCalled()
                 purchaseOrderNumberTextView.text = newPreReceivingInfo.tt_purchase_order.uppercase()
-                addButton.isEnabled = true
+
                 viewModel.getItemsInDoor()
             }
         }

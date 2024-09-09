@@ -42,6 +42,11 @@ class BinMovementViewModel: ViewModel() {
     val warehouseNumber: LiveData<Int>
         get() = _warehouseNumber
 
+    // Picker User name
+    private val _pickerUserName =  MutableLiveData<String>()
+    val pickerUserName: LiveData<String>
+        get() = _pickerUserName
+
     private val _currentlyChosenItemToMoveFromSpinner = MutableLiveData<itemsInBin>()
     val currentlyChosenItemToMove: LiveData<itemsInBin>
         get() = _currentlyChosenItemToMoveFromSpinner
@@ -70,6 +75,17 @@ class BinMovementViewModel: ViewModel() {
     val willUpdateItemToMove: LiveData<Boolean>
         get() = _willUpdateItemToMove
 
+    data class itemBeingMoved (
+        val itemNumber: String,
+        val wasItemMoved: Boolean,
+        val errorMessage: String,
+        val fromBinLocation: String,
+        val toBinLocation:String
+    )
+    private val _itemsMoved = MutableLiveData<MutableList<itemBeingMoved>>()
+    val itemsMoved: LiveData<MutableList<itemBeingMoved>>
+        get() = _itemsMoved
+
     fun setWillUpdateItemToMove(willUpdate: Boolean){
         _willUpdateItemToMove.value = willUpdate
     }
@@ -96,6 +112,7 @@ class BinMovementViewModel: ViewModel() {
             "isQuantityValid" to "",
             "moveItemBetweenBins" to ""
         )
+        _itemsMoved.value = mutableListOf()
     }
 
     fun setNewItemToBeMoved(newItemToMove: BinMovementDataClass){
@@ -104,6 +121,10 @@ class BinMovementViewModel: ViewModel() {
 
     fun resetNewItemToBeMoved(){
         _newItemToBeMoved.value = null
+    }
+
+    fun setPickerUserName(pickerUserName: String){
+        _pickerUserName.value = pickerUserName
     }
 
     private val _hasAPIBeenCalled = MutableLiveData<Boolean>()
@@ -186,7 +207,10 @@ class BinMovementViewModel: ViewModel() {
     }
 
 
-    fun moveItemsBetweenBins(itemsToMove: List<BinMovementDataClass>) {
+
+
+    fun moveItemsBetweenBins(itemsToMove: List<BinMovementDataClass>){
+
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _wasLastAPICallSuccessful.value = false
@@ -202,11 +226,20 @@ class BinMovementViewModel: ViewModel() {
                     try {
                         _hasAPIBeenCalled.value = true
                         val response = ScannerAPI.getMovingItemsBetweenBinsService()
-                            .moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
+                            .moveItemBetweenBins(rowID = itemToMove.rowIDOfItemInFromBin,
+                                                pickerUserName = _pickerUserName.value!!,
+                                                newBin = itemToMove.toBinNumber,
+                                                quantityToMove = itemToMove.qtyToMoveFromBinToBin.toFloat())
+                        _itemsMoved.value!!.add(itemBeingMoved(
+                            itemToMove.itemNumber,
+                            response.response.wasItemMoved,
+                            response.response.errorMessage,
+                            itemToMove.fromBinNumber,
+                            itemToMove.toBinNumber
+                        ))
                         _wasLastAPICallSuccessful.value = true
-                        _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
-                        _wasItemMovedSuccessfully.value = response.response.wasItemMoved
-
+//                        _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
+//                        _wasItemMovedSuccessfully.value = response.response.wasItemMoved
                     } catch (e: Exception) {
                         _wasLastAPICallSuccessful.value = false
                         Log.i("API Error", "Error -> ${e.message}")
@@ -263,7 +296,7 @@ class BinMovementViewModel: ViewModel() {
             viewModelScope.launch(exceptionHandler) {
                 _hasAPIBeenCalled.value = true
                 val response =
-                    ScannerAPI.getMovingItemsBetweenBinsService().moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
+                    ScannerAPI.getMovingItemsBetweenBinsService().moveItemBetweenBins(itemToMove.rowIDOfItemInFromBin, pickerUserName = _pickerUserName.value!!, itemToMove.toBinNumber, itemToMove.qtyToMoveFromBinToBin.toFloat())
                 _wasLastAPICallSuccessful.value = true
                 _wasItemMovedSuccessfully.value = response.response.wasItemMoved
                 _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
