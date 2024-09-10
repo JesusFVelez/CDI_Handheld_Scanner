@@ -297,8 +297,6 @@ class BinMovementFragment : Fragment() {
                     }
                     viewModel.moveItemsBetweenBins(adapter.data)
                 }
-
-
             }
 
             questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
