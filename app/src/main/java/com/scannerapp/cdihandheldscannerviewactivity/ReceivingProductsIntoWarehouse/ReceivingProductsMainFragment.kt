@@ -148,19 +148,17 @@ class ReceivingProductsMainFragment : Fragment(){
         }
 
         finishButton.setOnClickListener {
-            val questionPopup = PopupWindowUtils.createQuestionPopup(requireContext(), "Are you sure you would like to finish moving items from door bin to floor bin (00P111)?", "Move Items?")
-            questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
-                progressDialog.show()
-                questionPopup.dismiss()
-                viewModel.moveItemsToFloorBin()
+            val listener = object : PopupWindowUtils.Companion.PopupInputListener{
+                override fun onConfirm(input: EditText) {
+                    progressDialog.show()
+                    viewModel.validateDestinationBin(input.text.toString())
+                }
             }
-
-            questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
-                questionPopup.dismiss()
-            }
-
-            questionPopup.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
-
+            val popup = PopupWindowUtils.showConfirmationPopup(context = requireContext(),
+                                                                anchor = it.rootView,
+                                                             confirmationText = "Please enter the destination bin for all items received.",
+                                                             confirmEditTextHint = "Destination Bin",
+                                                                listener = listener)
         }
         viewModel.clearListOfItems()
         initRecyclerViewAdapter()
@@ -234,7 +232,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 AlerterUtils.startSuccessAlert(
                     requireActivity(),
                     "Success",
-                    "Successfully Moved items to floor bin (00P111)"
+                    "Successfully Moved items to bin ${viewModel.destinationBin.value!!}"
                 )
                 viewModel.resetAllItemsMovedFlag()
                 clearAllItemsFromRecyclerView()
@@ -266,6 +264,19 @@ class ReceivingProductsMainFragment : Fragment(){
                 initBinNumberAutoCompleteTextView(doorBinsList)
                 viewModel.resetHasAPIBeenCalled()
             }
+
+        }
+
+        viewModel.isValidDestinationBin.observe(viewLifecycleOwner){ isDestinationValid ->
+            if(viewModel.hasAPIBeenCalled.value!! && isDestinationValid) {
+                viewModel.moveItemsToFloorBin(viewModel.destinationBin.value!!)
+            }
+            else if(viewModel.hasAPIBeenCalled.value!!)
+                progressDialog.dismiss()
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        viewModel.errorMessage.value!!["validateDestinationBin"]!!
+                )
 
         }
 

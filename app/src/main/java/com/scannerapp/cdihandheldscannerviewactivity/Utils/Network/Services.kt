@@ -30,6 +30,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseMoveItemFromDoorBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseMoveItemToDoorBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponsePreReceiving
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateDestinationBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateLotNumberWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperBinsWithProduct
@@ -263,7 +264,7 @@ interface ReceivingProductsServices {
     suspend fun addItemToDoorBin(@Query("itemNumber") itemNumber: String, @Query("pickerUserName") pickerUserName: String, @Query("doorBin") doorBin: String, @Query("quantity") quantity: Int, @Query("lotNumber") lotNumber: String, @Query("weight") weight: Float, @Query("expireDate") expireDate: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseMoveItemToDoorBin
 
     @PUT("moveItemFromDoor")
-    suspend fun moveItemFromDoorBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String, @Query("pickerUserName") pickerUserName: String, @Query("quantity") quantity: Int): ResponseMoveItemFromDoorBin
+    suspend fun moveItemFromDoorBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String, @Query("pickerUserName") pickerUserName: String, @Query("quantity") quantity: Int, @Query("destinationBin") destinationBin: String): ResponseMoveItemFromDoorBin
 
     @DELETE("deleteItemFromDoorBin")
     suspend fun deleteItemFromDoorInBin(@Query("rowIDForDoorBin") rowIDForDoorBin: String, @Query("pickerUserName") pickerUserName: String): ResponseDeleteItemFromDoorBin
@@ -273,6 +274,9 @@ interface ReceivingProductsServices {
 
     @GET("validateWhetherLotIsInIVLOT")
     suspend fun validateWhetherLotIsInIVLOT(@Query("itemNumber") itemNumber: String, @Query("lotNumber") lotNumber: String, @Query("warehouseNumber") warehouseNumber: Int):ResponseValidateLotNumberWrapper
+
+    @GET("validateDestinationBin")
+    suspend fun validateDestinationBin(@Query("destinationBin") destinationBin: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseValidateDestinationBin
 
 
 }

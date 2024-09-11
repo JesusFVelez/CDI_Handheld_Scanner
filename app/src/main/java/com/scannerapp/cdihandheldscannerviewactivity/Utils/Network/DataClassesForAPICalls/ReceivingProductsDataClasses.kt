@@ -172,6 +172,21 @@ data class ResponseValidateLotNumber(
 )
 
 
+
+// Validate destination bin
+@JsonClass(generateAdapter = true)
+data class ResponseValidateDestinationBin(
+    val response: ResponseValidateDestinationBinWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseValidateDestinationBinWrapper(
+    @Json(name = "isValidDestinationBin") val isBinValid: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+
+
 // Data classes for confirming an item
 @JsonClass(generateAdapter = true)
 data class ResponseConfirmItemWrapper(
