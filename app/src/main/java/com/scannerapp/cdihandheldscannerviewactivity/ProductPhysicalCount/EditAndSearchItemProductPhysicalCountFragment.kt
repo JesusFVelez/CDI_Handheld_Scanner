@@ -424,6 +424,8 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             val lotNumber = lotNumberEditText.text.toString()
 
             if (quantity >= 0 && weight >= 0.0) {
+                // Code for implementing the expiration date popup has been commented here given that the exp date popup appears below the count popup and I can't get it to appear on top
+                // for now, the code will work like before. Just a warning message indicating that the date entered is an expired date
 //                val onPressOfYes: () -> Unit = {
 //                    updateCountForItem(item, quantity, weight, formattedExpireDate, lotNumber, dialog)
 //                }
