@@ -95,8 +95,8 @@ class EditItemViewModel: ViewModel(){
             try {
                 val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber, pWarehouseNo)
                 _wasLastAPICallSuccessful.value = true
-                //_opMessage.value = response.response.opMessage
-                //_opSuccess.value = response.response.opSuccess
+                _opMessage.value = response.response.opMessage
+                _opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
