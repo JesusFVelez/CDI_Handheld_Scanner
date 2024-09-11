@@ -270,13 +270,16 @@ class ReceivingProductsMainFragment : Fragment(){
         viewModel.isValidDestinationBin.observe(viewLifecycleOwner){ isDestinationValid ->
             if(viewModel.hasAPIBeenCalled.value!! && isDestinationValid) {
                 viewModel.moveItemsToFloorBin(viewModel.destinationBin.value!!)
+                viewModel.resetHasAPIBeenCalled()
             }
-            else if(viewModel.hasAPIBeenCalled.value!!)
+            else if(viewModel.hasAPIBeenCalled.value!!) {
                 progressDialog.dismiss()
-                    AlerterUtils.startErrorAlerter(
-                        requireActivity(),
-                        viewModel.errorMessage.value!!["validateDestinationBin"]!!
+                AlerterUtils.startErrorAlerter(
+                    requireActivity(),
+                    viewModel.errorMessage.value!!["validateDestinationBin"]!!
                 )
+                viewModel.resetHasAPIBeenCalled()
+            }
 
         }
 
@@ -289,6 +292,7 @@ class ReceivingProductsMainFragment : Fragment(){
             }else if(viewModel.hasAPIBeenCalled.value!!){
                 progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(requireActivity(), viewModel.errorMessage.value!!["wasItemDeleted"]!!)
+                viewModel.resetHasAPIBeenCalled()
             }
         }
 
