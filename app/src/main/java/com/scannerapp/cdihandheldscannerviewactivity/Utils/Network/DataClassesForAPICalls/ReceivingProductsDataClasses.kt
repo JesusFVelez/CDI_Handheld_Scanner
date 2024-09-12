@@ -154,7 +154,7 @@ data class ResponseDeleteItemFromDoorBin(
 )
 @JsonClass(generateAdapter = true)
 data class DeleteItemsFromDoorBin(
-    @Json(name="wasItemDeleted") val wesItemDeleted: Boolean,
+    @Json(name="wasItemDeleted") val wasItemDeleted: Boolean,
     @Json(name="errorMessage") val errorMessage: String
 )
 
@@ -170,6 +170,21 @@ data class ResponseValidateLotNumber(
     @Json(name = "isLotNumberValid") val isLotNumberValid: Boolean,
     @Json(name = "errorMessage") val errorMessage: String
 )
+
+
+
+// Validate destination bin
+@JsonClass(generateAdapter = true)
+data class ResponseValidateDestinationBin(
+    val response: ResponseValidateDestinationBinWrapper
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseValidateDestinationBinWrapper(
+    @Json(name = "isValidDestinationBin") val isBinValid: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
 
 
 // Data classes for confirming an item

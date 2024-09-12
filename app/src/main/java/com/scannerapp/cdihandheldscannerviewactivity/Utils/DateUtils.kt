@@ -1,7 +1,41 @@
 package com.scannerapp.cdihandheldscannerviewactivity.Utils
 
+import android.content.Context
+import android.view.Gravity
+import android.view.View
+import android.view.View.OnClickListener
+import android.widget.Button
+import com.scannerapp.cdihandheldscannerviewactivity.R
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 class DateUtils {
     companion object {
+
+        fun isDateExpired(dateStr: String, handleYesPressed: () -> Unit, context: Context, view: View): Boolean{
+            var isDateExpired: Boolean
+            try {
+                val date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("MM-dd-yyyy"))
+                isDateExpired = date.isBefore(LocalDate.now())
+
+            }catch (e: Exception) {
+                isDateExpired = false
+            }
+            if(isDateExpired){
+                val popup = PopupWindowUtils.createQuestionPopup(context, "The date ${dateStr} has already expired, \n would you like to use this date anyway?", "Date expired")
+                val yesOnClickListener = View.OnClickListener{
+                    handleYesPressed()
+                    popup.dismiss()
+                }
+                popup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener(yesOnClickListener)
+                popup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
+                    popup.dismiss()
+                }
+                popup.showAtLocation(view, Gravity.CENTER, 0, 0)
+            }
+            return isDateExpired
+        }
+
         // Function to validate the date
         fun isValidDate(dateStr: String): Boolean {
             val parts = dateStr.split("-")

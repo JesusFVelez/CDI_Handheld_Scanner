@@ -81,6 +81,10 @@ class BinMovementFragment : Fragment() {
         val warehouseNumber: Int = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
         viewModel.setWarehouseFromSharedPref(warehouseNumber)
 
+        // Gets the username from the Shared Preferences
+        val pickerUserName: String = SharedPreferencesUtils.getUserNameFromSharedPref(requireContext())
+        viewModel.setPickerUserName(pickerUserName)
+
         progressDialog.show()
         //getting all items from backend to fill the item number drop down
         viewModel.getAllItemsInAllBinsFromBackend()
@@ -95,7 +99,20 @@ class BinMovementFragment : Fragment() {
             progressDialog.dismiss()
             if (allMoved && viewModel.hasAPIBeenCalled.value!!) {
                 // Reset the flag or handle as needed
-                AlerterUtils.startSuccessAlert(requireActivity(), "Success","Items have been successfully moved.")
+                var wasAtLeastOneItemNotMoved: Boolean = false
+                var wasAtLeastOneItemMoved: Boolean = false
+                viewModel.itemsMoved.value!!.map { itemBeingMoved ->
+                    if(itemBeingMoved.wasItemMoved)
+                        wasAtLeastOneItemMoved = true
+                    else{
+                        wasAtLeastOneItemNotMoved = true
+                        AlerterUtils.startErrorAlerter(requireActivity(), itemBeingMoved.errorMessage)
+                    }
+                }
+                if (!wasAtLeastOneItemNotMoved && wasAtLeastOneItemMoved)
+                    AlerterUtils.startSuccessAlert(requireActivity(), "Success","Items have been successfully moved.")
+                else if(wasAtLeastOneItemNotMoved && wasAtLeastOneItemMoved)
+                    AlerterUtils.startSuccessAlert(requireActivity(), "Success","Items have been successfully moved but some items failed to move.")
                 viewModel.resetAllItemsMovedFlag()
                 adapter.clearAllItems()
                 progressDialog.show()
@@ -118,14 +135,14 @@ class BinMovementFragment : Fragment() {
             viewModel.resetNewItemToBeMoved()
         }
 
-        viewModel.wasItemMovedSuccessfully.observe(viewLifecycleOwner){wasItemMoved ->
-            if (!wasItemMoved && viewModel.hasAPIBeenCalled.value!!) {
-                AlerterUtils.startErrorAlerter(
-                    requireActivity(),
-                    viewModel.errorMessage.value!!["moveItemBetweenBins"]!!
-                )
-            }
-        }
+//        viewModel.wasItemMovedSuccessfully.observe(viewLifecycleOwner){wasItemMoved ->
+//            if (!wasItemMoved && viewModel.hasAPIBeenCalled.value!!) {
+//                AlerterUtils.startErrorAlerter(
+//                    requireActivity(),
+//                    viewModel.errorMessage.value!!["moveItemBetweenBins"]!!
+//                )
+//            }
+//        }
 
 
         viewModel.listOfBinsInWarehouse.observe(viewLifecycleOwner){
@@ -280,8 +297,6 @@ class BinMovementFragment : Fragment() {
                     }
                     viewModel.moveItemsBetweenBins(adapter.data)
                 }
-
-
             }
 
             questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{

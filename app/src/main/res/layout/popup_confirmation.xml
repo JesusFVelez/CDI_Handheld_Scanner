@@ -35,7 +35,8 @@
         style="@style/PopupMessageSmallText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_margin="10dp"
+
         android:text="Some Prompt Goes Here"
         app:layout_constraintEnd_toEndOf="@+id/confirmationText"
         app:layout_constraintStart_toStartOf="@+id/confirmationText"

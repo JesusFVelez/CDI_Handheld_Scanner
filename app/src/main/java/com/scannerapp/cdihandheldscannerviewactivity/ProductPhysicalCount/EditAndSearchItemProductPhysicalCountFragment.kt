@@ -21,6 +21,7 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.scannerapp.cdihandheldscannerviewactivity.Adapter.ItemAdapter
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.DateUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
@@ -394,7 +395,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         dialogView.findViewById<AppCompatButton>(R.id.addButton).setOnClickListener {
             // Check if the expiration date is provided
-            if (expirationDateTextView.text == "N/A" && expireDateEditText.text.isNullOrEmpty()) {
+            if (expirationDateTextView.text == "N/A" || expireDateEditText.text.isNullOrEmpty()) {
                 expireDateEditText.error = "Please add a date."
                 return@setOnClickListener
             }
@@ -423,32 +424,17 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             val lotNumber = lotNumberEditText.text.toString()
 
             if (quantity >= 0 && weight >= 0.0) {
-                val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
-                val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
-                val selectedBinLocation = viewModel.selectedBin.value?.binLocation ?: ""
+                // Code for implementing the expiration date popup has been commented here given that the exp date popup appears below the count popup and I can't get it to appear on top
+                // for now, the code will work like before. Just a warning message indicating that the date entered is an expired date
+//                val onPressOfYes: () -> Unit = {
+//                    updateCountForItem(item, quantity, weight, formattedExpireDate, lotNumber, dialog)
+//                }
+//                val hasDateExpired = DateUtils.isDateExpired(dateInput, onPressOfYes, requireContext(), requireView())
+//
+//                if(!hasDateExpired)
+//                    updateCountForItem(item, quantity, weight, formattedExpireDate, lotNumber, dialog)
 
-                viewModel.updateCount(
-                    pItemNumber = item.itemNumber,
-                    pWarehouseNo = warehouseNO,
-                    pBinLocation = selectedBinLocation,
-                    pQtyCounted = quantity.toDouble(),
-                    pWeight = weight,
-                    pCompanyID = companyID,
-                    pExpireDate = formattedExpireDate,
-                    pLotNumber = lotNumber
-                )
-                dialog.dismiss()
-                viewModel.getAllItemsInBinForSuggestion(
-                    pBinLocation = selectedBinLocation,
-                    pWarehouse = warehouseNO,
-                    pCompanyID = companyID
-                )
-
-                barcodeScannerEditText.post {
-                    barcodeScannerEditText.requestFocus()
-                    barcodeScannerEditText.text.clear()
-                }
-
+                updateCountForItem(item, quantity, weight, formattedExpireDate, lotNumber, dialog)
                 // Check if the entered date is in the past
                 val enteredDate = targetFormat.parse(dateInput)
                 if (enteredDate != null && enteredDate.before(Date())) {
@@ -485,6 +471,41 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         dialog.show()
     }
 
+    private fun updateCountForItem(
+        item: TtItemInf,
+        quantity: Int,
+        weight: Double,
+        formattedExpireDate: String,
+        lotNumber: String,
+        dialog: Dialog
+    ) {
+        val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+        val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+        val selectedBinLocation = viewModel.selectedBin.value?.binLocation ?: ""
+
+
+        viewModel.updateCount(
+            pItemNumber = item.itemNumber,
+            pWarehouseNo = warehouseNO,
+            pBinLocation = selectedBinLocation,
+            pQtyCounted = quantity.toDouble(),
+            pWeight = weight,
+            pCompanyID = companyID,
+            pExpireDate = formattedExpireDate,
+            pLotNumber = lotNumber
+        )
+        dialog.dismiss()
+        viewModel.getAllItemsInBinForSuggestion(
+            pBinLocation = selectedBinLocation,
+            pWarehouse = warehouseNO,
+            pCompanyID = companyID
+        )
+
+        barcodeScannerEditText.post {
+            barcodeScannerEditText.requestFocus()
+            barcodeScannerEditText.text.clear()
+        }
+    }
 
 
     private fun showError(message: String) {

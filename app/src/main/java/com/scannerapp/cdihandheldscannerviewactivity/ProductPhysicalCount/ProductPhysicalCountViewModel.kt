@@ -196,7 +196,9 @@ class InventoryCountViewModel : ViewModel() {
                 val response = ScannerAPI.getInventoryCountService()
                     .getAllItemsInBinForSuggestion(pBinLocation, pWarehouse, pCompanyID)
                 val items = response.response.ttItemInfo.ttItemInfo.map { item ->
-                    item.copy(expireDate = item.expireDate ?: "N/A")
+                    item.copy(expireDate = item.expireDate ?: "N/A",
+                            weight = item.weight?: 0.0,
+                            lotNumber = item.lotNumber?:"N/A")
                 }
                 _itemInfo.value = items
                 _wasLastAPICallSuccessful.value = true

@@ -119,7 +119,7 @@ class EditItemDetailsFragment : Fragment() {
 
                 // Step 3: Check if parsed date is valid
                 if (newExpirationDate != null) {
-                    progressDialog.show()
+                    //progressDialog.show()
                     val warehouseNO =
                         SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                     viewModel.setWarehouseNOFromSharedPref(warehouseNO)
@@ -129,41 +129,39 @@ class EditItemDetailsFragment : Fragment() {
                     viewModel.setCompanyIDFromSharedPref(companyID)
 
                     if (newExpirationDateStr.isNotEmpty()) {
-                        hasAPIBeenCalled = true
-                        if (lotNumber.isNotEmpty()) {
-                            viewModel.assignLotNumber(
+                        val handleYesPressed: () -> Unit = {
+                            progressDialog.show()
+                            assignExpirationDateToItem(
+                                lotNumber,
                                 itemNumber,
                                 warehouseNO,
                                 binNumber,
-                                lotNumber,
                                 companyID,
-                                oldLot
+                                oldLot,
+                                newExpirationDateStr
                             )
-                            viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
                         }
-                        viewModel.assignExpirationDate(
-                            itemNumber,
-                            binNumber,
-                            newExpirationDateStr,
-                            lotNumber,
-                            warehouseNO
-                        )
-                        viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
+                        val isDateExpired = DateUtils.isDateExpired(newExpirationDateStr, handleYesPressed, requireContext(), requireView())
+                        if(!isDateExpired) {
+                            progressDialog.show()
+                            assignExpirationDateToItem(
+                                lotNumber,
+                                itemNumber,
+                                warehouseNO,
+                                binNumber,
+                                companyID,
+                                oldLot,
+                                newExpirationDateStr
+                            )
+                        }
                     }
-                    // Corrected logic to compare date objects
-                    if (newExpirationDate.before(Date())) {
-                        AlerterUtils.startWarningAlerter(
-                            requireActivity(),
-                            "Item has bin changes to an expired date!"
-                        )
-                    }
-                    if (lotNumber.isEmpty()) {
-                        AlerterUtils.startSuccessAlert(
-                            requireActivity(),
-                            "Success!",
-                            "Item information changed."
-                        )
-                    }
+//                    // Corrected logic to compare date objects
+//                    if (newExpirationDate.before(Date())) {
+//                        AlerterUtils.startWarningAlerter(
+//                            requireActivity(),
+//                            "Item has bin changes to an expired date!"
+//                        )
+//                    }
                 } else {
                     // If the parsed date is null, display an error message
                     AlerterUtils.startErrorAlerter(
@@ -235,6 +233,37 @@ class EditItemDetailsFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun assignExpirationDateToItem(
+        lotNumber: String,
+        itemNumber: String,
+        warehouseNO: Int,
+        binNumber: String,
+        companyID: String,
+        oldLot: String?,
+        newExpirationDateStr: String
+    ) {
+        hasAPIBeenCalled = true
+        if (lotNumber.isNotEmpty()) {
+            viewModel.assignLotNumber(
+                itemNumber,
+                warehouseNO,
+                binNumber,
+                lotNumber,
+                companyID,
+                oldLot
+            )
+            viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
+        }
+        viewModel.assignExpirationDate(
+            itemNumber,
+            binNumber,
+            newExpirationDateStr,
+            lotNumber,
+            warehouseNO
+        )
+        viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
     }
 
     private fun initObservers() {
