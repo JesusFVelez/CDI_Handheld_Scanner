@@ -23,7 +23,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ReceivingDetailsFragmentBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class ReceivingProductsDetailsFragment : Fragment() {
@@ -202,7 +201,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                         var handleYesPressed: () -> Unit = {
                             moveItemToDoorBin(expirationDate)
                         }
-                        val isDateExpired = DateUtils.isDateExpired(expirationDate, handleYesPressed, requireContext(), requireView())
+                        val isDateExpired = DateUtils.verifyExpiredDateAndShowPopup(expirationDate, handleYesPressed, requireContext(), requireView())
                         if(!isDateExpired) {
                             moveItemToDoorBin(expirationDate)
                         }

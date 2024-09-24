@@ -284,6 +284,9 @@ interface ViewProductsInBinServices{
     // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call
     @GET("getItemsInBin")
     suspend fun getAllItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String): ResponseWrapperProductsInBin
+
+    @GET("getPaginatedItemsInBin")
+    suspend fun getPaginatedItemsInBin(@Query("companyCode") companyCode: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String, @Query("pageNumber") pageNumber: Int, @Query("pageSize") pageSize:Int): ResponseWrapperProductsInBin
 }
 
 interface InventoryCountServices {

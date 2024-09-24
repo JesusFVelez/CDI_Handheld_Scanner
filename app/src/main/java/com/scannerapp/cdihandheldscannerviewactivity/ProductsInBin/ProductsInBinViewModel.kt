@@ -27,6 +27,11 @@ class ProductsInBinViewModel: ViewModel() {
         get() = _listOfProducts
 
 
+    // Error Message
+    private val _errorMessage = MutableLiveData<MutableMap<String,String>>()
+    val errorMessage : LiveData<MutableMap<String,String>>
+        get() = _errorMessage
+
 
     private val _numberOfItemsInBin = MutableLiveData<Int>()
     val numberOfItemsInBin : LiveData<Int>
@@ -58,6 +63,8 @@ class ProductsInBinViewModel: ViewModel() {
         _numberOfItemsInBin.value = 0
         _currentlyChosenAdapterPosition.value = 0
 
+        _errorMessage.value = mutableMapOf("getItemsInBin" to "")
+
     }
 
 
@@ -77,6 +84,32 @@ class ProductsInBinViewModel: ViewModel() {
         _warehouseNumberOfUser.value = warehouseNumber
     }
 
+
+    fun getPaginatedItemsInBin(binNumber: String, pageSize:Int, pageNumber: Int){
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Products In Bin View Model Product Info API Call" , "Error -> ${exception.message}")
+        }
+        try{
+            viewModelScope.launch(exceptionHandler) {
+                val response = ScannerAPI.getViewProductsInBinService().getPaginatedItemsInBin(_companyIDOfUser.value!!,
+                                                                                                _warehouseNumberOfUser.value!!,
+                                                                                                binNumber,
+                                                                                                pageSize = pageSize,
+                                                                                                pageNumber = pageNumber )
+                _errorMessage.value!!["getItemsInBin"] = response.response.errorMessage
+                _wasLastAPICallSuccessful.value = true
+                _listOfProducts.value = response.response.itemsInBin.itemsInBin
+
+
+                Log.i("Products In Bin View Model Product Info API Call", "Response -> ${response.toString()}" )
+            }
+        }catch (e : Exception) {
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Products In Bin View Model Product Info", "Error (e) -> ${e.message}")
+        }
+    }
+
     // Function to fetch product information from the backend
     fun getProductInfoFromBackend(binNumber : String ){
 
@@ -92,9 +125,9 @@ class ProductsInBinViewModel: ViewModel() {
                 val response = ScannerAPI.getViewProductsInBinService().getAllItemsInBin(_companyIDOfUser.value!!, _warehouseNumberOfUser.value!!, binNumber )
                 _wasLastAPICallSuccessful.value = true
                 _listOfProducts.value = response.response.itemsInBin.itemsInBin
+                _errorMessage.value!!["getItemsInBin"] = response.response.errorMessage
                 _wasBinFound.value = response.response.wasBinFound
                 _numberOfItemsInBin.value = _listOfProducts.value!!.size
-
                 Log.i("Products In Bin View Model Product Info API Call", "Response -> ${response.toString()}" )
             }
         }catch (e : Exception){

@@ -141,7 +141,7 @@ class EditItemDetailsFragment : Fragment() {
                                 newExpirationDateStr
                             )
                         }
-                        val isDateExpired = DateUtils.isDateExpired(newExpirationDateStr, handleYesPressed, requireContext(), requireView())
+                        val isDateExpired = DateUtils.verifyExpiredDateAndShowPopup(newExpirationDateStr, handleYesPressed, requireContext(), requireView())
                         if(!isDateExpired) {
                             progressDialog.show()
                             assignExpirationDateToItem(

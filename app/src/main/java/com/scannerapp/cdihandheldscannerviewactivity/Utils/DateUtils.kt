@@ -3,7 +3,6 @@ package com.scannerapp.cdihandheldscannerviewactivity.Utils
 import android.content.Context
 import android.view.Gravity
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.Button
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import java.time.LocalDate
@@ -12,7 +11,7 @@ import java.time.format.DateTimeFormatter
 class DateUtils {
     companion object {
 
-        fun isDateExpired(dateStr: String, handleYesPressed: () -> Unit, context: Context, view: View): Boolean{
+        fun verifyExpiredDateAndShowPopup(dateStr: String, handleYesPressed: () -> Unit, context: Context, view: View): Boolean{
             var isDateExpired: Boolean
             try {
                 val date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("MM-dd-yyyy"))

@@ -13,6 +13,7 @@ data class ResponseWrapperProductsInBin(
 @JsonClass(generateAdapter = true)
 data class ResponseProdInBin(
     @Json(name = "wasBinFound") val wasBinFound: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String,
     @Json(name = "itemsInBin") val itemsInBin: ResponseContentProdInBIn
 )
 
