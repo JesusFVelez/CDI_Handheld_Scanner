@@ -46,7 +46,6 @@ data class ResponseWrapperProductsInBinPaging(
     val response: ResponseProdInBinPaging
 )
 
-
 @JsonClass(generateAdapter = true)
 data class ResponseProdInBinPaging(
     @Json(name = "wasBinFound") val wasBinFound: Boolean,
