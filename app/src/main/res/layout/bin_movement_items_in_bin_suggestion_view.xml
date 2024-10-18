@@ -57,14 +57,41 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/BarcodeLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintStart_toStartOf="@+id/BinLocationLinearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/BinLocationLinearLayout">
+
+        <TextView
+            android:id="@+id/BarcodeLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="Barcode:" />
+
+        <TextView
+            android:id="@+id/BarcodeValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AJKDB3729A" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/QuantityInHandLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/BinLocationLinearLayout"
-        app:layout_constraintTop_toBottomOf="@id/BinLocationLinearLayout">
+        app:layout_constraintStart_toStartOf="@+id/BarcodeLinearLayout"
+        app:layout_constraintEnd_toEndOf="@id/BarcodeLinearLayout"
+        app:layout_constraintTop_toBottomOf="@id/BarcodeLinearLayout">
 
         <TextView
             android:id="@+id/QuantityInHandLabelTextView"
@@ -117,6 +144,7 @@
         android:orientation="horizontal"
         android:weightSum="2"
         app:layout_constraintStart_toStartOf="@+id/QuantityInPickingLinearLayout"
+        app:layout_constraintEnd_toEndOf="@id/QuantityInPickingLinearLayout"
         app:layout_constraintTop_toBottomOf="@+id/QuantityInPickingLinearLayout">
 
         <TextView
@@ -131,6 +159,89 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="50" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/LotNumberLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintStart_toStartOf="@+id/QuantityAvailableLinearLayout"
+        app:layout_constraintEnd_toEndOf="@id/QuantityAvailableLinearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/QuantityAvailableLinearLayout">
+
+        <TextView
+            android:id="@+id/LotNumberLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="Lot:" />
+
+        <TextView
+            android:id="@+id/LotNumberValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="001AHJ" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/WeightLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintStart_toStartOf="@+id/LotNumberLinearLayout"
+        app:layout_constraintEnd_toEndOf="@id/LotNumberLinearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/LotNumberLinearLayout">
+
+        <TextView
+            android:id="@+id/WeightLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="Weight:" />
+
+        <TextView
+            android:id="@+id/WeightValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="192 lb" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ExpirationDateLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintStart_toStartOf="@+id/WeightLinearLayout"
+        app:layout_constraintEnd_toEndOf="@id/WeightLinearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/WeightLinearLayout">
+
+        <TextView
+            android:id="@+id/ExpirationDateLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="Expiration Date:" />
+
+        <TextView
+            android:id="@+id/ExpirationDateValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01/02/2024" />
 
     </LinearLayout>
 

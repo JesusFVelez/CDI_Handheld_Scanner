@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:background="@drawable/ripple_effect_for_list_views"
+    >
+
+    <TextView
+        android:id="@+id/expDateHeaderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exp. Date"
+        android:layout_marginBottom="20dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="20dp" />
+
+    <TextView
+        android:id="@+id/expDateInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="09/10/2024"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/expDateHeaderText"
+        app:layout_constraintStart_toStartOf="@+id/expDateHeaderText"
+        app:layout_constraintTop_toBottomOf="@+id/expDateHeaderText" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/lotInfoLayout"
+        app:layout_constraintEnd_toStartOf="@+id/addedText"
+        app:layout_constraintStart_toEndOf="@+id/expDateInfoText"
+        app:layout_constraintTop_toBottomOf="@id/BinInfoLinearLayout">
+
+        <TextView
+            android:id="@+id/productNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:maxLines="3"
+            android:textAlignment="center"
+            android:text="Habichuelas Goya"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/itemNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="S11002"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/productNameText"
+            app:layout_constraintStart_toStartOf="@id/productNameText"
+            app:layout_constraintTop_toBottomOf="@+id/productNameText" />
+
+    </LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/trashcanIconButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="20dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="Trash Can"
+        android:src="@drawable/icon_red_trash_can"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/addedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Added: 5"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@id/trashcanIconButton"
+        app:layout_constraintStart_toStartOf="@id/trashcanIconButton"
+        app:layout_constraintTop_toBottomOf="@+id/trashcanIconButton" />
+
+    <LinearLayout
+        android:id="@+id/BinInfoLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/toBinText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bin:"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/binNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="01-0-001"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lotInfoLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/lotNumberHeaderText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lot:"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/lotNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="5dp"
+            android:text="2022-07-05-010"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

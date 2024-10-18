@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.comdist.cdihandheldscannerviewactivity.login.loginActivity"  >
+    tools:context="com.scannerapp.cdihandheldscannerviewactivity.login.loginActivity"  >
 
     <data>
         <variable
             name="loginViewModel"
-            type="com.comdist.cdihandheldscannerviewactivity.login.LoginViewModel" />
-
+            type="com.scannerapp.cdihandheldscannerviewactivity.login.LoginViewModel" />
     </data>
+
     <LinearLayout
         android:id="@+id/login_page"
         android:layout_width="match_parent"
@@ -37,6 +37,7 @@
             android:layout_weight="1">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/enterInfoLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -152,22 +153,36 @@
 
                 </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/loginButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:background="@drawable/login_rectangle"
-                    android:backgroundTint="@color/CDI_Blue"
-                    android:text="@string/login"
-                    android:textAllCaps="false"
-                    android:textColor="@color/CDI_Gray"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerLinearLayout" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_effect_for_oval_button"
+                android:backgroundTint="@color/CDI_Blue"
+                android:text="@string/login"
+                android:textAllCaps="false"
+                android:textColor="@color/CDI_Gray"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/enterInfoLayout" />
+
+            <ImageButton
+                android:id="@+id/networkSettingsIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
+                android:layout_marginStart="10dp"
+                android:contentDescription="Network Settings Icon"
+                android:src="@drawable/network_settings_icon"
+                app:layout_constraintBottom_toBottomOf="@id/loginButton"
+                app:layout_constraintStart_toEndOf="@id/loginButton"
+                app:layout_constraintTop_toTopOf="@id/loginButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

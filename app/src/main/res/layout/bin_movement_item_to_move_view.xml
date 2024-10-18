@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?selectableItemBackgroundBorderless"
+    android:background="@drawable/ripple_effect_for_list_views">
+
+    <TextView
+        android:id="@+id/quantityToMove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count: 3"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/removeItemIcon"
+        app:layout_constraintStart_toStartOf="@id/removeItemIcon"
+        app:layout_constraintTop_toBottomOf="@id/removeItemIcon" />
+
+    <TextView
+        android:id="@+id/itemNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:text="F010000087"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/fromBinIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="10dp"
+
+        android:src="@drawable/bindetailpage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/itemNumber" />
+
+    <TextView
+        android:id="@+id/fromBinNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="02-A-132"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/fromBinIcon"
+        app:layout_constraintStart_toEndOf="@+id/fromBinIcon" />
+
+    <ImageView
+        android:id="@+id/fromToArrow"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/black_arrow_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/toBinIcon"
+        app:layout_constraintStart_toEndOf="@+id/fromBinNumber"
+        app:layout_constraintTop_toTopOf="@+id/fromBinNumber" />
+
+    <ImageView
+        android:id="@+id/toBinIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/bindetailpage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/toBinNumber" />
+
+    <TextView
+        android:id="@+id/toBinNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="02-A-132"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/itemName" />
+
+    <TextView
+        android:id="@+id/itemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="Criada Habichuelas Rosadas A/S"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/fromBinNumber"
+        app:layout_constraintEnd_toStartOf="@+id/quantityToMove"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemNumber" />
+
+    <ImageButton
+        android:id="@+id/removeItemIcon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="10dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="Trash Can"
+        android:src="@drawable/icon_red_trash_can"
+        android:backgroundTint="@color/red"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/itemName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.comdist.cdihandheldscannerviewactivity.login.loginActivity"  >
+    tools:context="com.scannerapp.cdihandheldscannerviewactivity.login.loginActivity"  >
 
     <data>
         <variable
             name="loginViewModel"
-            type="com.comdist.cdihandheldscannerviewactivity.login.LoginViewModel" />
+            type="com.scannerapp.cdihandheldscannerviewactivity.login.LoginViewModel" />
 
     </data>
     <LinearLayout
@@ -88,7 +88,8 @@
                         android:layout_marginTop="15dp"
                         android:background="@android:color/transparent"
                         android:hint="@string/port_number"
-                        android:inputType="text" />
+                        android:maxLength="5"
+                        android:inputType="number" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/login_rectangle"
+                    android:background="@drawable/ripple_effect_for_oval_button"
                     android:backgroundTint="@color/CDI_Blue"
                     android:text="Test Connection"
                     android:textAllCaps="false"

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.scannerapp.cdihandheldscannerviewactivity.HomeScreen.HomeScreenFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        >
+        <!--        android:visibility="invisible"-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/BinsWithItemButton"
+                android:layout_marginTop="20dp"
+                style="@style/HomeMenuButtons"
+                android:text="View Bins with Item" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/productToBinButton"
+                style="@style/HomeMenuButtons"
+                android:text="@string/products_in_bin" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/ItemPickingButton"
+                style="@style/HomeMenuButtons"
+                android:text="Item Picking" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/assignExpirationDateButton"
+                style="@style/HomeMenuButtons"
+                android:text="Edit Item" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/BinToBinMovementButton"
+                style="@style/HomeMenuButtons"
+                android:text="Bin Movement" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/ReceivingButton"
+                style="@style/HomeMenuButtons"
+                android:text="Receiving" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/PhysicalCountButton"
+                style="@style/HomeMenuButtons"
+                android:text="Physical Count" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/logOutButton"
+                style="@style/HomeMenuButtons"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/ripple_effect_for_logout_button"
+                android:text="@string/log_out" />
+        </LinearLayout>
+    </ScrollView>
+
+</layout>

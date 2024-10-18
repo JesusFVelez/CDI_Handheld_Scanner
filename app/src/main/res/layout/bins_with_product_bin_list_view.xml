@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/ripple_effect_for_list_views">
+
+    <TextView
+        android:id="@+id/InPickingAndOnHandText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        android:text="IP / OH:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/inPickingAndOnHandTextValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="50 / 100"
+        app:layout_constraintEnd_toEndOf="@id/InPickingAndOnHandText"
+        app:layout_constraintStart_toStartOf="@id/InPickingAndOnHandText"
+        app:layout_constraintTop_toBottomOf="@id/InPickingAndOnHandText" />
+
+    <TextView
+        android:id="@+id/QtyAvailText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quantity Available: "
+        app:layout_constraintEnd_toEndOf="@+id/binLocation"
+        app:layout_constraintStart_toStartOf="@+id/binLocation"
+        app:layout_constraintTop_toBottomOf="@+id/binLocation" />
+
+    <TextView
+        android:id="@+id/QtyAvailTextValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="x50"
+        app:layout_constraintEnd_toEndOf="@+id/QtyAvailText"
+        app:layout_constraintStart_toStartOf="@+id/QtyAvailText"
+        app:layout_constraintTop_toBottomOf="@id/QtyAvailText" />
+
+    <TextView
+        android:id="@+id/binTypeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Bin Type: Reserve"
+        app:layout_constraintBottom_toTopOf="@+id/binLocation"
+        app:layout_constraintEnd_toEndOf="@+id/binLocation"
+        app:layout_constraintStart_toStartOf="@+id/binLocation" />
+    <TextView
+        android:id="@+id/binLocation"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginEnd="15dp"
+        android:text="01-C-102"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/InPickingAndOnHandText"
+        app:layout_constraintStart_toEndOf="@+id/expDateText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/expDateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="20dp"
+        android:text="Exp. Date:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/expDateTextValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="09/10/2023"
+        app:layout_constraintEnd_toEndOf="@+id/expDateText"
+        app:layout_constraintStart_toStartOf="@+id/expDateText"
+        app:layout_constraintTop_toBottomOf="@+id/expDateText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

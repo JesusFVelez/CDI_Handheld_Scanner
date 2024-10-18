@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+        <EditText
+            android:id="@+id/itemSearchEditText"
+            style="@style/CustomScannerInput"
+            android:layout_width="201dp"
+            android:layout_height="54dp"
+            android:layout_marginTop="8dp"
+            android:dropDownHeight="wrap_content"
+            android:gravity="center"
+            android:hint="Search for Item"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/countButton"
+            style="@style/PopupButtons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="25dp"
+            android:layout_weight="1"
+            android:backgroundTint="#DADBDD"
+            android:text="Count"
+            app:layout_constraintEnd_toEndOf="@+id/itemSearchEditText"
+            app:layout_constraintStart_toStartOf="@+id/itemSearchEditText"
+            app:layout_constraintTop_toBottomOf="@+id/itemSearchEditText" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/itemSearchList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/countButton">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>
+
+
