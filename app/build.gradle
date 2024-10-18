@@ -88,7 +88,7 @@ dependencies {
 
 
     //Paging libraries
-    implementation "androidx.paging:paging-runtime:3.3.2" // For Java or Kotlin projects
+    implementation "androidx.paging:paging-runtime-ktx:3.3.2" // For Java or Kotlin projects
 
     //ViewModel and LiveData Libraries
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'

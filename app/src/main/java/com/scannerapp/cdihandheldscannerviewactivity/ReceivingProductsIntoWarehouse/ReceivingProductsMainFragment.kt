@@ -187,7 +187,7 @@ class ReceivingProductsMainFragment : Fragment(){
         })
         val doesAtLeastOneItemHaveInvalidLineUp = verifyIfThereIsAtLeastOneItemWithInvalidLineUp(viewModel.listOfItemsToMoveInPreReceiving.value!!)
         if(doesAtLeastOneItemHaveInvalidLineUp)
-            AlerterUtils.startErrorAlerter(requireActivity(), "At least one item in this order cannot be processed because it is either not physically present in this warehouse (Line Up W), has been discontinued (Line Up D), or it can not be received (Line Up S).")
+            AlerterUtils.startErrorAlerter(requireActivity(), "At least one item in this order cannot be processed because it is either not physically present in this warehouse (Line Up W), has been discontinued (Line Up D), item has or it can not be received (Line Up S).")
 
         recyclerViewAdapter.addItems(viewModel.listOfItemsToMoveInPreReceiving.value!!)
         binding.totalPickingItemsList.adapter = recyclerViewAdapter
