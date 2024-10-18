@@ -337,7 +337,7 @@ class EditItemDetailsFragment : Fragment() {
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             progressDialog.dismiss()
             if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
-                AlerterUtils.startNetworkErrorAlert(requireActivity())
+                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
             }
         }
     }

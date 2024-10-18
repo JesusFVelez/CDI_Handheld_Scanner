@@ -192,7 +192,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             if (wasLastAPICallSuccessful == false) {
                 progressDialog.dismiss()
                 if (viewModel.shouldShowError.value == true) {
-                    AlerterUtils.startNetworkErrorAlert(requireActivity())
+                    AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
                     viewModel.setShouldShowError(false)
                 }
             }

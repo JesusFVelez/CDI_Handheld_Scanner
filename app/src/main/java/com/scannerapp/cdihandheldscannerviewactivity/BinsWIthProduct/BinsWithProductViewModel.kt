@@ -43,6 +43,10 @@ class BinsWithProductViewModel :ViewModel(){
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
 
+    private val _networkErrorMessage = MutableLiveData<String>()
+    val networkErrorMessage : LiveData<String>
+        get() = _networkErrorMessage
+
 
 
     private val _companyIDOfUser = MutableLiveData<String>()
@@ -55,6 +59,7 @@ class BinsWithProductViewModel :ViewModel(){
 
 
     init {
+        _networkErrorMessage.value = ""
     }
 
 
@@ -69,6 +74,7 @@ class BinsWithProductViewModel :ViewModel(){
 
     fun getItemDetailsForBinSearchFromBackend(scannedBarCode: String){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("~get item details for Bin search API Call Exception Handler" , "Error -> ${exception.message}")
         }
@@ -81,6 +87,7 @@ class BinsWithProductViewModel :ViewModel(){
                 _itemDetails.value = response.response.itemDetailsForBinSearch.itemDetailsForBinSearch
                 Log.i("get item details for Bin search API Call", "Item Details -> ${_itemDetails.value.toString()}")
             }catch (e: Exception){
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("get item details for Bin search API Call", "Error -> ${e.message}")
             }
@@ -91,6 +98,7 @@ class BinsWithProductViewModel :ViewModel(){
 
     fun getBinsThatHaveProductFromBackend(itemNumber: String){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("get Bins that have item API Call" , "Error -> ${exception.message}")
         }
@@ -102,6 +110,7 @@ class BinsWithProductViewModel :ViewModel(){
                 _wasLastAPICallSuccessful.value = true
                 Log.i("get Bins that have item API Call" , "Bins that have item -> ${_listOfBinsThatHaveProduct.value.toString()}")
             }catch (e: Exception){
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("get Bins that have item API Call" , "Error -> ${e.message}")
             }

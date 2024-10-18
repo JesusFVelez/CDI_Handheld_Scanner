@@ -13,6 +13,10 @@ import kotlinx.coroutines.launch
 
 class EditItemViewModel: ViewModel(){
 
+    private val _networkErrorMessage = MutableLiveData<String>()
+    val networkErrorMessage : LiveData<String>
+        get() = _networkErrorMessage
+
     private val _opSuccess = MutableLiveData<Boolean>()
     val opSuccess : LiveData<Boolean>
         get() = _opSuccess
@@ -49,8 +53,13 @@ class EditItemViewModel: ViewModel(){
     val itemsInBinFromBarcode: LiveData<List<ItemData>>
         get() = _itemsInBinFromBarcode
 
+    init {
+        _networkErrorMessage.value = ""
+    }
+
     fun getItemsInBinFromBarcode(pItemNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.e("ViewModel", "Failed to fetch items in bin from barcode: ${exception.localizedMessage}")
         }
@@ -76,6 +85,7 @@ class EditItemViewModel: ViewModel(){
                 _itemsInBinFromBarcode.value = convertedItems
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("ViewModel", "Exception -> ${e.localizedMessage}")
             }
@@ -87,6 +97,7 @@ class EditItemViewModel: ViewModel(){
 
     fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String, pLotNumber: String, pWarehouseNo: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Assign Expire Date " , "Error -> ${exception.message}")
         }
@@ -98,6 +109,7 @@ class EditItemViewModel: ViewModel(){
                 _opMessage.value = response.response.opMessage
                 _opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
             }
@@ -112,6 +124,7 @@ class EditItemViewModel: ViewModel(){
     }
     fun assignLotNumber(pItemNumber: String, pWarehouseNo:Int, pBinLocation: String, pLotNumber: String, pCompanyCode: String, pOldLot: String?) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
             Log.e("AssignLotNumber", "Exception -> ${exception.localizedMessage}")
@@ -126,6 +139,7 @@ class EditItemViewModel: ViewModel(){
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
                 // Exception handling for network errors or serialization/deserialization issues
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("AssignLotNumber", "Exception -> ${e.localizedMessage}")
             }
@@ -136,6 +150,7 @@ class EditItemViewModel: ViewModel(){
 
     fun getItemInfo(pItemNumber: String, pBinLocation: String, pLotNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Item Info", "Error -> ${exception.message}")
         }
@@ -148,6 +163,7 @@ class EditItemViewModel: ViewModel(){
                 _itemInfo.value = response.response.binItemInfo.response!![0]
                 //_opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Item Info", "Error -> ${e.message}")
             }
@@ -160,23 +176,29 @@ class EditItemViewModel: ViewModel(){
 
     fun fetchItemSuggestions(filter: String = "") {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.e("ViewModel", "Failed to fetch item suggestions: ${exception.localizedMessage}")
         }
 
         viewModelScope.launch(exceptionHandler) {
-            val response = ScannerAPI.getAssignExpirationDateService()
-                .getSuggestionsForItemOrBin()
-            val filteredSuggestions = if (filter.isNotEmpty()) {
-                response.response.binItemInfo.binItemInfo.filter {
-                    it.itemNumber.contains(filter, ignoreCase = true) ||
-                            it.barCode?.contains(filter, ignoreCase = true) == true
+            try {
+                val response = ScannerAPI.getAssignExpirationDateService()
+                    .getSuggestionsForItemOrBin()
+                val filteredSuggestions = if (filter.isNotEmpty()) {
+                    response.response.binItemInfo.binItemInfo.filter {
+                        it.itemNumber.contains(filter, ignoreCase = true) ||
+                                it.barCode?.contains(filter, ignoreCase = true) == true
+                    }
+                } else {
+                    response.response.binItemInfo.binItemInfo
                 }
-            } else {
-                response.response.binItemInfo.binItemInfo
+                _suggestions.value = filteredSuggestions
+            }catch (e:Exception) {
+                _networkErrorMessage.value = e.message
+                _wasLastAPICallSuccessful.value = true
+                Log.i("Item Info", "Error -> ${e.message}")
             }
-            _suggestions.value = filteredSuggestions
-            _wasLastAPICallSuccessful.value = true
         }
     }
     fun resetSuccessFlag() {

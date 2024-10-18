@@ -68,7 +68,7 @@ class EditBarcodeFragment : Fragment() {
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastCallSuccessful ->
             if (!wasLastCallSuccessful) {
-                AlerterUtils.startNetworkErrorAlert(requireActivity())
+                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
                 progressDialog.dismiss()
             }
         }

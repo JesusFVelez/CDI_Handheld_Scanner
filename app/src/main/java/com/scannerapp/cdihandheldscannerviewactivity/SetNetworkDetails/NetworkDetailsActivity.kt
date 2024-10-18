@@ -162,7 +162,7 @@ class NetworkDetailsActivity : AppCompatActivity() {
         viewModel.wasLastAPICallSuccessful.observe(this){wasLastAPICallSuccessful ->
             if(!wasLastAPICallSuccessful){
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(this@NetworkDetailsActivity)
+                AlerterUtils.startNetworkErrorAlert(this@NetworkDetailsActivity, viewModel.networkErrorMessage.value!! )
                 Log.i("API Call", "API Call did not work")
             }
         }
