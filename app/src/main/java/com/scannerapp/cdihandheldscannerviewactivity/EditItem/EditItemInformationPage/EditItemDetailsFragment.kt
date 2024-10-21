@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log // Added for logging
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,7 +92,7 @@ class EditItemDetailsFragment : Fragment() {
             view?.findNavController()?.navigate(action)
         }
 
-        // Initially disable New Lot EditText
+        // Initially disable New Lot EditText since toggle is off
         binding.newLotEditText.isEnabled = false
 
         // Existing setupUI logic for the enter button
@@ -138,13 +137,8 @@ class EditItemDetailsFragment : Fragment() {
                                 newExpirationDateStr
                             )
                         }
-                        val isDateExpired = DateUtils.isDateExpired(
-                            newExpirationDateStr,
-                            handleYesPressed,
-                            requireContext(),
-                            requireView()
-                        )
-                        if (!isDateExpired) {
+                        val isDateExpired = DateUtils.isDateExpired(newExpirationDateStr, handleYesPressed, requireContext(), requireView())
+                        if(!isDateExpired) {
                             progressDialog.show()
                             assignExpirationDateToItem(
                                 lotNumber,
@@ -173,7 +167,7 @@ class EditItemDetailsFragment : Fragment() {
             }
         }
 
-        // Date formatting logic (unchanged)
+        // Add this line in your setupUI function
         binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
         binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
@@ -192,6 +186,7 @@ class EditItemDetailsFragment : Fragment() {
 
                 // Strict limit of 10 characters for input, including dashes.
                 if (currentText.length > 10) {
+                    // Truncate the input to 10 characters
                     val truncatedText = currentText.substring(0, 10)
                     binding.NewExpirationDateEditText.setText(truncatedText)
                     binding.NewExpirationDateEditText.setSelection(truncatedText.length)
@@ -258,41 +253,41 @@ class EditItemDetailsFragment : Fragment() {
     private fun initObservers() {
 
         viewModel.opSuccess.observe(viewLifecycleOwner) { success ->
+            // Always dismiss the progress dialog when the observer is triggered
             progressDialog.dismiss()
+            // Ensure the message is fetched fresh when needed
             val message = viewModel.opMessage.value ?: "No message available"
 
             if (isEnterPressed && shouldShowMessage) {
                 if (success) {
+                    // If the operation was successful, show a success alert
                     AlerterUtils.startSuccessAlert(
                         requireActivity(),
                         "Success!",
                         "Item information changed."
                     )
                 } else if (!success) {
+                    // If the operation failed, show an error alert
                     AlerterUtils.startErrorAlerter(requireActivity(), message)
                 }
+
+                // After handling, reset the enter button state
                 isEnterPressed = false
             }
         }
 
         viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
             if (itemInfo != null) {
-                binding.apply {
-                    itemNumberTextView.text = itemInfo.itemNumber
-                    itemNameTextView.text = itemInfo.itemDescription
-                    binLocationTextView.text = itemInfo.binLocation
-                    expirationDateTextView.text = itemInfo.expireDate ?: "N/A"
-                    lotTextView.text = itemInfo.lotNumber ?: "N/A"
-
-                    // Enable or disable newLotEditText based on multiLotId
-                    newLotEditText.isEnabled = itemInfo.multiLotId == true
-
-                    // For debugging
-                    Log.d("EditItemDetailsFragment", "multiLotId: ${itemInfo.multiLotId}")
-                }
+                // Update UI
+                binding.itemNumberTextView.text = itemInfo.itemNumber
+                binding.itemNameTextView.text = itemInfo.itemDescription
+                binding.binLocationTextView.text = itemInfo.binLocation
+                binding.expirationDateTextView.text = itemInfo.expireDate ?: "N/A"
+                binding.lotTextView.text = itemInfo.lotNumber ?: "N/A"
             }
         }
 
+        // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
         viewModel.currentlyChosenItemForSearch.observe(viewLifecycleOwner) { selectedItem ->
             selectedItem?.let { item ->
                 binding.apply {
@@ -306,7 +301,7 @@ class EditItemDetailsFragment : Fragment() {
                     val inputFormat = SimpleDateFormat(
                         "yyyy-MM-dd",
                         Locale.getDefault()
-                    )
+                    ) // Adjust this format to match the incoming date format
                     val outputFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
                     val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
                     val formattedDate = if (date != null) outputFormat.format(date) else ""
@@ -316,8 +311,9 @@ class EditItemDetailsFragment : Fragment() {
 
                     upperDiv.visibility = View.VISIBLE
 
-                    // Removed old logic that enables/disables newLotEditText
-                    // This is now handled in itemInfo observer
+                    val lotExists = !item.lotNumber.isNullOrEmpty()
+                    newLotEditText.isEnabled = lotExists
+                    upperDiv.visibility = View.VISIBLE
                 }
 
                 // Call getItemInfo() to populate itemInfo LiveData
@@ -337,3 +333,4 @@ class EditItemDetailsFragment : Fragment() {
         }
     }
 }
+
