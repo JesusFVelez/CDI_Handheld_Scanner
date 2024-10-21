@@ -21,7 +21,6 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.scannerapp.cdihandheldscannerviewactivity.Adapter.ItemAdapter
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.DateUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
@@ -91,7 +90,9 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                 barCode = selectedItem.barCode,
                 weight = selectedItem.weight ?: 0.0,
                 doesItemHaveWeight = selectedItem.doesItemHaveWeight,
-                isItemInIvlot = selectedItem.isItemInIvlot
+                isItemInIvlot = selectedItem.isItemInIvlot,
+                multiLotId = selectedItem.multiLotId,
+                dateParamfileStatus = selectedItem.dateParamfileStatus
             )
 
             showPopupDialog(itemInf)
@@ -339,12 +340,10 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         currentWeightEditText = weightEditText
 
         val lotNumberEditText = dialogView.findViewById<EditText>(R.id.lotEditText)
-        lotNumberEditText.isEnabled = item.isItemInIvlot // Enable or disable based on isItemInIvlot
+        lotNumberEditText.isEnabled = item.isItemInIvlot && item.multiLotId // Enable or disable based on isItemInIvlot
 
         // Set expiration date for EditText
-        expireDateEditText.setText(
-            if (isFromCountButton) "" else expirationDate ?: ""
-        )
+        expireDateEditText.setText(if (isFromCountButton) "" else expirationDate ?: "")
         lotNumberEditText.setText(if (isFromCountButton) "" else (item.lotNumber ?: ""))
 
         expireDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
@@ -394,8 +393,15 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         })
 
         dialogView.findViewById<AppCompatButton>(R.id.addButton).setOnClickListener {
-            // Check if the expiration date is provided
-            if (expirationDateTextView.text == "N/A" || expireDateEditText.text.isNullOrEmpty()) {
+            // Determine if the date is required
+            val requireDate = if (item.dateParamfileStatus) {
+                true // Date is required regardless of other conditions
+            } else {
+                item.isItemInIvlot && item.multiLotId // Date is required only if both are true
+            }
+
+            // Check if the expiration date is required and provided
+            if (requireDate && expireDateEditText.text.isNullOrEmpty()) {
                 expireDateEditText.error = "Please add a date."
                 return@setOnClickListener
             }
@@ -403,51 +409,51 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             val quantity = itemAmountEditText.text.toString().toIntOrNull() ?: 0
             val weight = weightEditText.text.toString().toDoubleOrNull() ?: 0.0
 
-            // Determine which date to use and format it for the API call
-            val dateInput = if (expireDateEditText.text.isNotEmpty()) {
-                expireDateEditText.text.toString()
-            } else {
-                expirationDateTextView.text.toString()
-            }
+            // Use the date from the EditText if provided
+            val dateInput = expireDateEditText.text.toString()
 
-            val formattedExpireDate = dateInput.let {
+            // Define the date formats
+            val inputFormat = SimpleDateFormat("MM-dd-yyyy", Locale.US) // User input format
+            val apiDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US) // API expected format
+
+            // Parse and format the date for the API
+            val formattedExpireDate = if (dateInput.isNotEmpty()) {
                 try {
-                    targetFormat.parse(it)?.let { date ->
-                        originalFormat.format(date)
+                    inputFormat.parse(dateInput)?.let { date ->
+                        apiDateFormat.format(date)
                     }
                 } catch (e: Exception) {
-                    // Handle parsing exceptions (e.g., log the error)
-                    it
+                    // Handle parsing exceptions
+                    dateInput // Return the original input if parsing fails
                 }
-            } ?: ""
+            } else {
+                "" // Empty string if date is not provided
+
+            }
 
             val lotNumber = lotNumberEditText.text.toString()
 
             if (quantity >= 0 && weight >= 0.0) {
-                // Code for implementing the expiration date popup has been commented here given that the exp date popup appears below the count popup and I can't get it to appear on top
-                // for now, the code will work like before. Just a warning message indicating that the date entered is an expired date
-//                val onPressOfYes: () -> Unit = {
-//                    updateCountForItem(item, quantity, weight, formattedExpireDate, lotNumber, dialog)
-//                }
-//                val hasDateExpired = DateUtils.isDateExpired(dateInput, onPressOfYes, requireContext(), requireView())
-//
-//                if(!hasDateExpired)
-//                    updateCountForItem(item, quantity, weight, formattedExpireDate, lotNumber, dialog)
+                if (formattedExpireDate != null) {
+                    updateCountForItem(item, quantity, weight, formattedExpireDate, lotNumber, dialog)
+                }
 
-                updateCountForItem(item, quantity, weight, formattedExpireDate, lotNumber, dialog)
-                // Check if the entered date is in the past
-                val enteredDate = targetFormat.parse(dateInput)
-                if (enteredDate != null && enteredDate.before(Date())) {
-                    AlerterUtils.startWarningAlerter(
-                        requireActivity(),
-                        "You have entered an expired date!"
-                    )
+                // Optional: Warn if the entered date is in the past
+                if (requireDate && dateInput.isNotEmpty()) {
+                    val enteredDate = inputFormat.parse(dateInput)
+                    if (enteredDate != null && enteredDate.before(Date())) {
+                        AlerterUtils.startWarningAlerter(
+                            requireActivity(), "You have entered an expired date!"
+                        )
+                    }
                 }
             } else {
                 itemAmountEditText.error = "Please enter a valid number"
                 weightEditText.error = "Please enter a valid weight"
             }
         }
+
+
 
         barcodeScannerEditText = dialogView.findViewById(R.id.barcodeScannerEditText)
         barcodeScannerEditText.addTextChangedListener(object : TextWatcher {

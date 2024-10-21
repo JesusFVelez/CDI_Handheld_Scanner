@@ -43,13 +43,15 @@ data class TtItemInf(
     @Json(name = "itemDescription") val itemDescription: String,
     @Json(name = "binLocation") val binLocation: String,
     @Json(name = "expireDate") val expireDate: String?,
-    @Json(name = "lotNumber") val lotNumber: String,
+    @Json(name = "lotNumber") val lotNumber: String?,
     @Json(name = "qtyCounted") val qtyCounted: Int,
     @Json(name = "inCount") val inCount: Boolean,
     @Json(name = "barCode") val barCode: String?,
-    @Json(name = "weight") val weight: Double,
+    @Json(name = "weight") val weight: Double?,
     @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
-    @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean
+    @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean,
+    @Json(name = "multiLotId") val multiLotId: Boolean,
+    @Json(name = "dateParamfileStatus") val dateParamfileStatus: Boolean
 )
 
 /*---------------------------------------------------------------*/
@@ -97,7 +99,9 @@ data class TtItemInfo(
     @Json(name = "inCount") val inCount: Boolean,
     @Json(name = "weight") val weight: Double?,
     @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
-    @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean
+    @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean,
+    @Json(name = "multiLotId") val multiLotId: Boolean,
+    @Json(name = "dateParamfileStatus") val dateParamfileStatus: Boolean
 )
 
 /*---------------------------------------------------------------*/
