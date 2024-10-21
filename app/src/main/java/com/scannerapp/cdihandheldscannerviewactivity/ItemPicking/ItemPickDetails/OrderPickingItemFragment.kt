@@ -1,6 +1,7 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -57,7 +58,7 @@ class OrderPickingItemFragment : Fragment() {
         itemNumberEditText = binding.itemNumberEditText
 
         // Disable manual typing in itemNumberEditText
-        itemNumberEditText.inputType = 0
+        itemNumberEditText.inputType = InputType.TYPE_CLASS_TEXT
 
         itemNumberEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -111,6 +112,9 @@ class OrderPickingItemFragment : Fragment() {
     private fun initObservers() {
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner) { wasItemConfirmed ->
             if (wasItemConfirmed && hasPageJustStarted) {
+
+                if(itemAmountEditText.text.toString().isEmpty())
+                    itemAmountEditText.setText("0")
                 val valueToBeDisplayed: Float = if (viewModel.UOMQtyInBarcode.value == 0.0f)
                     itemAmountEditText.text.toString().toFloat() + viewModel.currentlyChosenItem.value!!.howManyIndividualQtysPerUOM
                 else
@@ -126,8 +130,12 @@ class OrderPickingItemFragment : Fragment() {
                     weightString.toFloat() + viewModel.weightInBarcode.value!!
 
                 weightEditText.setText(weightToBeDisplayed.toString())
-                itemAmountEditText.setText(valueToBeDisplayed.toString())
+                itemAmountEditText.setText(valueToBeDisplayed.toInt().toString())
+                itemAmountEditText.isEnabled = true
+
                 itemNumberEditText.setText("")
+                itemNumberEditText.requestFocus()
+
             } else if (hasPageJustStarted) {
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),

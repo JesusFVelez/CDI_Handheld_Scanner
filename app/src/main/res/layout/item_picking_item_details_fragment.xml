@@ -97,16 +97,16 @@
 
             <EditText
                 android:id="@+id/itemNumberEditText"
+                style="@style/CustomScannerInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/CustomScannerInput"
                 android:hint="Scan Barcode"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/middleDiv"
-                app:layout_constraintBottom_toBottomOf="@id/middleDiv"
                 android:imeOptions="actionDone"
-                />
+                app:layout_constraintBottom_toBottomOf="@id/middleDiv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/middleDiv" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -161,6 +161,9 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:text="0"
+                    android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
