@@ -28,8 +28,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+
 class EditItemDetailsFragment : Fragment() {
     private lateinit var binding: EditItemEditItemDetailsFragmentBinding
+
 
     /*Batch variables*/
     private var shouldShowMessage = true
@@ -41,6 +43,7 @@ class EditItemDetailsFragment : Fragment() {
 
     override fun onCreate(saveInstance: Bundle?) {
         super.onCreate(saveInstance)
+
     }
 
     override fun onCreateView(
@@ -93,13 +96,13 @@ class EditItemDetailsFragment : Fragment() {
             view?.findNavController()?.navigate(action)
         }
 
-        // Initially disable New Lot EditText
+        // Initially disable New Lot EditText since toggle is off
         binding.newLotEditText.isEnabled = false
 
         // Existing setupUI logic for the enter button
         binding.enterButton.setOnClickListener {
             isEnterPressed = true
-            shouldShowMessage = true
+            shouldShowMessage = true //NEW
             val itemNumber = viewModel.currentlyChosenItemForSearch.value!!.itemNumber
             val newExpirationDateStr = binding.NewExpirationDateEditText.text.toString()
             val binNumber = viewModel.currentlyChosenItemForSearch.value!!.binLocation
@@ -117,6 +120,7 @@ class EditItemDetailsFragment : Fragment() {
 
                 // Step 3: Check if parsed date is valid
                 if (newExpirationDate != null) {
+                    //progressDialog.show()
                     val warehouseNO =
                         SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                     viewModel.setWarehouseNOFromSharedPref(warehouseNO)
@@ -138,13 +142,8 @@ class EditItemDetailsFragment : Fragment() {
                                 newExpirationDateStr
                             )
                         }
-                        val isDateExpired = DateUtils.isDateExpired(
-                            newExpirationDateStr,
-                            handleYesPressed,
-                            requireContext(),
-                            requireView()
-                        )
-                        if (!isDateExpired) {
+                        val isDateExpired = DateUtils.isDateExpired(newExpirationDateStr, handleYesPressed, requireContext(), requireView())
+                        if(!isDateExpired) {
                             progressDialog.show()
                             assignExpirationDateToItem(
                                 lotNumber,
@@ -157,6 +156,13 @@ class EditItemDetailsFragment : Fragment() {
                             )
                         }
                     }
+//                    // Corrected logic to compare date objects
+//                    if (newExpirationDate.before(Date())) {
+//                        AlerterUtils.startWarningAlerter(
+//                            requireActivity(),
+//                            "Item has bin changes to an expired date!"
+//                        )
+//                    }
                 } else {
                     // If the parsed date is null, display an error message
                     AlerterUtils.startErrorAlerter(
@@ -173,13 +179,14 @@ class EditItemDetailsFragment : Fragment() {
             }
         }
 
-        // Date formatting logic (unchanged)
+        // Add this line in your setupUI function
         binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
         binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
             private var lastCursorPosition: Int = 0
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Store the text before any change is applied and the cursor position.
                 previousText = s.toString()
                 lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
             }
@@ -192,6 +199,7 @@ class EditItemDetailsFragment : Fragment() {
 
                 // Strict limit of 10 characters for input, including dashes.
                 if (currentText.length > 10) {
+                    // Truncate the input to 10 characters
                     val truncatedText = currentText.substring(0, 10)
                     binding.NewExpirationDateEditText.setText(truncatedText)
                     binding.NewExpirationDateEditText.setSelection(truncatedText.length)
@@ -258,19 +266,25 @@ class EditItemDetailsFragment : Fragment() {
     private fun initObservers() {
 
         viewModel.opSuccess.observe(viewLifecycleOwner) { success ->
+            // Always dismiss the progress dialog when the observer is triggered
             progressDialog.dismiss()
+            // Ensure the message is fetched fresh when needed
             val message = viewModel.opMessage.value ?: "No message available"
 
             if (isEnterPressed && shouldShowMessage) {
                 if (success) {
+                    // If the operation was successful, show a success alert
                     AlerterUtils.startSuccessAlert(
                         requireActivity(),
                         "Success!",
                         "Item information changed."
                     )
                 } else if (!success) {
+                    // If the operation failed, show an error alert
                     AlerterUtils.startErrorAlerter(requireActivity(), message)
                 }
+
+                // After handling, reset the enter button state
                 isEnterPressed = false
             }
         }
@@ -293,6 +307,7 @@ class EditItemDetailsFragment : Fragment() {
             }
         }
 
+        // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
         viewModel.currentlyChosenItemForSearch.observe(viewLifecycleOwner) { selectedItem ->
             selectedItem?.let { item ->
                 binding.apply {
@@ -306,7 +321,7 @@ class EditItemDetailsFragment : Fragment() {
                     val inputFormat = SimpleDateFormat(
                         "yyyy-MM-dd",
                         Locale.getDefault()
-                    )
+                    ) // Adjust this format to match the incoming date format
                     val outputFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
                     val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
                     val formattedDate = if (date != null) outputFormat.format(date) else ""
@@ -331,9 +346,10 @@ class EditItemDetailsFragment : Fragment() {
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
             progressDialog.dismiss()
-            if (!wasLastAPICallSuccessful && hasAPIBeenCalled) {
-                AlerterUtils.startNetworkErrorAlert(requireActivity())
+            if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
+                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
             }
         }
     }
 }
+

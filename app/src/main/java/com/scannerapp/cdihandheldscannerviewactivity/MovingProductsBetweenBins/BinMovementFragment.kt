@@ -152,7 +152,7 @@ class BinMovementFragment : Fragment() {
             if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
                 viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity())
+                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
             }
         }
 

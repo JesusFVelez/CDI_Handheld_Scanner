@@ -40,6 +40,10 @@ class HomeScreenViewModel : ViewModel(){
     val doesClientUseRPM : LiveData<Boolean>
         get() = _doesClientUseRPM
 
+    private val _networkErrorMessage = MutableLiveData<String>()
+    val networkErrorMessage : LiveData<String>
+        get() = _networkErrorMessage
+
     // Picker User Name
     private val _userNameOfPicker =  MutableLiveData<String>()
     val userNameOfPicker: LiveData<String>
@@ -90,6 +94,7 @@ class HomeScreenViewModel : ViewModel(){
 
     fun logUserOut(){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _didUserLogOutSuccessfully.value = false
             Log.i("Log out user homescreen viewmodel" , "Error -> ${exception.message}")
@@ -100,6 +105,7 @@ class HomeScreenViewModel : ViewModel(){
                 _didUserLogOutSuccessfully.value = true
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
+                _networkErrorMessage.value = e.message
                 Log.i("Log out user (e) homescreen viewmodel", "Error -> ${e.message}")
                 _didUserLogOutSuccessfully.value = false
                 _wasLastAPICallSuccessful.value = false
@@ -109,6 +115,7 @@ class HomeScreenViewModel : ViewModel(){
 
     fun verifyIfClientUsesRPM(){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Does User have RPM" , "Error -> ${exception.message}")
         }
@@ -118,6 +125,7 @@ class HomeScreenViewModel : ViewModel(){
                 _wasLastAPICallSuccessful.value = true
                 _doesClientUseRPM.value = response.response.doesClientUseRPM
             }catch (e: Exception){
+                _networkErrorMessage.value = e.message
                 Log.i("Does User have RPM viewModelScope.launch method", "Error -> ${e.message}")
                 _wasLastAPICallSuccessful.value = false
             }
@@ -126,6 +134,7 @@ class HomeScreenViewModel : ViewModel(){
 
     fun verifyInBackendIfUserHasAccessToMenuOption(menuOption: MenuOptionDataClass){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("RPM Access" , "Error -> ${exception.message}")
         }
@@ -136,6 +145,7 @@ class HomeScreenViewModel : ViewModel(){
                 _errorMessageForUserAccess.value = response.response.errorMessage
                 _doesUserHaveAccessToMenuOption.value = response.response.doesUserHaveAccessToFunc
             }catch (e: Exception){
+                _networkErrorMessage.value = e.message
                 Log.i("RPMAccess viewModelScope.launch method", "Error -> ${e.message}")
                 _wasLastAPICallSuccessful.value = false
             }

@@ -16,15 +16,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.HomeScreenFragmentBinding
 import com.scannerapp.cdihandheldscannerviewactivity.login.LoginActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 // Home screen fragment class
 class HomeScreenFragment : Fragment() {
@@ -94,7 +90,7 @@ class HomeScreenFragment : Fragment() {
             if(!wasLastApiCallSuccessful && hasButtonBeenPressed){
                 hasButtonBeenPressed = false
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity())
+                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
                 Log.i("API Call", "API Call did not work")
             }
         }
