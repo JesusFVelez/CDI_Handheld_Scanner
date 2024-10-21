@@ -159,9 +159,16 @@ class EditItemViewModel: ViewModel(){
             try {
                 val response = ScannerAPI.getAssignExpirationDateService().getItemInformation(pItemNumber, pBinLocation, pLotNumber)
                 _wasLastAPICallSuccessful.value = true
-                //_opMessage.value = response.response.opMessage
-                _itemInfo.value = response.response.binItemInfo.response!![0]
-                //_opSuccess.value = response.response.opSuccess
+
+                val itemInfoList = response.response.binItemInfo.response
+                if (!itemInfoList.isNullOrEmpty()) {
+                    _itemInfo.value = itemInfoList[0]
+                } else {
+                    // Handle empty list case
+                    _networkErrorMessage.value = "No item information available."
+                    _wasLastAPICallSuccessful.value = false
+                    Log.i("Item Info", "Error -> No item information available.")
+                }
             } catch (e: Exception) {
                 _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
@@ -169,6 +176,7 @@ class EditItemViewModel: ViewModel(){
             }
         }
     }
+
 
     fun setCurrentlyChosenItemForSearch(chosenItem: ItemData){
         _currentlyChosenItemForSearch.value = chosenItem

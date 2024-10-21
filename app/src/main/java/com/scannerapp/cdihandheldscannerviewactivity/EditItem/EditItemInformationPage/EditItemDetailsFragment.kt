@@ -242,17 +242,17 @@ class EditItemDetailsFragment : Fragment() {
         newExpirationDateStr: String
     ) {
         hasAPIBeenCalled = true
-        if (lotNumber.isNotEmpty()) {
-            viewModel.assignLotNumber(
-                itemNumber,
-                warehouseNO,
-                binNumber,
-                lotNumber,
-                companyID,
-                oldLot
-            )
-            viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
-        }
+        val updatedLotNumber = if (lotNumber.isNotEmpty()) lotNumber else oldLot ?: ""
+
+        viewModel.assignLotNumber(
+            itemNumber,
+            warehouseNO,
+            binNumber,
+            lotNumber,
+            companyID,
+            oldLot
+        )
+
         viewModel.assignExpirationDate(
             itemNumber,
             binNumber,
@@ -260,7 +260,9 @@ class EditItemDetailsFragment : Fragment() {
             lotNumber,
             warehouseNO
         )
-        viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
+
+        // Use the updated lot number when fetching item info
+        viewModel.getItemInfo(itemNumber, binNumber, updatedLotNumber)
     }
 
     private fun initObservers() {
@@ -346,7 +348,7 @@ class EditItemDetailsFragment : Fragment() {
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
             progressDialog.dismiss()
-            if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
+            if (!wasLastAPICallSuccessful && hasAPIBeenCalled) {
                 AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
             }
         }
