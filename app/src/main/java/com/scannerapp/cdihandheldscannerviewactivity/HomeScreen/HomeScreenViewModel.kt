@@ -9,7 +9,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 
 class HomeScreenViewModel : ViewModel(){
@@ -21,9 +20,9 @@ class HomeScreenViewModel : ViewModel(){
                 val BinsWithProductMenuOption = MenuOptionDataClass("Search Bins With Product",R.id.action_homeScreenFragment_to_searchBinsWithProductFragment, "RfBtnCheckItem" )
                 val ItemPickingMenuOption = MenuOptionDataClass("Item Picking", R.id.action_homeScreenFragment_to_orderPickingMainFragment, "RfBtnITEMPICKING")
                 val BinToBinMovementOption = MenuOptionDataClass("Bin to Bin Movement", R.id.action_homeScreenFragment_to_binMovementFragment, "RfBtnWHRFMOV")
-                val EditItemMenuOption = MenuOptionDataClass("Assign Expiration", R.id.action_homeScreenFragment_to_editItemMainFragment, "RfBtnAssignExpirationDate")
+                val EditItemMenuOption = MenuOptionDataClass("Assign Expiration", R.id.action_homeScreenFragment_to_editItemMainFragment, "RfBtnAssignExpDate")
                 val ReceivingMenuOption = MenuOptionDataClass("Receiving", R.id.action_homeScreenFragment_to_receivingProductsMainFragment, "RfBtnWHRFMOV")
-                val PhysicalCountMenuOption = MenuOptionDataClass("Physical Count", R.id.searchBinProductPhysicalCountFragment, "RfBtnSearchBinProductPhysicalCountFragment")
+                val PhysicalCountMenuOption = MenuOptionDataClass("Physical Count", R.id.searchBinProductPhysicalCountFragment, "RfBtnItemPhysicalCount")
         }
     }
     data class MenuOptionDataClass(
