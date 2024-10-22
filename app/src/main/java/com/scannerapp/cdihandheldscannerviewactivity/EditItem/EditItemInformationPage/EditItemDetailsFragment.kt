@@ -28,10 +28,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 class EditItemDetailsFragment : Fragment() {
     private lateinit var binding: EditItemEditItemDetailsFragmentBinding
-
 
     /*Batch variables*/
     private var shouldShowMessage = true
@@ -43,7 +41,6 @@ class EditItemDetailsFragment : Fragment() {
 
     override fun onCreate(saveInstance: Bundle?) {
         super.onCreate(saveInstance)
-
     }
 
     override fun onCreateView(
@@ -142,8 +139,13 @@ class EditItemDetailsFragment : Fragment() {
                                 newExpirationDateStr
                             )
                         }
-                        val isDateExpired = DateUtils.isDateExpired(newExpirationDateStr, handleYesPressed, requireContext(), requireView())
-                        if(!isDateExpired) {
+                        val isDateExpired = DateUtils.isDateExpired(
+                            newExpirationDateStr,
+                            handleYesPressed,
+                            requireContext(),
+                            requireView()
+                        )
+                        if (!isDateExpired) {
                             progressDialog.show()
                             assignExpirationDateToItem(
                                 lotNumber,
@@ -156,13 +158,6 @@ class EditItemDetailsFragment : Fragment() {
                             )
                         }
                     }
-//                    // Corrected logic to compare date objects
-//                    if (newExpirationDate.before(Date())) {
-//                        AlerterUtils.startWarningAlerter(
-//                            requireActivity(),
-//                            "Item has bin changes to an expired date!"
-//                        )
-//                    }
                 } else {
                     // If the parsed date is null, display an error message
                     AlerterUtils.startErrorAlerter(
@@ -185,13 +180,24 @@ class EditItemDetailsFragment : Fragment() {
             private var previousText: String = ""
             private var lastCursorPosition: Int = 0
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
                 // Store the text before any change is applied and the cursor position.
                 previousText = s.toString()
                 lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+            }
 
             override fun afterTextChanged(s: Editable?) {
                 val currentText = s.toString()
@@ -216,7 +222,10 @@ class EditItemDetailsFragment : Fragment() {
                     }
                 } else {
                     // Remove the last character if it's a dash
-                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
+                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith(
+                            "-"
+                        )
+                    ) {
                         binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
                         binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
                     } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {
@@ -242,22 +251,16 @@ class EditItemDetailsFragment : Fragment() {
         newExpirationDateStr: String
     ) {
         hasAPIBeenCalled = true
+
+        // Use the lot number provided; if empty, use the old lot number or an empty string
         val updatedLotNumber = if (lotNumber.isNotEmpty()) lotNumber else oldLot ?: ""
 
-        viewModel.assignLotNumber(
-            itemNumber,
-            warehouseNO,
-            binNumber,
-            lotNumber,
-            companyID,
-            oldLot
-        )
-
+        // Call assignExpirationDate to assign both expiration date and lot number
         viewModel.assignExpirationDate(
             itemNumber,
             binNumber,
             newExpirationDateStr,
-            lotNumber,
+            updatedLotNumber,
             warehouseNO
         )
 
@@ -347,9 +350,12 @@ class EditItemDetailsFragment : Fragment() {
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
-            progressDialog.dismiss()
             if (!wasLastAPICallSuccessful && hasAPIBeenCalled) {
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                progressDialog.dismiss()
+                AlerterUtils.startNetworkErrorAlert(
+                    requireActivity(),
+                    viewModel.networkErrorMessage.value ?: "An error occurred."
+                )
             }
         }
     }

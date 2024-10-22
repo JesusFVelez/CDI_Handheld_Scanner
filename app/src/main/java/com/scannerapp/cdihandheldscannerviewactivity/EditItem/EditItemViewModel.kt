@@ -92,26 +92,24 @@ class EditItemViewModel: ViewModel(){
         }
     }
 
-
-
-
     fun assignExpirationDate(pItemNumber: String, pBinLocation: String, pExpireDate: String, pLotNumber: String, pWarehouseNo: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
-            Log.i("Assign Expire Date " , "Error -> ${exception.message}")
+            Log.i("Assign Expire Date", "Error -> ${exception.message}")
         }
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber, pWarehouseNo)
-                _wasLastAPICallSuccessful.value = true
+                val response = ScannerAPI.getAssignExpirationDateService()
+                    .assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber, pWarehouseNo)
+                _wasLastAPICallSuccessful.value = response.response.opSuccess
                 _opMessage.value = response.response.opMessage
                 _opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
                 _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
-                Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
+                Log.i("Assign Expire Date", "Error -> ${e.message}")
             }
         }
     }
@@ -119,34 +117,10 @@ class EditItemViewModel: ViewModel(){
     fun setCompanyIDFromSharedPref(companyID: String){
         _companyID.value = companyID
     }
+
     fun setWarehouseNOFromSharedPref(warehouseNO: Int){
         _warehouseNO.value = warehouseNO.toString()
     }
-    fun assignLotNumber(pItemNumber: String, pWarehouseNo:Int, pBinLocation: String, pLotNumber: String, pCompanyCode: String, pOldLot: String?) {
-        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
-            _wasLastAPICallSuccessful.value = false
-            _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
-            Log.e("AssignLotNumber", "Exception -> ${exception.localizedMessage}")
-        }
-
-        viewModelScope.launch(exceptionHandler) {
-            try {
-                // Assuming the Retrofit suspend function returns directly the response body
-                val response = ScannerAPI.getAssignLotNumberService().assignLotNumberToBinItem(pItemNumber, pCompanyCode , pBinLocation, pLotNumber, pWarehouseNo, pOldLot )
-                _opMessage.value = response.response.opMessage
-                _opSuccess.value = response.response.opSuccess
-                _wasLastAPICallSuccessful.value = true
-            } catch (e: Exception) {
-                // Exception handling for network errors or serialization/deserialization issues
-                _networkErrorMessage.value = e.message
-                _wasLastAPICallSuccessful.value = false
-                Log.e("AssignLotNumber", "Exception -> ${e.localizedMessage}")
-            }
-        }
-    }
-
-
 
     fun getItemInfo(pItemNumber: String, pBinLocation: String, pLotNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -157,14 +131,14 @@ class EditItemViewModel: ViewModel(){
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getAssignExpirationDateService().getItemInformation(pItemNumber, pBinLocation, pLotNumber)
+                val response = ScannerAPI.getAssignExpirationDateService()
+                    .getItemInformation(pItemNumber, pBinLocation, pLotNumber)
                 _wasLastAPICallSuccessful.value = true
 
                 val itemInfoList = response.response.binItemInfo.response
                 if (!itemInfoList.isNullOrEmpty()) {
                     _itemInfo.value = itemInfoList[0]
                 } else {
-                    // Handle empty list case
                     _networkErrorMessage.value = "No item information available."
                     _wasLastAPICallSuccessful.value = false
                     Log.i("Item Info", "Error -> No item information available.")
@@ -176,7 +150,6 @@ class EditItemViewModel: ViewModel(){
             }
         }
     }
-
 
     fun setCurrentlyChosenItemForSearch(chosenItem: ItemData){
         _currentlyChosenItemForSearch.value = chosenItem
@@ -202,13 +175,14 @@ class EditItemViewModel: ViewModel(){
                     response.response.binItemInfo.binItemInfo
                 }
                 _suggestions.value = filteredSuggestions
-            }catch (e:Exception) {
+            } catch (e: Exception) {
                 _networkErrorMessage.value = e.message
-                _wasLastAPICallSuccessful.value = true
+                _wasLastAPICallSuccessful.value = false
                 Log.i("Item Info", "Error -> ${e.message}")
             }
         }
     }
+
     fun resetSuccessFlag() {
         _opSuccess.value = false // Or null, if your logic allows
     }
