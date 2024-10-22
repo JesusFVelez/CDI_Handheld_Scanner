@@ -71,6 +71,10 @@ class BinMovementViewModel: ViewModel() {
     val newItemToBeMoved: LiveData<BinMovementDataClass?>
         get() = _newItemToBeMoved
 
+    private val _networkErrorMessage = MutableLiveData<String>()
+    val networkErrorMessage: LiveData<String>
+        get() = _networkErrorMessage
+
     private val _willUpdateItemToMove = MutableLiveData<Boolean>()
     val willUpdateItemToMove: LiveData<Boolean>
         get() = _willUpdateItemToMove
@@ -112,6 +116,7 @@ class BinMovementViewModel: ViewModel() {
             "isQuantityValid" to "",
             "moveItemBetweenBins" to ""
         )
+        _networkErrorMessage.value = ""
         _itemsMoved.value = mutableListOf()
     }
 
@@ -150,6 +155,7 @@ class BinMovementViewModel: ViewModel() {
         fun getAllBinsFromBackend() {
             // Exception handler for API call
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+                _networkErrorMessage.value = exception.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i(
                     "Get All Bins - Bin Movement (exceptionHandler) ",
@@ -169,6 +175,7 @@ class BinMovementViewModel: ViewModel() {
                 }
 
             } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Get All Bins - Bin Movement (e) ", "Error -> ${e.message}")
             }
@@ -177,6 +184,7 @@ class BinMovementViewModel: ViewModel() {
         fun getAllItemsInAllBinsFromBackend() {
             // Exception handler for API call
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+                _networkErrorMessage.value = exception.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i(
                     "Get All Items In Bin - Bin Movement (exceptionHandler) ",
@@ -196,6 +204,7 @@ class BinMovementViewModel: ViewModel() {
                 }
 
             } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Get All Items In Bin - Bin Movement (e) ", "Error -> ${e.message}")
             }
@@ -213,6 +222,7 @@ class BinMovementViewModel: ViewModel() {
 
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i(
                 "Move Item Between Bins - Bin Movement (exceptionHandler) ",
@@ -241,6 +251,7 @@ class BinMovementViewModel: ViewModel() {
 //                        _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
 //                        _wasItemMovedSuccessfully.value = response.response.wasItemMoved
                     } catch (e: Exception) {
+                        _networkErrorMessage.value = e.message
                         _wasLastAPICallSuccessful.value = false
                         Log.i("API Error", "Error -> ${e.message}")
                     }
@@ -257,6 +268,7 @@ class BinMovementViewModel: ViewModel() {
     fun confirmIfBinExistsInDB(binLocation: String){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i(
                 "Confirm Bin - Bin Movement (exceptionHandler) ",
@@ -276,6 +288,7 @@ class BinMovementViewModel: ViewModel() {
             }
 
         } catch (e: Exception) {
+            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Confirm Bin - Bin Movement (e) ", "Error -> ${e.message}")
         }
@@ -284,6 +297,7 @@ class BinMovementViewModel: ViewModel() {
     fun moveItemBetweenBins(itemToMove: BinMovementDataClass){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i(
                 "Move Item Between Bins - Bin Movement (exceptionHandler) ",
@@ -305,6 +319,7 @@ class BinMovementViewModel: ViewModel() {
             }
 
         } catch (e: Exception) {
+            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Move Item Between Bins - Bin Movement (e) ", "Error -> ${e.message}")
         }

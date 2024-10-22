@@ -69,10 +69,10 @@ class AlerterUtils {
                 .show()
         }
 
-        fun startNetworkErrorAlert(activity: Activity){
+        fun startNetworkErrorAlert(activity: Activity, networkErrorMessage: String){
             Alerter.create(activity)
                 .setTitle(activity.resources.getString(R.string.network_request_error_message))
-                .setText(activity.resources.getString(R.string.network_request_error_message_title))
+                .setText(networkErrorMessage)
                 .setIcon(R.drawable.network_error)
                 .setBackgroundColorRes(R.color.CDI_Blue)
                 .show()
