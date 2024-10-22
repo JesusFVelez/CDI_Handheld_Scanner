@@ -19,9 +19,9 @@ class HomeScreenViewModel : ViewModel(){
                 val ProductInBinMenuOption = MenuOptionDataClass("Product in Bin", R.id.action_homeScreenFragment_to_productToBinFragment, "RfBtnCheckBin")
                 val BinsWithProductMenuOption = MenuOptionDataClass("Search Bins With Product",R.id.action_homeScreenFragment_to_searchBinsWithProductFragment, "RfBtnCheckItem" )
                 val ItemPickingMenuOption = MenuOptionDataClass("Item Picking", R.id.action_homeScreenFragment_to_orderPickingMainFragment, "RfBtnITEMPICKING")
-                val BinToBinMovementOption = MenuOptionDataClass("Bin to Bin Movement", R.id.action_homeScreenFragment_to_binMovementFragment, "RfBtnWHRFMOV")
-                val EditItemMenuOption = MenuOptionDataClass("Assign Expiration", R.id.action_homeScreenFragment_to_editItemMainFragment, "RfBtnAssignExpDate")
-                val ReceivingMenuOption = MenuOptionDataClass("Receiving", R.id.action_homeScreenFragment_to_receivingProductsMainFragment, "RfBtnWHRFMOV")
+                val BinToBinMovementOption = MenuOptionDataClass("Bin to Bin Movement", R.id.action_homeScreenFragment_to_binMovementFragment, "RfBtnBinMov")
+                val EditItemMenuOption = MenuOptionDataClass("Assign Expiration", R.id.action_homeScreenFragment_to_editItemMainFragment, "RfBtnEditItem")
+                val ReceivingMenuOption = MenuOptionDataClass("Receiving", R.id.action_homeScreenFragment_to_receivingProductsMainFragment, "RfBtnReceiving")
                 val PhysicalCountMenuOption = MenuOptionDataClass("Physical Count", R.id.searchBinProductPhysicalCountFragment, "RfBtnItemPhysicalCount")
         }
     }
