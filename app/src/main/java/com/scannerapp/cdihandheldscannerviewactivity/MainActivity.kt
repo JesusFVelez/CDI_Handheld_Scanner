@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         var hasUserBeenLoggedOut = false
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             Log.i("Log out user" , "Error -> ${exception.message}")
-            AlerterUtils.startNetworkErrorAlert(this@MainActivity, exception.message.toString())
+            AlerterUtils.startNetworkErrorAlert(this@MainActivity)
         }
         lifecycleScope.launch(exceptionHandler) {
             try {
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
             }catch (e: Exception){
                 Log.i("Log out user (e)", "Error -> ${e.message}")
-                AlerterUtils.startNetworkErrorAlert(this@MainActivity, e.message.toString())
+                AlerterUtils.startNetworkErrorAlert(this@MainActivity)
             }
 
         }

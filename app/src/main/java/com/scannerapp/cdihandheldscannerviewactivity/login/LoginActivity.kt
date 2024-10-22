@@ -211,7 +211,7 @@ class LoginActivity : AppCompatActivity() {
         viewModel.wasLastAPICallSuccessful.observe(this) {wasAPICallSuccessful ->
             if(!wasAPICallSuccessful){
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(this@LoginActivity, viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(this@LoginActivity)
                 Log.i("API Call", "API Call did not work")
             }
         }

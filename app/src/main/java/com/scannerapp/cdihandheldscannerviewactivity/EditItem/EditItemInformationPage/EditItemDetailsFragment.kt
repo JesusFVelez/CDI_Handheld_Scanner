@@ -93,13 +93,13 @@ class EditItemDetailsFragment : Fragment() {
             view?.findNavController()?.navigate(action)
         }
 
-        // Initially disable New Lot EditText since toggle is off
+        // Initially disable New Lot EditText
         binding.newLotEditText.isEnabled = false
 
         // Existing setupUI logic for the enter button
         binding.enterButton.setOnClickListener {
             isEnterPressed = true
-            shouldShowMessage = true //NEW
+            shouldShowMessage = true
             val itemNumber = viewModel.currentlyChosenItemForSearch.value!!.itemNumber
             val newExpirationDateStr = binding.NewExpirationDateEditText.text.toString()
             val binNumber = viewModel.currentlyChosenItemForSearch.value!!.binLocation
@@ -117,7 +117,6 @@ class EditItemDetailsFragment : Fragment() {
 
                 // Step 3: Check if parsed date is valid
                 if (newExpirationDate != null) {
-                    //progressDialog.show()
                     val warehouseNO =
                         SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                     viewModel.setWarehouseNOFromSharedPref(warehouseNO)
@@ -139,13 +138,8 @@ class EditItemDetailsFragment : Fragment() {
                                 newExpirationDateStr
                             )
                         }
-                        val isDateExpired = DateUtils.isDateExpired(
-                            newExpirationDateStr,
-                            handleYesPressed,
-                            requireContext(),
-                            requireView()
-                        )
-                        if (!isDateExpired) {
+                        val isDateExpired = DateUtils.isDateExpired(newExpirationDateStr, handleYesPressed, requireContext(), requireView())
+                        if(!isDateExpired) {
                             progressDialog.show()
                             assignExpirationDateToItem(
                                 lotNumber,
@@ -174,30 +168,18 @@ class EditItemDetailsFragment : Fragment() {
             }
         }
 
-        // Add this line in your setupUI function
+        // Date formatting logic (unchanged)
         binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
         binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
             private var lastCursorPosition: Int = 0
 
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-                // Store the text before any change is applied and the cursor position.
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 previousText = s.toString()
                 lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
             }
 
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
                 val currentText = s.toString()
@@ -205,7 +187,6 @@ class EditItemDetailsFragment : Fragment() {
 
                 // Strict limit of 10 characters for input, including dashes.
                 if (currentText.length > 10) {
-                    // Truncate the input to 10 characters
                     val truncatedText = currentText.substring(0, 10)
                     binding.NewExpirationDateEditText.setText(truncatedText)
                     binding.NewExpirationDateEditText.setSelection(truncatedText.length)
@@ -222,10 +203,7 @@ class EditItemDetailsFragment : Fragment() {
                     }
                 } else {
                     // Remove the last character if it's a dash
-                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith(
-                            "-"
-                        )
-                    ) {
+                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
                         binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
                         binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
                     } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {
@@ -251,68 +229,58 @@ class EditItemDetailsFragment : Fragment() {
         newExpirationDateStr: String
     ) {
         hasAPIBeenCalled = true
-
-        // Use the lot number provided; if empty, use the old lot number or an empty string
-        val updatedLotNumber = if (lotNumber.isNotEmpty()) lotNumber else oldLot ?: ""
-
-        // Call assignExpirationDate to assign both expiration date and lot number
+        if (lotNumber.isNotEmpty()) {
+            viewModel.assignLotNumber(
+                itemNumber,
+                warehouseNO,
+                binNumber,
+                lotNumber,
+                companyID,
+                oldLot
+            )
+            viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
+        }
         viewModel.assignExpirationDate(
             itemNumber,
             binNumber,
             newExpirationDateStr,
-            updatedLotNumber,
+            lotNumber,
             warehouseNO
         )
-
-        // Use the updated lot number when fetching item info
-        viewModel.getItemInfo(itemNumber, binNumber, updatedLotNumber)
+        viewModel.getItemInfo(itemNumber, binNumber, lotNumber)
     }
 
     private fun initObservers() {
 
         viewModel.opSuccess.observe(viewLifecycleOwner) { success ->
-            // Always dismiss the progress dialog when the observer is triggered
             progressDialog.dismiss()
-            // Ensure the message is fetched fresh when needed
             val message = viewModel.opMessage.value ?: "No message available"
 
             if (isEnterPressed && shouldShowMessage) {
                 if (success) {
-                    // If the operation was successful, show a success alert
                     AlerterUtils.startSuccessAlert(
                         requireActivity(),
                         "Success!",
                         "Item information changed."
                     )
                 } else if (!success) {
-                    // If the operation failed, show an error alert
                     AlerterUtils.startErrorAlerter(requireActivity(), message)
                 }
-
-                // After handling, reset the enter button state
                 isEnterPressed = false
             }
         }
 
         viewModel.itemInfo.observe(viewLifecycleOwner) { itemInfo ->
             if (itemInfo != null) {
-                binding.apply {
-                    itemNumberTextView.text = itemInfo.itemNumber
-                    itemNameTextView.text = itemInfo.itemDescription
-                    binLocationTextView.text = itemInfo.binLocation
-                    expirationDateTextView.text = itemInfo.expireDate ?: "N/A"
-                    lotTextView.text = itemInfo.lotNumber ?: "N/A"
-
-                    // Enable or disable newLotEditText based on multiLotId
-                    newLotEditText.isEnabled = itemInfo.multiLotId == true
-
-                    // For debugging
-                    Log.d("EditItemDetailsFragment", "multiLotId: ${itemInfo.multiLotId}")
-                }
+                // Update UI
+                binding.itemNumberTextView.text = itemInfo.itemNumber
+                binding.itemNameTextView.text = itemInfo.itemDescription
+                binding.binLocationTextView.text = itemInfo.binLocation
+                binding.expirationDateTextView.text = itemInfo.expireDate ?: "N/A"
+                binding.lotTextView.text = itemInfo.lotNumber ?: "N/A"
             }
         }
 
-        // Inside observeViewModel function, modify the observer for currentlyChosenItemForSearch
         viewModel.currentlyChosenItemForSearch.observe(viewLifecycleOwner) { selectedItem ->
             selectedItem?.let { item ->
                 binding.apply {
@@ -326,7 +294,7 @@ class EditItemDetailsFragment : Fragment() {
                     val inputFormat = SimpleDateFormat(
                         "yyyy-MM-dd",
                         Locale.getDefault()
-                    ) // Adjust this format to match the incoming date format
+                    )
                     val outputFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
                     val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
                     val formattedDate = if (date != null) outputFormat.format(date) else ""
@@ -336,8 +304,9 @@ class EditItemDetailsFragment : Fragment() {
 
                     upperDiv.visibility = View.VISIBLE
 
-                    // Removed old logic that enables/disables newLotEditText
-                    // This is now handled in itemInfo observer
+                    val lotExists = !item.lotNumber.isNullOrEmpty()
+                    newLotEditText.isEnabled = lotExists
+                    upperDiv.visibility = View.VISIBLE
                 }
 
                 // Call getItemInfo() to populate itemInfo LiveData
@@ -360,4 +329,3 @@ class EditItemDetailsFragment : Fragment() {
         }
     }
 }
-

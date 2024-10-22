@@ -26,9 +26,7 @@ class ProductsInBinViewModel: ViewModel() {
     val listOfProducts : LiveData<List<ProductInBinInfo>>
         get() = _listOfProducts
 
-    private val _networkErrorMessage = MutableLiveData<String>()
-    val networkErrorMessage : LiveData<String>
-        get() = _networkErrorMessage
+
 
     private val _numberOfItemsInBin = MutableLiveData<Int>()
     val numberOfItemsInBin : LiveData<Int>
@@ -59,7 +57,7 @@ class ProductsInBinViewModel: ViewModel() {
     init {
         _numberOfItemsInBin.value = 0
         _currentlyChosenAdapterPosition.value = 0
-        _networkErrorMessage.value = ""
+
     }
 
 
@@ -84,7 +82,6 @@ class ProductsInBinViewModel: ViewModel() {
 
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Products In Bin View Model Product Info API Call" , "Error -> ${exception.message}")
         }
@@ -101,7 +98,6 @@ class ProductsInBinViewModel: ViewModel() {
                 Log.i("Products In Bin View Model Product Info API Call", "Response -> ${response.toString()}" )
             }
         }catch (e : Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Products In Bin View Model Product Info API Call" , "Error -> ${e.message}")
         }

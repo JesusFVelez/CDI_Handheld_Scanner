@@ -24,10 +24,6 @@ class ItemPickingViewModel: ViewModel() {
     val orderNumber: LiveData<String>
         get() = _orderNumber
 
-    private val _networkErrorMessage = MutableLiveData<String>()
-    val networkErrorMessage : LiveData<String>
-        get() = _networkErrorMessage
-
     private val _hasLineUpMessageBeenShown = MutableLiveData<Boolean>()
     val hasLineUpMessageBeenShown: LiveData<Boolean>
         get() = _hasLineUpMessageBeenShown
@@ -150,7 +146,6 @@ class ItemPickingViewModel: ViewModel() {
                                     "verifyIfClientAccountIsClosed" to "",
                                     "verifyIfOrderHasPicking" to "",
                                     "finishPickingForSingleItem" to "")
-        _networkErrorMessage.value = ""
     }
 
     // Function called when ViewModel is cleared
@@ -167,7 +162,6 @@ class ItemPickingViewModel: ViewModel() {
     fun verifyIfOrderIsAvailableInBackend(){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Confirm Order - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
@@ -187,7 +181,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Confirm Order - Item Picking (e) " , "Error -> ${e.message}")
         }
@@ -205,7 +198,6 @@ class ItemPickingViewModel: ViewModel() {
     fun verifyIfClientAccountIsClosedInBackend(){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Verify Client Account - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
@@ -224,7 +216,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Verify Client Account - Item Picking (e) " , "Error -> ${e.message}")
         }
@@ -232,7 +223,6 @@ class ItemPickingViewModel: ViewModel() {
 
     fun confirmBin( scannedBin:String, adapterPosition: Int){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Confirm Bin - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
@@ -250,7 +240,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Confirm Bin - Item Picking (e) " , "Error -> ${e.message}")
         }
@@ -259,7 +248,6 @@ class ItemPickingViewModel: ViewModel() {
     fun verifyIfOrderHasPickingInBackend(){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Verify if Order Has Picking - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
@@ -279,7 +267,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Verify if Order Has Picking - Item Picking (e) " , "Error -> ${e.message}")
         }
@@ -290,7 +277,6 @@ class ItemPickingViewModel: ViewModel() {
     fun confirmItemInBackend(scannedItemCode:String ){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Confirm Item - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
@@ -307,7 +293,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Confirm Item - Item Picking (e) " , "Error -> ${e.message}")
         }
@@ -321,10 +306,8 @@ class ItemPickingViewModel: ViewModel() {
     fun getItemsInOrder(){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
-            Log.i("Get Items In Order - Item Picking (exceptionHandler) " ,
-                "Error -> ${exception.message}")
+            Log.i("Get Items In Order - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
 
         // API call to get the products in order
@@ -341,7 +324,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Get Items In Order - Item Picking (e) " , "Error -> ${e.message}")
         }
@@ -350,7 +332,6 @@ class ItemPickingViewModel: ViewModel() {
     fun finishPickingForSingleItem(quantityBeingPicked: Float, weightBeingPicked: Float){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("finish picking for item - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
@@ -365,7 +346,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("finish picking for item - Item Picking (e) " , "Error -> ${e.message}")
         }
@@ -376,7 +356,6 @@ class ItemPickingViewModel: ViewModel() {
     fun startPickingTimer(){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _hasPickingTimerAlreadyStarted.value = false
             Log.i("Start Picker Timer - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
@@ -393,7 +372,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             _hasPickingTimerAlreadyStarted.value = false
             Log.i("Start Picker Timer - Item Picking (e) " , "Error -> ${e.message}")
@@ -403,7 +381,6 @@ class ItemPickingViewModel: ViewModel() {
     fun updatePickingTimer(typeOfUpdate: String){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Update Picker Timer - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
@@ -425,7 +402,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Update Picker Timer - Item Picking (e) " , "Error -> ${e.message}")
         }
@@ -436,7 +412,6 @@ class ItemPickingViewModel: ViewModel() {
     fun getAllOrdersThatHavePickingForSuggestions(){
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Get All orders for suggestions - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
         }
@@ -450,7 +425,6 @@ class ItemPickingViewModel: ViewModel() {
             }
 
         }catch (e: Exception){
-            _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Get All orders for suggestions - Item Picking (e) " , "Error -> ${e.message}")
         }

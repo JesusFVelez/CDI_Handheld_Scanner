@@ -154,7 +154,7 @@ class OrderPickingItemFragment : Fragment() {
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
             if (!wasLastAPICallSuccessful && hasPageJustStarted) {
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
     }

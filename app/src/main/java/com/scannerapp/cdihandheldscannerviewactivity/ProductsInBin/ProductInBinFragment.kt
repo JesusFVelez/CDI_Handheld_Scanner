@@ -136,7 +136,7 @@ class ProductInBinFragment : Fragment(), ProductsInBinItemOnClickListener{
             if(!wasAPICallSuccessful && hasSearchButtonBeenPressed){
                 progressDialog.dismiss()
                 hasSearchButtonBeenPressed = false
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
 

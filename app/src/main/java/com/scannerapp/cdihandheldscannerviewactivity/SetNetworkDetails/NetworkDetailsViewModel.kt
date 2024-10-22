@@ -13,13 +13,8 @@ class NetworkDetailsViewModel: ViewModel() {
     val wasLastAPICallSuccessful : LiveData<Boolean>
         get() = _wasLastAPICallSuccessful
 
-    private val _networkErrorMessage = MutableLiveData<String>()
-    val networkErrorMessage : LiveData<String>
-        get() = _networkErrorMessage
-
     init{
         _hasConnectionToBackendSucceeded.value = false
-        _networkErrorMessage.value = ""
     }
 
 //    fun verifyBackendConnection(){

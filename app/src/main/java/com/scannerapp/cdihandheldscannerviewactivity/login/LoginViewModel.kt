@@ -52,10 +52,6 @@ class LoginViewModel:ViewModel() {
     val user: LiveData<User>
         get() = _user
 
-    private val _networkErrorMessage = MutableLiveData<String>()
-    val networkErrorMessage : LiveData<String>
-        get() = _networkErrorMessage
-
 
     // This initializer block is executed when the ViewModel is created. It calls the method to fetch companies from the backend
     init {
@@ -79,7 +75,6 @@ class LoginViewModel:ViewModel() {
     fun verifyIfTooManyUsersConnected(){
 
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Verify User Count" , "Error -> ${exception.message}")
         }
@@ -90,7 +85,6 @@ class LoginViewModel:ViewModel() {
                 _wasLastAPICallSuccessful.value = true
 
             }catch (e: Exception){
-                _networkErrorMessage.value = e.message
                 Log.i("Verify User Count", "Error -> ${e.message}")
                 _wasLastAPICallSuccessful.value = false
             }
@@ -102,7 +96,6 @@ class LoginViewModel:ViewModel() {
     // This method fetches the list of companies from the backend using a coroutine. If an error occurs during the API call, it logs the error and updates the LiveData object to indicate that the API call was unsuccessful
     fun getCompaniesFromBackendForSpinner() {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("get Companies API Call" , "Error -> ${exception.message}")
         }
@@ -113,7 +106,6 @@ class LoginViewModel:ViewModel() {
                 _wasLastAPICallSuccessful.value = true
 
             }catch (e: Exception){
-                _networkErrorMessage.value = e.message
                 Log.i("Login viewModelScope.launch method", "Error -> ${e.message}")
                 _wasLastAPICallSuccessful.value = false
             }
@@ -141,7 +133,6 @@ class LoginViewModel:ViewModel() {
 
     fun getWarehousesFromBackendForSpinner(){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Login Warehouse" , "Error -> ${exception.message}")
         }
@@ -153,7 +144,6 @@ class LoginViewModel:ViewModel() {
                 _listOfWarehouses.value = response.response.warehouses.warehouses
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Login warehouse (e)", "Error -> ${e.message}")
             }
@@ -170,7 +160,6 @@ class LoginViewModel:ViewModel() {
         )
         val requestBody = RequestUser(user)
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Login", "Error -> ${exception.message}")
         }
@@ -181,7 +170,6 @@ class LoginViewModel:ViewModel() {
                 _isUserLoggedIn.value = response.response.isSignedIn
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Login (e)", "Error -> ${e.message}")
             }

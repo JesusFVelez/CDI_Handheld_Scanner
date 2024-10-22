@@ -203,7 +203,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             if (!wasLasAPICallSuccessful && hasOrderBeenSearched) {
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
 

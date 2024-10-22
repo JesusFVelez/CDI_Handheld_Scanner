@@ -157,7 +157,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner, Observer { wasLastAPICallSuccessful: Boolean ->
             if (!wasLastAPICallSuccessful) {
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         })
 

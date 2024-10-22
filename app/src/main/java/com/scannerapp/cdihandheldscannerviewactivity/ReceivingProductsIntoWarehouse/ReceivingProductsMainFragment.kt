@@ -313,7 +313,7 @@ class ReceivingProductsMainFragment : Fragment(){
             if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
                 viewModel.resetHasAPIBeenCalled()
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
             }
         }
 

@@ -90,7 +90,7 @@ class HomeScreenFragment : Fragment() {
             if(!wasLastApiCallSuccessful && hasButtonBeenPressed){
                 hasButtonBeenPressed = false
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
                 Log.i("API Call", "API Call did not work")
             }
         }

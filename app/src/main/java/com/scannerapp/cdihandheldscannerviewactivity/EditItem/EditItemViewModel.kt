@@ -101,15 +101,14 @@ class EditItemViewModel: ViewModel(){
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val response = ScannerAPI.getAssignExpirationDateService()
-                    .assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber, pWarehouseNo)
-                _wasLastAPICallSuccessful.value = response.response.opSuccess
+                val response = ScannerAPI.getAssignExpirationDateService().assignExpireDate(pItemNumber, pBinLocation, pExpireDate, pLotNumber, pWarehouseNo)
+                _wasLastAPICallSuccessful.value = true
                 _opMessage.value = response.response.opMessage
                 _opSuccess.value = response.response.opSuccess
             } catch (e: Exception) {
                 _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
-                Log.i("Assign Expire Date", "Error -> ${e.message}")
+                Log.i("Assign Expire Date (e)", "Error -> ${e.message}")
             }
         }
     }
@@ -117,7 +116,6 @@ class EditItemViewModel: ViewModel(){
     fun setCompanyIDFromSharedPref(companyID: String){
         _companyID.value = companyID
     }
-
     fun setWarehouseNOFromSharedPref(warehouseNO: Int){
         _warehouseNO.value = warehouseNO.toString()
     }
@@ -182,7 +180,6 @@ class EditItemViewModel: ViewModel(){
             }
         }
     }
-
     fun resetSuccessFlag() {
         _opSuccess.value = false // Or null, if your logic allows
     }

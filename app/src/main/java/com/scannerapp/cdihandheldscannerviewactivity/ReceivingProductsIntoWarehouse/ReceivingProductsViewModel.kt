@@ -36,10 +36,6 @@ class ReceivingProductsViewModel: ViewModel() {
     val listOfItemsToMoveInPreReceiving: LiveData<MutableList<ItemsInBinList>>
         get() = _listOfItemsToMoveInPreReceiving
 
-    private val _networkErrorMessage = MutableLiveData<String>()
-    val networkErrorMessage : LiveData<String>
-        get() = _networkErrorMessage
-
     private val _wasItemConfirmed = MutableLiveData<Boolean>()
     val wasItemConfirmed: LiveData<Boolean>
         get() = _wasItemConfirmed
@@ -159,7 +155,6 @@ class ReceivingProductsViewModel: ViewModel() {
         willNotEditCurrentValues()
         _allItemsMoved.value = false
         _UOMQtyInBarcode.value = 0f
-        _networkErrorMessage.value = ""
     }
 
     fun setCurrentlyChosenDoorBin(chosenDoorBin: DoorBin) {
@@ -196,7 +191,6 @@ class ReceivingProductsViewModel: ViewModel() {
     fun getDoorBins() {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("get door bins API call", "Error -> ${exception.message}")
         }
@@ -209,7 +203,6 @@ class ReceivingProductsViewModel: ViewModel() {
                 _doorBins.value = response.response.ttBinList.tt_bin_list
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("get door bins API call", "Error -> ${e.message}")
             }
@@ -241,7 +234,6 @@ class ReceivingProductsViewModel: ViewModel() {
     fun getPreReceivingInfo() {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i(
                 "set pre-receiving info for Receiving API Call Exception Handler",
@@ -262,7 +254,6 @@ class ReceivingProductsViewModel: ViewModel() {
                     _preReceivingInfo.value = response.response.ttPreReceiving.tt_pre_receiving[0]
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i(
                     "get set the pre-receiving info for Receiving API Call Exception Handler",
@@ -275,7 +266,6 @@ class ReceivingProductsViewModel: ViewModel() {
     fun getItemsInDoor() {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i("getItemsInDoor api call", "Error -> ${exception.message}")
         }
@@ -306,7 +296,6 @@ class ReceivingProductsViewModel: ViewModel() {
                 _isDoorBinEmpty.value = response.response.isBinEmpty
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("getItemsInDoor api call (e)", "Error -> ${e.message}")
             }
@@ -316,7 +305,6 @@ class ReceivingProductsViewModel: ViewModel() {
     fun getItemInfo(scannedCode: String) {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _wasItemFound.value = false
             Log.i("getItemInfo api call", "Error -> ${exception.message}")
@@ -334,7 +322,6 @@ class ReceivingProductsViewModel: ViewModel() {
 
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("getItemInfo api call (e)", "Error -> ${e.message}")
             }
@@ -343,7 +330,6 @@ class ReceivingProductsViewModel: ViewModel() {
 
     fun wasBinFound(binNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _wasBinFound.value = false
             Log.i(
@@ -360,7 +346,6 @@ class ReceivingProductsViewModel: ViewModel() {
                 _errorMessage.value!!["wasBinFoundError"] = response.response.errorMessage
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i(
                     "get set the was bin found for Receiving API Call Exception Handler",
@@ -373,7 +358,6 @@ class ReceivingProductsViewModel: ViewModel() {
     fun moveItemToDoor(itemToAddToDoor: ReceivingProductsDetailsFragment.ItemToAddToDoorBin) {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _wasItemMovedToDoor.value = false
             Log.i(
@@ -399,7 +383,6 @@ class ReceivingProductsViewModel: ViewModel() {
                 _wasItemMovedToDoor.value = response.response.wasItemMovedToDoor
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i(
                     "set the move item to door for Receiving API Call Exception Handler (e)",
@@ -411,7 +394,6 @@ class ReceivingProductsViewModel: ViewModel() {
 
     fun moveItemToBin(rowIDForDoorBin: String, quantity: Int, destinationBin: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _wasItemMovedToBin.value = false
             Log.i(
@@ -432,7 +414,6 @@ class ReceivingProductsViewModel: ViewModel() {
                 _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i(
                     "get set the move item to bin for Receiving API Call Exception Handler",
@@ -450,7 +431,6 @@ class ReceivingProductsViewModel: ViewModel() {
     fun moveItemsToFloorBin(destinationBin: String) {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _wasItemMovedToBin.value = false
             Log.i(
@@ -474,7 +454,6 @@ class ReceivingProductsViewModel: ViewModel() {
                             response.response.errorMessage
                         _wasLastAPICallSuccessful.value = true
                     } catch (e: Exception) {
-                        _networkErrorMessage.value = e.message
                         _wasLastAPICallSuccessful.value = false
                         Log.i(
                             "get set the move item to bin for Receiving API Call Exception Handler",
@@ -494,7 +473,6 @@ class ReceivingProductsViewModel: ViewModel() {
     fun validateDestinationBin(destinationBin: String) {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.i(
                 "set validate destination bin for Receiving API Call Exception Handler",
@@ -515,7 +493,6 @@ class ReceivingProductsViewModel: ViewModel() {
                 _isValidDestinationBin.value = response.response.isBinValid
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i(
                     "get set the validate destination bin for Receiving API Call Exception Handler",
@@ -531,7 +508,6 @@ class ReceivingProductsViewModel: ViewModel() {
         fun confirmItem(scannedCode: String) {
             _hasAPIBeenCalled.value = true
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-                _networkErrorMessage.value = exception.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Confirm Item API Call Exception Handler", "Error -> ${exception.message}")
             }
@@ -551,7 +527,6 @@ class ReceivingProductsViewModel: ViewModel() {
                     _errorMessage.value!!["confirmItem"] = response.response.errorMessage
                     _wasItemConfirmed.value = response.response.wasItemConfirmed
                 } catch (e: Exception) {
-                    _networkErrorMessage.value = e.message
                     _wasLastAPICallSuccessful.value = false
                     Log.i("Confirm Item API Call Exception Handler", "Error -> ${e.message}")
                 }
@@ -562,7 +537,6 @@ class ReceivingProductsViewModel: ViewModel() {
         fun deleteItemFromDoorBin(rowIDForDoorBin: String) {
             _hasAPIBeenCalled.value = true
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-                _networkErrorMessage.value = exception.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i(
                     "set delete item from door bin API Call Exception Handler",
@@ -581,7 +555,6 @@ class ReceivingProductsViewModel: ViewModel() {
                     _wasItemDeleted.value = response.response.wasItemDeleted
                     _wasLastAPICallSuccessful.value = true
                 } catch (e: Exception) {
-                    _networkErrorMessage.value = e.message
                     _wasLastAPICallSuccessful.value = false
                     Log.i(
                         "get delete item from door bin API Call Exception Handler",
@@ -594,7 +567,6 @@ class ReceivingProductsViewModel: ViewModel() {
         fun validateLotNumber(lotNumber: String, itemNumber: String) {
             _hasAPIBeenCalled.value = true
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-                _networkErrorMessage.value = exception.message
                 _wasLastAPICallSuccessful.value = false
                 Log.i("Validate Lot Number", "Error -> ${exception.message}")
             }
@@ -611,7 +583,6 @@ class ReceivingProductsViewModel: ViewModel() {
                     _isLotNumberValid.value = response.response.isLotNumberValid
                     _wasLastAPICallSuccessful.value = true
                 } catch (e: Exception) {
-                    _networkErrorMessage.value = e.message
                     _wasLastAPICallSuccessful.value = false
                     Log.i("Validate Lot Number (e)", "Error -> ${e.message}")
                 }

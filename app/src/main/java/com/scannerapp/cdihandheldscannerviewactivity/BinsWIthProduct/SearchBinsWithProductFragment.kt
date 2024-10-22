@@ -112,7 +112,7 @@ class SearchBinsWithProductFragment : Fragment() {
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){wasAPICallSuccessful ->
             if(!wasAPICallSuccessful){
                 progressDialog.dismiss()
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(requireActivity())
                 hasSearchButtonBeenPressed = false
             }
         }

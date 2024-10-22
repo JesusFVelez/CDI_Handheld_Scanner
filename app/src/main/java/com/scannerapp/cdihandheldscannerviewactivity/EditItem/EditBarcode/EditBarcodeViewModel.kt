@@ -46,10 +46,6 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
     val listOfBarcodesOfItem: LiveData<List<String>?>
         get() = _listOfBarcodesOfItem
 
-    private val _networkErrorMessage = MutableLiveData<String>()
-    val networkErrorMessage: LiveData<String>
-        get() = _networkErrorMessage
-
     private val _couldAddOrRemoveBarcode = MutableLiveData<Boolean>()
     val couldAddOrRemoveBarcode: LiveData<Boolean>
         get() = _couldAddOrRemoveBarcode
@@ -79,7 +75,6 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
 
     fun getBarcodesFromBackend(){
             val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-                _networkErrorMessage.value = exception.message
                 //_wasLastAPICallSuccessful.value = false
                 Log.i("Get Barcodes" , "Error -> ${exception.message}")
             }
@@ -93,7 +88,6 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                     _wasLastAPICallSuccessful.value = true
                 } catch (e: Exception) {
                     // Exception handling for network errors or serialization/deserialization issues
-                    _networkErrorMessage.value = e.message
                     _wasLastAPICallSuccessful.value = false
                     Log.e("Get Barcodes", "Exception (e) -> ${e.localizedMessage}")
                 }
@@ -102,7 +96,6 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
 
     fun addBarcodeToBackend(barcodeToAdd: String, isMainBarcode: Boolean){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             //_wasLastAPICallSuccessful.value = false
             Log.i("Assign Barcode ", "Error -> ${exception.message}")
         }
@@ -118,7 +111,6 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 _wasLastAPICallSuccessful.value = true
 
             }catch (e:Exception){
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("Assign Barcode", "Exception (e) -> ${e.localizedMessage}")
             }
@@ -127,7 +119,6 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
 
     fun updateBarcodeToBackend(oldBarcode:String ,newBarcode: String, isMainBarcode: Boolean){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             //_wasLastAPICallSuccessful.value = false
             Log.i("Update Barcode ", "Error -> ${exception.message}")
         }
@@ -145,9 +136,8 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 _wasLastAPICallSuccessful.value = true
 
             }catch (e:Exception){
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
-                Log.e("Update Barcode", "Exception (e) -> ${e.message}")
+                Log.e("Update Barcode", "Exception (e) -> ${e.localizedMessage}")
             }
         }
 
@@ -155,7 +145,6 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
 
     fun removeBarcodeFromBackend(barcodeToRemove: String, isMainBarcode: Boolean){
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             //_wasLastAPICallSuccessful.value = false
             Log.i("Remove Barcode ", "Error -> ${exception.message}")
         }
@@ -170,7 +159,6 @@ class EditBarcodeViewModel(itemInfo: ItemData?): ViewModel() {
                 _couldAddOrRemoveBarcode.value = response.response.couldRemoveBarcode
                 _wasLastAPICallSuccessful.value = true
             }catch (e:Exception){
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("Remove Barcode", "Exception (e) -> ${e.localizedMessage}")
             }

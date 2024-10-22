@@ -24,10 +24,6 @@ class InventoryCountViewModel : ViewModel() {
     val opSuccess: LiveData<Boolean>
         get() = _opSuccess
 
-    private val _networkErrorMessage = MutableLiveData<String>()
-    val networkErrorMessage : LiveData<String>
-        get() = _networkErrorMessage
-
     private val _opMessage = MutableLiveData<String>()
     val opMessage: LiveData<String>
         get() = _opMessage
@@ -95,9 +91,6 @@ class InventoryCountViewModel : ViewModel() {
 
 
 
-    init {
-        _networkErrorMessage.value = ""
-    }
 
     fun setSelectedBin(bin: BinsByClassCodeByVendorAndByItemNumber) {
         _selectedBin.value = bin
@@ -127,7 +120,6 @@ class InventoryCountViewModel : ViewModel() {
 
     fun getAllBinNumbers(pCompanyID: String, pWarehouse: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.e("Get Bin Numbers", "Failed to fetch bin numbers: ${exception.localizedMessage}")
         }
@@ -146,7 +138,6 @@ class InventoryCountViewModel : ViewModel() {
                 }
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("Get Bin Numbers", "Exception -> ${e.localizedMessage}")
             }
@@ -155,7 +146,6 @@ class InventoryCountViewModel : ViewModel() {
 
     fun updateCount(pItemNumber: String, pExpireDate: String, pLotNumber: String, pWarehouseNo: Int, pBinLocation: String, pQtyCounted: Double, pWeight: Double, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
             Log.e("Update Count", "Exception -> ${exception.localizedMessage}")
@@ -188,7 +178,6 @@ class InventoryCountViewModel : ViewModel() {
                 getAllItemsInBinForSuggestion(pBinLocation, pWarehouseNo, pCompanyID)
 
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("Update Count", "Exception -> ${e.localizedMessage}")
             }
@@ -198,7 +187,6 @@ class InventoryCountViewModel : ViewModel() {
 
     fun getAllItemsInBinForSuggestion(pBinLocation: String, pWarehouse: Int, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.e("Get Items In Bin", "Failed to fetch items: ${exception.localizedMessage}")
         }
@@ -215,7 +203,6 @@ class InventoryCountViewModel : ViewModel() {
                 _itemInfo.value = items
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("Get Items In Bin", "Exception -> ${e.localizedMessage}")
             }
@@ -224,7 +211,6 @@ class InventoryCountViewModel : ViewModel() {
 
     fun getBinsByClassCodeByVendorAndByItemNumber(pClassCode: String, pVendor: String, pItemNumber: String, pCompanyID: String, pWarehouseNo: Int) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.e("Get Bins By All", "Failed to fetch bins: ${exception.localizedMessage}")
         }
@@ -247,7 +233,6 @@ class InventoryCountViewModel : ViewModel() {
                 _binInfo.value = bins
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("Get Bins By All", "Exception -> ${e.localizedMessage}")
             }
@@ -257,7 +242,6 @@ class InventoryCountViewModel : ViewModel() {
 
     fun getItemDetailsForPopup(pItemNumberOrBarCode: String, pWarehouse: Int, pCompanyID: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             Log.e("ViewModel", "Exception in getItemDetailsForPopup: ${exception.localizedMessage}", exception)
         }
@@ -290,7 +274,6 @@ class InventoryCountViewModel : ViewModel() {
                     }
                 })
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 Log.e("ViewModel", "Exception in getItemDetailsForPopup: ${e.localizedMessage}", e)
             }
@@ -300,7 +283,6 @@ class InventoryCountViewModel : ViewModel() {
 
     fun confirmItem(scannedCode: String, companyID: String, warehouseNumber: Int, actualItemNumber: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
             _opMessage.value = "Exception occurred: ${exception.localizedMessage}"
             Log.e("Confirm Item", "Exception -> ${exception.localizedMessage}")
@@ -313,7 +295,6 @@ class InventoryCountViewModel : ViewModel() {
                 _wasLastAPICallSuccessful.value = true
                 Log.d("Confirm Item", "Response: $response")
             } catch (e: Exception) {
-                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
                 _opMessage.value = "Failed to confirm item: ${e.localizedMessage}"
                 Log.e("Confirm Item", "Exception -> ${e.localizedMessage}")
