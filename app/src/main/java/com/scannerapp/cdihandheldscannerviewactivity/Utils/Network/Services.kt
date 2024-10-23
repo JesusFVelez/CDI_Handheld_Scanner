@@ -23,6 +23,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RPMAccessResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.RemoveBarcodeFromItemResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmBin
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmItemBinMovWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseConfirmItemWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseDeleteItemFromDoorBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseGetPreReceiving
@@ -112,6 +113,9 @@ interface MoveItemsBetweenBinsServices{
     //Endpoint for confirming that the entered bin exists
     @GET("confirmBin")
     suspend fun confirmBin(@Query("binNumber") binLocation:String, @Query("companyID") companyID: String, @Query("warehouse") warehouseNumber: Int): confirmBinResponseWrapper
+
+    @GET("confirmBarcodeAndGetItem")
+    suspend fun confirmBarcodeAndGetItem(@Query("scannedCode") scannedCode: String, @Query("companyID") companyID: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("binLocation") binLocation: String):ResponseConfirmItemBinMovWrapper
 
     //Endpoint for verifying if the quantity entered can be used
     @GET("isQuantityValid")

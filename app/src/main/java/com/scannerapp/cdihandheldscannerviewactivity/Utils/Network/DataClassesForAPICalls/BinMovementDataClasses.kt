@@ -118,3 +118,17 @@ data class moveItemBetweenBinsResponse(
     @Json(name = "errorMessage") val errorMessage: String
 )
 
+
+// confirmItem - Confirms whether an item belongs in a bin and exists in the DB
+@JsonClass(generateAdapter = true)
+data class ResponseConfirmItemBinMovWrapper(
+    val response: ResponseConfirmItemBinMov
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseConfirmItemBinMov(
+    @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
+    @Json(name = "errorMessage") val errorMessage: String,
+    @Json(name = "ttBinItem") val itemThatWasConfirmed: listOfItemsInBinWrapper
+)
+

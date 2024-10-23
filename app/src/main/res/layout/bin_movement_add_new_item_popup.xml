@@ -43,6 +43,17 @@
                     android:hint="From Bin"
                     app:layout_constraintHorizontal_bias="0.498"/>
 
+                <AutoCompleteTextView
+                    android:id="@+id/scanItemTextView"
+                    style="@style/CustomScannerInputWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:dropDownHeight="wrap_content"
+                    android:hint="Scan Item"
+                    app:layout_constraintHorizontal_bias="0.498"/>
+
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/itemNumberSpinnerTextInputLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"

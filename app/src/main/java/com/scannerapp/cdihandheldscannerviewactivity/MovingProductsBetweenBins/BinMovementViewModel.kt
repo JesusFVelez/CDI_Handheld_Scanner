@@ -59,6 +59,10 @@ class BinMovementViewModel: ViewModel() {
     val wasBinConfirmed: LiveData<Boolean>
         get() = _wasBinConfirmed
 
+    private val _wasItemConfirmed = MutableLiveData<Boolean>()
+    val wasItemConfirmed: LiveData<Boolean>
+        get() = _wasItemConfirmed
+
     private val _wasItemMovedSuccessfully = MutableLiveData<Boolean>()
     val wasItemMovedSuccessfully: LiveData<Boolean>
         get() = _wasItemMovedSuccessfully
@@ -114,7 +118,8 @@ class BinMovementViewModel: ViewModel() {
             "confirmBin" to "",
             "confirmItem" to "",
             "isQuantityValid" to "",
-            "moveItemBetweenBins" to ""
+            "moveItemBetweenBins" to "",
+            "confirmItem" to ""
         )
         _networkErrorMessage.value = ""
         _itemsMoved.value = mutableListOf()
@@ -291,6 +296,45 @@ class BinMovementViewModel: ViewModel() {
             _networkErrorMessage.value = e.message
             _wasLastAPICallSuccessful.value = false
             Log.i("Confirm Bin - Bin Movement (e) ", "Error -> ${e.message}")
+        }
+    }
+
+    fun filterListByBinAndItem(binLocation: String, itemNumber: String): List<itemsInBin>{
+        return _listOfAllItemsInAllBins.value!!.filter { it.binLocation.lowercase() == binLocation.lowercase() &&
+                it.itemNumber.lowercase() == itemNumber.lowercase() }
+    }
+
+    fun confirmBarcodeAndValidateIfItemIsInBin(binLocation: String, scannedCode:String){
+        // Exception handler for API call
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
+            _wasLastAPICallSuccessful.value = false
+            Log.i(
+                "Confirm Item - Bin Movement (exceptionHandler) ",
+                "Error -> ${exception.message}"
+            )
+        }
+
+        // API call to get the products in order
+        try {
+            viewModelScope.launch(exceptionHandler) {
+                _hasAPIBeenCalled.value = true
+                val response =
+                    ScannerAPI.getMovingItemsBetweenBinsService().confirmBarcodeAndGetItem( scannedCode = scannedCode,
+                                                                                            binLocation = binLocation,
+                                                                                            warehouseNumber = _warehouseNumber.value!!,
+                                                                                            companyID = _companyID.value!!)
+                if (response.response.itemThatWasConfirmed.listOfItemsInBin.isNotEmpty())
+                    _currentlyChosenItemToMoveFromSpinner.value = response.response.itemThatWasConfirmed.listOfItemsInBin[0]
+                _errorMessage.value!!["confirmItem"] = response.response.errorMessage
+                _wasItemConfirmed.value = response.response.wasItemConfirmed
+                _wasLastAPICallSuccessful.value = true
+            }
+
+        } catch (e: Exception) {
+            _networkErrorMessage.value = e.message
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Confirm Item - Bin Movement (e) ", "Error -> ${e.message}")
         }
     }
 
