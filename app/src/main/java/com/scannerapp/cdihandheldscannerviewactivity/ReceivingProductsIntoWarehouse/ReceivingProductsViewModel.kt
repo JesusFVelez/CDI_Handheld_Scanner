@@ -174,7 +174,6 @@ class ReceivingProductsViewModel: ViewModel() {
         _willEditCurrentValues.value = false
     }
 
-
     fun resetHasAPIBeenCalled() {
         _hasAPIBeenCalled.value = false
     }
@@ -383,7 +382,8 @@ class ReceivingProductsViewModel: ViewModel() {
         }
         viewModelScope.launch(exceptionHandler) {
             try {
-                _hasAPIBeenCalled.value = true
+                val expireDateToSend = itemToAddToDoor.expirationDate
+
                 val response = ScannerAPI.getReceivingProductService().addItemToDoorBin(
                     itemNumber = itemToAddToDoor.itemNumber,
                     doorBin = itemToAddToDoor.doorBin,
@@ -391,7 +391,7 @@ class ReceivingProductsViewModel: ViewModel() {
                     quantity = itemToAddToDoor.quantityOfItemsAddedToDoorBin,
                     lotNumber = itemToAddToDoor.lotNumber,
                     weight = itemToAddToDoor.weight,
-                    expireDate = itemToAddToDoor.expirationDate,
+                    expireDate = expireDateToSend,
                     warehouseNumber = _warehouseNumber.value!!,
                     companyID = _companyID.value!!
                 )

@@ -23,7 +23,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ReceivingDetailsFragmentBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class ReceivingProductsDetailsFragment : Fragment() {
@@ -193,31 +192,37 @@ class ReceivingProductsDetailsFragment : Fragment() {
             if (areNecessaryFieldsFilled) {
                 val expirationDate = newExpirationDateEditText.text.toString()
 
-                val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
-                try {
-                    val newExpirationDate = dateFormat.parse(expirationDate)
+                if (expirationDate.isNotEmpty()) {
+                    val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
+                    try {
+                        val newExpirationDate = dateFormat.parse(expirationDate)
 
-                    // Step 3: Validate the parsed date
-                    if (newExpirationDate != null && DateUtils.isValidDate(expirationDate)) {
-                        var handleYesPressed: () -> Unit = {
-                            moveItemToDoorBin(expirationDate)
+                        // Validate the parsed date
+                        if (newExpirationDate != null && DateUtils.isValidDate(expirationDate)) {
+                            val handleYesPressed: () -> Unit = {
+                                moveItemToDoorBin(expirationDate)
+                            }
+                            val isDateExpired = DateUtils.isDateExpired(
+                                expirationDate, handleYesPressed, requireContext(), requireView()
+                            )
+                            if (!isDateExpired) {
+                                moveItemToDoorBin(expirationDate)
+                            }
+                        } else {
+                            AlerterUtils.startErrorAlerter(
+                                requireActivity(),
+                                "Invalid date. Please enter a valid date (MM-DD-YYYY)."
+                            )
                         }
-                        val isDateExpired = DateUtils.isDateExpired(expirationDate, handleYesPressed, requireContext(), requireView())
-                        if(!isDateExpired) {
-                            moveItemToDoorBin(expirationDate)
-                        }
-                    } else {
-                        // Step 4: Show an error message for an invalid date
+                    } catch (e: ParseException) {
                         AlerterUtils.startErrorAlerter(
                             requireActivity(),
-                            "Invalid date. Please enter a valid date (MM-DD-YYYY)."
+                            "Invalid date format. Please use MM-DD-YYYY."
                         )
                     }
-                } catch (e: ParseException) {
-                    AlerterUtils.startErrorAlerter(
-                        requireActivity(),
-                        "Invalid date format. Please use MM-DD-YYYY."
-                    )
+                } else {
+                    // Expiration date is empty; proceed without parsing
+                    moveItemToDoorBin("") // Pass null since no expiration date
                 }
             } else {
                 AlerterUtils.startErrorAlerter(
@@ -228,22 +233,22 @@ class ReceivingProductsDetailsFragment : Fragment() {
         }
     }
 
-    private fun moveItemToDoorBin(expirationDate: String) {
+    private fun moveItemToDoorBin(expirationDate: String?) {
         val newLotNumber = newLotEditText.text.toString()
-        val quantityToAddToDoor =
-            quantityEditText.text.toString().toFloat().toInt()
+        val quantityToAddToDoor = quantityEditText.text.toString().toFloat().toInt()
         val itemNumber = itemNumberTextView.text.toString()
         val doorBin = viewModel.currentlyChosenDoorBin.value!!.bin_number
         val weight = weightEditText.text.toString().toFloatOrNull() ?: 0f
+        val expirationDateToSend = expirationDate ?: ""
 
         val itemToAdd = ItemToAddToDoorBin(
-            expirationDate,
-            "00P111",
-            doorBin,
-            itemNumber,
-            newLotNumber,
-            weight,
-            quantityToAddToDoor
+            expirationDate = expirationDateToSend,
+            binToBeMovedTo = "00P111",
+            doorBin = doorBin,
+            itemNumber = itemNumber,
+            lotNumber = newLotNumber,
+            weight = weight,
+            quantityOfItemsAddedToDoorBin = quantityToAddToDoor
         )
 
         progressDialog.show()
@@ -328,6 +333,6 @@ class ReceivingProductsDetailsFragment : Fragment() {
 
     private fun verifyIfAllNecessaryFieldsAreFilled(): Boolean {
         val doesItemHaveWeight = viewModel.itemInfo.value!!.doesItemHaveWeight
-        return quantityEditText.text.isNotEmpty() && newExpirationDateEditText.text.isNotEmpty() && ((doesItemHaveWeight && weightEditText.text.isNotEmpty()) || !doesItemHaveWeight)
+        return quantityEditText.text.isNotEmpty() && ((doesItemHaveWeight && weightEditText.text.isNotEmpty()) || !doesItemHaveWeight)
     }
 }
