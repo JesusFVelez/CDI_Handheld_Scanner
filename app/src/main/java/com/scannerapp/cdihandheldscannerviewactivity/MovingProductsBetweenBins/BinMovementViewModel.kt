@@ -229,40 +229,70 @@ class BinMovementViewModel: ViewModel() {
                 "Error -> ${exception.message}"
             )
         }
-
         viewModelScope.launch {
-            val jobs = itemsToMove.map { itemToMove ->
-                launch {
-                    try {
-                        _hasAPIBeenCalled.value = true
-                        val response = ScannerAPI.getMovingItemsBetweenBinsService()
-                            .moveItemBetweenBins(rowID = itemToMove.rowIDOfItemInFromBin,
-                                                pickerUserName = _pickerUserName.value!!,
-                                                newBin = itemToMove.toBinNumber,
-                                                quantityToMove = itemToMove.qtyToMoveFromBinToBin.toFloat())
-                        _itemsMoved.value!!.add(itemBeingMoved(
-                            itemToMove.itemNumber,
-                            response.response.wasItemMoved,
-                            response.response.errorMessage,
-                            itemToMove.fromBinNumber,
-                            itemToMove.toBinNumber
-                        ))
-                        _wasLastAPICallSuccessful.value = true
-//                        _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
-//                        _wasItemMovedSuccessfully.value = response.response.wasItemMoved
-                    } catch (e: Exception) {
-                        _networkErrorMessage.value = e.message
-                        _wasLastAPICallSuccessful.value = false
-                        Log.i("API Error", "Error -> ${e.message}")
-                    }
+            _hasAPIBeenCalled.value = true  // Moved outside the loop to avoid setting it multiple times
+            for (itemToMove in itemsToMove) {
+                try {
+                    val response = ScannerAPI.getMovingItemsBetweenBinsService()
+                        .moveItemBetweenBins(
+                            rowID = itemToMove.rowIDOfItemInFromBin,
+                            pickerUserName = _pickerUserName.value!!,
+                            newBin = itemToMove.toBinNumber,
+                            quantityToMove = itemToMove.qtyToMoveFromBinToBin.toFloat()
+                        )
+                    _itemsMoved.value!!.add(itemBeingMoved(
+                        itemToMove.itemNumber,
+                        response.response.wasItemMoved,
+                        response.response.errorMessage,
+                        itemToMove.fromBinNumber,
+                        itemToMove.toBinNumber
+                    ))
+                    _wasLastAPICallSuccessful.value = true
+                } catch (e: Exception) {
+                    _networkErrorMessage.value = e.message
+                    _wasLastAPICallSuccessful.value = false
+                    Log.i("API Error", "Error -> ${e.message}")
                 }
             }
-            // Wait for all jobs to complete
-            jobs.joinAll()
-
-            // After all jobs are complete, notify the UI
-            _allItemsMoved.value = true // You need to add this LiveData<Boolean> to your ViewModel
+            // After all API calls are complete, notify the UI
+            _allItemsMoved.value = true
         }
+
+
+
+//        viewModelScope.launch {
+//            val jobs = itemsToMove.map { itemToMove ->
+//                launch {
+//                    try {
+//                        _hasAPIBeenCalled.value = true
+//                        val response = ScannerAPI.getMovingItemsBetweenBinsService()
+//                            .moveItemBetweenBins(rowID = itemToMove.rowIDOfItemInFromBin,
+//                                                pickerUserName = _pickerUserName.value!!,
+//                                                newBin = itemToMove.toBinNumber,
+//                                                quantityToMove = itemToMove.qtyToMoveFromBinToBin.toFloat())
+//                        _itemsMoved.value!!.add(itemBeingMoved(
+//                            itemToMove.itemNumber,
+//                            response.response.wasItemMoved,
+//                            response.response.errorMessage,
+//                            itemToMove.fromBinNumber,
+//                            itemToMove.toBinNumber
+//                        ))
+//                        _wasLastAPICallSuccessful.value = true
+////                        _errorMessage.value!!["moveItemBetweenBins"] = response.response.errorMessage
+////                        _wasItemMovedSuccessfully.value = response.response.wasItemMoved
+//                    } catch (e: Exception) {
+//                        _networkErrorMessage.value = e.message
+//                        _wasLastAPICallSuccessful.value = false
+//                        Log.i("API Error", "Error -> ${e.message}")
+//                    }
+//                }
+//            }
+//            // Wait for all jobs to complete
+//            jobs.joinAll()
+//
+//            // After all jobs are complete, notify the UI
+//            _allItemsMoved.value = true // You need to add this LiveData<Boolean> to your ViewModel
+//        }
     }
 
     fun confirmIfBinExistsInDB(binLocation: String){
