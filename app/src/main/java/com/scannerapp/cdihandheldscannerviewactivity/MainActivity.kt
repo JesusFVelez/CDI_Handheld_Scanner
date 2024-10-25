@@ -82,7 +82,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logoutUser(): Boolean {
+
         val companyID: String = SharedPreferencesUtils.getCompanyIDFromSharedPref(this)
+        val username: String = SharedPreferencesUtils.getUserNameFromSharedPref(this)
         var hasUserBeenLoggedOut = false
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             Log.i("Log out user" , "Error -> ${exception.message}")
@@ -90,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         }
         lifecycleScope.launch(exceptionHandler) {
             try {
-                ScannerAPI.getLoginService().logoutUser(companyID)
+                ScannerAPI.getLoginService().logoutUser(companyID, username)
                 // Log out and navigate to the login activity
                 val intent = Intent(this@MainActivity, LoginActivity::class.java)
                 hasUserBeenLoggedOut = true
