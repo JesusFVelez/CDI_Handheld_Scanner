@@ -6,14 +6,19 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -365,6 +370,47 @@ class EditItemDetailsFragment : Fragment() {
     // New method to print the label
     private fun printLabel() {
         try {
+            // Show a dialog to let the user choose between printing bin label or item label
+            val options = arrayOf("Print Bin Label", "Print Item Label")
+            AlertDialog.Builder(requireContext())
+                .setTitle("Choose Label to Print")
+                .setItems(options) { dialog, which ->
+                    when (which) {
+                        0 -> { // Print Bin Label
+                            printBinLabel()
+                        }
+                        1 -> { // Print Item Label
+                            printItemLabel()
+                        }
+                    }
+                }
+                .show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Printing failed: ${e.message}", Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
+    private fun printBinLabel() {
+        try {
+            // Collect bin data from UI
+            val binLocation = binding.binLocationTextView.text.toString()
+
+            // Generate the bin label bitmap
+            val labelBitmap = generateBinLabelBitmap(binLocation)
+
+            // Print the label
+            printBitmap(labelBitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Printing failed: ${e.message}", Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
+    private fun printItemLabel() {
+        try {
             // Collect data from UI
             val itemNumber = binding.itemNumberTextView.text.toString()
             val itemName = binding.itemNameTextView.text.toString()
@@ -373,7 +419,7 @@ class EditItemDetailsFragment : Fragment() {
             val lotNumber = binding.newLotEditText.text.toString()
 
             // Generate the label bitmap
-            val labelBitmap = generateLabelBitmap(
+            val labelBitmap = generateItemLabelBitmap(
                 itemNumber,
                 itemName,
                 binLocation,
@@ -390,7 +436,7 @@ class EditItemDetailsFragment : Fragment() {
         }
     }
 
-    private fun generateLabelBitmap(
+    private fun generateItemLabelBitmap(
         itemNumber: String,
         itemName: String,
         binLocation: String,
@@ -401,41 +447,115 @@ class EditItemDetailsFragment : Fragment() {
         val height = 800
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        val paint = Paint().apply {
+
+        // Set textAlign to LEFT and manually center text
+        val paint = TextPaint().apply {
             color = Color.BLACK
             textSize = 40f
+            textAlign = Paint.Align.LEFT
         }
 
         var yPosition = 50f
 
-        canvas.drawText("Item Number: $itemNumber", 50f, yPosition, paint)
+        // Draw Item Number
+        val itemNumberText = "Item Number: $itemNumber"
+        val itemNumberWidth = paint.measureText(itemNumberText)
+        val itemNumberX = (width - itemNumberWidth) / 2f
+        canvas.drawText(itemNumberText, itemNumberX, yPosition, paint)
         yPosition += 60f
 
-        canvas.drawText("Item Name: $itemName", 50f, yPosition, paint)
+        // Draw Item Name (handle multi-line text)
+        val itemNameText = "Item Name: $itemName"
+        val maxTextWidth = width - 100 // 50px padding on each side
+        val itemNameLayout = createStaticLayout(itemNameText, paint, maxTextWidth)
+        canvas.save()
+        canvas.translate(50f, yPosition) // Start drawing at x=50f to center text within padded area
+        itemNameLayout.draw(canvas)
+        canvas.restore()
+        yPosition += itemNameLayout.height + 20f
+
+        // Draw Bin Location
+        val binLocationText = "Bin Location: $binLocation"
+        val binLocationWidth = paint.measureText(binLocationText)
+        val binLocationX = (width - binLocationWidth) / 2f
+        canvas.drawText(binLocationText, binLocationX, yPosition, paint)
         yPosition += 60f
 
-        canvas.drawText("Bin Location: $binLocation", 50f, yPosition, paint)
-        yPosition += 60f
-
+        // Draw Expiration Date if available
         if (expirationDate.isNotEmpty()) {
-            canvas.drawText("Expiration Date: $expirationDate", 50f, yPosition, paint)
+            val expirationDateText = "Expiration Date: $expirationDate"
+            val expirationDateWidth = paint.measureText(expirationDateText)
+            val expirationDateX = (width - expirationDateWidth) / 2f
+            canvas.drawText(expirationDateText, expirationDateX, yPosition, paint)
             yPosition += 60f
         }
 
+        // Draw Lot Number if available
         if (lotNumber.isNotEmpty()) {
-            canvas.drawText("Lot Number: $lotNumber", 50f, yPosition, paint)
+            val lotNumberText = "Lot Number: $lotNumber"
+            val lotNumberWidth = paint.measureText(lotNumberText)
+            val lotNumberX = (width - lotNumberWidth) / 2f
+            canvas.drawText(lotNumberText, lotNumberX, yPosition, paint)
             yPosition += 60f
         }
 
         // Generate and draw barcode for the item number
         val barcodeBitmap = generateBarcodeBitmap(itemNumber)
-        barcodeBitmap?.let {
+        barcodeBitmap?.let { bitmap ->
             yPosition += 20f
-            canvas.drawBitmap(it, 50f, yPosition, null)
+            val barcodeX = (width - bitmap.width) / 2f // Center the barcode
+            canvas.drawBitmap(bitmap, barcodeX, yPosition, null)
         }
 
         return bitmap
     }
+
+
+    private fun generateBinLabelBitmap(binLocation: String): Bitmap {
+        val width = 600
+        val height = 400 // Adjust the height as needed
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = TextPaint().apply {
+            color = Color.BLACK
+            textSize = 60f // Larger text size for bin label
+            textAlign = Paint.Align.CENTER // Center the text horizontally
+        }
+
+        val centerX = width / 2f // Center position on the X-axis
+        var yPosition = 100f
+
+        // Draw bin location text (without "Bin Location:")
+        canvas.drawText(binLocation, centerX, yPosition, paint)
+        yPosition += 80f
+
+        // Generate and draw barcode for the bin location
+        val barcodeBitmap = generateBarcodeBitmap(binLocation)
+        barcodeBitmap?.let { bitmap ->
+            yPosition += 20f
+            val barcodeX = (width - bitmap.width) / 2f // Center the barcode
+            canvas.drawBitmap(bitmap, barcodeX, yPosition, null)
+        }
+
+        return bitmap
+    }
+
+    private fun createStaticLayout(text: String, paint: TextPaint, width: Int): StaticLayout {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StaticLayout.Builder.obtain(text, 0, text.length, paint, width)
+                .setAlignment(Layout.Alignment.ALIGN_CENTER) // Center text within the StaticLayout
+                .setLineSpacing(0f, 1f)
+                .setIncludePad(false)
+                .build()
+        } else {
+            @Suppress("DEPRECATION")
+            StaticLayout(
+                text, paint, width,
+                Layout.Alignment.ALIGN_CENTER, 1f, 0f, false
+            )
+        }
+    }
+
 
     private fun generateBarcodeBitmap(data: String): Bitmap? {
         return try {
