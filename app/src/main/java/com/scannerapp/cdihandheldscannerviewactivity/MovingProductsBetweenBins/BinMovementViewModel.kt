@@ -5,13 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.binInfo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class BinMovementViewModel: ViewModel() {
     // LiveData and MutableLiveData for various UI states and data
@@ -86,8 +84,8 @@ class BinMovementViewModel: ViewModel() {
         val fromBinLocation: String,
         val toBinLocation:String
     )
-    private val _itemsMoved = MutableLiveData<MutableList<itemBeingMoved>>()
-    val itemsMoved: LiveData<MutableList<itemBeingMoved>>
+    private val _itemsMoved = MutableLiveData<List<itemBeingMoved>>()
+    val itemsMoved: LiveData<List<itemBeingMoved>>
         get() = _itemsMoved
 
     fun setWillUpdateItemToMove(willUpdate: Boolean){
@@ -218,19 +216,18 @@ class BinMovementViewModel: ViewModel() {
 
 
 
-    fun moveItemsBetweenBins(itemsToMove: List<BinMovementDataClass>){
-
-        // Exception handler for API call
+    fun moveItemsBetweenBins(itemsToMove: List<BinMovementDataClass>) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
-            _wasLastAPICallSuccessful.value = false
+            _networkErrorMessage.postValue(exception.message)
+            _wasLastAPICallSuccessful.postValue(false)
             Log.i(
                 "Move Item Between Bins - Bin Movement (exceptionHandler) ",
                 "Error -> ${exception.message}"
             )
         }
-        viewModelScope.launch {
-            _hasAPIBeenCalled.value = true  // Moved outside the loop to avoid setting it multiple times
+        viewModelScope.launch(exceptionHandler) {
+            _hasAPIBeenCalled.postValue(true)
+            val itemsMovedList = mutableListOf<itemBeingMoved>()
             for (itemToMove in itemsToMove) {
                 try {
                     val response = ScannerAPI.getMovingItemsBetweenBinsService()
@@ -240,25 +237,26 @@ class BinMovementViewModel: ViewModel() {
                             newBin = itemToMove.toBinNumber,
                             quantityToMove = itemToMove.qtyToMoveFromBinToBin.toFloat()
                         )
-                    _itemsMoved.value!!.add(itemBeingMoved(
-                        itemToMove.itemNumber,
-                        response.response.wasItemMoved,
-                        response.response.errorMessage,
-                        itemToMove.fromBinNumber,
-                        itemToMove.toBinNumber
-                    ))
-                    _wasLastAPICallSuccessful.value = true
+                    itemsMovedList.add(
+                        itemBeingMoved(
+                            itemToMove.itemNumber,
+                            response.response.wasItemMoved,
+                            response.response.errorMessage,
+                            itemToMove.fromBinNumber,
+                            itemToMove.toBinNumber
+                        )
+                    )
+                    _wasLastAPICallSuccessful.postValue(true)
                 } catch (e: Exception) {
-                    _networkErrorMessage.value = e.message
-                    _wasLastAPICallSuccessful.value = false
+                    _networkErrorMessage.postValue(e.message)
+                    _wasLastAPICallSuccessful.postValue(false)
                     Log.i("API Error", "Error -> ${e.message}")
                 }
             }
             // After all API calls are complete, notify the UI
-            _allItemsMoved.value = true
+            _itemsMoved.postValue(itemsMovedList)
+            _allItemsMoved.postValue(true)
         }
-
-
 
 //        viewModelScope.launch {
 //            val jobs = itemsToMove.map { itemToMove ->
