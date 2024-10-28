@@ -50,13 +50,21 @@ class BinMovementFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
+
 
     private fun fillItemNumberSpinnerWithItems( listOfItemsInBin:List<itemsInBin>){
         val itemNumberSpinner = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
         itemNumberSpinner.setText(listOfItemsInBin[0].itemName)
         itemNumberDropdownAdapter = CustomItemDropDownAdapter(requireContext(), listOfItemsInBin)
+        itemNumberSpinner.setAdapter(itemNumberDropdownAdapter)
+
+    }
+
+    private fun insertItemIntoItemSpinner( item:itemsInBin){
+        val itemNumberSpinner = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
+        itemNumberSpinner.setText(item.itemName)
+        itemNumberDropdownAdapter = CustomItemDropDownAdapter(requireContext(), listOf(item))
         itemNumberSpinner.setAdapter(itemNumberDropdownAdapter)
 
     }
@@ -129,7 +137,7 @@ class BinMovementFragment : Fragment() {
             else if(viewModel.hasAPIBeenCalled.value!!){
                 itemNumberEditTextInPopupWindow.error = null
                 val listWithItemToPresentInSpinner = listOf(viewModel.currentlyChosenItemToMove.value!!)
-                fillItemNumberSpinnerWithItems(listWithItemToPresentInSpinner)
+                insertItemIntoItemSpinner(listWithItemToPresentInSpinner[0])
             }
             viewModel.resetHasAPIBeenCalled()
         }
@@ -353,6 +361,8 @@ class BinMovementFragment : Fragment() {
                 toBinNumberEditText.setText(item.toBinNumber)
                 itemAmountEditText.setText(item.qtyToMoveFromBinToBin.toString())
                 itemNumberSpinner.setText(item.itemName)
+
+
                 val filteredList = filterItemsByBinLocation(fromBinNumberEditText.text.toString())
                 fillItemNumberSpinnerWithItems(filteredList)
 
