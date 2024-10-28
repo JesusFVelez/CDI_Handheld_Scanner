@@ -35,6 +35,8 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.EditItemEditItemDetailsFragmentBinding
+import java.io.OutputStream
+import java.net.Socket
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -60,7 +62,6 @@ class EditItemDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.edit_item_edit_item_details_fragment,
@@ -70,7 +71,6 @@ class EditItemDetailsFragment : Fragment() {
 
         setupUI()
         initObservers()
-
         return binding.root
     }
 
@@ -553,6 +553,59 @@ class EditItemDetailsFragment : Fragment() {
                 text, paint, width,
                 Layout.Alignment.ALIGN_CENTER, 1f, 0f, false
             )
+        }
+    }
+
+    private fun generateZPLLabel(
+        itemNumber: String,
+        itemName: String,
+        binLocation: String,
+        expirationDate: String,
+        lotNumber: String
+    ): String {
+        return """
+        ^XA
+        ^FO100,50^A0N,50,50^FDItem Number: $itemNumber^FS
+        ^FO100,120^A0N,50,50^FDName: $itemName^FS
+        ^FO100,190^A0N,50,50^FDBin Location: $binLocation^FS
+        ${if (expirationDate.isNotEmpty()) "^FO100,260^A0N,50,50^FDExpiration Date: $expirationDate^FS" else ""}
+        ${if (lotNumber.isNotEmpty()) "^FO100,330^A0N,50,50^FDLot Number: $lotNumber^FS" else ""}
+        ^FO100,400^BY2^BCN,100,Y,N,N^FD$itemNumber^FS
+        ^XZ
+    """.trimIndent()
+    }
+
+    private fun generateDPLLabel(
+        itemNumber: String,
+        itemName: String,
+        binLocation: String,
+        expirationDate: String,
+        lotNumber: String
+    ): String {
+        return """
+        {D0300,0300,0700|}                     // Define label size and positioning
+        {C|}                                   // Clear the label format
+        {PC000;0030,0040,0,4,1,1,$itemNumber|} // Item Number
+        {PC001;0030,0080,0,4,1,1,$itemName|}   // Name
+        {PC002;0030,0120,0,4,1,1,$binLocation|}// Bin Location
+        ${if (expirationDate.isNotEmpty()) "{PC003;0030,0160,0,4,1,1,Expiration Date: $expirationDate|}" else ""}
+        ${if (lotNumber.isNotEmpty()) "{PC004;0030,0200,0,4,1,1,Lot Number: $lotNumber|}" else ""}
+        {XB00;0040,0240,T,H,0,9,0,2,$itemNumber|}  // Barcode for item number
+        {XS;I,0001,0002C6110|}                 // Print and cut the label
+    """.trimIndent()
+    }
+
+    private fun sendCommandToPrinter(printerIp: String, printerPort: Int, command: String) {
+        try {
+            val socket = Socket(printerIp, printerPort)
+            val outputStream: OutputStream = socket.getOutputStream()
+            outputStream.write(command.toByteArray())
+            outputStream.flush()
+            outputStream.close()
+            socket.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "Failed to send command to printer: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
