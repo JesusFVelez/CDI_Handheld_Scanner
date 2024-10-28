@@ -154,8 +154,10 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
             android:padding="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upperDiv">
+            app:layout_constraintTop_toBottomOf="@id/upperDiv"
+            app:layout_constraintVertical_bias="0.0">
 
             <AutoCompleteTextView
                 android:id="@+id/NewExpirationDateEditText"
@@ -188,16 +190,26 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
                 app:layout_constraintStart_toStartOf="@+id/NewExpirationDateEditText" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/printerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="-55dp"
+                android:src="@drawable/printer_icon"
+                app:backgroundTint="@color/CDI_Blue"
+                app:maxImageSize="30dp"
+                app:tint="@color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/barcodeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:layout_marginBottom="20dp"
                 android:src="@drawable/barcodeitemdetailswhite"
                 app:backgroundTint="@color/CDI_Blue"
                 app:maxImageSize="30dp"
-                app:tint="@color/white"
-                android:layout_marginBottom="20dp"
-                />
+                app:tint="@color/white" />
 
             <Button
                 android:id="@+id/enterButton"
@@ -214,8 +226,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
         </LinearLayout>
 
 
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>
 </layout>

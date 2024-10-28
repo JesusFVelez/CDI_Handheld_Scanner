@@ -2,7 +2,10 @@ package com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemInformati
 
 import android.app.Dialog
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -10,11 +13,15 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.print.PrintHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.scannerapp.cdihandheldscannerviewactivity.EditItem.EditItemViewModel
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
@@ -27,10 +34,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 class EditItemDetailsFragment : Fragment() {
     private lateinit var binding: EditItemEditItemDetailsFragmentBinding
-
 
     /*Batch variables*/
     private var shouldShowMessage = true
@@ -39,10 +44,11 @@ class EditItemDetailsFragment : Fragment() {
     private val viewModel: EditItemViewModel by activityViewModels()
     private lateinit var progressDialog: Dialog
     private lateinit var barcodeButton: FloatingActionButton
+    private lateinit var printerButton: FloatingActionButton
 
-    override fun onCreate(saveInstance: Bundle?) {
-        super.onCreate(saveInstance)
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // No changes needed here
     }
 
     override fun onCreateView(
@@ -84,6 +90,7 @@ class EditItemDetailsFragment : Fragment() {
     private fun setupUI() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
+        // Initialize barcodeButton
         barcodeButton = binding.barcodeButton
         barcodeButton.imageTintList = ColorStateList.valueOf(Color.WHITE)
         barcodeButton.setOnClickListener {
@@ -93,6 +100,13 @@ class EditItemDetailsFragment : Fragment() {
                     itemInfo
                 )
             view?.findNavController()?.navigate(action)
+        }
+
+        // Initialize printerButton
+        printerButton = binding.printerButton
+        printerButton.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        printerButton.setOnClickListener {
+            printLabel()
         }
 
         // Initially disable New Lot EditText since toggle is off
@@ -141,8 +155,13 @@ class EditItemDetailsFragment : Fragment() {
                                 newExpirationDateStr
                             )
                         }
-                        val isDateExpired = DateUtils.isDateExpired(newExpirationDateStr, handleYesPressed, requireContext(), requireView())
-                        if(!isDateExpired) {
+                        val isDateExpired = DateUtils.isDateExpired(
+                            newExpirationDateStr,
+                            handleYesPressed,
+                            requireContext(),
+                            requireView()
+                        )
+                        if (!isDateExpired) {
                             progressDialog.show()
                             assignExpirationDateToItem(
                                 lotNumber,
@@ -155,13 +174,6 @@ class EditItemDetailsFragment : Fragment() {
                             )
                         }
                     }
-//                    // Corrected logic to compare date objects
-//                    if (newExpirationDate.before(Date())) {
-//                        AlerterUtils.startWarningAlerter(
-//                            requireActivity(),
-//                            "Item has bin changes to an expired date!"
-//                        )
-//                    }
                 } else {
                     // If the parsed date is null, display an error message
                     AlerterUtils.startErrorAlerter(
@@ -184,7 +196,12 @@ class EditItemDetailsFragment : Fragment() {
             private var previousText: String = ""
             private var lastCursorPosition: Int = 0
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
                 // Store the text before any change is applied and the cursor position.
                 previousText = s.toString()
                 lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
@@ -337,9 +354,102 @@ class EditItemDetailsFragment : Fragment() {
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLasAPICallSuccessful ->
             progressDialog.dismiss()
             if (!wasLasAPICallSuccessful && hasAPIBeenCalled) {
-                AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
+                AlerterUtils.startNetworkErrorAlert(
+                    requireActivity(),
+                    viewModel.networkErrorMessage.value!!
+                )
             }
         }
     }
-}
 
+    // New method to print the label
+    private fun printLabel() {
+        try {
+            // Collect data from UI
+            val itemNumber = binding.itemNumberTextView.text.toString()
+            val itemName = binding.itemNameTextView.text.toString()
+            val binLocation = binding.binLocationTextView.text.toString()
+            val expirationDate = binding.NewExpirationDateEditText.text.toString()
+            val lotNumber = binding.newLotEditText.text.toString()
+
+            // Generate the label bitmap
+            val labelBitmap = generateLabelBitmap(
+                itemNumber,
+                itemName,
+                binLocation,
+                expirationDate,
+                lotNumber
+            )
+
+            // Print the label
+            printBitmap(labelBitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Printing failed: ${e.message}", Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
+    private fun generateLabelBitmap(
+        itemNumber: String,
+        itemName: String,
+        binLocation: String,
+        expirationDate: String,
+        lotNumber: String
+    ): Bitmap {
+        val width = 600
+        val height = 800
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint().apply {
+            color = Color.BLACK
+            textSize = 40f
+        }
+
+        var yPosition = 50f
+
+        canvas.drawText("Item Number: $itemNumber", 50f, yPosition, paint)
+        yPosition += 60f
+
+        canvas.drawText("Item Name: $itemName", 50f, yPosition, paint)
+        yPosition += 60f
+
+        canvas.drawText("Bin Location: $binLocation", 50f, yPosition, paint)
+        yPosition += 60f
+
+        if (expirationDate.isNotEmpty()) {
+            canvas.drawText("Expiration Date: $expirationDate", 50f, yPosition, paint)
+            yPosition += 60f
+        }
+
+        if (lotNumber.isNotEmpty()) {
+            canvas.drawText("Lot Number: $lotNumber", 50f, yPosition, paint)
+            yPosition += 60f
+        }
+
+        // Generate and draw barcode for the item number
+        val barcodeBitmap = generateBarcodeBitmap(itemNumber)
+        barcodeBitmap?.let {
+            yPosition += 20f
+            canvas.drawBitmap(it, 50f, yPosition, null)
+        }
+
+        return bitmap
+    }
+
+    private fun generateBarcodeBitmap(data: String): Bitmap? {
+        return try {
+            val barcodeEncoder = BarcodeEncoder()
+            barcodeEncoder.encodeBitmap(data, BarcodeFormat.CODE_128, 500, 200)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun printBitmap(bitmap: Bitmap) {
+        val printHelper = PrintHelper(requireContext())
+        printHelper.scaleMode = PrintHelper.SCALE_MODE_FIT
+        printHelper.printBitmap("Pallet Label", bitmap)
+    }
+}

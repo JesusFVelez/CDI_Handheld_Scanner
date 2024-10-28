@@ -100,7 +100,9 @@ dependencies {
     // Blurkit Dependency
 //    implementation "com.github.CameraKit:blurkit-android:v1.1.1"
 
-
+    // ZXing libraries for barcode generation
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 
 
 

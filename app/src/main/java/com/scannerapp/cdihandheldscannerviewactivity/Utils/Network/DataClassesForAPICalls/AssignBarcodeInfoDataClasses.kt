@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
 data class GetAllBarcodesForItemResponseWrapper(
     val response: GetAllBarcodesForItemResponse
 )
-
+ 
 data class GetAllBarcodesForItemResponse(
     @Json(name = "mainBarcode") val mainBarcode: String,
     @Json(name = "listOfBarcodes") val listOfBarcodes: List<String>?,
