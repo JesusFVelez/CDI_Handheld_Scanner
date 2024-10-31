@@ -9,7 +9,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,15 +19,16 @@ import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.itemsInBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.BinMovementMainFragmentBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class BinMovementFragment : Fragment() {
@@ -265,44 +265,67 @@ class BinMovementFragment : Fragment() {
 
         val addButtonPopup = popupContentView.findViewById<Button>(R.id.addButton)
         addButtonPopup.setOnClickListener {
-
-            val quantityToMove = amountToMoveEditText.text.toString()
+            val quantityToMoveStr = amountToMoveEditText.text.toString()
             val fromBin = fromBinAutoCompleteTextView.text.toString()
             val toBin = toBinAutoCompleteTextView.text.toString()
+            val itemNumber = itemNumberSpinner.text.toString()
 
-            val isAtLeastOneEditTextEmpty = verifyIfAtLeastOneEditTextIsEmpty(fromBin, quantityToMove, itemNumberSpinner.text.toString())
-            if(isAtLeastOneEditTextEmpty)
-                AlerterUtils.startErrorAlerter(requireActivity(), "From Bin, Item Amount and Item Number cannot be empty.")
-            else {
+            // Clear previous errors
+            amountToMoveEditText.error = null
+            fromBinAutoCompleteTextView.error = null
+            toBinAutoCompleteTextView.error = null
+            itemNumberSpinner.error = null
 
-                val quantityToBePicked =
-                    viewModel.currentlyChosenItemToMove.value!!.quantityInPicking.toInt()
-                val quantityOnHand =
-                    viewModel.currentlyChosenItemToMove.value!!.quantityOnHand.toInt()
+            // Check for empty fields
+            val isAtLeastOneEditTextEmpty = verifyIfAtLeastOneEditTextIsEmpty(fromBin, quantityToMoveStr, itemNumber)
+            if (isAtLeastOneEditTextEmpty) {
+                if (fromBin.isEmpty()) {
+                    fromBinAutoCompleteTextView.error = "From Bin cannot be empty."
+                }
+                if (itemNumber.isEmpty()) {
+                    itemNumberSpinner.error = "Item Number cannot be empty."
+                }
+                if (quantityToMoveStr.isEmpty()) {
+                    amountToMoveEditText.error = "Item Amount cannot be empty."
+                }
+            } else if (fromBin.equals(toBin, ignoreCase = true)) {
+                toBinAutoCompleteTextView.error = "Destination Bin cannot be the same as From Bin."
+            } else {
+                val quantityToMove = quantityToMoveStr.toInt()
+                val quantityToBePicked = viewModel.currentlyChosenItemToMove.value!!.quantityInPicking.toInt()
+                val quantityOnHand = viewModel.currentlyChosenItemToMove.value!!.quantityOnHand.toInt()
                 val quantityAvailable = quantityOnHand - quantityToBePicked
 
+                val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
+                val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
 
-                if (quantityToMove.toInt() > (quantityOnHand - quantityToBePicked)) {
-                    AlerterUtils.startErrorAlerter(
-                        requireActivity(),
-                        "Cannot move ${quantityToMove} units because there are only ${quantityAvailable} units available."
-                    )
+                // Calculate total quantity already being moved for this item and bin
+                val isUpdatingItem = viewModel.willUpdateItemToMove.value!!
+                val positionOfItemToUpdate = viewModel.positionOfItemToMove.value!!
+
+                val totalQuantityAlreadyBeingMoved = adapter.data
+                    .filterIndexed { index, item ->
+                        (item.itemNumber == viewModel.currentlyChosenItemToMove.value!!.itemNumber &&
+                                item.fromBinNumber.equals(fromBin, ignoreCase = true)) &&
+                                (!isUpdatingItem || index != positionOfItemToUpdate)
+                    }
+                    .sumOf { it.qtyToMoveFromBinToBin }
+
+                val adjustedQuantityAvailable = quantityAvailable - totalQuantityAlreadyBeingMoved
+
+                if (quantityToMove > adjustedQuantityAvailable) {
+                    amountToMoveEditText.error = "Cannot move $quantityToMove units, only $adjustedQuantityAvailable units available."
                 } else {
-                    val itemName = viewModel.currentlyChosenItemToMove.value!!.itemName
-                    val rowIDOfItem = viewModel.currentlyChosenItemToMove.value!!.rowID
-                    val itemNumber = viewModel.currentlyChosenItemToMove.value!!.itemNumber
-                    val newItemToAdd = BinMovementDataClass(itemName, itemNumber, rowIDOfItem ,quantityToMove.toInt(), fromBin, toBin)
+                    val newItemToAdd = BinMovementDataClass(itemName, viewModel.currentlyChosenItemToMove.value!!.itemNumber, rowIDOfItem, quantityToMove, fromBin, toBin)
                     viewModel.setNewItemToBeMoved(newItemToAdd)
-                    if(toBin.isNotEmpty())
+                    if (toBin.isNotEmpty())
                         viewModel.confirmIfBinExistsInDB(toBin)
-                    else{
+                    else {
                         finishAddingItemToList()
                     }
-
                 }
             }
         }
-
     }
 
 
