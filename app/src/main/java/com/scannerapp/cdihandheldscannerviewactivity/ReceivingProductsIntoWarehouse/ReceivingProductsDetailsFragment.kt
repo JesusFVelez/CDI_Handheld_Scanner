@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -100,26 +102,41 @@ class ReceivingProductsDetailsFragment : Fragment() {
         newExpirationDateEditText = binding.NewExpirationDateEditText
         scanItemEditText = binding.ScanItemEditText
         weightEditText = binding.WeightEditText
-
+/* ============================ This code will be left in comments in the case that it needs to be brought back ================
         // Set up scanItemEditText to handle barcode input
-        scanItemEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                val barcode = s.toString().trim()
+//        scanItemEditText.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                val barcode = s.toString().trim()
+//                if (barcode.isNotEmpty()) {
+//                    progressDialog.show()
+//                    viewModel.confirmItem(barcode)
+//
+//                    // Reset the text field for the next input
+//                    scanItemEditText.post {
+//                        scanItemEditText.setText("")
+//                    }
+//                }
+//            }
+//        })
+*/
+        scanItemEditText.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Your code to execute when Enter is pressed
+                val barcode = scanItemEditText.text.toString().trim()
                 if (barcode.isNotEmpty()) {
                     progressDialog.show()
                     viewModel.confirmItem(barcode)
-
-                    // Reset the text field for the next input
-                    scanItemEditText.post {
-                        scanItemEditText.setText("")
-                    }
                 }
+                true  // Return true if you have handled the action
+            } else {
+                false  // Return false if you haven't handled the action
             }
-        })
+        }
 
         // Button initializations
         addButton = binding.addButton
