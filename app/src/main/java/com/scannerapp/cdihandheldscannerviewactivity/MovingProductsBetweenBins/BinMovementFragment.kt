@@ -55,17 +55,25 @@ class BinMovementFragment : Fragment() {
 
     private fun fillItemNumberSpinnerWithItems( listOfItemsInBin:List<itemsInBin>){
         val itemNumberSpinner = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
-        itemNumberSpinner.setText(listOfItemsInBin[0].itemName)
         itemNumberDropdownAdapter = CustomItemDropDownAdapter(requireContext(), listOfItemsInBin)
         itemNumberSpinner.setAdapter(itemNumberDropdownAdapter)
 
     }
 
-    private fun insertItemIntoItemSpinner( item:itemsInBin){
+    private fun clearItemSpinner (){
+        val itemNumberSpinner = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
+        itemNumberSpinner.text.clear()
+        itemNumberSpinner.error = null
+        itemNumberDropdownAdapter = CustomItemDropDownAdapter(requireContext(), listOf())
+        itemNumberSpinner.setAdapter(itemNumberDropdownAdapter)
+    }
+
+
+    private fun insertItemIntoItemSpinner(item:itemsInBin, fromBin:String){
         val itemNumberSpinner = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
         itemNumberSpinner.setText(item.itemName)
-        itemNumberDropdownAdapter = CustomItemDropDownAdapter(requireContext(), listOf(item))
-        itemNumberSpinner.setAdapter(itemNumberDropdownAdapter)
+        val filteredList = filterItemsByBinLocation(fromBin)
+        fillItemNumberSpinnerWithItems(filteredList)
 
     }
 
@@ -130,27 +138,33 @@ class BinMovementFragment : Fragment() {
         }
 
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner){ wasItemConfirmed ->
-            val itemNumberEditTextInPopupWindow = addBinMovementToListPopupWindow.contentView.findViewById<TextView>(R.id.scanItemTextView)
+            val itemNumberEditTextInPopupWindow = addBinMovementToListPopupWindow.contentView.findViewById<TextView>(R.id.scanItemAutoCompleteTextView)
             if(!wasItemConfirmed && viewModel.hasAPIBeenCalled.value!!) {
                 itemNumberEditTextInPopupWindow.error = viewModel.errorMessage.value!!["confirmItem"]!!
             }
             else if(viewModel.hasAPIBeenCalled.value!!){
                 itemNumberEditTextInPopupWindow.error = null
-                val listWithItemToPresentInSpinner = listOf(viewModel.currentlyChosenItemToMove.value!!)
-                insertItemIntoItemSpinner(listWithItemToPresentInSpinner[0])
+
+                val itemNumberSpinner = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
+                itemNumberSpinner.error = null
+
+                val fromBin = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.fromBinNumber).text.toString()
+
+                val confirmedItem = viewModel.currentlyChosenItemToMove.value!!
+                insertItemIntoItemSpinner(confirmedItem, fromBin)
             }
             viewModel.resetHasAPIBeenCalled()
         }
 
         viewModel.wasBinConfirmed.observe(viewLifecycleOwner){ wasBinConfirmed ->
+            val toBinEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.toBinNumber)
             if(!wasBinConfirmed && viewModel.hasAPIBeenCalled.value!!)
-                AlerterUtils.startErrorAlerter(
-                    requireActivity(),
-                    viewModel.errorMessage.value!!["confirmBin"]!!
-                )
-            else if(viewModel.hasAPIBeenCalled.value!!){
+                toBinEditText.error = viewModel.errorMessage.value!!["confirmBin"]!!
+            else if(viewModel.hasAPIBeenCalled.value!!) {
+                toBinEditText.error = null
                 finishAddingItemToList()
             }
+
             viewModel.resetHasAPIBeenCalled()
             viewModel.resetNewItemToBeMoved()
         }
@@ -181,6 +195,23 @@ class BinMovementFragment : Fragment() {
         }
     }
 
+    private fun clearAllErrorInPopup(){
+        val fromBinNumberEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.fromBinNumber)
+        fromBinNumberEditText.error = null
+
+        val toBinNumberEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.toBinNumber)
+        toBinNumberEditText.error = null
+
+        val itemAmountEditText = addBinMovementToListPopupWindow.contentView.findViewById<EditText>(R.id.itemAmountEditText)
+        itemAmountEditText.error = null
+
+        val itemNumberSpinner = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
+        itemNumberSpinner.error = null
+
+        val itemNumberScanEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.scanItemAutoCompleteTextView)
+        itemNumberScanEditText.error = null
+    }
+
     private fun finishAddingItemToList() {
         val newItemToAdd = viewModel.newItemToBeMoved.value!!
         val positionOfItemToMove = viewModel.positionOfItemToMove.value!!
@@ -195,6 +226,8 @@ class BinMovementFragment : Fragment() {
             resetBinMovementPopUp()
             addBinMovementToListPopupWindow.dismiss()
         }
+        clearAllErrorInPopup()
+
     }
 
     fun filterItemsByBinLocation(binLocation: String): List<itemsInBin> {
@@ -208,9 +241,9 @@ class BinMovementFragment : Fragment() {
 
         val itemNumberSpinner = popupContentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
         itemNumberSpinner.setOnItemClickListener{ parent, view, position, id ->
-//            val selectedItem = itemNumberDropdownAdapter.getItem(position) as itemsInBin
-//            viewModel.setCurrentlyChosenItemToMoveFromSpinner(selectedItem)
-//            itemNumberSpinner.setText(selectedItem.itemName,false)
+            val selectedItem = itemNumberDropdownAdapter.getItem(position) as itemsInBin
+            viewModel.setCurrentlyChosenItemToMoveFromSpinner(selectedItem)
+            itemNumberSpinner.setText(selectedItem.itemName,false)
         }
 
         val fromBinAutoCompleteTextView = popupContentView.findViewById<AutoCompleteTextView>(R.id.fromBinNumber)
@@ -221,11 +254,11 @@ class BinMovementFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                // Code to execute as text is changing
-//                val filteredList = filterItemsByBinLocation(s.toString())
-//                fillItemNumberSpinnerWithItems(filteredList)
-//                itemNumberSpinner.text.clear()
-//                viewModel.resetNewItemToBeMoved()
+                // Code to execute as text is changing
+                val filteredList = filterItemsByBinLocation(s.toString())
+                clearItemSpinner()
+                fillItemNumberSpinnerWithItems(filteredList)
+                viewModel.resetNewItemToBeMoved()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -233,8 +266,8 @@ class BinMovementFragment : Fragment() {
             }
         })
 
-        val scanItemAutoCompleteTextView = popupContentView.findViewById<AutoCompleteTextView>(R.id.scanItemTextView)
-        scanItemAutoCompleteTextView.inputType = InputType.TYPE_CLASS_TEXT
+        val scanItemAutoCompleteTextView = popupContentView.findViewById<AutoCompleteTextView>(R.id.scanItemAutoCompleteTextView)
+        //scanItemAutoCompleteTextView.inputType = InputType.TYPE_CLASS_TEXT
         scanItemAutoCompleteTextView.addTextChangedListener(object: TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -247,13 +280,12 @@ class BinMovementFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 val scannedBarcode = s.toString().trim()
                 if(scannedBarcode.isNotEmpty()){
-                    //TODO("Add confirm item method for confirming the barcode scanned")
                     if(fromBinAutoCompleteTextView.text.isEmpty())
                         fromBinAutoCompleteTextView.error = "Field cannot be left empty when scanning an item"
                     else
                         viewModel.confirmBarcodeAndValidateIfItemIsInBin(binLocation = fromBinAutoCompleteTextView.text.toString(), scannedCode = scannedBarcode)
 
-                    scanItemAutoCompleteTextView.text.clear()
+                    //scanItemAutoCompleteTextView.text.clear()
                 }
             }
 
@@ -269,6 +301,7 @@ class BinMovementFragment : Fragment() {
             val fromBin = fromBinAutoCompleteTextView.text.toString()
             val toBin = toBinAutoCompleteTextView.text.toString()
             val itemNumber = itemNumberSpinner.text.toString()
+            val amountToMove = amountToMoveEditText.text.toString()
 
             // Clear previous errors
             amountToMoveEditText.error = null
@@ -288,9 +321,11 @@ class BinMovementFragment : Fragment() {
                 if (quantityToMoveStr.isEmpty()) {
                     amountToMoveEditText.error = "Item Amount cannot be empty."
                 }
-            } else if (fromBin.equals(toBin, ignoreCase = true)) {
+            } else if (fromBin.equals(toBin, ignoreCase = true))
                 toBinAutoCompleteTextView.error = "Destination Bin cannot be the same as From Bin."
-            } else {
+              else if(amountToMove == "0") {
+                amountToMoveEditText.error = "You cannot move 0 items."
+            }else{
                 val quantityToMove = quantityToMoveStr.toInt()
                 val quantityToBePicked = viewModel.currentlyChosenItemToMove.value!!.quantityInPicking.toInt()
                 val quantityOnHand = viewModel.currentlyChosenItemToMove.value!!.quantityOnHand.toInt()
@@ -320,9 +355,9 @@ class BinMovementFragment : Fragment() {
                     viewModel.setNewItemToBeMoved(newItemToAdd)
                     if (toBin.isNotEmpty())
                         viewModel.confirmIfBinExistsInDB(toBin)
-                    else {
+                    else
                         finishAddingItemToList()
-                    }
+
                 }
             }
         }
@@ -355,12 +390,8 @@ class BinMovementFragment : Fragment() {
                 if(isAtLeastOneToBinNotChosen){
                     progressDialog.dismiss()
                     AlerterUtils.startErrorAlerter(requireActivity(), "Please make sure all items have a destination bin before finishing.")
-                }else {
-                    adapter.data.map {itemToMove ->
-
-                    }
+                }else
                     viewModel.moveItemsBetweenBins(adapter.data)
-                }
             }
 
             questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener{
@@ -375,19 +406,29 @@ class BinMovementFragment : Fragment() {
         val listener = object : ItemToMoveOnClickListener {
             override fun onItemClickListener(view: View, position: Int) {
                 addBinMovementToListPopupWindow.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+                clearAllErrorInPopup()
                 val fromBinNumberEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.fromBinNumber)
                 val toBinNumberEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.toBinNumber)
                 val itemAmountEditText = addBinMovementToListPopupWindow.contentView.findViewById<EditText>(R.id.itemAmountEditText)
                 val itemNumberSpinner = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner)
+                val itemNumberScanEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.scanItemAutoCompleteTextView)
                 val item = adapter.data[position]
+
                 fromBinNumberEditText.setText(item.fromBinNumber)
                 toBinNumberEditText.setText(item.toBinNumber)
                 itemAmountEditText.setText(item.qtyToMoveFromBinToBin.toString())
                 itemNumberSpinner.setText(item.itemName)
 
+                itemNumberSpinner.error = null
+                fromBinNumberEditText.error = null
+                toBinNumberEditText.error = null
+                itemNumberScanEditText.error = null
+
 
                 val filteredList = filterItemsByBinLocation(fromBinNumberEditText.text.toString())
-                fillItemNumberSpinnerWithItems(filteredList)
+
+                val itemToPlaceInSpinner = filteredList.find{ it.itemNumber == item.itemNumber}
+                insertItemIntoItemSpinner(itemToPlaceInSpinner!!, item.fromBinNumber)
 
                 viewModel.setPositionOfItemToMove(position)
                 viewModel.setWillUpdateItemToMove(true)
@@ -417,10 +458,24 @@ class BinMovementFragment : Fragment() {
     }
 
     private fun resetBinMovementPopUp(){
-        addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.fromBinNumber).text.clear()
-        addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.toBinNumber).text.clear()
-        addBinMovementToListPopupWindow.contentView.findViewById<EditText>(R.id.itemAmountEditText).text.clear()
-        addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.itemNumberSpinner).text.clear()
+        val fromBinEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.fromBinNumber)
+        fromBinEditText.text.clear()
+        fromBinEditText.error = null
+
+        val toBinEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.toBinNumber)
+        toBinEditText.text.clear()
+        toBinEditText.error = null
+
+        val itemAmount = addBinMovementToListPopupWindow.contentView.findViewById<EditText>(R.id.itemAmountEditText)
+        itemAmount.text.clear()
+        itemAmount.error = null
+
+        clearItemSpinner()
+
+        val itemNumberScanEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.scanItemAutoCompleteTextView)
+        itemNumberScanEditText.error = null
+        itemNumberScanEditText.text.clear()
+
         addBinMovementToListPopupWindow.contentView.findViewById<Button>(R.id.addButton).text = "Add"
 
     }

@@ -44,7 +44,7 @@
                     app:layout_constraintHorizontal_bias="0.498"/>
 
                 <AutoCompleteTextView
-                    android:id="@+id/scanItemTextView"
+                    android:id="@+id/scanItemAutoCompleteTextView"
                     style="@style/CustomScannerInputWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
