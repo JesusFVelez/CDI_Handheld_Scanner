@@ -9,6 +9,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
@@ -230,9 +231,9 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                     currentItemAmountEditText?.setText(newCount.toString())
 
                     barcodeScannerEditText.requestFocus()
-                    barcodeScannerEditText.post {
-                        barcodeScannerEditText.text.clear()
-                    }
+//                    barcodeScannerEditText.post {
+//                        barcodeScannerEditText.text.clear()
+//                    }
 
                     if (currentWeightEditText?.text.toString().isEmpty()) {
                         currentWeightEditText?.setText("0.0")
@@ -249,11 +250,12 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
                     currentWeightEditText?.setText(newWeight.toString())
 
-                    AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item confirmed")
+                    //AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item confirmed")
                 }
             }
         } else {
-            showError("Item confirmation failed: ${confirmResult.response.errorMessage}")
+            barcodeScannerEditText.error = "Item confirmation failed: ${confirmResult.response.errorMessage}"
+            //showError("Item confirmation failed: ${confirmResult.response.errorMessage}")
         }
     }
 
@@ -450,11 +452,29 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         }
 
         barcodeScannerEditText = dialogView.findViewById(R.id.barcodeScannerEditText)
-        barcodeScannerEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                val barcode = s.toString().trim()
+// /*      ============================ This code will be left in comments in the case that it needs to be brought back ================
+//        barcodeScannerEditText.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//            override fun afterTextChanged(s: Editable?) {
+//                val barcode = s.toString().trim()
+//                if (barcode.isNotEmpty()) {
+//                    val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
+//                    val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
+//                    viewModel.confirmItem(scannedCode = barcode, companyID = companyID, warehouseNumber = warehouseNO, actualItemNumber = itemNumberTextView.text.toString())
+//
+//                    barcodeScannerEditText.post {
+//                        barcodeScannerEditText.requestFocus()
+//                        barcodeScannerEditText.text.clear()
+//                    }
+//                }
+//            }
+//        })
+        barcodeScannerEditText.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                // Your code to execute when Enter is pressed
+                val barcode = barcodeScannerEditText.text.toString().trim()
                 if (barcode.isNotEmpty()) {
                     val warehouseNO = SharedPreferencesUtils.getWarehouseNumberFromSharedPref(requireContext())
                     val companyID = SharedPreferencesUtils.getCompanyIDFromSharedPref(requireContext())
@@ -465,8 +485,11 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                         barcodeScannerEditText.text.clear()
                     }
                 }
+                true  // Return true if you have handled the action
+            } else {
+                false  // Return false if you haven't handled the action
             }
-        })
+        }
 
         dialog.show()
     }
