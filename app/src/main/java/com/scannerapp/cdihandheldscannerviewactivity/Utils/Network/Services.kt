@@ -240,6 +240,9 @@ interface ItemPickingForDispatchServices{
     @PUT("updatePickerTimer")
     suspend fun updatePickerTimer(@Query("orderNumber")orderNumber: String, @Query("pickerUserName")pickerUserName: String)
 
+    @PUT("finishPickingForOrder")
+    suspend fun finishPickingForOrder(@Query("orderNumber") orderNumber: String, @Query("pickerUserName") pickerUserName: String)
+
     @GET("getAllOrdersInPickingForSuggestion")
     suspend fun getAllOrdersInPickingForSuggestion(@Query("companyID") companyID: String): getOrdersForSuggestionWrapper
 }

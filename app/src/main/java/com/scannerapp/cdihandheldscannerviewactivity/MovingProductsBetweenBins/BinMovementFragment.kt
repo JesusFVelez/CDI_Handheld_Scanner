@@ -160,7 +160,7 @@ class BinMovementFragment : Fragment() {
             val toBinEditText = addBinMovementToListPopupWindow.contentView.findViewById<AutoCompleteTextView>(R.id.toBinNumber)
             if(!wasBinConfirmed && viewModel.hasAPIBeenCalled.value!!)
                 toBinEditText.error = viewModel.errorMessage.value!!["confirmBin"]!!
-            else if(viewModel.hasAPIBeenCalled.value!!) {
+            else if(viewModel.hasAPIBeenCalled.value!! && viewModel.newItemToBeMoved.value != null) {
                 toBinEditText.error = null
                 finishAddingItemToList()
             }
