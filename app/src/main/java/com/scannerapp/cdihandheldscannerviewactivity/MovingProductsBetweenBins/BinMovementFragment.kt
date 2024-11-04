@@ -123,12 +123,12 @@ class BinMovementFragment : Fragment() {
         }
 
         viewModel.wasBinConfirmed.observe(viewLifecycleOwner){ wasBinConfirmed ->
-            if(!wasBinConfirmed && viewModel.hasAPIBeenCalled.value!!)
+            if(!wasBinConfirmed && viewModel.hasAPIBeenCalled.value == true)
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["confirmBin"]!!
                 )
-            else if(viewModel.hasAPIBeenCalled.value!!){
+            else if(viewModel.hasAPIBeenCalled.value == true && viewModel.newItemToBeMoved.value != null){
                 finishAddingItemToList()
             }
             viewModel.resetHasAPIBeenCalled()
@@ -166,7 +166,7 @@ class BinMovementFragment : Fragment() {
     }
 
     private fun finishAddingItemToList() {
-        val newItemToAdd = viewModel.newItemToBeMoved.value!!
+        val newItemToAdd = viewModel.newItemToBeMoved.value ?: return
         val positionOfItemToMove = viewModel.positionOfItemToMove.value!!
         if(positionOfItemToMove == -1 && !viewModel.willUpdateItemToMove.value!!) {
             adapter.addItem(newItemToAdd)
