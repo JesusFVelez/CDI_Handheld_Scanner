@@ -123,6 +123,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
 //            }
 //        })
 */
+        scanItemEditText.inputType = InputType.TYPE_CLASS_TEXT
         scanItemEditText.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                 (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
