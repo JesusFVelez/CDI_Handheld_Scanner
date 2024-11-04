@@ -139,7 +139,7 @@ class BinMovementFragment : Fragment() {
 
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner){ wasItemConfirmed ->
             val itemNumberEditTextInPopupWindow = addBinMovementToListPopupWindow.contentView.findViewById<TextView>(R.id.scanItemAutoCompleteTextView)
-            if(!wasItemConfirmed && viewModel.hasAPIBeenCalled.value!!) {
+            if(!wasItemConfirmed && viewModel.hasAPIBeenCalled.value!! && itemNumberEditTextInPopupWindow.text.isNotEmpty()) {
                 itemNumberEditTextInPopupWindow.error = viewModel.errorMessage.value!!["confirmItem"]!!
             }
             else if(viewModel.hasAPIBeenCalled.value!!){
