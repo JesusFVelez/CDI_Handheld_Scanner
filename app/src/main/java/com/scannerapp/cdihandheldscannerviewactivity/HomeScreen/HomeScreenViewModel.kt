@@ -100,7 +100,7 @@ class HomeScreenViewModel : ViewModel(){
         }
         viewModelScope.launch(exceptionHandler) {
             try{
-                ScannerAPI.getLoginService().logoutUser(_companyID.value!!)
+                ScannerAPI.getLoginService().logoutUser(_companyID.value!!, _userNameOfPicker.value!!)
                 _didUserLogOutSuccessfully.value = true
                 _wasLastAPICallSuccessful.value = true
             }catch (e: Exception){
