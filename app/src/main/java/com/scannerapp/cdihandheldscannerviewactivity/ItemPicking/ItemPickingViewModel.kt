@@ -115,6 +115,10 @@ class ItemPickingViewModel: ViewModel() {
     val hasPickingTimerAlreadyStarted : LiveData<Boolean>
         get() = _hasPickingTimerAlreadyStarted
 
+    private val _hasUserFinishedPicking = MutableLiveData<Boolean>()
+    val hasUserFinishedPicking : LiveData<Boolean>
+        get() = _hasUserFinishedPicking
+
 
 
 
@@ -139,6 +143,7 @@ class ItemPickingViewModel: ViewModel() {
 
 
     init {
+        _hasUserFinishedPicking.value = false
         _hasPickingTimerAlreadyStarted.value = false
         _ordersThatHavePicking.value = mutableListOf()
         _currentlyChosenAdapterPosition.value = 0
@@ -431,7 +436,30 @@ class ItemPickingViewModel: ViewModel() {
         }
     }
 
- 
+
+    fun finishPickingForOrder(){
+        // Exception handler for API call
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Finish Pick for order - Item Picking (exceptionHandler) " , "Error -> ${exception.message}")
+        }
+        // API call to get the products in order
+        try {
+
+            viewModelScope.launch(exceptionHandler) {
+                ScannerAPI.getItemPickingForDispatchService().finishPickingForOrder(_orderNumber.value!!, _userNameOfPicker.value!!)
+                _hasPickingTimerAlreadyStarted.value = false
+                _wasLastAPICallSuccessful.value = true
+                _hasUserFinishedPicking.value = true
+            }
+
+        }catch (e: Exception){
+            _networkErrorMessage.value = e.message
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Finish Pick for order - Item Picking (e) " , "Error -> ${e.message}")
+        }
+    }
 
     fun getAllOrdersThatHavePickingForSuggestions(){
         // Exception handler for API call

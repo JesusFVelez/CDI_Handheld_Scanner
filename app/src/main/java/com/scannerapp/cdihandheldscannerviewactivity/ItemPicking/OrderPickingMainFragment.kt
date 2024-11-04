@@ -115,10 +115,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         finishOrderPickingButton.setOnClickListener {
                 val popupWindow = PopupWindowUtils.createQuestionPopup(requireContext(), "Finished Picking the Order?", "Confirmation")
                 popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener{
-                    viewModel.updatePickingTimer("end")
-                    viewModel.clearListOfItems()
-                    findNavController().navigateUp()
-                    AlerterUtils.startSuccessAlert(requireActivity(), "Finished Picking","Order has been successfully picked")
+//                    viewModel.updatePickingTimer("end")
+                    viewModel.finishPickingForOrder()
+                    progressDialog.show()
                     popupWindow.dismiss()
                 }
 
@@ -180,6 +179,15 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     }
 
     private fun initObservers() {
+        viewModel.hasUserFinishedPicking.observe(viewLifecycleOwner) { hasUserFinished ->
+            if(hasUserFinished && hasOrderBeenSearched){
+                viewModel.clearListOfItems()
+                progressDialog.dismiss()
+                findNavController().navigateUp()
+                AlerterUtils.startSuccessAlert(requireActivity(), "Finished Picking","Order has been successfully picked")
+            }
+        }
+
         viewModel.ordersThatHavePicking.observe(viewLifecycleOwner){newOrdersThatHavePicking ->
             if(newOrdersThatHavePicking.isNotEmpty())
                 initOrderNumberAutoCompleteTextView(newOrdersThatHavePicking)
