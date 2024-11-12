@@ -3,7 +3,6 @@ package com.scannerapp.cdihandheldscannerviewactivity.Utils
 import android.content.Context
 import android.view.Gravity
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.Button
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import java.time.LocalDate
@@ -38,7 +37,7 @@ class DateUtils {
 
         // Function to validate the date
         fun isValidDate(dateStr: String): Boolean {
-            val parts = dateStr.split("-")
+            val parts = dateStr.split("/")
             if (parts.size == 3) {
                 val month = parts[0]
                 val day = parts[1]
@@ -55,13 +54,12 @@ class DateUtils {
                 val dayInt = day.toInt()
                 val yearInt = year.toInt()
 
-
                 if (monthInt !in 1..12) return false
 
                 val maxDays = when (monthInt) {
                     1, 3, 5, 7, 8, 10, 12 -> 31
                     4, 6, 9, 11 -> 30
-                    2 -> if (yearInt % 4 == 0 && (yearInt % 100 != 0 || yearInt % 400 == 0)) 29 else 28
+                    2 -> if (isLeapYear(yearInt)) 29 else 28
                     else -> return false
                 }
 
@@ -71,6 +69,11 @@ class DateUtils {
             }
 
             return true
+        }
+
+        // Helper function to check for leap year
+        private fun isLeapYear(year: Int): Boolean {
+            return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
         }
     }
 

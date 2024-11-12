@@ -1,16 +1,19 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ProductsInBin.ProductDetails
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.scannerapp.cdihandheldscannerviewactivity.ProductsInBin.ProductsInBinViewModel
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductsInBinProductDetailsFragmentBinding
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 // Define the ProductDetailsFragment class, which is a subclass of Fragment
 class ProductDetailsFragment : Fragment() {
@@ -88,7 +91,7 @@ class ProductDetailsFragment : Fragment() {
     }
 
     // Function to fill all details with information
-    private fun fillAllDetailsWithInfo(){
+    private fun fillAllDetailsWithInfo() {
         val currentItem = viewModel.listOfProducts.value?.get(viewModel.currentlyChosenAdapterPosition.value!!)
 
         // Format and set the bin location
@@ -96,22 +99,32 @@ class ProductDetailsFragment : Fragment() {
         binLocationTextView.text = formattedString
 
         // Set other product details
-        if(currentItem?.barCode == null)
-            BarCodeTextView.text = "N/A"
-        else
-            BarCodeTextView.text = currentItem.barCode.toString()
+        BarCodeTextView.text = currentItem?.barCode ?: "N/A"
         QtyonHandValueTextView.text = currentItem?.quantityOnHand.toString()
         QtyInPickingValueTextView.text = currentItem?.quantityInPicking.toString()
 
-        // TODO move the logic of assigning the Expiration Date of a product to be Not Available if the exp date is null, to the ViewModel to comply with the separation of concerns principle
-        if (currentItem?.expirationDate == null){
-            ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = "Not available"
-        }
-        else
-            ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = currentItem?.expirationDate
+        // Format and set the Expiration Date
+        val formattedExpirationDate = formatDateString(currentItem?.expirationDate)
+        ExpirationDateDetailBlock.findViewById<TextView>(R.id.detailContent).text = formattedExpirationDate
 
         // Set Unit of Measurement and Quantity in UOM
         UOMValueTextView.text = currentItem?.unitOfMeasurement.toString()
         QtyUOMValueTextView.text = currentItem?.quantityInUOM.toString()
     }
+
+
+    private fun formatDateString(dateString: String?): String {
+        if (dateString == null || dateString.equals("null", ignoreCase = true) || dateString.isEmpty()) {
+            return "Not available"
+        }
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val outputFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
+            val date = inputFormat.parse(dateString)
+            date?.let { outputFormat.format(it) } ?: "Not available"
+        } catch (e: ParseException) {
+            "Not available" // If parsing fails, return "Not available"
+        }
+    }
+
 }

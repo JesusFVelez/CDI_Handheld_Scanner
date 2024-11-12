@@ -3,10 +3,8 @@ package com.scannerapp.cdihandheldscannerviewactivity.ItemPicking
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,17 +18,22 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInOrderInfo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ordersThatAreInPickingClass
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ItemPickingMainFragmentBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInOrderInfo
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
@@ -309,8 +312,8 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             val item = suggestions[position]
             orderNumberTextView.text = item.orderNumber
             customerTextView.text = item.customerName
-            orderDateTextView.text = item.orderedDate
-            dateWantedTextView.text = item.dateWanted
+            orderDateTextView.text = formatDateString(item.orderedDate)
+            dateWantedTextView.text = formatDateString(item.dateWanted)
 
 
             return view
@@ -360,6 +363,19 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
         }
 
+        private fun formatDateString(dateString: String?): String {
+            if (dateString == null || dateString.equals("null", ignoreCase = true) || dateString.isEmpty()) {
+                return "Not available"
+            }
+            return try {
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                val outputFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
+                val date = inputFormat.parse(dateString)
+                date?.let { outputFormat.format(it) } ?: "Not available"
+            } catch (e: ParseException) {
+                "Not available" // If parsing fails, return "Not available"
+            }
+        }
     }
 
 }

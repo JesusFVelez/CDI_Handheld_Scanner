@@ -22,6 +22,9 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemData
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.EditItemMainFragmentBinding
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class EditItemMainFragment : Fragment() {
@@ -153,8 +156,6 @@ class EditItemMainFragment : Fragment() {
 
     }
 
-
-
     fun ItemSuggestionRecyclerViewAdapter.updateData(newData: List<ItemData>) {
         // Assuming ItemSuggestionAdapter stores items in a List called 'items'
         items.clear()
@@ -186,7 +187,7 @@ class EditItemMainFragment : Fragment() {
             val item = items[position]
             holder.itemNumberTextView.text = item.itemNumber
             holder.descriptionTextView.text = item.itemDescription
-            holder.expirationDateTextView.text = item.expireDate ?: "N/A"
+            holder.expirationDateTextView.text = formatDateString(item.expireDate)
             holder.binLocationTextView.text = item.binLocation
             holder.lotNumberTextView.text = item.lotNumber ?: "N/A"
             // Set click listener for the entire ViewHolder
@@ -201,6 +202,19 @@ class EditItemMainFragment : Fragment() {
             items.clear()
             items.addAll(newData)
             notifyDataSetChanged()
+        }
+        private fun formatDateString(dateString: String?): String {
+            if (dateString == null || dateString.equals("null", ignoreCase = true) || dateString.isEmpty()) {
+                return "N/A"
+            }
+            return try {
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                val outputFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
+                val date = inputFormat.parse(dateString)
+                date?.let { outputFormat.format(it) } ?: "N/A"
+            } catch (e: ParseException) {
+                "N/A"
+            }
         }
     }
 

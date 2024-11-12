@@ -7,6 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.BinInfo
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class BinsWithProductAdapter (): RecyclerView.Adapter<BinWithProductViewHolder>()  {
 
@@ -49,38 +52,44 @@ data class binsWithProductViewData(
 )
 
 
-
-
-
-
-class BinWithProductViewHolder (binView: View): RecyclerView.ViewHolder(binView){
+class BinWithProductViewHolder(binView: View) : RecyclerView.ViewHolder(binView) {
     val expirationDateTextView: TextView = binView.findViewById(R.id.expDateTextValue)
     val binLocationTextView: TextView = binView.findViewById(R.id.binLocation)
     val qtyAvailableTextView: TextView = binView.findViewById(R.id.QtyAvailTextValue)
     val binTypeTextView: TextView = binView.findViewById(R.id.binTypeText)
     val qtyOnHandAndInPickingTextView: TextView = binView.findViewById(R.id.inPickingAndOnHandTextValue)
 
-    init {
-    }
-
-    fun bind(data: binsWithProductViewData){
-        expirationDateTextView.text = when(data.ExpirationDate) {
-            "null" -> "Unavailable"
-            else -> data.ExpirationDate
+    fun bind(data: binsWithProductViewData) {
+        expirationDateTextView.text = when {
+            data.ExpirationDate.equals("null", ignoreCase = true) || data.ExpirationDate.isEmpty() -> "Unavailable"
+            else -> {
+                // Attempt to parse and format the date
+                try {
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    val outputFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
+                    val date = inputFormat.parse(data.ExpirationDate)
+                    if (date != null) {
+                        outputFormat.format(date)
+                    } else {
+                        data.ExpirationDate // If parsing fails, display the original string
+                    }
+                } catch (e: ParseException) {
+                    data.ExpirationDate // If parsing fails, display the original string
+                }
+            }
         }
+
         binLocationTextView.text = data.binLocation
         qtyAvailableTextView.text = data.QtyAvailable.toString()
 
-        binTypeTextView.text = when(data.binType) {
+        binTypeTextView.text = when (data.binType) {
             "R" -> "Bin Type: Reserve Bin"
-            ""  -> "Bin Type: Picking Bin"
+            "" -> "Bin Type: Picking Bin"
             "X" -> "Bin Type: Virtual Bin"
             else -> "Bin Type: "
         }
         qtyOnHandAndInPickingTextView.text = "${data.QtyInPicking} / ${data.QtyOnHand}"
     }
-
-
-
 }
+
 

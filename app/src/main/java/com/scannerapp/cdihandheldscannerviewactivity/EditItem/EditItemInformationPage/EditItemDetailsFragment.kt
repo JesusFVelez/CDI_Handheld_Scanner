@@ -23,10 +23,10 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.EditItemEditItemDetailsFragmentBinding
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
 
 class EditItemDetailsFragment : Fragment() {
     private lateinit var binding: EditItemEditItemDetailsFragmentBinding
@@ -109,7 +109,7 @@ class EditItemDetailsFragment : Fragment() {
             val oldLot = viewModel.currentlyChosenItemForSearch.value!!.lotNumber
 
             // Step 1: Validate date format
-            val dateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
             val isValidDateFormat = DateUtils.isValidDate(newExpirationDateStr)
 
             // Step 2: Check if date format is valid
@@ -166,26 +166,26 @@ class EditItemDetailsFragment : Fragment() {
                     // If the parsed date is null, display an error message
                     AlerterUtils.startErrorAlerter(
                         requireActivity(),
-                        "Invalid date format. Please use MM-DD-YYYY."
+                        "Invalid date format. Please use MM/DD/YYYY."
                     )
                 }
             } else {
                 // If the date format is invalid, display an error message
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
-                    "Invalid date format. Please use MM-DD-YYYY."
+                    "Invalid date format. Please use MM/DD/YYYY."
                 )
             }
         }
 
         // Add this line in your setupUI function
         binding.NewExpirationDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        // Inside setupUI()
         binding.NewExpirationDateEditText.addTextChangedListener(object : TextWatcher {
             private var previousText: String = ""
             private var lastCursorPosition: Int = 0
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Store the text before any change is applied and the cursor position.
                 previousText = s.toString()
                 lastCursorPosition = binding.NewExpirationDateEditText.selectionStart
             }
@@ -196,9 +196,8 @@ class EditItemDetailsFragment : Fragment() {
                 val currentText = s.toString()
                 val deleting = currentText.length < previousText.length
 
-                // Strict limit of 10 characters for input, including dashes.
+                // Strict limit of 10 characters for input, including slashes.
                 if (currentText.length > 10) {
-                    // Truncate the input to 10 characters
                     val truncatedText = currentText.substring(0, 10)
                     binding.NewExpirationDateEditText.setText(truncatedText)
                     binding.NewExpirationDateEditText.setSelection(truncatedText.length)
@@ -206,26 +205,22 @@ class EditItemDetailsFragment : Fragment() {
                 }
 
                 if (!deleting) {
-                    // Automatically insert dashes as the user types.
+                    // Automatically insert slashes as the user types.
                     when (currentText.length) {
-                        2, 5 -> if (!previousText.endsWith("-")) {
-                            binding.NewExpirationDateEditText.setText("$currentText-")
+                        2, 5 -> if (!previousText.endsWith("/")) {
+                            binding.NewExpirationDateEditText.setText("$currentText/")
                             binding.NewExpirationDateEditText.setSelection(currentText.length + 1)
                         }
                     }
                 } else {
-                    // Remove the last character if it's a dash, maintaining proper date format as the user deletes characters.
-                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith(
-                            "-"
-                        )
-                    ) {
+                    // Handle deletions with slashes
+                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("/")) {
                         binding.NewExpirationDateEditText.setText(currentText.dropLast(1))
                         binding.NewExpirationDateEditText.setSelection(binding.NewExpirationDateEditText.text.length)
-                    } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {//Remove number before the dash using cursor position
-                        val newPosition =
-                            lastCursorPosition - 2  // Position to remove the number before the dash.
+                    } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '/') {
+                        val newPosition = lastCursorPosition - 2
                         val newText = StringBuilder(previousText).apply {
-                            deleteCharAt(newPosition)  // Remove the number before the dash.
+                            deleteCharAt(newPosition)
                         }.toString()
                         binding.NewExpirationDateEditText.setText(newText)
                         binding.NewExpirationDateEditText.setSelection(newPosition)
@@ -310,7 +305,7 @@ class EditItemDetailsFragment : Fragment() {
                     itemNumberTextView.text = item.itemNumber
                     itemNameTextView.text = item.itemDescription
                     binLocationTextView.text = item.binLocation
-                    expirationDateTextView.text = item.expireDate ?: "N/A"
+                    expirationDateTextView.text = formatDateString(item.expireDate)
                     lotTextView.text = item.lotNumber ?: "N/A"
 
                     // Parsing and formatting the date
@@ -320,7 +315,7 @@ class EditItemDetailsFragment : Fragment() {
                     ) // Adjust this format to match the incoming date format
                     val outputFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
                     val date: Date? = item.expireDate?.let { inputFormat.parse(it) }
-                    val formattedDate = if (date != null) outputFormat.format(date) else ""
+                    val formattedDate = formatDateString(item.expireDate)
 
                     NewExpirationDateEditText.setText(formattedDate)
                     newLotEditText.setText(item.lotNumber ?: "")
@@ -341,5 +336,21 @@ class EditItemDetailsFragment : Fragment() {
             }
         }
     }
+
+    private fun formatDateString(dateString: String?): String {
+        if (dateString == null || dateString.equals("null", ignoreCase = true) || dateString.isEmpty()) {
+            return "N/A"
+        }
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val outputFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US) // Changed to dashes
+            val date = inputFormat.parse(dateString)
+            date?.let { outputFormat.format(it) } ?: "N/A"
+        } catch (e: ParseException) {
+            "N/A"
+        }
+    }
+
+
 }
 

@@ -29,6 +29,9 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.BinMovementMainFragmentBinding
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class BinMovementFragment : Fragment() {
@@ -513,7 +516,7 @@ class BinMovementFragment : Fragment() {
             else
                 lotNumberTextView.text = "N/A"
 
-            expirationDateTextView.text = item.expireDate
+            expirationDateTextView.text = formatDateString(item.expireDate)
 
 
 
@@ -526,6 +529,20 @@ class BinMovementFragment : Fragment() {
                     return item
             }
             return null
+        }
+
+        private fun formatDateString(dateString: String?): String {
+            if (dateString == null || dateString.equals("null", ignoreCase = true) || dateString.isEmpty()) {
+                return "N/A"
+            }
+            return try {
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                val outputFormat = SimpleDateFormat("MM-dd-yyyy", Locale.US)
+                val date = inputFormat.parse(dateString)
+                date?.let { outputFormat.format(it) } ?: "N/A"
+            } catch (e: ParseException) {
+                "N/A" // If parsing fails, return "N/A"
+            }
         }
     }
 
