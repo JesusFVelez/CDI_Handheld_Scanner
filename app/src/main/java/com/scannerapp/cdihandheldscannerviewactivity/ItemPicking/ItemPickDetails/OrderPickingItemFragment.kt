@@ -1,4 +1,5 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.scannerapp.cdihandheldscannerviewactivity.ItemPicking.ItemPickingViewModel
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ItemPickingItemDetailsFragmentBinding
 
 class OrderPickingItemFragment : Fragment() {
@@ -35,6 +37,7 @@ class OrderPickingItemFragment : Fragment() {
     private lateinit var totalQuantityToBePickedTextView: TextView
 
     private var hasPageJustStarted: Boolean = false
+    private lateinit var progressDialog: Dialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,6 +88,7 @@ class OrderPickingItemFragment : Fragment() {
                     val barcode = itemNumberEditText.text.toString().trim()
                     if (barcode.isNotEmpty()) {
                         hasPageJustStarted = true
+                        progressDialog.show()
                         viewModel.confirmItemInBackend(barcode)
                         itemNumberEditText.text.clear()
                     }
@@ -95,6 +99,7 @@ class OrderPickingItemFragment : Fragment() {
         }
 
 
+        progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         pickItemButton = binding.pickingButton
         val isLineUpInvalid = viewModel.currentlyChosenItem.value!!.hasInvalidLineUp
@@ -115,6 +120,7 @@ class OrderPickingItemFragment : Fragment() {
             else {
                 val amountToBePicked = amountToBePickedString.toFloat()
                 val weightToBePicked = weightToBePickedString.toFloat()
+                progressDialog.show()
                 viewModel.finishPickingForSingleItem(amountToBePicked, weightToBePicked)
                 viewModel.updatePickingTimer("update")
             }
@@ -156,8 +162,10 @@ class OrderPickingItemFragment : Fragment() {
 
                 itemNumberEditText.setText("")
                 itemNumberEditText.requestFocus()
+                progressDialog.dismiss()
 
             } else if (hasPageJustStarted) {
+                progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["confirmItem"]!!
@@ -167,6 +175,7 @@ class OrderPickingItemFragment : Fragment() {
 
         viewModel.wasPickingSuccesfulyFinished.observe(viewLifecycleOwner) { wasPickingDoneSuccessfully ->
             if (wasPickingDoneSuccessfully && hasPageJustStarted) {
+                progressDialog.dismiss()
                 AlerterUtils.startSuccessAlert(
                     requireActivity(),
                     "Picking Successful",
@@ -174,6 +183,7 @@ class OrderPickingItemFragment : Fragment() {
                 )
                 findNavController().navigateUp()
             } else if (hasPageJustStarted) {
+                progressDialog.dismiss()
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
                     viewModel.errorMessage.value!!["finishPickingForSingleItem"]!!
@@ -183,6 +193,7 @@ class OrderPickingItemFragment : Fragment() {
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
             if (!wasLastAPICallSuccessful && hasPageJustStarted) {
+                progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
             }
         }
