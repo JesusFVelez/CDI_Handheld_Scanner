@@ -44,7 +44,7 @@ class ItemAdapter(
 
         // Change date format from yyyy-mm-dd to mm-dd-yyyy
         val originalFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val targetFormat = SimpleDateFormat("MM-dd-yyyy", Locale.US)
+        val targetFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
 
         // Format expireDate
         val expireDate = item.expireDate?.let {

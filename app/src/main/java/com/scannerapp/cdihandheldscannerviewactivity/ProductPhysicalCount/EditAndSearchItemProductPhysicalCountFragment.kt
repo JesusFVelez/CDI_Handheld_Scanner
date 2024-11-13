@@ -277,7 +277,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         // Define date formats
         val originalFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val targetFormat = SimpleDateFormat("MM-dd-yyyy", Locale.US)
+        val targetFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
         originalFormat.isLenient = false
 
         // Format expiration date for display
@@ -374,16 +374,16 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
                 if (!deleting) {
                     when (currentText.length) {
-                        2, 5 -> if (!previousText.endsWith("-")) {
-                            expireDateEditText.setText("$currentText-")
+                        2, 5 -> if (!previousText.endsWith("/")) {
+                            expireDateEditText.setText("$currentText/")
                             expireDateEditText.setSelection(currentText.length + 1)
                         }
                     }
                 } else {
-                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("-")) {
+                    if ((currentText.length == 2 || currentText.length == 5) && previousText.endsWith("/")) {
                         expireDateEditText.setText(currentText.dropLast(1))
                         expireDateEditText.setSelection(expireDateEditText.text.length)
-                    } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '-') {
+                    } else if (lastCursorPosition > 1 && previousText[lastCursorPosition - 1] == '/') {
                         val newPosition = lastCursorPosition - 2
                         val newText = StringBuilder(previousText).apply {
                             deleteCharAt(newPosition)
