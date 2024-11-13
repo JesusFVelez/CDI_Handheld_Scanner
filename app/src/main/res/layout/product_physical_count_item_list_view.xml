@@ -132,5 +132,38 @@
         app:layout_constraintStart_toEndOf="@+id/lotNumberLabelTextView"
         app:layout_constraintTop_toTopOf="@+id/lotNumberLabelTextView" />
 
+    <TextView
+        android:id="@+id/dateCreatedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="01/01/2023"
+        app:layout_constraintBottom_toBottomOf="@+id/dateCreatedLabelTextView"
+        app:layout_constraintStart_toEndOf="@+id/dateCreatedLabelTextView"
+        app:layout_constraintTop_toTopOf="@+id/dateCreatedLabelTextView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/date_created_icon"
+        android:layout_width="15dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/date_created"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/lotIcon"
+        app:layout_constraintTop_toBottomOf="@+id/lotIcon" />
+
+    <TextView
+        android:id="@+id/dateCreatedLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:text="Created:"
+        app:layout_constraintBottom_toBottomOf="@+id/date_created_icon"
+        app:layout_constraintStart_toEndOf="@+id/date_created_icon"
+        app:layout_constraintTop_toTopOf="@+id/date_created_icon"
+        app:layout_constraintVertical_bias="0.0" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

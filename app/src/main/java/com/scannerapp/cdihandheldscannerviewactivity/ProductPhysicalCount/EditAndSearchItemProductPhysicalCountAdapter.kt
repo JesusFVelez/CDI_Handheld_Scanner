@@ -28,7 +28,9 @@ class ItemAdapter(
         val binLocationTextView: TextView = view.findViewById(R.id.binLocationTextView)
         val lotNumberTextView: TextView = view.findViewById(R.id.dateWantedValueTextView)
         val qtyCountedTextView: TextView = view.findViewById(R.id.CountedTextView)
+        val dateCreatedTextView: TextView = view.findViewById(R.id.dateCreatedTextView)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.product_physical_count_item_list_view, parent, false)
@@ -43,14 +45,26 @@ class ItemAdapter(
         // Change date format from yyyy-mm-dd to mm-dd-yyyy
         val originalFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val targetFormat = SimpleDateFormat("MM-dd-yyyy", Locale.US)
-        val date = item.expireDate?.let {
+
+        // Format expireDate
+        val expireDate = item.expireDate?.let {
             try {
                 originalFormat.parse(it)
             } catch (e: Exception) {
                 null
             }
         }
-        holder.expirationDateTextView.text = date?.let { targetFormat.format(it) } ?: "N/A"
+        holder.expirationDateTextView.text = expireDate?.let { targetFormat.format(it) } ?: "N/A"
+
+        // Format dateCreated
+        val dateCreated = item.dateCreated?.let {
+            try {
+                originalFormat.parse(it)
+            } catch (e: Exception) {
+                null
+            }
+        }
+        holder.dateCreatedTextView.text = dateCreated?.let { targetFormat.format(it) } ?: "N/A"
 
         holder.binLocationTextView.text = item.binLocation
         holder.lotNumberTextView.text = item.lotNumber ?: "N/A"
@@ -66,6 +80,7 @@ class ItemAdapter(
             onItemClick(item)
         }
     }
+
 
     override fun getItemCount() = items.size
 

@@ -22,7 +22,6 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.scannerapp.cdihandheldscannerviewactivity.Adapter.ItemAdapter
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.DateUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
@@ -92,7 +91,8 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                 barCode = selectedItem.barCode,
                 weight = selectedItem.weight ?: 0.0,
                 doesItemHaveWeight = selectedItem.doesItemHaveWeight,
-                isItemInIvlot = selectedItem.isItemInIvlot
+                isItemInIvlot = selectedItem.isItemInIvlot,
+                dateCreated = selectedItem.dateCreated
             )
 
             showPopupDialog(itemInf)

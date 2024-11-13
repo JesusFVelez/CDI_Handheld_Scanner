@@ -210,7 +210,9 @@ class InventoryCountViewModel : ViewModel() {
                 val items = response.response.ttItemInfo.ttItemInfo.map { item ->
                     item.copy(expireDate = item.expireDate ?: "N/A",
                             weight = item.weight?: 0.0,
-                            lotNumber = item.lotNumber?:"N/A")
+                            lotNumber = item.lotNumber?:"N/A",
+                            dateCreated = item.dateCreated?:"N/A"
+                    )
                 }
                 _itemInfo.value = items
                 _wasLastAPICallSuccessful.value = true
