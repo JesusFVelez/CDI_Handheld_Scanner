@@ -494,6 +494,7 @@ class BinMovementFragment : Fragment() {
             val weightTextView = view.findViewById<TextView>(R.id.WeightValueTextView)
             val expirationDateTextView = view.findViewById<TextView>(R.id.ExpirationDateValueTextView)
             val lotNumberTextView = view.findViewById<TextView>(R.id.LotNumberValueTextView)
+            val binTypeTextView = view.findViewById<TextView>(R.id.BinTypeValueTextView)
 
             val item = suggestions[position]
             itemDescriptionTextView.text = item.itemName
@@ -514,6 +515,14 @@ class BinMovementFragment : Fragment() {
                 lotNumberTextView.text = "N/A"
 
             expirationDateTextView.text = item.expireDate
+
+            binTypeTextView.text = when(item.type) {
+                "R" -> "Reserve"
+                ""  -> "Picking"
+                "X" -> "Virtual Bin"
+                else -> "N/A"
+
+            }
 
 
 

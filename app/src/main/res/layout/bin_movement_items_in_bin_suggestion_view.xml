@@ -57,6 +57,35 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/BinTypeLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@id/BinLocationLinearLayout"
+        app:layout_constraintStart_toStartOf="@id/BinLocationLinearLayout"
+        app:layout_constraintTop_toBottomOf="@id/BinLocationLinearLayout"
+        >
+
+        <TextView
+            android:id="@+id/BinTypeTextTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:text="Bin Type:"/>
+        <TextView
+            android:id="@+id/BinTypeValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reserve"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/BarcodeLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,7 +94,7 @@
         android:orientation="horizontal"
         android:weightSum="2"
         app:layout_constraintStart_toStartOf="@+id/BinLocationLinearLayout"
-        app:layout_constraintTop_toBottomOf="@+id/BinLocationLinearLayout">
+        app:layout_constraintTop_toBottomOf="@+id/BinTypeLinearLayout">
 
         <TextView
             android:id="@+id/BarcodeLabelTextView"
@@ -81,6 +110,8 @@
             android:text="AJKDB3729A" />
 
     </LinearLayout>
+
+
 
     <LinearLayout
         android:id="@+id/QuantityInHandLinearLayout"
