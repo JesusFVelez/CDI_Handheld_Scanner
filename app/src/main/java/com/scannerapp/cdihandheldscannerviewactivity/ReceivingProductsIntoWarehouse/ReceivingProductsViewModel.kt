@@ -11,7 +11,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ReceivingItemInfo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.ScannerAPI
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import kotlin.math.abs
@@ -119,6 +118,10 @@ class ReceivingProductsViewModel: ViewModel() {
     private val _currentlyChosenDoorBin = MutableLiveData<DoorBin>()
     val currentlyChosenDoorBin: LiveData<DoorBin>
         get() = _currentlyChosenDoorBin
+
+    private val _itemsMoved = MutableLiveData<List<ItemsInBinList>>()
+    val itemsMoved: LiveData<List<ItemsInBinList>>
+        get() = _itemsMoved
 
     private val _allItemsMoved = MutableLiveData<Boolean>()
     val allItemsMoved: LiveData<Boolean>
@@ -448,47 +451,56 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
     fun moveItemsToFloorBin(destinationBin: String) {
-        _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            _networkErrorMessage.value = exception.message
-            _wasLastAPICallSuccessful.value = false
-            _wasItemMovedToBin.value = false
+            _networkErrorMessage.postValue(exception.message)
+            _wasLastAPICallSuccessful.postValue(false)
             Log.i(
-                "set move item to bin for Receiving API Call Exception Handler",
+                "Move Items To Floor Bin Exception Handler",
                 "Error -> ${exception.message}"
             )
         }
+
         viewModelScope.launch(exceptionHandler) {
-            val jobs = _listOfItemsToMoveInPreReceiving.value!!.map { itemToMove ->
-                launch {
-                    try {
-                        _hasAPIBeenCalled.value = true
-                        val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(
-                            itemToMove.rowID,
-                            _pickerUserName.value!!,
-                            itemToMove.qtyOnHand.toInt(),
-                            destinationBin
-                        )
-                        _wasItemMovedToBin.value = response.response.wasItemMoved
-                        _errorMessage.value!!["wasItemMovedToBinError"] =
-                            response.response.errorMessage
-                        _wasLastAPICallSuccessful.value = true
-                    } catch (e: Exception) {
-                        _networkErrorMessage.value = e.message
-                        _wasLastAPICallSuccessful.value = false
-                        Log.i(
-                            "get set the move item to bin for Receiving API Call Exception Handler",
-                            "Error -> ${e.message}"
-                        )
-                    }
+            _hasAPIBeenCalled.postValue(true)
+            val itemsMovedList = mutableListOf<ItemsInBinList>()
+
+            for (itemToMove in _listOfItemsToMoveInPreReceiving.value!!) {
+                try {
+                    val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(
+                        rowIDForDoorBin = itemToMove.rowID,
+                        pickerUserName = _pickerUserName.value!!,
+                        quantity = itemToMove.qtyOnHand.toInt(),
+                        destinationBin = destinationBin
+                    )
+
+                    // Update the item with the movement result
+                    val movedItem = itemToMove.copy(
+                        // You can add additional fields to ItemsInBinList if needed
+                    )
+
+                    // Collect the result for each item
+                    itemsMovedList.add(movedItem)
+
+                    _wasItemMovedToBin.postValue(response.response.wasItemMoved)
+                    _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
+                    _wasLastAPICallSuccessful.postValue(true)
+
+                } catch (e: Exception) {
+                    _networkErrorMessage.postValue(e.message)
+                    _wasLastAPICallSuccessful.postValue(false)
+                    Log.i(
+                        "Move Items To Floor Bin Exception",
+                        "Error -> ${e.message}"
+                    )
                 }
             }
 
-            jobs.joinAll()
-
-            _allItemsMoved.value = true
+            // After processing all items, update LiveData
+            _itemsMoved.postValue(itemsMovedList)
+            _allItemsMoved.postValue(true)
         }
     }
+
 
 
     fun validateDestinationBin(destinationBin: String) {
