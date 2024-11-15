@@ -61,19 +61,34 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
         holder.itemNameTextView.text = item.itemName
         holder.binLocationTextView.text = item.binLocation
         holder.lotNumberTextView.text = if (item.lotNumber == "") "N/A" else item.lotNumber
-        holder.expirationDateTextView.text = item.expirationDate
-        holder.quantityInDoorBinTextView.text = "Added: " + item.qtyOnHand.toInt().toString()
-        holder.removeItemButton.setOnClickListener{
-            // Create popup window to ask whether user wants to delete item or not
-            val popupWindow = PopupWindowUtils.createQuestionPopup(it.context, "Are you sure you want to delete item from the list?", "Delete Item")
-            popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
-                removeItem(item)
-                popupWindow.dismiss()
+
+
+
+        if(item.wasItemAlreadyReceived){
+            holder.removeItemButton.setImageResource(R.drawable.checkmark_icon)
+            holder.quantityInDoorBinTextView.text = "Already \n Moved"
+            holder.expirationDateTextView.text = item.qtyOnHand.toString()
+            holder.expirationDateHeaderTextView.text = "Moved:"
+
+        }else {
+            holder.expirationDateTextView.text = item.expirationDate
+            holder.quantityInDoorBinTextView.text = "Added: " + item.qtyOnHand.toInt().toString()
+            holder.removeItemButton.setOnClickListener {
+                // Create popup window to ask whether user wants to delete item or not
+                val popupWindow = PopupWindowUtils.createQuestionPopup(
+                    it.context,
+                    "Are you sure you want to delete item from the list?",
+                    "Delete Item"
+                )
+                popupWindow.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
+                    removeItem(item)
+                    popupWindow.dismiss()
+                }
+                popupWindow.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
+                    popupWindow.dismiss()
+                }
+                popupWindow.showAtLocation(it.rootView, Gravity.CENTER, 0, 0)
             }
-            popupWindow.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
-                popupWindow.dismiss()
-            }
-            popupWindow.showAtLocation(it.rootView, Gravity.CENTER, 0, 0)
         }
 
     }
@@ -88,6 +103,7 @@ class ItemsInDoorBinViewHolder(itemInDoorBinView: View, private val listener: it
     val binLocationTextView: TextView = itemInDoorBinView.findViewById(R.id.binNumberText)
     val lotNumberTextView: TextView = itemInDoorBinView.findViewById(R.id.lotNumberText)
     val expirationDateTextView: TextView = itemInDoorBinView.findViewById(R.id.expDateInfoText)
+    val expirationDateHeaderTextView: TextView = itemInDoorBinView.findViewById(R.id.expDateHeaderText)
     val quantityInDoorBinTextView: TextView = itemInDoorBinView.findViewById(R.id.addedText)
     val removeItemButton: ImageButton = itemInDoorBinView.findViewById(R.id.trashcanIconButton)
 

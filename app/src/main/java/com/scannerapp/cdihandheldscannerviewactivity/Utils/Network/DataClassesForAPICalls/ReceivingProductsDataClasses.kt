@@ -121,7 +121,8 @@ data class ItemsInBinList(
     @Json(name="tt-row-id") val rowID: String,
     @Json(name="tt-item-name") val itemName: String,
     @Json(name="tt-has-lot-number") val doesItemHaveLotNumber: Boolean,
-    @Json(name = "tt-has-invalid-line-up") val doesItemHaveInvalidLineUp: Boolean
+    @Json(name = "tt-has-invalid-line-up") val doesItemHaveInvalidLineUp: Boolean,
+    @Json(name = "tt-was-item-already-received") val wasItemAlreadyReceived: Boolean
 
 )
 

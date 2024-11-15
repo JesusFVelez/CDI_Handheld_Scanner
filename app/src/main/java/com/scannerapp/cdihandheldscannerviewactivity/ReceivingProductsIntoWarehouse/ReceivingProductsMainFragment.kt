@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
@@ -140,7 +141,7 @@ class ReceivingProductsMainFragment : Fragment(){
         addButton.setOnClickListener {
             val listener = object : PopupWindowUtils.Companion.PopupInputListener{
                 override fun onConfirm(input: EditText) {
-                    viewModel.getItemInfo(input.text.toString())
+                    viewModel.getItemInfo(input.text.toString(), isEditing = false)
                     progressDialog.show()
                 }
             }
@@ -156,8 +157,8 @@ class ReceivingProductsMainFragment : Fragment(){
             }
             val popup = PopupWindowUtils.showConfirmationPopup(context = requireContext(),
                                                                 anchor = it.rootView,
-                                                             confirmationText = "Please enter the destination bin for all items received.",
-                                                             confirmEditTextHint = "Destination Bin",
+                                                                confirmationText = "Please enter the destination bin for all items received.",
+                                                                confirmEditTextHint = "Destination Bin",
                                                                 listener = listener)
         }
         viewModel.clearListOfItems()
@@ -169,18 +170,32 @@ class ReceivingProductsMainFragment : Fragment(){
         clearAllItemsFromRecyclerView()
     }
 
+    private fun verifyIfAllTheItemsHaveBeenReceived(listOfItems: List<ItemsInBinList>): Boolean{
+        for(item in listOfItems){
+            if(!item.wasItemAlreadyReceived)
+                return false
+        }
+        return true
+    }
+
     private fun initRecyclerViewAdapter(){
         val listener = object : itemInDoorBinClickListener {
             override fun onItemClickListener(view: View, position: Int) {
-                viewModel.willEditCurrentValues()
-                viewModel.setCurrentlyChosenItemAdapterPosition(position)
-                viewModel.getItemInfo(recyclerViewAdapter.data[position].itemNumber)
-                progressDialog.show()
+                val item = recyclerViewAdapter.data[position]
+                if(!item.wasItemAlreadyReceived) {
+                    viewModel.willEditCurrentValues()
+                    viewModel.setCurrentlyChosenItemAdapterPosition(position)
+                    viewModel.getItemInfo(recyclerViewAdapter.data[position].itemNumber, isEditing = true)
+                    progressDialog.show()
+                }
+                else
+                    AlerterUtils.startErrorAlerter(requireActivity(), "You have already moved this item and cannot move it again.")
             }
         }
         recyclerViewAdapter = itemsInDoorBinAdapter(listener, { hasItems ->
             val noItemsHaveInvalidLineUp = !verifyIfThereIsAtLeastOneItemWithInvalidLineUp(viewModel.listOfItemsToMoveInPreReceiving.value!!)
-            finishButton.isEnabled = hasItems && noItemsHaveInvalidLineUp
+            val allItemsHaveBeenReceived = verifyIfAllTheItemsHaveBeenReceived(viewModel.listOfItemsToMoveInPreReceiving.value!!)
+            finishButton.isEnabled = hasItems && noItemsHaveInvalidLineUp && !allItemsHaveBeenReceived
         },{ item: ItemsInBinList ->
             progressDialog.show()
             viewModel.deleteItemFromDoorBin(item.rowID)

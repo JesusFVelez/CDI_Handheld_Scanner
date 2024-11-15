@@ -253,7 +253,7 @@ interface ReceivingProductsServices {
     suspend fun getDoorBins(@Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseWrapperDoorBinListWrapper
 
     @GET("getItemInfo")
-    suspend fun getItemInfo(@Query("scannedCode") scannedCode: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseWrapperItemDetailsWrapper
+    suspend fun getItemInfo(@Query("scannedCode") scannedCode: String, @Query("doorBin") doorBin: String, @Query("isEditing") isEditing:Boolean, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseWrapperItemDetailsWrapper
 
     @GET("getPreReceiving")
     suspend fun getPreReceiving(@Query("binNumber") binNumber: String, @Query("warehouse") warehouseNumber: Int, @Query("companyID") companyID: String): ResponsePreReceiving

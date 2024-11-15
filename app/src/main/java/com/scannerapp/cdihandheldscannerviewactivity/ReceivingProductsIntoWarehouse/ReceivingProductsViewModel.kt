@@ -316,7 +316,7 @@ class ReceivingProductsViewModel: ViewModel() {
         }
     }
 
-    fun getItemInfo(scannedCode: String) {
+    fun getItemInfo(scannedCode: String, isEditing: Boolean) {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _networkErrorMessage.value = exception.message
@@ -328,7 +328,10 @@ class ReceivingProductsViewModel: ViewModel() {
             try {
                 _hasAPIBeenCalled.value = true
                 val response = ScannerAPI.getReceivingProductService()
-                    .getItemInfo(scannedCode, warehouseNumber.value!!, companyID.value!!)
+                    .getItemInfo(scannedCode = scannedCode,
+                                doorBin = _currentlyChosenDoorBin.value!!.bin_number,
+                                isEditing = isEditing, warehouseNumber.value!!,
+                                companyID = companyID.value!!)
                 _errorMessage.value!!["wasItemFoundError"] = response.response.errorMessage
                 _wasItemFound.value = response.response.wasItemFound
                 val listOfItemInfo = response.response.itemInfo.item_info
@@ -465,33 +468,36 @@ class ReceivingProductsViewModel: ViewModel() {
             val itemsMovedList = mutableListOf<ItemsInBinList>()
 
             for (itemToMove in _listOfItemsToMoveInPreReceiving.value!!) {
-                try {
-                    val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(
-                        rowIDForDoorBin = itemToMove.rowID,
-                        pickerUserName = _pickerUserName.value!!,
-                        quantity = itemToMove.qtyOnHand.toInt(),
-                        destinationBin = destinationBin
-                    )
+                if (!itemToMove.wasItemAlreadyReceived) {
+                    try {
+                        val response = ScannerAPI.getReceivingProductService().moveItemFromDoorBin(
+                            rowIDForDoorBin = itemToMove.rowID,
+                            pickerUserName = _pickerUserName.value!!,
+                            quantity = itemToMove.qtyOnHand.toInt(),
+                            destinationBin = destinationBin
+                        )
 
-                    // Update the item with the movement result
-                    val movedItem = itemToMove.copy(
-                        // You can add additional fields to ItemsInBinList if needed
-                    )
+                        // Update the item with the movement result
+                        val movedItem = itemToMove.copy(
+                            // You can add additional fields to ItemsInBinList if needed
+                        )
 
-                    // Collect the result for each item
-                    itemsMovedList.add(movedItem)
+                        // Collect the result for each item
+                        itemsMovedList.add(movedItem)
 
-                    _wasItemMovedToBin.postValue(response.response.wasItemMoved)
-                    _errorMessage.value!!["wasItemMovedToBinError"] = response.response.errorMessage
-                    _wasLastAPICallSuccessful.postValue(true)
+                        _wasItemMovedToBin.postValue(response.response.wasItemMoved)
+                        _errorMessage.value!!["wasItemMovedToBinError"] =
+                            response.response.errorMessage
+                        _wasLastAPICallSuccessful.postValue(true)
 
-                } catch (e: Exception) {
-                    _networkErrorMessage.postValue(e.message)
-                    _wasLastAPICallSuccessful.postValue(false)
-                    Log.i(
-                        "Move Items To Floor Bin Exception",
-                        "Error -> ${e.message}"
-                    )
+                    } catch (e: Exception) {
+                        _networkErrorMessage.postValue(e.message)
+                        _wasLastAPICallSuccessful.postValue(false)
+                        Log.i(
+                            "Move Items To Floor Bin Exception",
+                            "Error -> ${e.message}"
+                        )
+                    }
                 }
             }
 

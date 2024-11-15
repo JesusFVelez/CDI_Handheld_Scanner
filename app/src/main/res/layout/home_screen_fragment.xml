@@ -48,7 +48,7 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ReceivingButton"
                 style="@style/HomeMenuButtons"
-                android:text="Receiving" />
+                android:text="Receiving Movement" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/PhysicalCountButton"
