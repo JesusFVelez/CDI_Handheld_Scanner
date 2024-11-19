@@ -200,3 +200,16 @@ data class ResponseConfirmItem(
     @Json(name = "errorMessage") val errorMessage: String,
     @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode: Float ,
     @Json(name = "weightInBarcode") val weightInBarcode:Float)
+
+// Data classes for validating the quantity against Pre-Receiving
+@JsonClass(generateAdapter = true)
+data class ResponseValidateQuantityAgainstPreReceivingWrapper(
+    @Json(name = "response") val response: ResponseValidateQuantityAgainstPreReceiving
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseValidateQuantityAgainstPreReceiving(
+    @Json(name = "isQuantityLessThanPreReceiving") val isQuantityLessThanPreReceiving: Boolean,
+    @Json(name = "preReceivingQuantity") val preReceivingQuantity: Int,
+    @Json(name = "errorMessage") val errorMessage: String
+)

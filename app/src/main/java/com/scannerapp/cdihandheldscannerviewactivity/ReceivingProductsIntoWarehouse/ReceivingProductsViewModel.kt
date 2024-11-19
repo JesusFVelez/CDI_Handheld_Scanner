@@ -17,6 +17,31 @@ import kotlin.math.abs
 
 class ReceivingProductsViewModel: ViewModel() {
 
+    // Add this variable
+    private val _isQuantityLessThanPreReceiving = MutableLiveData<Boolean>()
+    val isQuantityLessThanPreReceiving: LiveData<Boolean>
+        get() = _isQuantityLessThanPreReceiving
+
+    // LiveData to hold whether the quantity is different from Pre-Receiving
+    private val _isQuantityDifferentFromPreReceiving = MutableLiveData<Boolean>()
+    val isQuantityDifferentFromPreReceiving: LiveData<Boolean>
+        get() = _isQuantityDifferentFromPreReceiving
+
+    // LiveData to hold the Pre-Receiving quantity
+    private val _preReceivingQuantity = MutableLiveData<Int>()
+    val preReceivingQuantity: LiveData<Int>
+        get() = _preReceivingQuantity
+
+    // LiveData to hold any error messages
+    private val _validateQuantityErrorMessage = MutableLiveData<String>()
+    val validateQuantityErrorMessage: LiveData<String>
+        get() = _validateQuantityErrorMessage
+
+    // LiveData to signal when to display the quantity confirmation popup
+    private val _shouldShowQuantityConfirmationPopup = MutableLiveData<Boolean>()
+    val shouldShowQuantityConfirmationPopup: LiveData<Boolean>
+        get() = _shouldShowQuantityConfirmationPopup
+
     private val _currentlyChosenAdapterPosition = MutableLiveData<Int>()
     val currentlyChosenAdapterPosition: LiveData<Int>
         get() = _currentlyChosenAdapterPosition
@@ -36,7 +61,7 @@ class ReceivingProductsViewModel: ViewModel() {
         get() = _listOfItemsToMoveInPreReceiving
 
     private val _networkErrorMessage = MutableLiveData<String>()
-    val networkErrorMessage : LiveData<String>
+    val networkErrorMessage: LiveData<String>
         get() = _networkErrorMessage
 
     private val _wasItemConfirmed = MutableLiveData<Boolean>()
@@ -328,10 +353,12 @@ class ReceivingProductsViewModel: ViewModel() {
             try {
                 _hasAPIBeenCalled.value = true
                 val response = ScannerAPI.getReceivingProductService()
-                    .getItemInfo(scannedCode = scannedCode,
-                                doorBin = _currentlyChosenDoorBin.value!!.bin_number,
-                                isEditing = isEditing, warehouseNumber.value!!,
-                                companyID = companyID.value!!)
+                    .getItemInfo(
+                        scannedCode = scannedCode,
+                        doorBin = _currentlyChosenDoorBin.value!!.bin_number,
+                        isEditing = isEditing, warehouseNumber.value!!,
+                        companyID = companyID.value!!
+                    )
                 _errorMessage.value!!["wasItemFoundError"] = response.response.errorMessage
                 _wasItemFound.value = response.response.wasItemFound
                 val listOfItemInfo = response.response.itemInfo.item_info
@@ -508,7 +535,6 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
 
-
     fun validateDestinationBin(destinationBin: String) {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -528,7 +554,7 @@ class ReceivingProductsViewModel: ViewModel() {
                     _companyID.value!!
                 )
                 _errorMessage.value!!["validateDestinationBin"] = response.response.errorMessage
-                if(response.response.isBinValid)
+                if (response.response.isBinValid)
                     _destinationBin.value = destinationBin
                 _isValidDestinationBin.value = response.response.isBinValid
                 _wasLastAPICallSuccessful.value = true
@@ -545,104 +571,145 @@ class ReceivingProductsViewModel: ViewModel() {
     }
 
 
-
-        fun confirmItem(scannedCode: String) {
-            _hasAPIBeenCalled.value = true
-            val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-                _networkErrorMessage.value = exception.message
-                _wasLastAPICallSuccessful.value = false
-                Log.i("Confirm Item API Call Exception Handler", "Error -> ${exception.message}")
-            }
-            viewModelScope.launch(exceptionHandler) {
-                try {
-                    _hasAPIBeenCalled.value = true
-                    val response = ScannerAPI.getReceivingProductService().confirmItem(
-                        scannedCode,
-                        _currentlyChosenDoorBin.value!!.bin_receiving,
-                        itemInfo.value!!.itemNumber,
-                        _companyID.value!!,
-                        _warehouseNumber.value!!
-                    )
-                    _wasLastAPICallSuccessful.value = true
-                    _UOMQtyInBarcode.value = response.response.UOMQtyInBarcode
-                    _weightFromBarcode.value = response.response.weightInBarcode
-                    _errorMessage.value!!["confirmItem"] = response.response.errorMessage
-                    _wasItemConfirmed.value = response.response.wasItemConfirmed
-                } catch (e: Exception) {
-                    _networkErrorMessage.value = e.message
-                    _wasLastAPICallSuccessful.value = false
-                    Log.i("Confirm Item API Call Exception Handler", "Error -> ${e.message}")
-                }
-            }
-
+    fun confirmItem(scannedCode: String) {
+        _hasAPIBeenCalled.value = true
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Confirm Item API Call Exception Handler", "Error -> ${exception.message}")
         }
-
-        fun deleteItemFromDoorBin(rowIDForDoorBin: String) {
-            _hasAPIBeenCalled.value = true
-            val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-                _networkErrorMessage.value = exception.message
-                _wasLastAPICallSuccessful.value = false
-                Log.i(
-                    "set delete item from door bin API Call Exception Handler",
-                    "Error -> ${exception.message}"
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                _hasAPIBeenCalled.value = true
+                val response = ScannerAPI.getReceivingProductService().confirmItem(
+                    scannedCode,
+                    _currentlyChosenDoorBin.value!!.bin_receiving,
+                    itemInfo.value!!.itemNumber,
+                    _companyID.value!!,
+                    _warehouseNumber.value!!
                 )
-            }
-            viewModelScope.launch(exceptionHandler) {
-                try {
-
-                    val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(
-                        rowIDForDoorBin = rowIDForDoorBin,
-                        pickerUserName = _pickerUserName.value!!
-                    )
-
-                    _errorMessage.value!!["wasItemDeleted"] = response.response.errorMessage
-                    _wasItemDeleted.value = response.response.wasItemDeleted
-                    _wasLastAPICallSuccessful.value = true
-                } catch (e: Exception) {
-                    _networkErrorMessage.value = e.message
-                    _wasLastAPICallSuccessful.value = false
-                    Log.i(
-                        "get delete item from door bin API Call Exception Handler",
-                        "Error -> ${e.message}"
-                    )
-                }
-            }
-        }
-
-        fun validateLotNumber(lotNumber: String, itemNumber: String) {
-            _hasAPIBeenCalled.value = true
-            val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-                _networkErrorMessage.value = exception.message
+                _wasLastAPICallSuccessful.value = true
+                _UOMQtyInBarcode.value = response.response.UOMQtyInBarcode
+                _weightFromBarcode.value = response.response.weightInBarcode
+                _errorMessage.value!!["confirmItem"] = response.response.errorMessage
+                _wasItemConfirmed.value = response.response.wasItemConfirmed
+            } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
                 _wasLastAPICallSuccessful.value = false
-                Log.i("Validate Lot Number", "Error -> ${exception.message}")
-            }
-            viewModelScope.launch(exceptionHandler) {
-                try {
-
-                    val response = ScannerAPI.getReceivingProductService()
-                        .validateWhetherLotIsInIVLOT(
-                            itemNumber,
-                            lotNumber,
-                            _warehouseNumber.value!!
-                        )
-                    _errorMessage.value!!["validateLotNumber"] = response.response.errorMessage
-                    _isLotNumberValid.value = response.response.isLotNumberValid
-                    _wasLastAPICallSuccessful.value = true
-                } catch (e: Exception) {
-                    _networkErrorMessage.value = e.message
-                    _wasLastAPICallSuccessful.value = false
-                    Log.i("Validate Lot Number (e)", "Error -> ${e.message}")
-                }
+                Log.i("Confirm Item API Call Exception Handler", "Error -> ${e.message}")
             }
         }
-
-        fun clearListOfItems() {
-            _listOfItemsToMoveInPreReceiving.value = mutableListOf()
-        }
-
-        fun clearDoorBinText() {
-            _doorBins.value = listOf()
-        }
-
 
     }
+
+    fun deleteItemFromDoorBin(rowIDForDoorBin: String) {
+        _hasAPIBeenCalled.value = true
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
+            _wasLastAPICallSuccessful.value = false
+            Log.i(
+                "set delete item from door bin API Call Exception Handler",
+                "Error -> ${exception.message}"
+            )
+        }
+        viewModelScope.launch(exceptionHandler) {
+            try {
+
+                val response = ScannerAPI.getReceivingProductService().deleteItemFromDoorInBin(
+                    rowIDForDoorBin = rowIDForDoorBin,
+                    pickerUserName = _pickerUserName.value!!
+                )
+
+                _errorMessage.value!!["wasItemDeleted"] = response.response.errorMessage
+                _wasItemDeleted.value = response.response.wasItemDeleted
+                _wasLastAPICallSuccessful.value = true
+            } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
+                _wasLastAPICallSuccessful.value = false
+                Log.i(
+                    "get delete item from door bin API Call Exception Handler",
+                    "Error -> ${e.message}"
+                )
+            }
+        }
+    }
+
+    fun validateLotNumber(lotNumber: String, itemNumber: String) {
+        _hasAPIBeenCalled.value = true
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
+            _wasLastAPICallSuccessful.value = false
+            Log.i("Validate Lot Number", "Error -> ${exception.message}")
+        }
+        viewModelScope.launch(exceptionHandler) {
+            try {
+
+                val response = ScannerAPI.getReceivingProductService()
+                    .validateWhetherLotIsInIVLOT(
+                        itemNumber,
+                        lotNumber,
+                        _warehouseNumber.value!!
+                    )
+                _errorMessage.value!!["validateLotNumber"] = response.response.errorMessage
+                _isLotNumberValid.value = response.response.isLotNumberValid
+                _wasLastAPICallSuccessful.value = true
+            } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
+                _wasLastAPICallSuccessful.value = false
+                Log.i("Validate Lot Number (e)", "Error -> ${e.message}")
+            }
+        }
+    }
+
+    fun clearListOfItems() {
+        _listOfItemsToMoveInPreReceiving.value = mutableListOf()
+    }
+
+    fun clearDoorBinText() {
+        _doorBins.value = listOf()
+    }
+
+    fun validateQuantityAgainstPreReceiving(
+        itemNumber: String,
+        quantityEntered: Int
+    ) {
+        _hasAPIBeenCalled.value = true
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            _networkErrorMessage.value = exception.message
+            _wasLastAPICallSuccessful.value = false
+            Log.i(
+                "validateQuantityAgainstPreReceiving API Call Exception Handler",
+                "Error -> ${exception.message}"
+            )
+        }
+
+        viewModelScope.launch(exceptionHandler) {
+            try {
+                val response =
+                    ScannerAPI.getReceivingProductService().validateQuantityAgainstPreReceiving(
+                        itemNumber = itemNumber,
+                        quantityEntered = quantityEntered,
+                        receivingNumber = _currentlyChosenDoorBin.value!!.bin_receiving,
+                        warehouseNumber = _warehouseNumber.value!!,
+                        companyID = _companyID.value!!
+                    )
+
+                // Update LiveData variables with the response
+                _isQuantityLessThanPreReceiving.value =
+                    response.response.isQuantityLessThanPreReceiving
+                _preReceivingQuantity.value = response.response.preReceivingQuantity
+                _validateQuantityErrorMessage.value = response.response.errorMessage
+
+                _wasLastAPICallSuccessful.value = true
+            } catch (e: Exception) {
+                _networkErrorMessage.value = e.message
+                _wasLastAPICallSuccessful.value = false
+                Log.i(
+                    "validateQuantityAgainstPreReceiving API Call Exception Handler",
+                    "Error -> ${e.message}"
+                )
+            }
+        }
+
+    }
+}

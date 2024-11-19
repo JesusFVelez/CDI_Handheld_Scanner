@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,6 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ReceivingDetailsFragmentBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class ReceivingProductsDetailsFragment : Fragment() {
@@ -215,17 +215,27 @@ class ReceivingProductsDetailsFragment : Fragment() {
                 try {
                     val newExpirationDate = dateFormat.parse(expirationDate)
 
-                    // Step 3: Validate the parsed date
+                    // Validate the parsed date
                     if (newExpirationDate != null && DateUtils.isValidDate(expirationDate)) {
-                        var handleYesPressed: () -> Unit = {
-                            moveItemToDoorBin(expirationDate)
+                        val handleYesPressed: () -> Unit = {
+                            // Date is valid and not expired, proceed to validate quantity
+                            val itemNumber = itemNumberTextView.text.toString()
+                            val quantityEntered = quantityEditText.text.toString().toInt()
+
+                            progressDialog.show()
+                            viewModel.validateQuantityAgainstPreReceiving(itemNumber, quantityEntered)
                         }
                         val isDateExpired = DateUtils.isDateExpired(expirationDate, handleYesPressed, requireContext(), requireView())
-                        if(!isDateExpired) {
-                            moveItemToDoorBin(expirationDate)
+                        if (!isDateExpired) {
+                            // Date is valid and not expired, proceed to validate quantity
+                            val itemNumber = itemNumberTextView.text.toString()
+                            val quantityEntered = quantityEditText.text.toString().toInt()
+
+                            progressDialog.show()
+                            viewModel.validateQuantityAgainstPreReceiving(itemNumber, quantityEntered)
                         }
                     } else {
-                        // Step 4: Show an error message for an invalid date
+                        // Show an error message for an invalid date
                         AlerterUtils.startErrorAlerter(
                             requireActivity(),
                             "Invalid date. Please enter a valid date (MM-DD-YYYY)."
@@ -269,6 +279,92 @@ class ReceivingProductsDetailsFragment : Fragment() {
     }
 
     private fun initObservers() {
+
+        viewModel.isQuantityLessThanPreReceiving.observe(viewLifecycleOwner) { isLessThan ->
+            if (viewModel.hasAPIBeenCalled.value == true) {
+                progressDialog.dismiss()
+                if (isLessThan == true) {
+                    // Entered quantity is less than Pre-Receiving quantity, show confirmation popup
+                    val errorMsg = viewModel.validateQuantityErrorMessage.value
+                        ?: "The quantity entered is less than the Pre-Receiving quantity. Do you want to proceed?"
+
+                    val questionPopup = PopupWindowUtils.createQuestionPopup(
+                        requireContext(),
+                        errorMsg,
+                        "Quantity Mismatch"
+                    )
+
+                    questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
+                        // User chooses to proceed
+                        questionPopup.dismiss()
+                        val expirationDate = newExpirationDateEditText.text.toString()
+                        moveItemToDoorBin(expirationDate)
+                    }
+
+                    questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
+                        // User chooses not to proceed
+                        questionPopup.dismiss()
+                        // Do nothing
+                    }
+
+                    questionPopup.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+                } else if (isLessThan == false) {
+                    // Quantities match or entered quantity is more than Pre-Receiving quantity
+                    val expirationDate = newExpirationDateEditText.text.toString()
+                    moveItemToDoorBin(expirationDate)
+                } else {
+                    // Handle any errors
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        viewModel.validateQuantityErrorMessage.value ?: "Unknown error"
+                    )
+                }
+            }
+        }
+
+        viewModel.isQuantityDifferentFromPreReceiving.observe(viewLifecycleOwner) { isDifferent ->
+            if (viewModel.hasAPIBeenCalled.value == true) {
+                progressDialog.dismiss()
+                if (isDifferent == true) {
+                    // Quantities are different, show confirmation popup
+                    val errorMsg = viewModel.validateQuantityErrorMessage.value
+                        ?: "The quantity entered differs from the Pre-Receiving quantity. Do you want to proceed?"
+
+                    val questionPopup = PopupWindowUtils.createQuestionPopup(
+                        requireContext(),
+                        errorMsg,
+                        "Quantity Mismatch"
+                    )
+
+                    questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
+                        // User chooses to proceed
+                        questionPopup.dismiss()
+                        val expirationDate = newExpirationDateEditText.text.toString()
+                        moveItemToDoorBin(expirationDate)
+                    }
+
+                    questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
+                        // User chooses not to proceed
+                        questionPopup.dismiss()
+                        // Do nothing
+                    }
+
+                    questionPopup.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+                } else if (isDifferent == false) {
+                    // Quantities match, proceed directly
+                    val expirationDate = newExpirationDateEditText.text.toString()
+                    moveItemToDoorBin(expirationDate)
+                } else {
+                    // Handle any errors
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        viewModel.validateQuantityErrorMessage.value ?: "Unknown error"
+                    )
+                }
+                viewModel.resetHasAPIBeenCalled()
+            }
+        }
+
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner) { wasItemConfirmed ->
             if (wasItemConfirmed && viewModel.hasAPIBeenCalled.value == true) {
                 progressDialog.dismiss()
@@ -298,23 +394,23 @@ class ReceivingProductsDetailsFragment : Fragment() {
         }
 
         viewModel.wasItemMovedToDoor.observe(viewLifecycleOwner) { wasItemMovedToDoor ->
-            progressDialog.dismiss()
-            if (wasItemMovedToDoor && viewModel.hasAPIBeenCalled.value == true) {
-                viewModel.resetHasAPIBeenCalled()
-                AlerterUtils.startSuccessAlert(
-                    requireActivity(),
-                    "Success",
-                    "Item was added successfully to door bin"
-                )
-                findNavController().navigateUp()
-            } else if (viewModel.hasAPIBeenCalled.value == true) {
-                viewModel.resetHasAPIBeenCalled()
-                AlerterUtils.startErrorAlerter(
-                    requireActivity(),
-                    viewModel.errorMessage.value?.get("wasItemMovedToDoorError") ?: "Unknown error"
-                )
+            if (viewModel.hasAPIBeenCalled.value == true) {
+                progressDialog.dismiss()
+                if (wasItemMovedToDoor == true) {
+                    AlerterUtils.startSuccessAlert(
+                        requireActivity(),
+                        "Success",
+                        "Item was added successfully to door bin"
+                    )
+                    findNavController().navigateUp()
+                } else {
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        viewModel.errorMessage.value?.get("wasItemMovedToDoorError") ?: "Unknown error"
+                    )
+                }
+                viewModel.resetHasAPIBeenCalled() // Reset here
             }
-            viewModel.resetHasAPIBeenCalled()
         }
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner) { wasLastAPICallSuccessful ->
