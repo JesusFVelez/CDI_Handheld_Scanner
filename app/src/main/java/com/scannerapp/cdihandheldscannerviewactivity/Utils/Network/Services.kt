@@ -33,6 +33,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesFo
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponsePreReceiving
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateDestinationBin
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateLotNumberWrapper
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseValidateQuantityAgainstPreReceivingWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapper
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperBinsWithProduct
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ResponseWrapperDoorBinListWrapper
@@ -285,7 +286,14 @@ interface ReceivingProductsServices {
     @GET("validateDestinationBin")
     suspend fun validateDestinationBin(@Query("destinationBin") destinationBin: String, @Query("warehouseNumber") warehouseNumber: Int, @Query("companyID") companyID: String): ResponseValidateDestinationBin
 
-
+    @GET("validateQuantityAgainstPreReceiving")
+    suspend fun validateQuantityAgainstPreReceiving(
+        @Query("itemNumber") itemNumber: String,
+        @Query("quantityEntered") quantityEntered: Int,
+        @Query("receivingNumber") receivingNumber: String,
+        @Query("warehouseNumber") warehouseNumber: Int,
+        @Query("companyID") companyID: String
+    ): ResponseValidateQuantityAgainstPreReceivingWrapper
 }
 interface ViewProductsInBinServices{
     // Endpoint for getting all items in a bin. The Query annotations are used to specify the query parameters for the API call

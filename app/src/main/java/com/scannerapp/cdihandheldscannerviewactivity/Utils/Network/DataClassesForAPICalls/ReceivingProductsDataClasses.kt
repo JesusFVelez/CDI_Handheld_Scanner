@@ -123,7 +123,6 @@ data class ItemsInBinList(
     @Json(name="tt-has-lot-number") val doesItemHaveLotNumber: Boolean,
     @Json(name = "tt-has-invalid-line-up") val doesItemHaveInvalidLineUp: Boolean,
     @Json(name = "tt-was-item-already-received") val wasItemAlreadyReceived: Boolean
-
 )
 
 // Moves an item to a door bin
@@ -200,3 +199,21 @@ data class ResponseConfirmItem(
     @Json(name = "errorMessage") val errorMessage: String,
     @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode: Float ,
     @Json(name = "weightInBarcode") val weightInBarcode:Float)
+
+
+// Data classes for validating the quantity against Pre-Receiving
+@JsonClass(generateAdapter = true)
+data class ResponseValidateQuantityAgainstPreReceivingWrapper(
+    @Json(name = "response") val response: ResponseValidateQuantityAgainstPreReceiving
+)
+
+@JsonClass(generateAdapter = true)
+data class ResponseValidateQuantityAgainstPreReceiving(
+    @Json(name = "isQuantityLessThanPreReceiving") val isQuantityLessThanPreReceiving: Boolean,
+    @Json(name = "preReceivingQuantity") val preReceivingQuantity: Int,
+    @Json(name = "errorMessage") val errorMessage: String
+)
+
+
+
+
