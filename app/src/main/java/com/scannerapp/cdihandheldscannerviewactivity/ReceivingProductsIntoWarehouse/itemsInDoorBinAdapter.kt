@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInBinList
@@ -63,6 +64,8 @@ class itemsInDoorBinAdapter(private val listener: itemInDoorBinClickListener, va
         holder.lotNumberTextView.text = if (item.lotNumber == "") "N/A" else item.lotNumber
 
 
+        if(item.isQtyLessOrMoreThanPOQty)
+            holder.backgroundView.setBackgroundResource(R.drawable.warning_element_in_list)
 
         if(item.wasItemAlreadyReceived){
             holder.removeItemButton.setImageResource(R.drawable.checkmark_icon)
@@ -106,6 +109,7 @@ class ItemsInDoorBinViewHolder(itemInDoorBinView: View, private val listener: it
     val expirationDateHeaderTextView: TextView = itemInDoorBinView.findViewById(R.id.expDateHeaderText)
     val quantityInDoorBinTextView: TextView = itemInDoorBinView.findViewById(R.id.addedText)
     val removeItemButton: ImageButton = itemInDoorBinView.findViewById(R.id.trashcanIconButton)
+    val backgroundView: ConstraintLayout = itemInDoorBinView.findViewById(R.id.ConstraintLayoutView)
 
     init{
         itemInDoorBinView.setOnClickListener(this)
