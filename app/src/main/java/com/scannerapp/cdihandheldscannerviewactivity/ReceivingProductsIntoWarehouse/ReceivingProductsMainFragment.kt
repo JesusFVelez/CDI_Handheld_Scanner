@@ -1,32 +1,32 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ReceivingProductsIntoWarehouse
 
 import android.app.Dialog
-import android.os.Bundle
-import android.widget.Button
 import android.content.Context
+import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
-import android.widget.Filter
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.TextView
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
+import android.widget.Filter
+import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.DoorBin
+import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInBinList
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.BundleUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ReceivingMainFragmentBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAPICalls.ItemsInBinList
 
 class ReceivingProductsMainFragment : Fragment(){
 
@@ -311,18 +311,71 @@ class ReceivingProductsMainFragment : Fragment(){
             }
         }
 
-        viewModel.wasItemFound.observe(viewLifecycleOwner){wasItemFound ->
+        viewModel.wasItemFound.observe(viewLifecycleOwner) { wasItemFound ->
             progressDialog.dismiss()
-            if(!wasItemFound && viewModel.hasAPIBeenCalled.value!!){
-                AlerterUtils.startErrorAlerter(requireActivity(),viewModel.errorMessage.value!!["wasItemFoundError"]!!)
-                viewModel.resetHasAPIBeenCalled()
-            }else if(viewModel.hasAPIBeenCalled.value!!){
-                val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("ReceivingProductsMainFragment")
-                findNavController().navigate(R.id.action_receivingProductsMainFragment_to_receivingProductsDetailsFragment, bundle)
-                viewModel.resetHasAPIBeenCalled()
-            }
 
+            if (viewModel.hasAPIBeenCalled.value == true) {
+                if (!wasItemFound) {
+                    // Item was not found in the backend
+                    AlerterUtils.startErrorAlerter(
+                        requireActivity(),
+                        viewModel.errorMessage.value?.get("wasItemFoundError") ?: "Unknown error"
+                    )
+                    viewModel.resetHasAPIBeenCalled()
+                } else {
+                    // Item was found; now check if it's already in the RecyclerView and if it was already moved
+                    val scannedItemNumber = viewModel.itemInfo.value?.itemNumber ?: ""
+                    Log.d("Observer", "Scanned Item Number: $scannedItemNumber")
+
+                    if (scannedItemNumber.isEmpty()) {
+                        // Handle case where itemInfo is not properly set
+                        AlerterUtils.startErrorAlerter(
+                            requireActivity(),
+                            "Scanned item information is unavailable."
+                        )
+                        viewModel.resetHasAPIBeenCalled()
+                        return@observe
+                    }
+
+                    // Check if the item exists in the RecyclerView's adapter data
+                    val existingItem = recyclerViewAdapter.data.find { it.itemNumber == scannedItemNumber }
+
+                    if (existingItem != null && existingItem.wasItemAlreadyReceived) {
+                        // Item exists and was already moved; prompt the user for confirmation
+                        val questionMessage = "Item \"$scannedItemNumber\" was already moved. Are you sure you want to continue?"
+
+                        val questionPopup = PopupWindowUtils.createQuestionPopup(
+                            requireContext(),
+                            questionMessage,
+                            "Item Already Moved"
+                        )
+
+                        // Handle "Yes" button click
+                        questionPopup.contentView.findViewById<Button>(R.id.YesButton).setOnClickListener {
+                            questionPopup.dismiss()
+                            // Proceed to navigate to the details fragment
+                            navigateToDetailsFragment()
+                        }
+
+                        // Handle "No" button click
+                        questionPopup.contentView.findViewById<Button>(R.id.NoButton).setOnClickListener {
+                            questionPopup.dismiss()
+                            // Do nothing; user chose not to proceed
+                        }
+
+                        // Show the popup at the center of the screen
+                        questionPopup.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+                    } else {
+                        // Item doesn't exist in the list or hasn't been moved; proceed as usual
+                        navigateToDetailsFragment()
+                    }
+
+                    // Reset the API call flag
+                    viewModel.resetHasAPIBeenCalled()
+                }
+            }
         }
+
 
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){ wasLastAPICallSuccessful ->
             if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
@@ -354,6 +407,13 @@ class ReceivingProductsMainFragment : Fragment(){
     }
 
 
+    private fun navigateToDetailsFragment() {
+        val bundle = BundleUtils.getBundleToSendFragmentNameToNextFragment("ReceivingProductsMainFragment")
+        findNavController().navigate(
+            R.id.action_receivingProductsMainFragment_to_receivingProductsDetailsFragment,
+            bundle
+        )
+    }
 
     class CustomDoorBinSuggestionAdapter(context: Context, private var suggestions: List<DoorBin>): ArrayAdapter<DoorBin>(context, 0, suggestions){
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

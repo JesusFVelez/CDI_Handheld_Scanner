@@ -77,8 +77,8 @@ class ReceivingProductsViewModel: ViewModel() {
         get() = _errorMessage
 
     // Objects for temporary tables from backend
-    private val _itemInfo = MutableLiveData<ReceivingItemInfo>()
-    val itemInfo: LiveData<ReceivingItemInfo>
+    private val _itemInfo = MutableLiveData<ReceivingItemInfo?>()
+    val itemInfo: MutableLiveData<ReceivingItemInfo?>
         get() = _itemInfo
 
     private val _doorBins = MutableLiveData<List<DoorBin>>()
@@ -334,6 +334,8 @@ class ReceivingProductsViewModel: ViewModel() {
 
     fun getItemInfo(scannedCode: String, isEditing: Boolean) {
         _hasAPIBeenCalled.value = true
+        _itemInfo.value = null
+
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _networkErrorMessage.value = exception.message
             _wasLastAPICallSuccessful.value = false
@@ -349,10 +351,16 @@ class ReceivingProductsViewModel: ViewModel() {
                         isEditing = isEditing, warehouseNumber.value!!,
                         companyID = companyID.value!!)
                 _errorMessage.value!!["wasItemFoundError"] = response.response.errorMessage
-                _wasItemFound.value = response.response.wasItemFound
+
                 val listOfItemInfo = response.response.itemInfo.item_info
-                if (listOfItemInfo.isNotEmpty())
+                if (listOfItemInfo.isNotEmpty()) {
                     _itemInfo.value = response.response.itemInfo.item_info[0]
+                    Log.d("ViewModel", "Updated itemInfo to: ${_itemInfo.value?.itemNumber}")
+                } else {
+                    _itemInfo.value = null  // Explicitly set to null if no item info is found
+                }
+
+                _wasItemFound.value = response.response.wasItemFound
 
                 _wasLastAPICallSuccessful.value = true
             } catch (e: Exception) {
