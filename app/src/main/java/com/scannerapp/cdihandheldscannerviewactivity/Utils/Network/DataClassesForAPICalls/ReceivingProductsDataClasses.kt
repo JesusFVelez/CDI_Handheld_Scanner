@@ -210,8 +210,7 @@ data class ResponseValidateQuantityAgainstPreReceivingWrapper(
 
 @JsonClass(generateAdapter = true)
 data class ResponseValidateQuantityAgainstPreReceiving(
-    @Json(name = "isQuantityLessThanPreReceiving") val isQuantityLessThanPreReceiving: Boolean,
-    @Json(name = "preReceivingQuantity") val preReceivingQuantity: Int,
+    @Json(name = "isQuantityDifferentFromPreReceiving") val isQuantityLessThanPreReceiving: Boolean,
     @Json(name = "errorMessage") val errorMessage: String
 )
 

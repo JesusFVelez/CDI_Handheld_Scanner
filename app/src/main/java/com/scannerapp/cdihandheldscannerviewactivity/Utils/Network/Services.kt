@@ -289,7 +289,7 @@ interface ReceivingProductsServices {
     @GET("validateQuantityAgainstPreReceiving")
     suspend fun validateQuantityAgainstPreReceiving(
         @Query("itemNumber") itemNumber: String,
-        @Query("quantityEntered") quantityEntered: Int,
+        @Query("quantityEntered") quantityEntered: Float,
         @Query("receivingNumber") receivingNumber: String,
         @Query("warehouseNumber") warehouseNumber: Int,
         @Query("companyID") companyID: String

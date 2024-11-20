@@ -22,15 +22,6 @@ class ReceivingProductsViewModel: ViewModel() {
     val isQuantityLessThanPreReceiving: LiveData<Boolean>
         get() = _isQuantityLessThanPreReceiving
 
-    // LiveData to hold whether the quantity is different from Pre-Receiving
-    private val _isQuantityDifferentFromPreReceiving = MutableLiveData<Boolean>()
-    val isQuantityDifferentFromPreReceiving: LiveData<Boolean>
-        get() = _isQuantityDifferentFromPreReceiving
-
-    // LiveData to hold the Pre-Receiving quantity
-    private val _preReceivingQuantity = MutableLiveData<Int>()
-    val preReceivingQuantity: LiveData<Int>
-        get() = _preReceivingQuantity
 
     // LiveData to hold any error messages
     private val _validateQuantityErrorMessage = MutableLiveData<String>()
@@ -671,7 +662,7 @@ class ReceivingProductsViewModel: ViewModel() {
 
     fun validateQuantityAgainstPreReceiving(
         itemNumber: String,
-        quantityEntered: Int
+        quantityEntered: Float
     ) {
         _hasAPIBeenCalled.value = true
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -695,7 +686,6 @@ class ReceivingProductsViewModel: ViewModel() {
 
                 // Update LiveData variables with the response
                 _isQuantityLessThanPreReceiving.value = response.response.isQuantityLessThanPreReceiving
-                _preReceivingQuantity.value = response.response.preReceivingQuantity
                 _validateQuantityErrorMessage.value = response.response.errorMessage
 
                 _wasLastAPICallSuccessful.value = true
