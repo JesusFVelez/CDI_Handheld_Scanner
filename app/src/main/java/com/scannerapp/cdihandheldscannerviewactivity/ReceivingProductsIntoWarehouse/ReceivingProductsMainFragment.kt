@@ -44,6 +44,8 @@ class ReceivingProductsMainFragment : Fragment(){
     private val viewModel: ReceivingProductsViewModel by activityViewModels()
     private lateinit var binding: ReceivingMainFragmentBinding
 
+    private var isEditingItem: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,7 +143,7 @@ class ReceivingProductsMainFragment : Fragment(){
         addButton.setOnClickListener {
             val listener = object : PopupWindowUtils.Companion.PopupInputListener{
                 override fun onConfirm(input: EditText) {
-                    viewModel.getItemInfo(input.text.toString(), isEditing = false)
+                    viewModel.getItemInfo(input.text.toString(), isEditing = isEditingItem)
                     progressDialog.show()
                 }
             }
@@ -185,7 +187,8 @@ class ReceivingProductsMainFragment : Fragment(){
                 if(!item.wasItemAlreadyReceived) {
                     viewModel.willEditCurrentValues()
                     viewModel.setCurrentlyChosenItemAdapterPosition(position)
-                    viewModel.getItemInfo(recyclerViewAdapter.data[position].itemNumber, isEditing = true)
+                    isEditingItem = true
+                    viewModel.getItemInfo(recyclerViewAdapter.data[position].itemNumber, isEditing = isEditingItem)
                     progressDialog.show()
                 }
                 else
@@ -340,7 +343,7 @@ class ReceivingProductsMainFragment : Fragment(){
                     // Check if the item exists in the RecyclerView's adapter data
                     val existingItem = recyclerViewAdapter.data.find { it.itemNumber == scannedItemNumber }
 
-                    if (existingItem != null && existingItem.wasItemAlreadyReceived) {
+                    if (existingItem != null && existingItem.wasItemAlreadyReceived && !isEditingItem) {
                         // Item exists and was already moved; prompt the user for confirmation
                         val questionMessage = "Item \"$scannedItemNumber\" was already moved. Are you sure you want to continue?"
 
@@ -367,6 +370,7 @@ class ReceivingProductsMainFragment : Fragment(){
                         questionPopup.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
                     } else {
                         // Item doesn't exist in the list or hasn't been moved; proceed as usual
+                        isEditingItem = false
                         navigateToDetailsFragment()
                     }
 
@@ -380,6 +384,7 @@ class ReceivingProductsMainFragment : Fragment(){
         viewModel.wasLastAPICallSuccessful.observe(viewLifecycleOwner){ wasLastAPICallSuccessful ->
             if(!wasLastAPICallSuccessful && viewModel.hasAPIBeenCalled.value!!){
                 viewModel.resetHasAPIBeenCalled()
+                isEditingItem = false
                 progressDialog.dismiss()
                 AlerterUtils.startNetworkErrorAlert(requireActivity(), viewModel.networkErrorMessage.value!!)
             }
