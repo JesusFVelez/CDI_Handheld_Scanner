@@ -345,7 +345,7 @@ class ReceivingProductsMainFragment : Fragment(){
 
                     if (existingItem != null && existingItem.wasItemAlreadyReceived && !isEditingItem) {
                         // Item exists and was already moved; prompt the user for confirmation
-                        val questionMessage = "Item \"$scannedItemNumber\" was already moved. Are you sure you want to continue?"
+                        val questionMessage = "Item \"$scannedItemNumber\" was already moved. Are you sure you want to add more quantities to the item already moved?"
 
                         val questionPopup = PopupWindowUtils.createQuestionPopup(
                             requireContext(),
