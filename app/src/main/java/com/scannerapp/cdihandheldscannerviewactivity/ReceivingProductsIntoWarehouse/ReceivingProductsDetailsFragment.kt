@@ -285,7 +285,7 @@ class ReceivingProductsDetailsFragment : Fragment() {
                 progressDialog.dismiss()
                 if (isQuantityDifferentFromPreReceiving == true) {
                     // Entered quantity is less than Pre-Receiving quantity, show confirmation popup
-                    val questionMessage = "The quantity entered is different from quantity in Pre-Receiving. Are you sure you want to proceed?"
+                    val questionMessage = "The quantity entered is different from quantity in Pre-Receiving. Are you sure you want to add more quamtity to the door bin?"
 
                     val questionPopup = PopupWindowUtils.createQuestionPopup(
                         requireContext(),
