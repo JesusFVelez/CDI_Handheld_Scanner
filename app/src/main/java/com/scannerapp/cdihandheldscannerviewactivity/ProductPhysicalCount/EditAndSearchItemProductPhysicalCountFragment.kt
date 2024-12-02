@@ -1,6 +1,7 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
@@ -62,6 +64,19 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         setupUI()
         initObservers()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Request focus on the EditText
+        binding.binNumberSearchEditText.requestFocus()
+
+        // Optionally, show the soft keyboard
+        binding.binNumberSearchEditText.post {
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.binNumberSearchEditText, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
     override fun onResume() {
