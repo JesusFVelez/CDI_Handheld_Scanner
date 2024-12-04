@@ -43,7 +43,7 @@ data class TtItemInf(
     @Json(name = "itemDescription") val itemDescription: String,
     @Json(name = "binLocation") val binLocation: String,
     @Json(name = "expireDate") val expireDate: String?,
-    @Json(name = "lotNumber") val lotNumber: String,
+    @Json(name = "lotNumber") val lotNumber: String?,
     @Json(name = "qtyCounted") val qtyCounted: Int,
     @Json(name = "inCount") val inCount: Boolean,
     @Json(name = "barCode") val barCode: String?,
