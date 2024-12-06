@@ -77,8 +77,8 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
 
         progressDialog.show()
 
-        binding.laneFilterButton.setOnClickListener {
-            showLaneSelectionDialog()
+        binding.aisleFilterButton.setOnClickListener {
+            showAisleSelectionDialog()
         }
 
         binding.classCodeFilterButton.setOnClickListener {
@@ -113,7 +113,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                 if (trimmedText.isEmpty()) {
                     applyFilters()
                 } else {
-                    val filteredList = filteredBinInfoByLane().filter { binInfo ->
+                    val filteredList = filteredBinInfoByAisle().filter { binInfo ->
                         binInfo.binLocation.contains(trimmedText, ignoreCase = true)
                     }
                     val uniqueBins = filteredList.distinctBy { it.binLocation }
@@ -190,7 +190,7 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
                 if (trimmedText.isEmpty()) {
                     applyFilters()
                 } else {
-                    val filteredList = filteredBinInfoByLane().filter { binInfo ->
+                    val filteredList = filteredBinInfoByAisle().filter { binInfo ->
                         binInfo.binLocation.contains(trimmedText, ignoreCase = true)
                     }
                     val uniqueBins = filteredList.distinctBy { it.binLocation }
@@ -206,18 +206,18 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         view?.findNavController()?.navigate(R.id.EditAndSearchItemProductPhysicalCountFragment)
     }
 
-    private fun showLaneSelectionDialog() {
-        val lanes = allBinInfo.map { it.binLocation.take(2).toUpperCase() }.distinct().sorted().toMutableList().apply { add(0, "ALL") }.toTypedArray()
+    private fun showAisleSelectionDialog() {
+        val aisle = allBinInfo.map { it.binLocation.take(2).toUpperCase() }.distinct().sorted().toMutableList().apply { add(0, "ALL") }.toTypedArray()
         AlertDialog.Builder(requireContext()).apply {
-            setTitle("Select Lane")
-            setItems(lanes) { _, which ->
-                viewModel.selectedLane.value = lanes[which]
-                if (viewModel.selectedLane.value != "ALL") {
-                    binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
-                    binding.laneFilterButton.text = "Lane: ${viewModel.selectedLane.value}"
+            setTitle("Select Aisle")
+            setItems(aisle) { _, which ->
+                viewModel.selectedAisle.value = aisle[which]
+                if (viewModel.selectedAisle.value != "ALL") {
+                    binding.aisleFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
+                    binding.aisleFilterButton.text = "Aisle: ${viewModel.selectedAisle.value}"
                 } else {
-                    binding.laneFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
-                    binding.laneFilterButton.text = "Lane"
+                    binding.aisleFilterButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
+                    binding.aisleFilterButton.text = "Aisle"
                 }
                 applyFilters()
             }
@@ -225,11 +225,11 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
         }
     }
 
-    private fun filteredBinInfoByLane(): List<BinsByClassCodeByVendorAndByItemNumber> {
-        return if (viewModel.selectedLane.value == "ALL") {
+    private fun filteredBinInfoByAisle(): List<BinsByClassCodeByVendorAndByItemNumber> {
+        return if (viewModel.selectedAisle.value == "ALL") {
             allBinInfo
         } else {
-            allBinInfo.filter { it.binLocation.startsWith(viewModel.selectedLane.value ?: "ALL", ignoreCase = true) }
+            allBinInfo.filter { it.binLocation.startsWith(viewModel.selectedAisle.value ?: "ALL", ignoreCase = true) }
         }
     }
 
@@ -248,11 +248,11 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
     }
 
     private fun applyFilters() {
-        Log.d("SearchBinFragment", "Applying Filters: selectedLane=${viewModel.selectedLane.value}, enteredClassCode=${viewModel.enteredClassCode.value}, enteredVendor=${viewModel.enteredVendor.value}, enteredItemNumber=${viewModel.enteredItemNumber.value}")
+        Log.d("SearchBinFragment", "Applying Filters: selected Aisle=${viewModel.selectedAisle.value}, enteredClassCode=${viewModel.enteredClassCode.value}, enteredVendor=${viewModel.enteredVendor.value}, enteredItemNumber=${viewModel.enteredItemNumber.value}")
 
-        val filteredList = filteredBinInfoByLane().filter { binInfo ->
-            val matchesLane = (viewModel.selectedLane.value == "ALL" || binInfo.binLocation.startsWith(viewModel.selectedLane.value ?: "ALL", ignoreCase = true))
-            matchesLane
+        val filteredList = filteredBinInfoByAisle().filter { binInfo ->
+            val matchesAisle = (viewModel.selectedAisle.value == "ALL" || binInfo.binLocation.startsWith(viewModel.selectedAisle.value ?: "ALL", ignoreCase = true))
+            matchesAisle
         }
 
         // Ensure no bin is displayed more than once
@@ -295,13 +295,13 @@ class SearchBinProductPhysicalCountFragment : Fragment() {
             ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
         }
 
-        // Restore the state of the lane filter button
-        viewModel.selectedLane.value?.let { selectedLane ->
-            binding.laneFilterButton.backgroundTintList = if (selectedLane != "ALL") {
-                binding.laneFilterButton.text = "Lane: $selectedLane"
+        // Restore the state of the aisle filter button
+        viewModel.selectedAisle.value?.let { selectedAisle ->
+            binding.aisleFilterButton.backgroundTintList = if (selectedAisle != "ALL") {
+                binding.aisleFilterButton.text = "Aisle: $selectedAisle"
                 ContextCompat.getColorStateList(requireContext(), R.color.CDI_Light_Blue)
             } else {
-                binding.laneFilterButton.text = "Lane"
+                binding.aisleFilterButton.text = "Aisle"
                 ContextCompat.getColorStateList(requireContext(), R.color.CDI_Gray)
             }
         }
