@@ -23,3 +23,5 @@ local.properties
 /app/release/app-release.aab
 /.idea/deploymentTargetSelector.xml
 /.idea/other.xml
+/.idea/runConfigurations.xml
+/.idea/deviceManager.xml

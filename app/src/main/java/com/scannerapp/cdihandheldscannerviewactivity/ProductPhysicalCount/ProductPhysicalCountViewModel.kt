@@ -84,14 +84,14 @@ class InventoryCountViewModel : ViewModel() {
     val enteredItemNumber = MutableLiveData<String>()
     val enteredVendor = MutableLiveData<String>()
     val enteredClassCode = MutableLiveData<String>()
-    val selectedLane = MutableLiveData<String>("ALL")
+    val selectedAisle = MutableLiveData<String>("ALL")
     val enteredBinNumber = MutableLiveData<String>()
 
     // Local variables to hold the filter states
     private var savedItemNumber: String = ""
     private var savedVendor: String = ""
     private var savedClassCode: String = ""
-    private var savedLane: String = "ALL"
+    private var savedAisle: String = "ALL"
 
 
 
@@ -326,20 +326,20 @@ class InventoryCountViewModel : ViewModel() {
         savedClassCode = enteredClassCode.value ?: ""
         savedVendor = enteredVendor.value ?: ""
         savedItemNumber = enteredItemNumber.value ?: ""
-        savedLane = selectedLane.value ?: "ALL"
+        savedAisle = selectedAisle.value ?: "ALL"
     }
 
     fun loadFilterStates(context: Context) {
         enteredClassCode.value = savedClassCode
         enteredVendor.value = savedVendor
         enteredItemNumber.value = savedItemNumber
-        selectedLane.value = savedLane
+        selectedAisle.value = savedAisle
 
         // Notify observers to apply filters correctly
         enteredClassCode.postValue(enteredClassCode.value)
         enteredVendor.postValue(enteredVendor.value)
         enteredItemNumber.postValue(enteredItemNumber.value)
-        selectedLane.postValue(selectedLane.value)
+        selectedAisle.postValue(selectedAisle.value)
     }
 
     fun clearItemInfoPopUp() {

@@ -1,6 +1,7 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ProductPhysicalCount
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
@@ -22,7 +24,6 @@ import com.comdist.cdihandheldscannerviewactivity.Utils.Network.DataClassesForAP
 import com.scannerapp.cdihandheldscannerviewactivity.Adapter.ItemAdapter
 import com.scannerapp.cdihandheldscannerviewactivity.R
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.AlerterUtils
-import com.scannerapp.cdihandheldscannerviewactivity.Utils.DateUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.PopupWindowUtils
 import com.scannerapp.cdihandheldscannerviewactivity.Utils.Storage.SharedPreferencesUtils
 import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysicalCountItemListFragmentBinding
@@ -62,6 +63,16 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
         setupUI()
         initObservers()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Request focus on the itemSearchEditText
+        binding.itemSearchEditText.requestFocus()
+
+        // Show the keyboard explicitly
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(binding.itemSearchEditText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     override fun onResume() {
