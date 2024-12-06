@@ -258,6 +258,7 @@ class ReceivingProductsMainFragment : Fragment(){
                 searchButton.isEnabled = true
                 binNumberAutoCompleteTextView.isEnabled = true
                 finishButton.isEnabled = false
+                addButton.isEnabled = false
             }
         }
 
