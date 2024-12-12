@@ -40,7 +40,8 @@ data class ItemsInOrderInfo(
     @Json(name = "itemStyleColor") val itemStyleColor: String,
     @Json(name = "howManyIndividualQtysPerUOM") val howManyIndividualQtysPerUOM: Float,
     @Json(name = "uniqueIDForPicking") val uniqueIDForPicking: String,
-    @Json(name = "hasInvalidLineUp") val hasInvalidLineUp: Boolean
+    @Json(name = "hasInvalidLineUp") val hasInvalidLineUp: Boolean,
+    @Json(name = "pickingOrder") val pickingOrder : String
 )
 
 

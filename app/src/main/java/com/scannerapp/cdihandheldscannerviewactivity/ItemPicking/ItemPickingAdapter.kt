@@ -36,6 +36,7 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
         holder.itemNameTextView.text = item.itemName + " - " + item.itemDetails
         holder.binNumberTextView.text = item.binLocation
         holder.remainingItemsToPickTextView.text = "Picked: " + item.quantityPicked.toInt() + "/" + item.totalQuantityToBePicked.toInt()
+        holder.pickingOrderTextView.text = item.pickingOrder
 
 
         when (item.itemPickingStatus) {
@@ -47,6 +48,8 @@ class ItemPickingAdapter(private val listener: itemInOrderClickListener) : Recyc
 
         if(item.hasInvalidLineUp)
             holder.itemPickingStatusImage.setImageResource(R.drawable.black_warning_icon)
+
+
 
     }
 
@@ -62,6 +65,7 @@ class ItemPickingViewHolder(orderProductView: View, private val listener: itemIn
     val itemPickingStatusImage: ImageView = orderProductView.findViewById(R.id.itemPickingStatusIcon)
     val binNumberTextView: TextView = orderProductView.findViewById(R.id.binNumber)
     val remainingItemsToPickTextView: TextView = orderProductView.findViewById(R.id.quantityToPick)
+    val pickingOrderTextView: TextView = orderProductView.findViewById(R.id.pickingSequenceNumber)
 
     init{
         orderProductView.setOnClickListener(this)
