@@ -379,6 +379,9 @@ class ItemPickingViewModel: ViewModel() {
 
 
     fun startPickingTimer(){
+
+        val timerRequestBody = RequestTimerParams(_orderNumber.value!!, _userNameOfPicker.value!!)
+        val timerRequestBodyWrapper = RequestTimerParamsWrapper(timerRequestBody)
         // Exception handler for API call
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             _networkErrorMessage.value = exception.message
@@ -390,8 +393,6 @@ class ItemPickingViewModel: ViewModel() {
         try {
             
             viewModelScope.launch(exceptionHandler) {
-                val timerRequestBody = RequestTimerParams(_orderNumber.value!!, _userNameOfPicker.value!!)
-                val timerRequestBodyWrapper = RequestTimerParamsWrapper(timerRequestBody)
                 ScannerAPI.getItemPickingForDispatchService().startPickerTimer(timerRequestBodyWrapper)
                 _wasLastAPICallSuccessful.value = true
                 _hasPickingTimerAlreadyStarted.value = true

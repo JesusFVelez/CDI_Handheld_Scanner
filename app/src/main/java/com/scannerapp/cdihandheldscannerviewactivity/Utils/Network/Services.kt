@@ -439,7 +439,7 @@ data class RequestUser(val request: User)
 data class User(val userName: String, val password: String, val company: String, val warehouseNumber: Int)
 
 data class RequestTimerParamsWrapper(val request: RequestTimerParams)
-data class RequestTimerParams(val orderNumber: String, val userNameOfPicker: String)
+data class RequestTimerParams(val orderNumber: String, val pickerUserName: String)
 // Object for accessing the API services
 object ScannerAPI {
     private lateinit var ipAddress: String
