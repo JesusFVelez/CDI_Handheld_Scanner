@@ -35,12 +35,14 @@
         android:id="@+id/pickingSequenceNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:text="10003000"
-        android:textSize="10sp"
+        android:textSize="8sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/itemNumberTextView"
-        app:layout_constraintEnd_toEndOf="@+id/itemPickingStatusIcon"
-        app:layout_constraintStart_toStartOf="@+id/itemPickingStatusIcon" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/quantityToPick"
+        app:layout_constraintStart_toStartOf="@+id/quantityToPick"
+        app:layout_constraintTop_toBottomOf="@+id/quantityToPick" />
 
 
     <ImageView
