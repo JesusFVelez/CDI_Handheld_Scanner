@@ -27,8 +27,10 @@ class BinsThatHaveProductFragment : Fragment() {
     private lateinit var itemNameTextView: TextView
     private lateinit var inventoryTypeTextView: TextView
     private lateinit var vendorItemNumberTextView: TextView
+    private lateinit var weightTypeTextView: TextView
     private lateinit var binding: BinsWithProductListOfBinsFragmentBinding
     private lateinit var adapter : BinsWithProductAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,6 +62,7 @@ class BinsThatHaveProductFragment : Fragment() {
         itemNameTextView = binding.itemNameTextView
         inventoryTypeTextView = binding.inventoryTypeTextView
         vendorItemNumberTextView = binding.VendorItemNumberText
+        weightTypeTextView = binding.weightTypeTextView
         binding.ListofBinsThatHaveProd.layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically(): Boolean {
                 return false
@@ -81,6 +84,7 @@ class BinsThatHaveProductFragment : Fragment() {
         itemNameTextView.text = "${viewModel.itemDetails.value!![0].itemName} - ${viewModel.itemDetails.value!![0].itemDetails}"
         inventoryTypeTextView.text = "Inv. Type: ${viewModel.itemDetails.value!![0].inventoryType} | ${viewModel.itemDetails.value!![0].unitOfMeasurement}"
         vendorItemNumberTextView.text = "Vendor Item Num: ${viewModel.itemDetails.value!![0].vendorItemNumber}"
+        weightTypeTextView.text = "Weight Type: ${viewModel.itemDetails.value!![0].weightTypeOfItemn}"
     }
 
 
