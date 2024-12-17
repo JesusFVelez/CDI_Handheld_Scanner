@@ -96,6 +96,7 @@ data class TtItemInfo(
     @Json(name = "qtyCounted") val qtyCounted: Int?,
     @Json(name = "inCount") val inCount: Boolean,
     @Json(name = "weight") val weight: Double?,
+    @Json(name = "dateCreated") val dateCreated: String?,
     @Json(name = "doesItemHaveWeight") val doesItemHaveWeight: Boolean,
     @Json(name = "isItemInIvlot") val isItemInIvlot: Boolean
 )
