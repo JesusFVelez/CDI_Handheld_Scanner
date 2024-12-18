@@ -48,6 +48,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     private var hasPageJustStarted: Boolean = false
     private var hasOrderBeenSearched: Boolean = false
     private lateinit var progressDialog: Dialog
+    private var pickingList: PickingList = PickingList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +102,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     override fun onPause() {
         super.onPause()
     }
-
 
 
 
@@ -261,10 +261,10 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
                 progressDialog.dismiss()
                 adapter.data = it
             }
-
-
-
             if(newListOfItemsInOrder.isNotEmpty()) {
+                pickingList.setPickingList(newListOfItemsInOrder)
+                pickingList.startPickingLoop(requireContext(), viewModel, requireView())
+
                 fabScrollDown.visibility = View.VISIBLE
                 val doesAtLeastOneItemHaveLineUpDorW = verifyIfAtLeastOneItemHasLineUpDorWInOrder(newListOfItemsInOrder)
                 if(doesAtLeastOneItemHaveLineUpDorW && hasOrderBeenSearched) {

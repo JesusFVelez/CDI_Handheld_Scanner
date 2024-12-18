@@ -32,7 +32,15 @@ class PopupWindowUtils {
 
         interface PopupInputListener{
             fun onConfirm(input: EditText)
+            fun onNextPress(): Boolean {
+                // Does nothing by default
+                // This is because I want to make this interface re-usable for all the popups that have a next text on it
+                return false
+            }
         }
+
+
+
 
         fun showErrorPopup(context: Context, anchor: View, message: String){
             val layoutInflater = LayoutInflater.from(context)
@@ -149,7 +157,11 @@ class PopupWindowUtils {
 
         fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener, inlineErrorText: String = "Field left empty, please enter a value"):PopupWindow {
             val layoutInflater = LayoutInflater.from(context)
-            val popupContentView = layoutInflater.inflate(R.layout.popup_confirmation, null)
+
+            val popupContentView = if(!listener.onNextPress())
+                layoutInflater.inflate(R.layout.popup_confirmation, null)
+            else
+                layoutInflater.inflate(R.layout.popup_confirmation_with_next, null)
 
 
             val popupWidth = getPopupWindowWidth(context)
@@ -198,6 +210,14 @@ class PopupWindowUtils {
                 }else
                     confirmEditText.error = inlineErrorText
             }
+
+            if(listener.onNextPress()){
+                val nextButton: Button = popupContentView.findViewById(R.id.nextItemImageButton)
+                nextButton.setOnClickListener {
+                    listener.onNextPress()
+                }
+            }
+
 
 
 
