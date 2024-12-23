@@ -3,7 +3,6 @@ package com.scannerapp.cdihandheldscannerviewactivity.ItemPicking
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -73,7 +72,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
 
         hasOrderBeenSearched = false
         hasPageJustStarted = true
-        viewModel.setChosenAdapterPosition(0)
 
         return binding.root
     }
@@ -90,9 +88,8 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         }
 
         // For whenever the fragment comes back from the pick individual fragmemt screen
-        if(lastFragmentName == "null"){
+        if(lastFragmentName == "null")
             searchForOrder()
-        }
 
     }
 
@@ -101,7 +98,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
     override fun onPause() {
         super.onPause()
     }
-
 
 
 
@@ -158,7 +154,6 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         hasOrderBeenSearched = true
         progressDialog.show()
         viewModel.verifyIfOrderIsAvailableInBackend()
-
     }
 
     private fun initOrderNumberAutoCompleteTextView(newOrdersThatHavePicking: List<ordersThatAreInPickingClass>){
@@ -256,21 +251,23 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             }
         }
 
-        viewModel.listOfItemsInOrder.observe(viewLifecycleOwner) { newListOfItemsInOrder ->
-            newListOfItemsInOrder.let {
+        viewModel.pickingList.observe(viewLifecycleOwner) { newPickingList ->
+            val listOfItems = newPickingList.getListOfItemsToPick()
+            listOfItems.let {
                 progressDialog.dismiss()
                 adapter.data = it
             }
-
-
-
-            if(newListOfItemsInOrder.isNotEmpty()) {
+            if(listOfItems.isNotEmpty()) {
+                if(hasOrderBeenSearched) {
+                    newPickingList.setItemToStartPickingOn()
+                    newPickingList.startPickingLoop(requireContext(), viewModel, requireView())
+                }
                 fabScrollDown.visibility = View.VISIBLE
-                val doesAtLeastOneItemHaveLineUpDorW = verifyIfAtLeastOneItemHasLineUpDorWInOrder(newListOfItemsInOrder)
+                val doesAtLeastOneItemHaveLineUpDorW = verifyIfAtLeastOneItemHasLineUpDorWInOrder(listOfItems)
                 if(doesAtLeastOneItemHaveLineUpDorW && hasOrderBeenSearched) {
                     AlerterUtils.startWarningAlerter(
                         requireActivity(),
-                        "At least one item in this order cannot be processed because it is either not physically present in this warehouse (Line Up W) or has been discontinued (Line Up D)."
+                        "At least one item in this order cannot be processed because it is either not physically present in this warehouse (Line Up W), not in stock (Line up N), or has been discontinued (Line Up D)."
                     )
                 }
             }
@@ -279,14 +276,9 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
         }
     }
     override fun onItemClickListener(view: View, position: Int) {
-        val listener = object : PopupWindowUtils.Companion.PopupInputListener {
-            override fun onConfirm(input: EditText) {
-                viewModel.setChosenAdapterPosition(position)
-                viewModel.setCurrentlyChosenItem()
-                viewModel.confirmBin(input.text.toString(), position)
-            }
-        }
-        PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Scan Bin '" + viewModel.listOfItemsInOrder.value!![position].binLocation + "' to continue", "Bin Number", listener)
+        viewModel.pickingList.value!!.setCurrentItemIndex(position)
+        viewModel.pickingList.value!!.startPickingLoop(requireContext(), viewModel, requireView())
+        //PopupWindowUtils.showConfirmationPopup(requireContext(), view, "Scan Bin '" + viewModel.listOfItemsInOrder.value!![position].binLocation + "' to continue", "Bin Number", listener)
     }
 
     private fun verifyIfAtLeastOneItemHasLineUpDorWInOrder(listOfItemsInOrder: List<ItemsInOrderInfo>): Boolean{

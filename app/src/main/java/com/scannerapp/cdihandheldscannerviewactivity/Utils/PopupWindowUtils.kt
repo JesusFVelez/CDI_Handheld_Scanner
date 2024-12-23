@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.PopupWindow
 import android.widget.TextView
 import com.scannerapp.cdihandheldscannerviewactivity.R
@@ -31,8 +32,13 @@ class PopupWindowUtils {
         }
 
         interface PopupInputListener{
+
             fun onConfirm(input: EditText)
+            fun onNextPress() {}
         }
+
+
+
 
         fun showErrorPopup(context: Context, anchor: View, message: String){
             val layoutInflater = LayoutInflater.from(context)
@@ -147,9 +153,13 @@ class PopupWindowUtils {
         }
 
 
-        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener, inlineErrorText: String = "Field left empty, please enter a value"):PopupWindow {
+        fun showConfirmationPopup(context: Context, anchor: View ,confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener, inlineErrorText: String = "Field left empty, please enter a value", hasNextButton:Boolean = false ):PopupWindow {
             val layoutInflater = LayoutInflater.from(context)
-            val popupContentView = layoutInflater.inflate(R.layout.popup_confirmation, null)
+
+            val popupContentView = if(!hasNextButton)
+                layoutInflater.inflate(R.layout.popup_confirmation, null)
+            else
+                layoutInflater.inflate(R.layout.popup_confirmation_with_next, null)
 
 
             val popupWidth = getPopupWindowWidth(context)
@@ -188,6 +198,7 @@ class PopupWindowUtils {
                     false
                 }
             }
+            confirmEditText.requestFocus()
 
             val confirmButton: Button
             confirmButton = popupContentView.findViewById(R.id.confirmButton)
@@ -198,6 +209,14 @@ class PopupWindowUtils {
                 }else
                     confirmEditText.error = inlineErrorText
             }
+
+            if(hasNextButton){
+                val nextButton: ImageButton = popupContentView.findViewById(R.id.nextItemImageButton)
+                nextButton.setOnClickListener {
+                    listener.onNextPress()
+                }
+            }
+
 
 
 
