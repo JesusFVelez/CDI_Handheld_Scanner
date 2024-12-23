@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.PopupWindow
 import android.widget.TextView
 import com.scannerapp.cdihandheldscannerviewactivity.R
@@ -31,12 +32,9 @@ class PopupWindowUtils {
         }
 
         interface PopupInputListener{
+
             fun onConfirm(input: EditText)
-            fun onNextPress(): Boolean {
-                // Does nothing by default
-                // This is because I want to make this interface re-usable for all the popups that have a next text on it
-                return false
-            }
+            fun onNextPress() {}
         }
 
 
@@ -155,10 +153,10 @@ class PopupWindowUtils {
         }
 
 
-        fun showConfirmationPopup(context: Context, anchor: View, confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener, inlineErrorText: String = "Field left empty, please enter a value"):PopupWindow {
+        fun showConfirmationPopup(context: Context, anchor: View ,confirmationText: String, confirmEditTextHint: String, listener: PopupInputListener, inlineErrorText: String = "Field left empty, please enter a value", hasNextButton:Boolean = false ):PopupWindow {
             val layoutInflater = LayoutInflater.from(context)
 
-            val popupContentView = if(!listener.onNextPress())
+            val popupContentView = if(!hasNextButton)
                 layoutInflater.inflate(R.layout.popup_confirmation, null)
             else
                 layoutInflater.inflate(R.layout.popup_confirmation_with_next, null)
@@ -211,8 +209,8 @@ class PopupWindowUtils {
                     confirmEditText.error = inlineErrorText
             }
 
-            if(listener.onNextPress()){
-                val nextButton: Button = popupContentView.findViewById(R.id.nextItemImageButton)
+            if(hasNextButton){
+                val nextButton: ImageButton = popupContentView.findViewById(R.id.nextItemImageButton)
                 nextButton.setOnClickListener {
                     listener.onNextPress()
                 }

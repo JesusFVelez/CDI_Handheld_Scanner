@@ -1,9 +1,6 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails
 import android.app.Dialog
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -48,7 +45,7 @@ class OrderPickingItemFragment : Fragment() {
         setUIValues()
         initObservers()
 
-        val doesItemHaveInvalidLineUp = viewModel.currentlyChosenItem.value!!.hasInvalidLineUp
+        val doesItemHaveInvalidLineUp = viewModel.pickingList.value!!.getCurrentItem().hasInvalidLineUp
         if (doesItemHaveInvalidLineUp)
             AlerterUtils.startErrorAlerter(
                 requireActivity(),
@@ -102,7 +99,7 @@ class OrderPickingItemFragment : Fragment() {
         progressDialog = PopupWindowUtils.getLoadingPopup(requireContext())
 
         pickItemButton = binding.pickingButton
-        val isLineUpInvalid = viewModel.currentlyChosenItem.value!!.hasInvalidLineUp
+        val isLineUpInvalid = viewModel.pickingList.value!!.getCurrentItem().hasInvalidLineUp
         pickItemButton.isEnabled = !isLineUpInvalid
         if (isLineUpInvalid)
             pickItemButton.text = "Invalid"
@@ -111,7 +108,7 @@ class OrderPickingItemFragment : Fragment() {
             hasPageJustStarted = true
             val amountToBePickedString = itemAmountEditText.text.toString()
             val weightToBePickedString = weightEditText.text.toString()
-            val doesItemHaveWeight = viewModel.currentlyChosenItem.value!!.doesItemHaveWeight
+            val doesItemHaveWeight = viewModel.pickingList.value!!.getCurrentItem().doesItemHaveWeight
             if (amountToBePickedString.isEmpty() || (doesItemHaveWeight && weightToBePickedString.isEmpty()))
                 AlerterUtils.startErrorAlerter(
                     requireActivity(),
@@ -132,7 +129,7 @@ class OrderPickingItemFragment : Fragment() {
         binNumberTextView = binding.binLocationText
         totalQuantityToBePickedTextView = binding.totalQuantityOfItemsToBePickedText
         weightEditText = binding.WeightEditText
-        val doesItemHaveWeight = viewModel.currentlyChosenItem.value!!.doesItemHaveWeight
+        val doesItemHaveWeight = viewModel.pickingList.value!!.getCurrentItem().doesItemHaveWeight
         weightEditText.isEnabled = doesItemHaveWeight
     }
 
@@ -143,12 +140,12 @@ class OrderPickingItemFragment : Fragment() {
                 if(itemAmountEditText.text.toString().isEmpty())
                     itemAmountEditText.setText("0")
                 val valueToBeDisplayed: Float = if (viewModel.UOMQtyInBarcode.value == 0.0f)
-                    itemAmountEditText.text.toString().toFloat() + viewModel.currentlyChosenItem.value!!.howManyIndividualQtysPerUOM
+                    itemAmountEditText.text.toString().toFloat() + viewModel.pickingList.value!!.getCurrentItem().howManyIndividualQtysPerUOM
                 else
                     itemAmountEditText.text.toString().toFloat() + viewModel.UOMQtyInBarcode.value!!
 
                 // Handle weight
-                val doesItemHaveWeight = viewModel.currentlyChosenItem.value!!.doesItemHaveWeight
+                val doesItemHaveWeight = viewModel.pickingList.value!!.getCurrentItem().doesItemHaveWeight
                 val weightString = weightEditText.text.toString()
 
                 val weightToBeDisplayed: Float = if (viewModel.weightInBarcode.value == 0.0f)
@@ -173,14 +170,15 @@ class OrderPickingItemFragment : Fragment() {
             }
         }
 
-        viewModel.wasPickingSuccesfulyFinished.observe(viewLifecycleOwner) { wasPickingDoneSuccessfully ->
+        viewModel.wasPickingSuccessfullyFinished.observe(viewLifecycleOwner) { wasPickingDoneSuccessfully ->
             if (wasPickingDoneSuccessfully && hasPageJustStarted) {
                 progressDialog.dismiss()
                 AlerterUtils.startSuccessAlert(
                     requireActivity(),
                     "Picking Successful",
-                    "Item '" + viewModel.currentlyChosenItem.value!!.itemName + "' was successfully picked"
+                    "Item '" + viewModel.pickingList.value!!.getCurrentItem().itemName + "' was successfully picked"
                 )
+                viewModel.pickingList.value!!.moveToNextItemNotPicked()
                 findNavController().navigateUp()
             } else if (hasPageJustStarted) {
                 progressDialog.dismiss()
@@ -200,12 +198,12 @@ class OrderPickingItemFragment : Fragment() {
     }
 
     private fun setUIValues() {
-        itemNameTextView.text = viewModel.currentlyChosenItem.value!!.itemName
-        itemNumberTextView.text = viewModel.currentlyChosenItem.value!!.itemNumber
-        binNumberTextView.text = viewModel.currentlyChosenItem.value!!.binLocation
-        itemAmountEditText.setText(viewModel.currentlyChosenItem.value!!.quantityPicked.toInt().toString())
-        weightEditText.setText(viewModel.currentlyChosenItem.value!!.weightPicked.toString())
-        totalQuantityToBePickedTextView.text = viewModel.currentlyChosenItem.value!!.totalQuantityToBePicked.toInt().toString()
+        itemNameTextView.text = viewModel.pickingList.value!!.getCurrentItem().itemName
+        itemNumberTextView.text = viewModel.pickingList.value!!.getCurrentItem().itemNumber
+        binNumberTextView.text = viewModel.pickingList.value!!.getCurrentItem().binLocation
+        itemAmountEditText.setText(viewModel.pickingList.value!!.getCurrentItem().quantityPicked.toInt().toString())
+        weightEditText.setText(viewModel.pickingList.value!!.getCurrentItem().weightPicked.toString())
+        totalQuantityToBePickedTextView.text = viewModel.pickingList.value!!.getCurrentItem().totalQuantityToBePicked.toInt().toString()
     }
 
     override fun onResume() {
