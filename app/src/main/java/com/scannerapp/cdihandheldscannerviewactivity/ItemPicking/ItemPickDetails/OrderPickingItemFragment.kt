@@ -139,7 +139,7 @@ class OrderPickingItemFragment : Fragment() {
     private fun initObservers() {
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner) { wasItemConfirmed ->
             if (wasItemConfirmed && hasPageJustStarted) {
-
+                // Handle Qty uom from barcode
                 if(itemAmountEditText.text.toString().isEmpty())
                     itemAmountEditText.setText("0")
                 val valueToBeDisplayed: Float = if (viewModel.UOMQtyInBarcode.value == 0.0f)
@@ -147,7 +147,7 @@ class OrderPickingItemFragment : Fragment() {
                 else
                     itemAmountEditText.text.toString().toFloat() + viewModel.UOMQtyInBarcode.value!!
 
-                // Handle weight
+                // Handle weight from baracode
                 val doesItemHaveWeight = viewModel.currentlyChosenItem.value!!.doesItemHaveWeight
                 val weightString = weightEditText.text.toString()
 
@@ -155,6 +155,7 @@ class OrderPickingItemFragment : Fragment() {
                     weightString.toFloat()
                 else
                     weightString.toFloat() + viewModel.weightInBarcode.value!!
+
 
                 weightEditText.setText(weightToBeDisplayed.toString())
                 itemAmountEditText.setText(valueToBeDisplayed.toInt().toString())
