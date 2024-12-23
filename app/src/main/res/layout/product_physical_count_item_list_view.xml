@@ -21,7 +21,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.491" />
 
-    <TextView
+    <!--Gone Visibility-->
+    <!--<TextView
         android:id="@+id/CountedTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +35,36 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/ItemNumberTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />-->
+    <TextView
+        android:id="@+id/CountedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:padding="1dp"
+        android:text="Counted: 20"
+        android:textColor="#4CAF50"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/DateCreatedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="-10dp"
+        android:padding="1dp"
+        android:text="2026-01-01"
+        android:textColor="#4CAF50"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/CountedTextView"
+        app:layout_constraintStart_toStartOf="parent" />
+    <!--Gone Visibility-->
 
 
     <TextView
