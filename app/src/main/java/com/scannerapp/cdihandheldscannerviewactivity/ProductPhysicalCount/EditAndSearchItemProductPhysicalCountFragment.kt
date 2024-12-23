@@ -30,6 +30,7 @@ import com.scannerapp.cdihandheldscannerviewactivity.databinding.ProductPhysical
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.exp
 
 class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     private lateinit var binding: ProductPhysicalCountItemListFragmentBinding
@@ -44,6 +45,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
     private var currentItemAmountEditText: EditText? = null
     private var currentWeightEditText: EditText? = null
     private var currentItemNumberTextView: TextView? = null
+    private var expireDateEditText: EditText? = null
 
     // Define the type explicitly for barcodeScannerEditText
     private lateinit var barcodeScannerEditText: EditText
@@ -238,7 +240,11 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
             if (selectedItemNumberTextView != null && viewModel.confirmItemResult.value!!.response.wasItemConfirmed) {
                 if (currentItemAmountEditText != null && currentWeightEditText != null) {
                     val currentCount = currentItemAmountEditText?.text.toString().toIntOrNull() ?: 0
-                    val newCount = currentCount + 1
+
+                    var newCount = currentCount + 1
+                    if(confirmResult.response.UOMQtyInBarcode.toInt() != 0)
+                        newCount = currentCount + confirmResult.response.UOMQtyInBarcode.toInt()
+
                     currentItemAmountEditText?.setText(newCount.toString())
 
                     barcodeScannerEditText.requestFocus()
@@ -260,6 +266,10 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
                     }
 
                     currentWeightEditText?.setText(newWeight.toString())
+
+                    val expDateInBarcode = confirmResult.response.expirationDateInBarcode
+                    if(expDateInBarcode != null)
+                        expireDateEditText?.setText(expDateInBarcode)
 
                     //AlerterUtils.startSuccessAlert(requireActivity(), "Success", "Item confirmed")
                 }
@@ -324,6 +334,7 @@ class EditAndSearchItemProductPhysicalCountFragment : Fragment() {
 
         currentItemNumberTextView = itemNumberTextView
         currentItemAmountEditText = itemAmountEditText
+        this.expireDateEditText = expireDateEditText
 
         val weightEditText = dialogView.findViewById<EditText>(R.id.weightEditText)
 
