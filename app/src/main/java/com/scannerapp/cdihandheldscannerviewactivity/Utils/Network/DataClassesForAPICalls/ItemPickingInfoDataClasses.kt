@@ -73,6 +73,7 @@ data class responseItemConfirmation(
     @Json(name = "wasItemConfirmed") val wasItemConfirmed: Boolean,
     @Json(name = "errorMessage") val errorMessage: String,
     @Json(name = "UOMQtyInBarcode") val UOMQtyInBarcode:Float,
+    @Json(name = "expDateInBarcode") val expDateInBarcode:String?,
     @Json(name = "weightInBarcode") val weightInBarcode:Float
 )
 
