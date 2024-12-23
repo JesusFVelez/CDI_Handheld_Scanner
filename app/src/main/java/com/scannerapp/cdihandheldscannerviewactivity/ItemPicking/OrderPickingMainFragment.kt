@@ -259,7 +259,7 @@ class orderPickingMainFragment : Fragment(), itemInOrderClickListener{
             }
             if(listOfItems.isNotEmpty()) {
                 if(hasOrderBeenSearched) {
-                    //newPickingList.setListOfItemsToPick(listOfItems)
+                    newPickingList.setItemToStartPickingOn()
                     newPickingList.startPickingLoop(requireContext(), viewModel, requireView())
                 }
                 fabScrollDown.visibility = View.VISIBLE

@@ -198,6 +198,7 @@ class PopupWindowUtils {
                     false
                 }
             }
+            confirmEditText.requestFocus()
 
             val confirmButton: Button
             confirmButton = popupContentView.findViewById(R.id.confirmButton)

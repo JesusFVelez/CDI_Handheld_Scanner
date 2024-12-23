@@ -40,7 +40,15 @@ class PickingList() {
             listOfItemsToPick = listOfItemsInOrder
             totalNumOfItemsToPick = listOfItemsToPick.size
         }
+    }
 
+    fun setItemToStartPickingOn(){
+        for (index in 0 until totalNumOfItemsToPick) {
+            if (listOfItemsToPick[index].itemPickingStatus == "Not Picked") {
+                currentItemIndex = index
+                return
+            }
+        }
     }
 
     fun getListOfItemsToPick(): List<ItemsInOrderInfo>{
