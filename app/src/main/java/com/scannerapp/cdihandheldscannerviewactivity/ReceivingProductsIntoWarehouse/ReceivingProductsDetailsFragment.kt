@@ -330,6 +330,11 @@ class ReceivingProductsDetailsFragment : Fragment() {
                     weightEditText.setText((currentWeight + weight).toString())
                 }
 
+                val expDate: String? = viewModel.expDateFromBarcode.value
+                if (expDate != null) {
+                    newExpirationDateEditText.setText(expDate)
+                }
+
                 viewModel.resetHasAPIBeenCalled()
             } else if (viewModel.hasAPIBeenCalled.value == true) {
                 progressDialog.dismiss()
