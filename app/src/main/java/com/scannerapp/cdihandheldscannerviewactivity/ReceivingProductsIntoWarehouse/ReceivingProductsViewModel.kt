@@ -147,6 +147,9 @@ class ReceivingProductsViewModel: ViewModel() {
     val weightFromBarcode: LiveData<Float>
         get() = _weightFromBarcode
 
+    private val _expDateFromBarcode = MutableLiveData<String?>()
+    val expDateFromBarcode: LiveData<String?>
+        get() = _expDateFromBarcode
 
     private val _wasItemDeleted = MutableLiveData<Boolean>()
     val wasItemDeleted: LiveData<Boolean>
@@ -590,6 +593,7 @@ class ReceivingProductsViewModel: ViewModel() {
                 _wasLastAPICallSuccessful.value = true
                 _UOMQtyInBarcode.value = response.response.UOMQtyInBarcode
                 _weightFromBarcode.value = response.response.weightInBarcode
+                _expDateFromBarcode.value = response.response.expirationDateInBarcode
                 _errorMessage.value!!["confirmItem"] = response.response.errorMessage
                 _wasItemConfirmed.value = response.response.wasItemConfirmed
             } catch (e: Exception) {

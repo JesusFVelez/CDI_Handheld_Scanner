@@ -1,6 +1,9 @@
 package com.scannerapp.cdihandheldscannerviewactivity.ItemPicking.ItemPickDetails
 import android.app.Dialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -136,7 +139,7 @@ class OrderPickingItemFragment : Fragment() {
     private fun initObservers() {
         viewModel.wasItemConfirmed.observe(viewLifecycleOwner) { wasItemConfirmed ->
             if (wasItemConfirmed && hasPageJustStarted) {
-
+                // Handle Qty uom from barcode
                 if(itemAmountEditText.text.toString().isEmpty())
                     itemAmountEditText.setText("0")
                 val valueToBeDisplayed: Float = if (viewModel.UOMQtyInBarcode.value == 0.0f)
