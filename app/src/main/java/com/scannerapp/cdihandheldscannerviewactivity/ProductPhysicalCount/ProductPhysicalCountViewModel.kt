@@ -264,7 +264,7 @@ class InventoryCountViewModel : ViewModel() {
 
         viewModelScope.launch(exceptionHandler) {
             try {
-                val call = ScannerAPI.getInventoryCountService().getItemDetailsForPopup(pItemNumberOrBarCode, pWarehouse, pCompanyID)
+                val call = ScannerAPI.getInventoryCountService().getItemDetailsForPopup(pItemNumberOrBarCode, _selectedBin.value!!.binLocation , pWarehouse, pCompanyID)
                 call.enqueue(object : Callback<GetItemDetailsForPopupResponseWrapper> {
                     override fun onResponse(
                         call: Call<GetItemDetailsForPopupResponseWrapper>,

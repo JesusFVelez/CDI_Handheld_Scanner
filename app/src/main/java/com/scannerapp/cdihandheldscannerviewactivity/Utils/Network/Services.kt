@@ -348,6 +348,7 @@ interface InventoryCountServices {
     @GET("getItemDetailsForPopup")
     fun getItemDetailsForPopup(
         @Query("pItemNumberOrBarCode") itemNumberOrBarCode: String,
+        @Query("pBinLocation") binLocation: String,
         @Query("pWarehouse") warehouse: Int,
         @Query("pCompanyID") companyID: String
     ): Call<GetItemDetailsForPopupResponseWrapper>
