@@ -28,6 +28,7 @@ class ItemAdapter(
         val binLocationTextView: TextView = view.findViewById(R.id.binLocationTextView)
         val lotNumberTextView: TextView = view.findViewById(R.id.dateWantedValueTextView)
         val qtyCountedTextView: TextView = view.findViewById(R.id.CountedTextView)
+        val dateCreatedTextView: TextView = view.findViewById(R.id.DateCreatedTextView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,26 +41,27 @@ class ItemAdapter(
         holder.itemNumberTextView.text = item.itemNumber
         holder.descriptionTextView.text = item.itemDescription
 
-        // Change date format from yyyy-mm-dd to mm-dd-yyyy
+        // Format date
         val originalFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val targetFormat = SimpleDateFormat("MM-dd-yyyy", Locale.US)
         val date = item.expireDate?.let {
-            try {
-                originalFormat.parse(it)
-            } catch (e: Exception) {
-                null
-            }
+            try { originalFormat.parse(it) } catch (e: Exception) { null }
         }
         holder.expirationDateTextView.text = date?.let { targetFormat.format(it) } ?: "N/A"
 
         holder.binLocationTextView.text = item.binLocation
         holder.lotNumberTextView.text = item.lotNumber ?: "N/A"
 
+        // Show "Counted" and "Date Created" only when inCount is true
         if (item.inCount) {
             holder.qtyCountedTextView.visibility = View.VISIBLE
             holder.qtyCountedTextView.text = "Counted: ${item.qtyCounted}"
+
+            holder.dateCreatedTextView.visibility = View.VISIBLE
+            holder.dateCreatedTextView.text = "${item.dateCreated ?: "N/A"}"
         } else {
             holder.qtyCountedTextView.visibility = View.GONE
+            holder.dateCreatedTextView.visibility = View.GONE
         }
 
         holder.itemView.setOnClickListener {
